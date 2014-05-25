@@ -1,0 +1,35 @@
+{
+	"name": "phpbb/boardannouncements",
+	"type": "phpbb-extension",
+	"description": "An extension which allows you to create board-wide announcements for your phpBB forum",
+	"homepage": "https://phpbb.com",
+	"version": "1.0.0-dev",
+	"keywords": ["phpbb", "extension", "announcements"],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Nathan Guse",
+			"username": "EXreaction",
+			"email": "nathaniel.guse@gmail.com",
+			"role": "Extensions Development Team Lead"
+		},
+		{
+			"name": "Matt Friedman",
+			"username": "VSE",
+			"homepage": "http://mattfriedman.me",
+			"role": "Extensions Development Team"
+		},
+		{
+			"name": "Lukasz Kaczynski",
+			"username": "Pico88",
+			"role": "Extensions Development Team"
+		}
+	],
+	"require": {
+		"php": ">=5.3.3",
+		"phpbb/phpbb": "3.1.*@dev"
+	},
+	"extra": {
+		"display-name": "Board Announcements"
+	}
+}
