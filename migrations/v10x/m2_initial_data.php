@@ -55,7 +55,7 @@ class m2_initial_data extends \phpbb\db\migration\migration
 			'announcement_uid'			=> '',
 			'announcement_bitfield'		=> '',
 			'announcement_options'		=> OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS,
-			'announcement_color'		=> '',
+			'announcement_bgcolor'		=> '',
 		));
 	}
 
@@ -88,7 +88,7 @@ class m2_initial_data extends \phpbb\db\migration\migration
 			'announcement_uid',
 			'announcement_bitfield',
 			'announcement_options',
-			'announcement_color',
+			'announcement_bgcolor',
 		));
 	}
 }

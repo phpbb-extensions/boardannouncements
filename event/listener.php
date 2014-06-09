@@ -94,7 +94,7 @@ class listener implements EventSubscriberInterface
 			'announcement_uid',
 			'announcement_bitfield',
 			'announcement_options',
-			'announcement_color',
+			'announcement_bgcolor',
 		));
 
 		// Prepare board announcement message for display
@@ -110,7 +110,7 @@ class listener implements EventSubscriberInterface
 			'S_BOARD_ANNOUNCEMENT'			=> ($this->config['board_announcements_enable'] && $this->user->data['board_announcements_status']) ? true : false,
 
 			'BOARD_ANNOUNCEMENT'			=> $announcement_message,
-			'BOARD_ANNOUNCEMENT_COLOR'		=> $board_announcement_data['announcement_color'],
+			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
 
 			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> '#', // TBD eg: app.php/announcement/close
 		));
