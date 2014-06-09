@@ -1,5 +1,9 @@
 services:
     phpbb.boardannouncements.listener:
         class: phpbb\boardannouncements\event\listener
+        arguments:
+            - @config
+            - @template
+            - @user
         tags:
             - { name: event.listener }

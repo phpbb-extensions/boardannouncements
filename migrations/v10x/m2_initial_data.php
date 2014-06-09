@@ -14,6 +14,13 @@ namespace phpbb\boardannouncements\migrations\v10x;
 */
 class m2_initial_data extends \phpbb\db\migration\migration
 {
+	/**
+	* Assign migration file dependencies for this migration
+	*
+	* @return array Array of migration files
+	* @static
+	* @access public
+	*/
 	static public function depends_on()
 	{
 		return array('\phpbb\boardannouncements\migrations\v10x\m1_initial_schema');
@@ -28,6 +35,7 @@ class m2_initial_data extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
+			array('config.add', array('board_announcements_enable', 1)),
 			array('custom', array(array($this, 'add_announcements_info'))),
 		);
 	}
