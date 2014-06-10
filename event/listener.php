@@ -9,6 +9,7 @@
 
 namespace phpbb\boardannouncements\event;
 
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -25,20 +26,25 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\user */
 	protected $user;
 
+	/** @var Container */
+	protected $phpbb_container;
+
 	/**
 	* Constructor
 	*
 	* @param \phpbb\config\config        $config             Config object
 	* @param \phpbb\template\template    $template           Template object
 	* @param \phpbb\user                 $user               User object
+	* @param Container                   $phpbb_container    Service container object
 	* @return \phpbb\boardrules\event\listener
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\config\config $config, \phpbb\template\template $template, \phpbb\user $user, Container $phpbb_container)
 	{
 		$this->config = $config;
 		$this->template = $template;
 		$this->user = $user;
+		$this->phpbb_container = $phpbb_container;
 	}
 
 	/**
@@ -78,15 +84,11 @@ class listener implements EventSubscriberInterface
 	*
 	* @return null
 	* @access public
-	* @todo: 1. Update the link used for closing the announcement
-	*        2. Do not use global phpbb_container
 	*/
 	public function display_board_announcements()
 	{
-		global $phpbb_container;
-
 		// Instantiate the config_text object
-		$config_text = $phpbb_container->get('config_text');
+		$config_text = $this->phpbb_container->get('config_text');
 
 		// Get board announcement data from the config_text object
 		$board_announcement_data = $config_text->get_array(array(
@@ -112,7 +114,7 @@ class listener implements EventSubscriberInterface
 			'BOARD_ANNOUNCEMENT'			=> $announcement_message,
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
 
-			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> '#', // TBD eg: app.php/announcement/close
+			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> '#', // ToDo: TBD eg: app.php/announcement/close
 		));
 	}
 }
