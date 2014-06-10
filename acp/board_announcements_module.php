@@ -104,6 +104,9 @@ class board_announcements_module
 			$announcement_text = $this->request->variable('board_announcements_text', '', true);
 			$announcement_bgcolor = $this->request->variable('board_announcements_bgcolor', '', true);
 
+			// Get guests allowed value from the form
+			$allow_guests = $this->request->variable('board_announcements_guests', false);
+
 			// Prepare announcement text for storage
 			generate_text_for_storage(
 				$announcement_text,
@@ -120,6 +123,7 @@ class board_announcements_module
 			{
 				// Store the config enable/disable state
 				$this->config->set('board_announcements_enable', $this->request->variable('board_announcements_enable', false));
+				$this->config->set('board_announcements_guests', $allow_guests);
 
 				// Store the announcement settings to the config_table in the database
 				$config_text->set_array(array(
@@ -136,6 +140,14 @@ class board_announcements_module
 				$sql = 'UPDATE ' . USERS_TABLE . '
 					SET board_announcements_status = ' . $announcement_status . '
 					WHERE user_type <> ' . USER_IGNORE;
+				$this->db->sql_query($sql);
+
+				// Set the board_announcement status for guests if they are allowed
+				// We do this separately for guests to make sure it is always set to
+				// the correct value every time.
+				$sql = 'UPDATE ' . USERS_TABLE . '
+					SET board_announcements_status = ' . (($allow_guests && $announcement_status ) ? 1 : 0) . '
+					WHERE user_id = ' . ANONYMOUS;
 				$this->db->sql_query($sql);
 
 				// Log the announcement update
@@ -161,6 +173,8 @@ class board_announcements_module
 		$this->template->assign_vars(array(
 			'ERRORS'						=> $error,
 			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $this->config['board_announcements_enable'],
+
+			'BOARD_ANNOUNCEMENTS_GUESTS'	=> $this->config['board_announcements_guests'] || !empty($allow_guests),
 
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
