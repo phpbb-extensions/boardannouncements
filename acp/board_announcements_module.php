@@ -182,6 +182,8 @@ class board_announcements_module
 			'S_BBCODE_IMG'			=> true,
 			'S_BBCODE_FLASH'		=> true,
 			'S_LINKS_ALLOWED'		=> true,
+
+			'U_ACTION'				=> $this->u_action,
 		));
 
 		// Assigning custom bbcodes
