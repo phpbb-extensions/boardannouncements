@@ -132,6 +132,7 @@ class board_announcements_module
 					'announcement_bitfield'		=> $announcement_bitfield,
 					'announcement_options'		=> $announcement_options,
 					'announcement_bgcolor'		=> $announcement_bgcolor,
+					'announcement_timestamp'	=> time(),
 				));
 
 				// Set the board_announcements_status for all normal users
