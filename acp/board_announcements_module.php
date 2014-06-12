@@ -35,6 +35,7 @@ class board_announcements_module
 	/** @var string */
 	protected $php_ext;
 
+	/** @var string */
 	public $u_action;
 
 	public function main($id, $mode)
@@ -174,12 +175,9 @@ class board_announcements_module
 		$this->template->assign_vars(array(
 			'ERRORS'						=> $error,
 			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $this->config['board_announcements_enable'],
-
 			'BOARD_ANNOUNCEMENTS_GUESTS'	=> $this->config['board_announcements_guests'] || !empty($allow_guests),
-
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
-
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $announcement_bgcolor,
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],
