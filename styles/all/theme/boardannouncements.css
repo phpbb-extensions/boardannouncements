@@ -12,9 +12,10 @@
 	position: relative;
 }
 
-/* zero out any text margins */
+/* zero out any text margins and scroll any overflow */
 #phpbb_announcement .inner p {
 	margin: 0;
+	overflow-x: scroll;
 }
 
 /* style the close button */
