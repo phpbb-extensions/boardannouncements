@@ -85,7 +85,7 @@ class listener implements EventSubscriberInterface
 	* @return null
 	* @access public
 	*/
-	public function display_board_announcements()
+	public function display_board_announcements($event)
 	{
 		// Instantiate the config_text object
 		$config_text = $this->phpbb_container->get('config_text');
