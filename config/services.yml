@@ -3,8 +3,19 @@ services:
         class: phpbb\boardannouncements\event\listener
         arguments:
             - @config
+            - @controller.helper
+            - @request
             - @template
             - @user
             - @service_container
         tags:
             - { name: event.listener }
+
+    phpbb.boardannouncements.controller:
+        class: phpbb\boardannouncements\controller\controller
+        arguments:
+            - @config_text
+            - @dbal.conn
+            - @controller.helper
+            - @request
+            - @user

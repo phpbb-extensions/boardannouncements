@@ -20,6 +20,12 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\config\config */
 	protected $config;
 
+	/** @var \phpbb\controller\helper */
+	protected $controller_helper;
+
+	/** @var \phpbb\request\request */
+	protected $request;
+
 	/** @var \phpbb\template\template */
 	protected $template;
 
@@ -33,15 +39,19 @@ class listener implements EventSubscriberInterface
 	* Constructor
 	*
 	* @param \phpbb\config\config        $config             Config object
+	* @param \phpbb\controller\helper    $controller_helper  Controller helper object
+	* @param \phpbb\request\request      $request     Request object
 	* @param \phpbb\template\template    $template           Template object
 	* @param \phpbb\user                 $user               User object
 	* @param Container                   $phpbb_container    Service container object
 	* @return \phpbb\boardrules\event\listener
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\template\template $template, \phpbb\user $user, Container $phpbb_container)
+	public function __construct(\phpbb\config\config $config, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, Container $phpbb_container)
 	{
 		$this->config = $config;
+		$this->controller_helper = $controller_helper;
+		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
 		$this->phpbb_container = $phpbb_container;
@@ -97,6 +107,7 @@ class listener implements EventSubscriberInterface
 			'announcement_bitfield',
 			'announcement_options',
 			'announcement_bgcolor',
+			'announcement_timestamp',
 		));
 
 		// Prepare board announcement message for display
@@ -107,14 +118,24 @@ class listener implements EventSubscriberInterface
 			$board_announcement_data['announcement_options']
 		);
 
+		// Display announcement conditions
+		$display_announcement = (
+			$this->config['board_announcements_enable'] &&
+			$this->user->data['board_announcements_status'] &&
+			!$this->request->variable($this->config['cookie_name'] . '_ba_' . $board_announcement_data['announcement_timestamp'], '', true, \phpbb\request\request_interface::COOKIE)
+		) ? true : false;
+
 		// Output board announcement to the template
 		$this->template->assign_vars(array(
-			'S_BOARD_ANNOUNCEMENT'			=> ($this->config['board_announcements_enable'] && $this->user->data['board_announcements_status']) ? true : false,
+			'S_BOARD_ANNOUNCEMENT'			=> $display_announcement,
 
 			'BOARD_ANNOUNCEMENT'			=> $announcement_message,
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
 
-			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> '#', // ToDo: TBD eg: app.php/announcement/close
+			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', array(
+				'action' => 'close',
+				'hash' => generate_link_hash('close_boardannouncement')
+			)),
 		));
 	}
 }

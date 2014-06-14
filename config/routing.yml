@@ -1,0 +1,5 @@
+phpbb_boardannouncements_controller:
+    pattern: /boardannouncements/{action}
+    defaults: { _controller: phpbb.boardannouncements.controller:handle }
+    requirements:
+        mode: \w+
