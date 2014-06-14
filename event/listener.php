@@ -31,10 +31,10 @@ class listener implements EventSubscriberInterface
 	/**
 	* Constructor
 	*
-	* @param \phpbb\config\config        $config             Config object
+	* @param \phpbb\config\config        $config         Config object
 	* @param \phpbb\config\db_text       $config_text    DB text object
-	* @param \phpbb\template\template    $template           Template object
-	* @param \phpbb\user                 $user               User object
+	* @param \phpbb\template\template    $template       Template object
+	* @param \phpbb\user                 $user           User object
 	* @return \phpbb\boardrules\event\listener
 	* @access public
 	*/
