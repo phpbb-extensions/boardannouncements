@@ -1,7 +1,8 @@
-<!-- IF BOARD_ANNOUNCEMENT -->
-	<div id="phpbb_announcement"<!-- IF BOARD_ANNOUNCEMENT_COLOR --> style="background-color:#{BOARD_ANNOUNCEMENT_COLOR}"<!-- ENDIF -->>
+<!-- IF S_BOARD_ANNOUNCEMENT -->
+	<!-- INCLUDEJS @phpbb_boardannouncements/js/boardannouncements.js -->
+	<div id="phpbb_announcement"<!-- IF BOARD_ANNOUNCEMENT_BGCOLOR --> style="background-color:#{BOARD_ANNOUNCEMENT_BGCOLOR}"<!-- ENDIF -->>
 		<div class="inner">
-			<h3>{L_BOARD_ANNOUNCEMENT}<span class="close" title="{L_BOARD_ANNOUNCEMENT_CLOSE}"></span></h2>
+			<a href="{U_BOARD_ANNOUNCEMENT_CLOSE}" data-ajax="close_announcement" data-overlay="false"><span class="close" title="{L_BOARD_ANNOUNCEMENT_CLOSE}"></span></a>
 			<p>{BOARD_ANNOUNCEMENT}</p>
 		</div>
 	</div>
