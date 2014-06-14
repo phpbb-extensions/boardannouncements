@@ -1,34 +1,40 @@
+/* style the announcement banner */
 #phpbb_announcement {
 	margin: 10px 0;
 	font-size: 1.1em;
-	padding: 5px 10px;
+	padding: 16px 12px;
 	border-radius: 7px;
 	background-color: #ECD5D8; /* default color */
 }
 
-#phpbb_announcement h3 {
+/* set to relative so absolute can be used for .close */
+#phpbb_announcement .inner {
 	position: relative;
-	font-family: Arial, Helvetica, sans-serif;
-	font-weight: bold;
-	font-size: 1.05em;
-	color: #115098;
-	text-transform: uppercase;
-	border-bottom: 1px solid #CCCCCC;
-	margin-bottom: 3px;
-	padding-bottom: 2px;
-	margin-top: 20px;
 }
 
+/* zero out any text margins and scroll any overflow */
+#phpbb_announcement .inner p {
+	margin: 0;
+	overflow-x: scroll;
+}
+
+/* style the close button */
 #phpbb_announcement .close {
 	position: absolute;
-	right: 0;
-	top: -15px;
-	width: 24px;
-	height: 24px;
+	right: -6px;
+	top: -10px;
+	width: 12px;
+	height: 12px;
 	background: transparent url("images/close.png") no-repeat 0 0;
-	opacity: 0.5;
+	opacity: 0.6;
 }
 
-#phpbb_announcement .close:hover {
-	cursor: pointer;
+.notouch #phpbb_announcement .close {
+	opacity: 0;
+	transition: opacity .5s;
+}
+
+/* display the close button on mouse-over of the banner */
+.notouch #phpbb_announcement:hover .close {
+	opacity: 0.6;
 }
