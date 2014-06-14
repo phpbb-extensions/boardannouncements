@@ -9,7 +9,6 @@
 
 namespace phpbb\boardannouncements\event;
 
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
