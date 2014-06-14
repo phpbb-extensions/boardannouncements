@@ -20,31 +20,31 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\config\config */
 	protected $config;
 
+	/** @var \phpbb\config\db_text */
+	protected $config_text;
+
 	/** @var \phpbb\template\template */
 	protected $template;
 
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var Container */
-	protected $phpbb_container;
-
 	/**
 	* Constructor
 	*
 	* @param \phpbb\config\config        $config             Config object
+	* @param \phpbb\config\db_text       $config_text    DB text object
 	* @param \phpbb\template\template    $template           Template object
 	* @param \phpbb\user                 $user               User object
-	* @param Container                   $phpbb_container    Service container object
 	* @return \phpbb\boardrules\event\listener
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\template\template $template, \phpbb\user $user, Container $phpbb_container)
+	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\template\template $template, \phpbb\user $user)
 	{
 		$this->config = $config;
+		$this->config_text = $config_text;
 		$this->template = $template;
 		$this->user = $user;
-		$this->phpbb_container = $phpbb_container;
 	}
 
 	/**
@@ -87,11 +87,8 @@ class listener implements EventSubscriberInterface
 	*/
 	public function display_board_announcements($event)
 	{
-		// Instantiate the config_text object
-		$config_text = $this->phpbb_container->get('config_text');
-
 		// Get board announcement data from the config_text object
-		$board_announcement_data = $config_text->get_array(array(
+		$board_announcement_data = $this->config_text->get_array(array(
 			'announcement_text',
 			'announcement_uid',
 			'announcement_bitfield',

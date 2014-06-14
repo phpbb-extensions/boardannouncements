@@ -3,8 +3,8 @@ services:
         class: phpbb\boardannouncements\event\listener
         arguments:
             - @config
+            - @config_text
             - @template
             - @user
-            - @service_container
         tags:
             - { name: event.listener }
