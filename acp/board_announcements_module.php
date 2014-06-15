@@ -77,20 +77,13 @@ class board_announcements_module
 		$config_text = $this->phpbb_container->get('config_text');
 
 		// Get all board announcement data from the config_text table in the database
-		$board_announcement_data = $config_text->get_array(array(
+		$data = $config_text->get_array(array(
 			'announcement_text',
 			'announcement_uid',
 			'announcement_bitfield',
 			'announcement_options',
 			'announcement_bgcolor',
 		));
-
-		// Assign the board announcement data to variables we can play with below
-		$announcement_text		= $board_announcement_data['announcement_text'];
-		$announcement_uid		= $board_announcement_data['announcement_uid'];
-		$announcement_bitfield	= $board_announcement_data['announcement_bitfield'];
-		$announcement_options	= $board_announcement_data['announcement_options'];
-		$announcement_bgcolor	= $board_announcement_data['announcement_bgcolor'];
 
 		// If form is submitted or previewed
 		if ($this->request->is_set_post('submit') || $this->request->is_set_post('preview'))
@@ -102,18 +95,18 @@ class board_announcements_module
 			}
 
 			// Get new announcement text and bgcolor values from the form
-			$announcement_text = $this->request->variable('board_announcements_text', '', true);
-			$announcement_bgcolor = $this->request->variable('board_announcements_bgcolor', '', true);
+			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
+			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 
 			// Get guests allowed value from the form
 			$allow_guests = $this->request->variable('board_announcements_guests', false);
 
 			// Prepare announcement text for storage
 			generate_text_for_storage(
-				$announcement_text,
-				$announcement_uid,
-				$announcement_bitfield,
-				$announcement_options,
+				$data['announcement_text'],
+				$data['announcement_uid'],
+				$data['announcement_bitfield'],
+				$data['announcement_options'],
 				!$this->request->variable('disable_bbcode', false),
 				!$this->request->variable('disable_magic_url', false),
 				!$this->request->variable('disable_smilies', false)
@@ -128,17 +121,17 @@ class board_announcements_module
 
 				// Store the announcement settings to the config_table in the database
 				$config_text->set_array(array(
-					'announcement_text'			=> $announcement_text,
-					'announcement_uid'			=> $announcement_uid,
-					'announcement_bitfield'		=> $announcement_bitfield,
-					'announcement_options'		=> $announcement_options,
-					'announcement_bgcolor'		=> $announcement_bgcolor,
+					'announcement_text'			=> $data['announcement_text'],
+					'announcement_uid'			=> $data['announcement_uid'],
+					'announcement_bitfield'		=> $data['announcement_bitfield'],
+					'announcement_options'		=> $data['announcement_options'],
+					'announcement_bgcolor'		=> $data['announcement_bgcolor'],
 					'announcement_timestamp'	=> time(),
 				));
 
 				// Set the board_announcements_status for all normal users
 				// to 1 when an announcement is created, or 0 when announcement is empty
-				$announcement_status = (!empty($announcement_text)) ? 1 : 0;
+				$announcement_status = (!empty($data['announcement_text'])) ? 1 : 0;
 				$sql = 'UPDATE ' . USERS_TABLE . '
 					SET board_announcements_status = ' . $announcement_status . '
 					WHERE user_type <> ' . USER_IGNORE;
@@ -165,11 +158,11 @@ class board_announcements_module
 		$announcement_text_preview = '';
 		if ($this->request->is_set_post('preview'))
 		{
-			$announcement_text_preview = generate_text_for_display($announcement_text, $announcement_uid, $announcement_bitfield, $announcement_options);
+			$announcement_text_preview = generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_options']);
 		}
 
 		// prepare the announcement text for editing inside the textbox
-		$announcement_text_edit = generate_text_for_edit($announcement_text, $announcement_uid, $announcement_options);
+		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], $data['announcement_uid'], $data['announcement_options']);
 
 		// Output data to the template
 		$this->template->assign_vars(array(
@@ -178,7 +171,7 @@ class board_announcements_module
 			'BOARD_ANNOUNCEMENTS_GUESTS'	=> $this->config['board_announcements_guests'] || !empty($allow_guests),
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
-			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $announcement_bgcolor,
+			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],
 			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
