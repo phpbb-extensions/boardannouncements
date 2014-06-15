@@ -15,8 +15,14 @@ class board_announcements_module
 	/** @var \phpbb\config\config */
 	protected $config;
 
+	/** @var \phpbb\config\db_text */
+	protected $config_text;
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
+
+	/** @var \phpbb\log\log */
+	protected $log;
 
 	/** @var \phpbb\request\request */
 	protected $request;
@@ -41,14 +47,15 @@ class board_announcements_module
 
 	public function main($id, $mode)
 	{
-		global $config, $db, $request, $template, $user, $phpbb_container, $phpbb_root_path, $phpEx;
+		global $config, $db, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container;
 
 		$this->config = $config;
+		$this->config_text = $phpbb_container->get('config_text');
 		$this->db = $db;
+		$this->log = $phpbb_container->get('log');
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
-		$this->phpbb_container = $phpbb_container;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
 
@@ -74,11 +81,8 @@ class board_announcements_module
 			include($this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext);
 		}
 
-		// Instantiate a config_text object
-		$config_text = $this->phpbb_container->get('config_text');
-
 		// Get all board announcement data from the config_text table in the database
-		$data = $config_text->get_array(array(
+		$data = $this->config_text->get_array(array(
 			'announcement_text',
 			'announcement_uid',
 			'announcement_bitfield',
@@ -122,7 +126,7 @@ class board_announcements_module
 				$this->config->set('board_announcements_guests', $allow_guests);
 
 				// Store the announcement settings to the config_table in the database
-				$config_text->set_array(array(
+				$this->config_text->set_array(array(
 					'announcement_text'			=> $data['announcement_text'],
 					'announcement_uid'			=> $data['announcement_uid'],
 					'announcement_bitfield'		=> $data['announcement_bitfield'],
@@ -148,8 +152,7 @@ class board_announcements_module
 				$this->db->sql_query($sql);
 
 				// Log the announcement update
-				$log = $this->phpbb_container->get('log');
-				$log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_UPDATED');
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_UPDATED');
 
 				// Output message to user for the announcement update
 				trigger_error($this->user->lang('BOARD_ANNOUNCEMENTS_UPDATED') . adm_back_link($this->u_action));
