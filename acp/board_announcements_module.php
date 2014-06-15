@@ -98,7 +98,8 @@ class board_announcements_module
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 
-			// Get guests allowed value from the form
+			// Get config options from the form
+			$enable_announcements = $this->request->variable('board_announcements_enable', false);
 			$allow_guests = $this->request->variable('board_announcements_guests', false);
 
 			// Prepare announcement text for storage
@@ -116,7 +117,7 @@ class board_announcements_module
 			if (empty($error) && $this->request->is_set_post('submit'))
 			{
 				// Store the config enable/disable state
-				$this->config->set('board_announcements_enable', $this->request->variable('board_announcements_enable', false));
+				$this->config->set('board_announcements_enable', $enable_announcements);
 				$this->config->set('board_announcements_guests', $allow_guests);
 
 				// Store the announcement settings to the config_table in the database
@@ -167,8 +168,8 @@ class board_announcements_module
 		// Output data to the template
 		$this->template->assign_vars(array(
 			'ERRORS'						=> $error,
-			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $this->config['board_announcements_enable'],
-			'BOARD_ANNOUNCEMENTS_GUESTS'	=> $this->config['board_announcements_guests'] || !empty($allow_guests),
+			'BOARD_ANNOUNCEMENTS_ENABLED'	=> (isset($enable_announcements)) ? $enable_announcements : $this->config['board_announcements_enable'],
+			'BOARD_ANNOUNCEMENTS_GUESTS'	=> (isset($allow_guests)) ? $allow_guests: $this->config['board_announcements_guests'],
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
