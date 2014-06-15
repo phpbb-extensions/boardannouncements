@@ -109,12 +109,12 @@ class controller
 	protected function set_board_announcement_cookie()
 	{
 		// Get board announcement data from the DB text object
-		$board_announcement_data = $this->config_text->get_array(array(
+		$data = $this->config_text->get_array(array(
 			'announcement_timestamp',
 		));
 
 		// Set a 1 year long cookie
-		$this->user->set_cookie('ba_' . $board_announcement_data['announcement_timestamp'], '1', time() + 31536000);
+		$this->user->set_cookie('ba_' . $data['announcement_timestamp'], '1', time() + 31536000);
 
 		return true;
 	}
