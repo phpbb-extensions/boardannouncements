@@ -66,14 +66,12 @@ class controller
 					return $this->helper->error($this->user->lang('GENERAL_ERROR'), 200);
 				}
 
-				if ($this->user->data['user_id'] == ANONYMOUS)
+				// Set a cookie for guests
+				$response = $this->set_board_announcement_cookie();
+
+				// Close the announcement for registered users
+				if ($this->user->data['user_id'] != ANONYMOUS)
 				{
-					// Set a cookie for guests
-					$response = $this->set_board_announcement_cookie();
-				}
-				else
-				{
-					// Close the announcement for registered users
 					$response = $this->update_board_announcement_status();
 				}
 
