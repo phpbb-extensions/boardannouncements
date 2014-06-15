@@ -130,7 +130,6 @@ class listener implements EventSubscriberInterface
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
 
 			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', array(
-				'action' => 'close',
 				'hash' => generate_link_hash('close_boardannouncement')
 			)),
 		));

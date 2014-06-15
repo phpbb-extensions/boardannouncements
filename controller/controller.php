@@ -48,57 +48,41 @@ class controller
 	}
 
 	/**
-	* Board Announcements controller accessed from the URL /boardannouncements/{action}
-	* (where {action} is a placeholder for a string of text for the $action var below)
+	* Board Announcements controller accessed from the URL /boardannouncements/close
 	*
-	* @param string	$action Action to perform, called by the URL
-	* @return Symfony\Component\HttpFoundation\Response A Symfony Response object
+	* @return null
 	* @access public
 	*/
-	public function handle($action)
+	public function close_announcement()
 	{
-		switch ($action)
+		// Check the link hash to protect against CSRF/XSRF attacks
+		if (!check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement'))
 		{
-			case 'close':
-
-				// Check the link hash to protect against CSRF/XSRF attacks
-				if (!check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement'))
-				{
-					return $this->helper->error($this->user->lang('GENERAL_ERROR'), 200);
-				}
-
-				// Set a cookie for guests
-				$response = $this->set_board_announcement_cookie();
-
-				// Close the announcement for registered users
-				if ($this->user->data['user_id'] != ANONYMOUS)
-				{
-					$response = $this->update_board_announcement_status();
-				}
-
-				// Send a JSON response if an AJAX request was used
-				if ($this->request->is_ajax())
-				{
-					$json_response = new \phpbb\json_response;
-					$json_response->send(array(
-						'success' => $response,
-					));
-				}
-
-				// Redirect the user back to their last viewed page (non-AJAX requests)
-				$redirect = $this->request->variable('redirect', $this->user->data['session_page']);
-				$redirect = reapply_sid($redirect);
-				redirect($redirect);
-
-			break;
-
-			default:
-
-				// Display an error message for any invalid access attempts
-				return $this->helper->error($this->user->lang('GENERAL_ERROR'), 200);
-
-			break;
+			return $this->helper->error($this->user->lang('GENERAL_ERROR'), 200);
 		}
+
+		// Set a cookie for guests
+		$response = $this->set_board_announcement_cookie();
+
+		// Close the announcement for registered users
+		if ($this->user->data['user_id'] != ANONYMOUS)
+		{
+			$response = $this->update_board_announcement_status();
+		}
+
+		// Send a JSON response if an AJAX request was used
+		if ($this->request->is_ajax())
+		{
+			$json_response = new \phpbb\json_response;
+			$json_response->send(array(
+				'success' => $response,
+			));
+		}
+
+		// Redirect the user back to their last viewed page (non-AJAX requests)
+		$redirect = $this->request->variable('redirect', $this->user->data['session_page']);
+		$redirect = reapply_sid($redirect);
+		redirect($redirect);
 	}
 
 	/**
@@ -110,12 +94,10 @@ class controller
 	protected function set_board_announcement_cookie()
 	{
 		// Get board announcement data from the DB text object
-		$data = $this->config_text->get_array(array(
-			'announcement_timestamp',
-		));
+		$announcement_timestamp = $this->config_text->get('announcement_timestamp');
 
 		// Set a 1 year long cookie
-		$this->user->set_cookie('ba_' . $data['announcement_timestamp'], '1', time() + 31536000);
+		$this->user->set_cookie('ba_' . $announcement_timestamp, '1', time() + 31536000);
 
 		return true;
 	}
