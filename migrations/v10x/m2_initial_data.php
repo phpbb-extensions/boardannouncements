@@ -35,8 +35,8 @@ class m2_initial_data extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('config.add', array('board_announcements_enable', 1)),
-			array('config.add', array('board_announcements_guests', 1)),
+			array('config.add', array('board_announcements_enable', 0)),
+			array('config.add', array('board_announcements_guests', 0)),
 			array('custom', array(array($this, 'add_announcements_info'))),
 		);
 	}
