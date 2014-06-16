@@ -14,6 +14,19 @@
 			"role": "Extensions Development Team Lead"
 		},
 		{
+			"name": "Michael Cullum",
+			"homepage": "http://michaelcullum.com",
+			"email": "michael@phpbb.com",
+			"role": "Extensions Team Consultant"
+		},
+		{
+			"name": "Marc Alexander",
+			"username": "Marc",
+			"email": "admin@m-a-styles.de",
+			"homepage": "http://www.m-a-styles.de",
+			"role": "Extensions Team Consultant"
+		},
+		{
 			"name": "Matt Friedman",
 			"username": "VSE",
 			"homepage": "http://mattfriedman.me",
