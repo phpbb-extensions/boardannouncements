@@ -43,6 +43,11 @@
 		"phpbb/phpbb": "3.1.*@dev"
 	},
 	"extra": {
-		"display-name": "Board Announcements"
+		"display-name": "Board Announcements",
+		"version-check": {
+			"host": "version.phpbb.com",
+			"directory": "/phpbb-extensions",
+			"filename": "boardannouncements_versions.json"
+		}
 	}
 }
