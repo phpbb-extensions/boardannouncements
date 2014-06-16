@@ -11,9 +11,10 @@
 namespace phpbb\boardannouncements\tests\mock;
 
 /**
- * Template Mock
- * @package phpBB3
- */
+* Mock template class.
+* This class has a minimum amount of functionality, just to make tests work.
+* (Credit to nickvergessen for desigining this mock class.)
+*/
 class template implements \phpbb\template\template
 {
 	protected $template_data;
@@ -53,7 +54,6 @@ class template implements \phpbb\template\template
 
 	public function destroy_block_vars($blockname)
 	{
-		unset($this->template_data[$blockname]);
 	}
 
 	public function display($handle)
@@ -79,7 +79,6 @@ class template implements \phpbb\template\template
 
 	public function append_var($varname, $varval)
 	{
-		$this->template_data[$varname] = $this->template_data[$varname] . $varval;
 	}
 
 	public function assign_block_vars($blockname, array $vararray)
