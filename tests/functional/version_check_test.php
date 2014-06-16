@@ -26,12 +26,6 @@ class version_check_test extends \phpbb_functional_test_case
 		return array('phpbb/boardannouncements');
 	}
 
-	public function setUp()
-	{
-		parent::setUp();
-		$this->add_lang_ext('phpbb/boardannouncements', array('info_acp_board_announcements'));
-	}
-
 	/**
 	* Test extension manager version check
 	*
@@ -39,7 +33,10 @@ class version_check_test extends \phpbb_functional_test_case
 	*/
 	public function test_version_check()
 	{
-		$this->markTestSkipped('Version info file is not online yet');
+		$this->markTestSkipped('Version info file is not available yet');
+
+		// Load our language files
+		$this->add_lang_ext('phpbb/boardannouncements', array('info_acp_board_announcements'));
 
 		// Log in to the ACP
 		$this->login();
