@@ -21,6 +21,7 @@ class event_listener_test extends \phpbb_database_test_case
 	/**
 	* Get data set fixtures
 	*
+	* @return PHPUnit_Extensions_Database_DataSet_XmlDataSet
 	* @access public
 	*/
 	public function getDataSet()
