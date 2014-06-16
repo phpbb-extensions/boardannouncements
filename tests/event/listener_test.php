@@ -8,7 +8,7 @@
 *
 */
 
-namespace phpbb\boardannouncements;
+namespace phpbb\boardannouncements\tests\event;
 
 require_once dirname(__FILE__) . '/../../../../../includes/functions_content.php';
 require_once dirname(__FILE__) . '/../../../../../includes/utf/utf_tools.php';

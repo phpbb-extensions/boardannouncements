@@ -8,7 +8,7 @@
 *
 */
 
-namespace phpbb\boardannouncements;
+namespace phpbb\boardannouncements\tests\functional;
 
 /**
 * @group functional
