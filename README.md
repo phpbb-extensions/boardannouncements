@@ -21,5 +21,10 @@ You can install this on the latest copy of the develop branch ([phpBB 3.1-dev](h
 2. Look for `Board Announcements` under the Enabled Extensions list, and click its `Disable` link.
 3. To permanently uninstall, click `Delete Data` and then delete the `/ext/phpbb/boardannouncements` folder.
 
+## Support
+
+* Report bugs and other issues to our [Issue Tracker](https://github.com/phpbb-extensions/boardannouncements/issues).
+* Support requests should be posted and discussed in the [Board Announcements topic at phpBB.com](https://www.phpbb.com/community/viewtopic.php?f=456&t=2245901).
+
 ## License
 [GNU General Public License v2](http://opensource.org/licenses/GPL-2.0)
