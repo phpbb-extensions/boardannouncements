@@ -10,6 +10,7 @@
 
 namespace phpbb\boardannouncements\tests\event;
 
+require_once dirname(__FILE__) . '/../../../../../includes/functions.php';
 require_once dirname(__FILE__) . '/../../../../../includes/functions_content.php';
 require_once dirname(__FILE__) . '/../../../../../includes/utf/utf_tools.php';
 
@@ -40,21 +41,21 @@ class event_listener_test extends \phpbb_database_test_case
 
 		global $cache, $user, $phpbb_dispatcher, $phpbb_root_path;
 
+		// Load the database class
 		$this->db = $this->new_dbal();
 
+		// Mock some global classes that may be called during code execution
 		$cache = new \phpbb_mock_cache;
-		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 		$user = new \phpbb_mock_user;
 		$user->optionset('viewcensors', false);
+		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 
+		// Load/Mock classes required by the event listener class
 		$this->config = new \phpbb\config\config(array());
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
-
 		$this->request = $this->getMock('\phpbb\request\request');
-
 		$this->template = new \phpbb\boardannouncements\tests\mock\template();
 		$this->user = $this->getMock('\phpbb\user');
-
 		$this->controller_helper = new \phpbb_mock_controller_helper(
 			$this->template,
 			$this->user,
