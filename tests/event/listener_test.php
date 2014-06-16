@@ -2,6 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
+* (Thanks/credit to nickvergessen for desigining these tests)
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -99,7 +100,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the event listener is subscribing events
-	* (Credit to nickvergessen for desigining this test)
 	*
 	* @access public
 	*/
@@ -113,7 +113,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Data set for test_load_language_on_setup
-	* (Credit to nickvergessen for desigining this test)
 	*
 	* @return array Array of test data
 	* @access public
@@ -153,7 +152,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the load_language_on_setup event
-	* (Credit to nickvergessen for desigining this test)
 	*
 	* @dataProvider load_language_on_setup_data
 	* @access public
@@ -180,7 +178,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the display_board_announcements event
-	* (Credit to nickvergessen for desigining this test)
 	*
 	* @access public
 	*/
