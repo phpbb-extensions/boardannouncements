@@ -50,8 +50,7 @@ class event_listener_test extends \phpbb_database_test_case
 		$this->config = new \phpbb\config\config(array());
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 
-		$this->type_cast_helper = $this->getMock('\phpbb\request\type_cast_helper_interface');
-		$this->request = new \phpbb\request\request($this->type_cast_helper);
+		$this->request = $this->getMock('\phpbb\request\request');
 
 		$this->template = new \phpbb\boardannouncements\tests\mock\template();
 		$this->user = $this->getMock('\phpbb\user');
