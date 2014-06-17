@@ -72,7 +72,6 @@ class event_listener_test extends \phpbb_database_test_case
 	/**
 	* Get our event listener
 	*
-	* @return \phpbb\boardannouncements\event\listener
 	* @access protected
 	*/
 	protected function get_listener()
