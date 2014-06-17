@@ -1,0 +1,27 @@
+<!-- IF S_BOARD_ANNOUNCEMENTS -->
+<!-- INCLUDEJS @phpbb_boardannouncements/colpick.js -->
+<script>
+;(function ($, document) {
+	$(document).ready(function () {
+		$('#board_announcements_bgcolor').colpick({
+			layout: 'hex',
+			submit: 0,
+			onBeforeShow: function(){
+				var bgcolor = '{BOARD_ANNOUNCEMENTS_BGCOLOR}';
+				if (bgcolor !== '') $(this).colpickSetColor(bgcolor, true);
+			},
+			onChange: function(hsb, hex, rgb, el, bySetColor) {
+				$(el).css({
+					'border-right-color': '#' + hex,
+					'border-right-width': '20px',
+					'border-right-type': 'solid', 
+				});
+				if (!bySetColor) $(el).val(hex);
+			}
+		}).keyup(function(){
+			$(this).colpickSetColor((this.value === '') ? 'ffffff' : this.value);
+		});
+	});
+})(jQuery, window, document);
+</script>
+<!-- ENDIF -->
