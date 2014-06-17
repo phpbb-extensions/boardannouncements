@@ -24,7 +24,7 @@ class m1_initial_schema extends \phpbb\db\migration\migration
 	*/
 	static public function depends_on()
 	{
-		return array('\phpbb\db\migration\data\v310\beta4');
+		return array('\phpbb\db\migration\data\v310\contact_admin_form');
 	}
 
 	/**
