@@ -70,11 +70,11 @@ class event_listener_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Get our event listener
+	* Create our event listener
 	*
 	* @access protected
 	*/
-	protected function get_listener()
+	protected function set_listener()
 	{
 		$this->listener = new \phpbb\boardannouncements\event\listener(
 			$this->config,
@@ -93,7 +93,7 @@ class event_listener_test extends \phpbb_database_test_case
 	*/
 	public function test_construct()
 	{
-		$this->get_listener();
+		$this->set_listener();
 		$this->assertInstanceOf('\Symfony\Component\EventDispatcher\EventSubscriberInterface', $this->listener);
 	}
 
@@ -157,7 +157,7 @@ class event_listener_test extends \phpbb_database_test_case
 	*/
 	public function test_load_language_on_setup($lang_set_ext, $expected_contains)
 	{
-		$this->get_listener();
+		$this->set_listener();
 
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
 		$dispatcher->addListener('core.user_setup', array($this->listener, 'load_language_on_setup'));
@@ -182,7 +182,7 @@ class event_listener_test extends \phpbb_database_test_case
 	*/
 	public function test_display_board_announcements()
 	{
-		$this->get_listener();
+		$this->set_listener();
 
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
 		$dispatcher->addListener('core.page_header_after', array($this->listener, 'display_board_announcements'));
