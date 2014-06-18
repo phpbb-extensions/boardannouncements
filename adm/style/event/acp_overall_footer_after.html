@@ -2,13 +2,14 @@
 <!-- INCLUDEJS @phpbb_boardannouncements/colpick.js -->
 <script>
 jQuery(function($) {
+	var bgcolor = '{BOARD_ANNOUNCEMENTS_BGCOLOR}';
 	$('#board_announcements_bgcolor').colpick({
 		layout: 'hex',
 		submit: 0,
 		onBeforeShow: function() {
-			var bgcolor = '{BOARD_ANNOUNCEMENTS_BGCOLOR}';
 			if (bgcolor !== '') {
-				$(this).colpickSetColor(bgcolor, true);
+				$(this).colpickSetColor(bgcolor);
+				bgcolor = '';
 			}
 		},
 		onChange: function(hsb, hex, rgb, el, bySetColor) {
