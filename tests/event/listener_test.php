@@ -52,11 +52,12 @@ class event_listener_test extends \phpbb_database_test_case
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 
 		// Load/Mock classes required by the event listener class
-		$this->config = new \phpbb\config\config(array());
+		$this->config = new \phpbb\config\config(array('board_announcements_enable' => 1));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 		$this->request = $this->getMock('\phpbb\request\request');
 		$this->template = new \phpbb\boardannouncements\tests\mock\template();
 		$this->user = $this->getMock('\phpbb\user');
+		$this->user->data['board_announcements_status'] = 1;
 		$this->controller_helper = new \phpbb_mock_controller_helper(
 			$this->template,
 			$this->user,
@@ -189,7 +190,7 @@ class event_listener_test extends \phpbb_database_test_case
 		$dispatcher->dispatch('core.page_header_after');
 
 		$this->assertEquals(array(
-			'S_BOARD_ANNOUNCEMENT'			=> false,
+			'S_BOARD_ANNOUNCEMENT'			=> true,
 			'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
 			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'app.php/boardannouncements/close?hash=' . generate_link_hash('close_boardannouncement'),
