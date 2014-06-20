@@ -17,6 +17,17 @@ require_once dirname(__FILE__) . '/../../../../../includes/utf/utf_tools.php';
 
 class event_listener_test extends \phpbb_database_test_case
 {
+	/**
+	* Define the extensions to be tested
+	*
+	* @return array vendor/name of extension(s) to test
+	* @access static
+	*/
+	static protected function setup_extensions()
+	{
+		return array('phpbb/boardannouncements');
+	}
+
 	/** @var \phpbb\boardannouncements\event\listener */
 	protected $listener;
 
