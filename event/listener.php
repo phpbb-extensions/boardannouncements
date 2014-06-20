@@ -107,6 +107,15 @@ class listener implements EventSubscriberInterface
 			'announcement_timestamp',
 		));
 
+		// Get announcement cookie if one exists
+		$cookie = $this->request->variable($this->config['cookie_name'] . '_ba_' . $board_announcement_data['announcement_timestamp'], '', true, \phpbb\request\request_interface::COOKIE);
+
+		// Do not continue if announcement has been disabled or dismissed
+		if (!$this->config['board_announcements_enable'] || !$this->user->data['board_announcements_status'] || $cookie)
+		{
+			return;
+		}
+
 		// Prepare board announcement message for display
 		$announcement_message = generate_text_for_display(
 			$board_announcement_data['announcement_text'],
@@ -115,16 +124,9 @@ class listener implements EventSubscriberInterface
 			$board_announcement_data['announcement_options']
 		);
 
-		// Display announcement conditions
-		$display_announcement = (
-			$this->config['board_announcements_enable'] &&
-			$this->user->data['board_announcements_status'] &&
-			!$this->request->variable($this->config['cookie_name'] . '_ba_' . $board_announcement_data['announcement_timestamp'], '', true, \phpbb\request\request_interface::COOKIE)
-		) ? true : false;
-
 		// Output board announcement to the template
 		$this->template->assign_vars(array(
-			'S_BOARD_ANNOUNCEMENT'			=> $display_announcement,
+			'S_BOARD_ANNOUNCEMENT'			=> true,
 
 			'BOARD_ANNOUNCEMENT'			=> $announcement_message,
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],

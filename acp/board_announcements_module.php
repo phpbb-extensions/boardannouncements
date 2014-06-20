@@ -194,6 +194,8 @@ class board_announcements_module
 			'S_BBCODE_FLASH'		=> true,
 			'S_LINKS_ALLOWED'		=> true,
 
+			'S_BOARD_ANNOUNCEMENTS'	=> true,
+
 			'U_ACTION'				=> $this->u_action,
 		));
 
