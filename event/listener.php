@@ -23,6 +23,12 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\config\db_text */
 	protected $config_text;
 
+	/** @var \phpbb\controller\helper */
+	protected $controller_helper;
+
+	/** @var \phpbb\request\request */
+	protected $request;
+
 	/** @var \phpbb\template\template */
 	protected $template;
 
@@ -32,17 +38,21 @@ class listener implements EventSubscriberInterface
 	/**
 	* Constructor
 	*
-	* @param \phpbb\config\config        $config         Config object
-	* @param \phpbb\config\db_text       $config_text    DB text object
-	* @param \phpbb\template\template    $template       Template object
-	* @param \phpbb\user                 $user           User object
+	* @param \phpbb\config\config        $config             Config object
+	* @param \phpbb\config\db_text       $config_text        DB text object
+	* @param \phpbb\controller\helper    $controller_helper  Controller helper object
+	* @param \phpbb\request\request      $request            Request object
+	* @param \phpbb\template\template    $template           Template object
+	* @param \phpbb\user                 $user               User object
 	* @return \phpbb\boardrules\event\listener
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
 	{
 		$this->config = $config;
 		$this->config_text = $config_text;
+		$this->controller_helper = $controller_helper;
+		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
 	}
@@ -94,7 +104,17 @@ class listener implements EventSubscriberInterface
 			'announcement_bitfield',
 			'announcement_options',
 			'announcement_bgcolor',
+			'announcement_timestamp',
 		));
+
+		// Get announcement cookie if one exists
+		$cookie = $this->request->variable($this->config['cookie_name'] . '_ba_' . $board_announcement_data['announcement_timestamp'], '', true, \phpbb\request\request_interface::COOKIE);
+
+		// Do not continue if announcement has been disabled or dismissed
+		if (!$this->config['board_announcements_enable'] || !$this->user->data['board_announcements_status'] || $cookie)
+		{
+			return;
+		}
 
 		// Prepare board announcement message for display
 		$announcement_message = generate_text_for_display(
@@ -106,12 +126,14 @@ class listener implements EventSubscriberInterface
 
 		// Output board announcement to the template
 		$this->template->assign_vars(array(
-			'S_BOARD_ANNOUNCEMENT'			=> ($this->config['board_announcements_enable'] && $this->user->data['board_announcements_status']) ? true : false,
+			'S_BOARD_ANNOUNCEMENT'			=> true,
 
 			'BOARD_ANNOUNCEMENT'			=> $announcement_message,
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
 
-			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> '#', // ToDo: TBD eg: app.php/announcement/close
+			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', array(
+				'hash' => generate_link_hash('close_boardannouncement')
+			)),
 		));
 	}
 }

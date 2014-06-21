@@ -15,7 +15,7 @@
 /* zero out any text margins and scroll any overflow */
 #phpbb_announcement .inner p {
 	margin: 0;
-	overflow-x: scroll;
+	overflow-x: auto;
 }
 
 /* style the close button */
