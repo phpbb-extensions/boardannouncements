@@ -108,10 +108,10 @@ class listener implements EventSubscriberInterface
 		));
 
 		// Get announcement cookie if one exists
-		$cookie = $this->request->variable($this->config['cookie_name'] . '_ba_' . $board_announcement_data['announcement_timestamp'], '', true, \phpbb\request\request_interface::COOKIE);
+		$cookie = $this->request->variable($this->config['cookie_name'] . '_baid', '', true, \phpbb\request\request_interface::COOKIE);
 
 		// Do not continue if announcement has been disabled or dismissed
-		if (!$this->config['board_announcements_enable'] || !$this->user->data['board_announcements_status'] || $cookie)
+		if (!$this->config['board_announcements_enable'] || !$this->user->data['board_announcements_status'] || $cookie == $board_announcement_data['announcement_timestamp'])
 		{
 			return;
 		}
