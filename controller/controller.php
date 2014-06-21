@@ -96,8 +96,8 @@ class controller
 		// Get board announcement data from the DB text object
 		$announcement_timestamp = $this->config_text->get('announcement_timestamp');
 
-		// Set a 1 year long cookie
-		$this->user->set_cookie('ba_' . $announcement_timestamp, '1', time() + 31536000);
+		// Store the announcement timestamp/id in a cookie with a 1 year expiration
+		$this->user->set_cookie('baid', $announcement_timestamp, time() + 31536000);
 
 		return true;
 	}
