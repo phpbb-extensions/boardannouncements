@@ -15,7 +15,7 @@ class controller
 	/** @var \phpbb\config\db_text */
 	protected $config_text;
 
-	/** @var \phpbb\db\driver\driver */
+	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
 	/** @var \phpbb\controller\helper */
@@ -30,15 +30,15 @@ class controller
 	/**
 	* Constructor
 	*
-	* @param \phpbb\config\db_text       $config_text    DB text object
-	* @param \phpbb\db\driver\driver     $db             Database object
-	* @param \phpbb\controller\helper    $helper         Controller helper object
-	* @param \phpbb\request\request      $request        Request object
-	* @param \phpbb\user                 $user           User object
+	* @param \phpbb\config\db_text               $config_text    DB text object
+	* @param \phpbb\db\driver\driver_interface   $db             Database object
+	* @param \phpbb\controller\helper            $helper         Controller helper object
+	* @param \phpbb\request\request              $request        Request object
+	* @param \phpbb\user                         $user           User object
 	* @return \phpbb\boardannouncements\controller\controller
 	* @access public
 	*/
-	public function __construct(\phpbb\config\db_text $config_text, \phpbb\db\driver\driver $db, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user)
+	public function __construct(\phpbb\config\db_text $config_text, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user)
 	{
 		$this->config_text = $config_text;
 		$this->db = $db;
@@ -96,8 +96,8 @@ class controller
 		// Get board announcement data from the DB text object
 		$announcement_timestamp = $this->config_text->get('announcement_timestamp');
 
-		// Set a 1 year long cookie
-		$this->user->set_cookie('ba_' . $announcement_timestamp, '1', time() + 31536000);
+		// Store the announcement timestamp/id in a cookie with a 1 year expiration
+		$this->user->set_cookie('baid', $announcement_timestamp, time() + 31536000);
 
 		return true;
 	}
