@@ -33,8 +33,6 @@ class version_check_test extends \phpbb_functional_test_case
 	*/
 	public function test_version_check()
 	{
-		$this->markTestSkipped('Version info file is not available yet');
-
 		// Load our language files
 		$this->add_lang_ext('phpbb/boardannouncements', array('info_acp_board_announcements'));
 
