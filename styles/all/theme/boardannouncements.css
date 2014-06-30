@@ -16,6 +16,8 @@
 #phpbb_announcement .inner p {
 	margin: 0;
 	overflow-x: auto;
+	overflow: hidden;
+	line-height: 1.4em;
 }
 
 /* style the close button */
@@ -29,6 +31,13 @@
 	opacity: 0.6;
 }
 
+/* reposition close button for right to left languages */
+.rtl #phpbb_announcement .close {
+	left: -6px;
+	right: auto;
+}
+
+/* hide close button on desktops by default */
 .notouch #phpbb_announcement .close {
 	opacity: 0;
 	transition: opacity .5s;
