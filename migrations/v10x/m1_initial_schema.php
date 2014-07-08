@@ -16,18 +16,6 @@ namespace phpbb\boardannouncements\migrations\v10x;
 class m1_initial_schema extends \phpbb\db\migration\migration
 {
 	/**
-	* Assign migration file dependencies for this migration
-	*
-	* @return array Array of migration files
-	* @static
-	* @access public
-	*/
-	static public function depends_on()
-	{
-		return array('\phpbb\db\migration\data\v310\contact_admin_form');
-	}
-
-	/**
 	* Add the board announcements column to the users table.
 	*
 	* @return array Array of table schema
