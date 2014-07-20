@@ -62,6 +62,9 @@ class board_announcements_module
 		// Add the posting lang file needed by BBCodes
 		$this->user->add_lang(array('posting'));
 
+		// Add the board announcements ACP lang file
+		$this->user->add_lang_ext('phpbb/boardannouncements', 'boardannouncements_acp');
+
 		// Load a template from adm/style for our ACP page
 		$this->tpl_name = 'board_announcements';
 
