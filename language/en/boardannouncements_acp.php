@@ -38,10 +38,17 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Board Announcements',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Announcement settings',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Board announcements settings',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Here you can manage and create a board announcement that will be displayed on each page of your board.',
 
-	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Altered board announcement settings</strong>',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Enable board announcement',
+	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Allow guests to view this board announcement',
+
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Board announcement background color',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'You can change the background color of the announcement using a hex code (e.g: FFFF80). Leave this field blank to use the default color.',
+
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Board announcement message',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Board announcement - Preview',
+
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Board announcement has been updated.',
 ));

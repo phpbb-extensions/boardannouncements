@@ -29,7 +29,7 @@ class announcement_test extends \phpbb_functional_test_case
 	public function setUp()
 	{
 		parent::setUp();
-		$this->add_lang_ext('phpbb/boardannouncements', 'info_acp_board_announcements');
+		$this->add_lang_ext('phpbb/boardannouncements', array('boardannouncements_acp', 'info_acp_board_announcements'));
 	}
 
 	/**

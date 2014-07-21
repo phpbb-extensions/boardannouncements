@@ -62,6 +62,9 @@ class board_announcements_module
 		// Add the posting lang file needed by BBCodes
 		$this->user->add_lang(array('posting'));
 
+		// Add the board announcements ACP lang file
+		$this->user->add_lang_ext('phpbb/boardannouncements', 'boardannouncements_acp');
+
 		// Load a template from adm/style for our ACP page
 		$this->tpl_name = 'board_announcements';
 
@@ -152,7 +155,7 @@ class board_announcements_module
 				$this->db->sql_query($sql);
 
 				// Log the announcement update
-				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_UPDATED');
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_UPDATED_LOG');
 
 				// Output message to user for the announcement update
 				trigger_error($this->user->lang('BOARD_ANNOUNCEMENTS_UPDATED') . adm_back_link($this->u_action));

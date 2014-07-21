@@ -34,7 +34,7 @@ class version_check_test extends \phpbb_functional_test_case
 	public function test_version_check()
 	{
 		// Load our language files
-		$this->add_lang_ext('phpbb/boardannouncements', array('info_acp_board_announcements'));
+		$this->add_lang_ext('phpbb/boardannouncements', array('boardannouncements_acp', 'info_acp_board_announcements'));
 
 		// Log in to the ACP
 		$this->login();
