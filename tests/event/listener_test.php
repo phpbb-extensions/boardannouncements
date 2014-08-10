@@ -67,7 +67,7 @@ class event_listener_test extends \phpbb_database_test_case
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 		$this->request = $this->getMock('\phpbb\request\request');
 		$this->template = new \phpbb\boardannouncements\tests\mock\template();
-		$this->user = $this->getMock('\phpbb\user');
+		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 		$this->user->data['board_announcements_status'] = 1;
 		$this->controller_helper = new \phpbb_mock_controller_helper(
 			$this->template,
