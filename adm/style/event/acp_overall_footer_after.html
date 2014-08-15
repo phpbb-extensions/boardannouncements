@@ -1,6 +1,13 @@
 <!-- IF S_BOARD_ANNOUNCEMENTS -->
-<!-- INCLUDEJS @phpbb_boardannouncements/colpick.js -->
-<script>
+
+<!-- IF not $INCLUDEDED_COLPICKJS -->
+	<!-- INCLUDEJS @phpbb_boardannouncements/colpick.js -->
+	<!-- DEFINE $INCLUDEDED_COLPICKJS = true -->
+<!-- ENDIF -->
+
+<script type="text/javascript">
+// <![CDATA[
+
 jQuery(function($) {
 	var bgcolor = '{BOARD_ANNOUNCEMENTS_BGCOLOR}';
 	$('#board_announcements_bgcolor').colpick({
@@ -26,5 +33,8 @@ jQuery(function($) {
 		$(this).colpickSetColor(this.value || 'ffffff');
 	});
 });
+
+// ]]>
 </script>
+
 <!-- ENDIF -->
