@@ -1,5 +1,10 @@
 <!-- IF S_BOARD_ANNOUNCEMENTS -->
-<!-- INCLUDEJS @phpbb_boardannouncements/colpick.js -->
+
+<!-- IF not $INCLUDEDED_COLPICKJS -->
+	<!-- INCLUDEJS @phpbb_boardannouncements/colpick.js -->
+	<!-- DEFINE $INCLUDEDED_COLPICKJS = true -->
+<!-- ENDIF -->
+
 <script>
 jQuery(function($) {
 	var bgcolor = '{BOARD_ANNOUNCEMENTS_BGCOLOR}';
@@ -27,4 +32,5 @@ jQuery(function($) {
 	});
 });
 </script>
+
 <!-- ENDIF -->
