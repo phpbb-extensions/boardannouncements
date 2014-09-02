@@ -48,3 +48,8 @@
 .notouch #phpbb_announcement:hover .close {
 	opacity: 0.6;
 }
+
+/* fix for lists, force them to display inside containing div */
+#phpbb_announcement ul, #phpbb_announcement ol {
+	list-style-position: inside;
+}
