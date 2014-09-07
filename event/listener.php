@@ -67,26 +67,8 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.user_setup'			=> 'load_language_on_setup',
 			'core.page_header_after'	=> 'display_board_announcements',
 		);
-	}
-
-	/**
-	* Load common board announcement language files during user setup
-	*
-	* @param object $event The event object
-	* @return null
-	* @access public
-	*/
-	public function load_language_on_setup($event)
-	{
-		$lang_set_ext = $event['lang_set_ext'];
-		$lang_set_ext[] = array(
-			'ext_name' => 'phpbb/boardannouncements',
-			'lang_set' => 'boardannouncements_common',
-		);
-		$event['lang_set_ext'] = $lang_set_ext;
 	}
 
 	/**
@@ -123,6 +105,9 @@ class listener implements EventSubscriberInterface
 			$board_announcement_data['announcement_bitfield'],
 			$board_announcement_data['announcement_options']
 		);
+
+		// Add board announcements language file
+		$this->user->add_lang_ext('phpbb/boardannouncements', 'boardannouncements');
 
 		// Output board announcement to the template
 		$this->template->assign_vars(array(
