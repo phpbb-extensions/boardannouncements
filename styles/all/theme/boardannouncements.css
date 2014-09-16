@@ -51,5 +51,11 @@
 
 /* fix for lists, force them to display inside containing div */
 #phpbb_announcement ul, #phpbb_announcement ol {
-	list-style-position: inside;
+	margin-left: 20px;
 }
+
+.rtl #phpbb_announcement ul, .rtl #phpbb_announcement ol {
+	margin-left: 0;
+	margin-right: 20px;
+}
+
