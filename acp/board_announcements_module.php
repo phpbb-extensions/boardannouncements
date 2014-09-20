@@ -33,7 +33,7 @@ class board_announcements_module
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var ContainerBuilder */
+	/** @var ContainerInterface */
 	protected $phpbb_container;
 
 	/** @var string */
