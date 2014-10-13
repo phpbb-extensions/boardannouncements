@@ -185,7 +185,7 @@ class board_announcements_module
 			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
 			'S_MAGIC_URL_DISABLE_CHECKED'	=> !$announcement_text_edit['allow_urls'],
 
-			'BBCODE_STATUS'			=> $this->user->lang('BBCODE_IS_ON', '<a href="' . append_sid("{$this->phpbb_root_path}faq.$this->php_ext", 'mode=bbcode') . '">', '</a>'),
+			'BBCODE_STATUS'			=> $this->user->lang('BBCODE_IS_ON', '<a href="' . append_sid("{$this->phpbb_root_path}faq.{$this->php_ext}", 'mode=bbcode') . '">', '</a>'),
 			'SMILIES_STATUS'		=> $this->user->lang('SMILIES_ARE_ON'),
 			'IMG_STATUS'			=> $this->user->lang('IMAGES_ARE_ON'),
 			'FLASH_STATUS'			=> $this->user->lang('FLASH_IS_ON'),

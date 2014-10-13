@@ -2,18 +2,13 @@
 #phpbb_announcement {
 	margin: 10px 0;
 	font-size: 1.1em;
-	padding: 14px 12px;
+	padding: 10px;
 	border-radius: 7px;
 	background-color: #ECD5D8; /* default color */
 }
 
-/* set to relative so absolute can be used for .close */
-#phpbb_announcement .inner {
-	position: relative;
-}
-
 /* zero out any text margins and scroll any overflow */
-#phpbb_announcement .inner div {
+#phpbb_announcement div {
 	margin: 0;
 	overflow-x: auto;
 	overflow: hidden;
@@ -23,9 +18,8 @@
 
 /* style the close button */
 #phpbb_announcement .close {
-	position: absolute;
-	right: -6px;
-	top: -8px;
+	float: right;
+	margin: 0 0 0 4px;
 	width: 12px;
 	height: 12px;
 	background: transparent url("images/close.png") no-repeat 0 0;
@@ -34,8 +28,8 @@
 
 /* reposition close button for right to left languages */
 .rtl #phpbb_announcement .close {
-	left: -6px;
-	right: auto;
+	float: left;
+	margin: 0 4px 0 0;
 }
 
 /* hide close button on desktops by default */
@@ -59,3 +53,11 @@
 	margin-right: 20px;
 }
 
+/* clear floats */
+.clearfix:after {
+	content: '.';
+	visibility: hidden;
+	display: block;
+	height: 0;
+	clear: both;
+}
