@@ -41,7 +41,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Board announcements settings',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Here you can manage and create a board announcement that will be displayed on each page of your board.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Enable board announcement',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Show board announcement',
 	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Allow guests to view this board announcement',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Board announcement background color',
