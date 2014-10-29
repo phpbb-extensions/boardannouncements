@@ -35,19 +35,23 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\user */
 	protected $user;
 
+	/** @var \phpbb\event\dispatcher_interface */
+	protected $phpbb_dispatcher;
+
 	/**
 	* Constructor
 	*
-	* @param \phpbb\config\config        $config             Config object
-	* @param \phpbb\config\db_text       $config_text        DB text object
-	* @param \phpbb\controller\helper    $controller_helper  Controller helper object
-	* @param \phpbb\request\request      $request            Request object
-	* @param \phpbb\template\template    $template           Template object
-	* @param \phpbb\user                 $user               User object
+	* @param \phpbb\config\config                 $config             Config object
+	* @param \phpbb\config\db_text                $config_text        DB text object
+	* @param \phpbb\controller\helper             $controller_helper  Controller helper object
+	* @param \phpbb\request\request               $request            Request object
+	* @param \phpbb\template\template             $template           Template object
+	* @param \phpbb\user                          $user               User object
+	* @param \phpbb\event\dispatcher_interface    $phpbb_dispatcher   Event dispatcher
 	* @return \phpbb\boardrules\event\listener
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\event\dispatcher_interface $phpbb_dispatcher)
 	{
 		$this->config = $config;
 		$this->config_text = $config_text;
@@ -55,6 +59,7 @@ class listener implements EventSubscriberInterface
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
+		$this->dispatcher = $phpbb_dispatcher;
 	}
 
 	/**
@@ -98,8 +103,21 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
+		/**
+		* Event to display announcement content
+		*
+		* @event phpbb.announcement.modify_content_for_display
+		* @var string announcement_text     Announcement content
+		* @var bool   content_html_enabled  Is HTML allowed in page content
+		* @since 1.0.0
+		*/
+		$announcement_text = $board_announcement_data['announcement_text'];
+		$content_html_enabled = false;
+		$vars = array('announcement_text', 'content_html_enabled');
+		extract($this->dispatcher->trigger_event('phpbb.announcement.modify_content_for_display', compact($vars)));
+
 		// Prepare board announcement message for display
-		$announcement_message = generate_text_for_display(
+		$announcement_message = ($content_html_enabled) ? $announcement_text : generate_text_for_display(
 			$board_announcement_data['announcement_text'],
 			$board_announcement_data['announcement_uid'],
 			$board_announcement_data['announcement_bitfield'],
