@@ -42,12 +42,15 @@ class board_announcements_module
 	/** @var string */
 	protected $php_ext;
 
+	/** @var \phpbb\event\dispatcher_interface */
+	protected $phpbb_dispatcher;
+
 	/** @var string */
 	public $u_action;
 
 	public function main($id, $mode)
 	{
-		global $config, $db, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container;
+		global $config, $db, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container, $phpbb_dispatcher;
 
 		$this->config = $config;
 		$this->config_text = $phpbb_container->get('config_text');
@@ -58,7 +61,8 @@ class board_announcements_module
 		$this->user = $user;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
-
+		$this->dispatcher = $phpbb_dispatcher;
+		
 		// Add the posting lang file needed by BBCodes
 		$this->user->add_lang(array('posting'));
 
@@ -161,6 +165,14 @@ class board_announcements_module
 				trigger_error($this->user->lang('BOARD_ANNOUNCEMENTS_UPDATED') . adm_back_link($this->u_action));
 			}
 		}
+
+		/**
+		* Event to display editor
+		*
+		* @event phpbb.announcement.acp_add_edit_announcement
+		* @since 1.0.0
+		*/
+		$this->dispatcher->trigger_event('phpbb.announcement.acp_add_edit_announcement');
 
 		// Prepare a fresh announcement preview
 		$announcement_text_preview = '';
