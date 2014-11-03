@@ -31,6 +31,13 @@
 				<label><input type="radio" class="radio" name="board_announcements_enable" value="0"<!-- IF not BOARD_ANNOUNCEMENTS_ENABLED --> checked="checked"<!-- ENDIF --> /> {L_DISABLED}</label>
 			</dd>
 		</dl>
+		<dl>
+			<dt><label for="board_announcements_hide">{L_BOARD_ANNOUNCEMENTS_HIDE}{L_COLON}</label></dt>
+			<dd>
+				<label><input type="radio" class="radio" id="board_announcements_hide" name="board_announcements_hide" value="1"<!-- IF BOARD_ANNOUNCEMENTS_HIDE --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="board_announcements_hide" value="0"<!-- IF not BOARD_ANNOUNCEMENTS_HIDE --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
 	</fieldset>
 
 	<!-- IF BOARD_ANNOUNCEMENTS_PREVIEW -->

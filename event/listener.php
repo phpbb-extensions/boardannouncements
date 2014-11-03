@@ -112,6 +112,7 @@ class listener implements EventSubscriberInterface
 		// Output board announcement to the template
 		$this->template->assign_vars(array(
 			'S_BOARD_ANNOUNCEMENT'			=> true,
+			'S_BOARD_ANNOUNCEMENTS_HIDE'	=> $this->config['board_announcements_hide'] ? true : false,
 
 			'BOARD_ANNOUNCEMENT'			=> $announcement_message,
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
