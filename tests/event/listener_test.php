@@ -144,6 +144,7 @@ class event_listener_test extends \phpbb_database_test_case
 
 		$this->assertEquals(array(
 			'S_BOARD_ANNOUNCEMENT'			=> true,
+			'S_BOARD_ANNOUNCEMENTS_HIDE'	=> true,
 			'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
 			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'app.php/boardannouncements/close?hash=' . generate_link_hash('close_boardannouncement'),
