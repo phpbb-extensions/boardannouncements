@@ -47,6 +47,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Test that our settings fields are found
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE', $crawler->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_HIDE', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_GUESTS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_BGCOLOR', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_TEXT', $crawler->text());

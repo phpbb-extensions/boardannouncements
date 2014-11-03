@@ -63,7 +63,7 @@ class event_listener_test extends \phpbb_database_test_case
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 
 		// Load/Mock classes required by the event listener class
-		$this->config = new \phpbb\config\config(array('board_announcements_enable' => 1, 'enable_mod_rewrite' => '0'));
+		$this->config = new \phpbb\config\config(array('board_announcements_enable' => 1, 'board_announcements_hide' => 1, 'enable_mod_rewrite' => '0'));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 		$this->request = $this->getMock('\phpbb\request\request');
 		$this->template = new \phpbb\boardannouncements\tests\mock\template();
