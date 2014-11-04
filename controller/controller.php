@@ -12,6 +12,9 @@ namespace phpbb\boardannouncements\controller;
 
 class controller
 {
+	/** @var \phpbb\config\config */
+	protected $config;
+
 	/** @var \phpbb\config\db_text */
 	protected $config_text;
 
@@ -30,6 +33,7 @@ class controller
 	/**
 	* Constructor
 	*
+	* @param \phpbb\config\config                $config         Config object
 	* @param \phpbb\config\db_text               $config_text    DB text object
 	* @param \phpbb\db\driver\driver_interface   $db             Database object
 	* @param \phpbb\controller\helper            $helper         Controller helper object
@@ -38,8 +42,9 @@ class controller
 	* @return \phpbb\boardannouncements\controller\controller
 	* @access public
 	*/
-	public function __construct(\phpbb\config\db_text $config_text, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user)
+	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user)
 	{
+		$this->config = $config;
 		$this->config_text = $config_text;
 		$this->db = $db;
 		$this->helper = $helper;
