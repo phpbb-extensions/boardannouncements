@@ -104,7 +104,7 @@ class board_announcements_module
 
 			// Get new announcement text and bgcolor values from the form
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
-			$allow_user_hide = $this->request->variable('board_announcements_hide', false);
+			$dismiss_announcements = $this->request->variable('board_announcements_dismiss', false);
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 
 			// Get config options from the form
@@ -127,7 +127,7 @@ class board_announcements_module
 			{
 				// Store the config enable/disable state
 				$this->config->set('board_announcements_enable', $enable_announcements);
-				$this->config->set('board_announcements_hide', $allow_user_hide);
+				$this->config->set('board_announcements_dismiss', $dismiss_announcements);
 				$this->config->set('board_announcements_guests', $allow_guests);
 
 				// Store the announcement settings to the config_table in the database
@@ -178,7 +178,7 @@ class board_announcements_module
 		$this->template->assign_vars(array(
 			'ERRORS'						=> $error,
 			'BOARD_ANNOUNCEMENTS_ENABLED'	=> (isset($enable_announcements)) ? $enable_announcements : $this->config['board_announcements_enable'],
-			'BOARD_ANNOUNCEMENTS_HIDE'		=> (isset($allow_user_hide)) ? $allow_user_hide : $this->config['board_announcements_hide'],
+			'BOARD_ANNOUNCEMENTS_DISMISS'	=> (isset($dismiss_announcements)) ? $dismiss_announcements : $this->config['board_announcements_dismiss'],
 			'BOARD_ANNOUNCEMENTS_GUESTS'	=> (isset($allow_guests)) ? $allow_guests: $this->config['board_announcements_guests'],
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,

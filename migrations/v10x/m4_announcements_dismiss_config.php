@@ -13,7 +13,7 @@ namespace phpbb\boardannouncements\migrations\v10x;
 /**
 * Migration stage 4: Add data changes to the database
 */
-class m4_add_data extends \phpbb\db\migration\migration
+class m4_announcements_dismiss_config extends \phpbb\db\migration\migration
 {
 	/**
 	* Add board announcements data to the database.
@@ -24,7 +24,7 @@ class m4_add_data extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('config.add', array('board_announcements_hide', 0)),
+			array('config.add', array('board_announcements_dismiss', 1)),
 		);
 	}
 }

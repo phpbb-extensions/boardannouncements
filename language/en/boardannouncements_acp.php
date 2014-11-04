@@ -42,8 +42,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Here you can manage and create a board announcement that will be displayed on each page of your board.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Show board announcement',
-	'BOARD_ANNOUNCEMENTS_HIDE'				=> 'Allow users to hide board announcement',
 	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Allow guests to view this board announcement',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Allow users to dismiss board announcement',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Board announcement background color',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'You can change the background color of the announcement using a hex code (e.g: FFFF80). Leave this field blank to use the default color.',
