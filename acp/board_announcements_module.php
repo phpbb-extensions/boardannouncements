@@ -127,8 +127,8 @@ class board_announcements_module
 			{
 				// Store the config enable/disable state
 				$this->config->set('board_announcements_enable', $enable_announcements);
-				$this->config->set('board_announcements_dismiss', $dismiss_announcements);
 				$this->config->set('board_announcements_guests', $allow_guests);
+				$this->config->set('board_announcements_dismiss', $dismiss_announcements);
 
 				// Store the announcement settings to the config_table in the database
 				$this->config_text->set_array(array(
@@ -178,8 +178,8 @@ class board_announcements_module
 		$this->template->assign_vars(array(
 			'ERRORS'						=> $error,
 			'BOARD_ANNOUNCEMENTS_ENABLED'	=> (isset($enable_announcements)) ? $enable_announcements : $this->config['board_announcements_enable'],
-			'BOARD_ANNOUNCEMENTS_DISMISS'	=> (isset($dismiss_announcements)) ? $dismiss_announcements : $this->config['board_announcements_dismiss'],
 			'BOARD_ANNOUNCEMENTS_GUESTS'	=> (isset($allow_guests)) ? $allow_guests: $this->config['board_announcements_guests'],
+			'BOARD_ANNOUNCEMENTS_DISMISS'	=> (isset($dismiss_announcements)) ? $dismiss_announcements : $this->config['board_announcements_dismiss'],
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
