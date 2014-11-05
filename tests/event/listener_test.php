@@ -65,7 +65,7 @@ class event_listener_test extends \phpbb_database_test_case
 		// Load/Mock classes required by the event listener class
 		$this->config = new \phpbb\config\config(array(
 			'board_announcements_enable' => 1,
-			'board_announcements_dismiss' => 1, 
+			'board_announcements_dismiss' => 1,
 			'enable_mod_rewrite' => '0',
 		));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
