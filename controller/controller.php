@@ -61,7 +61,7 @@ class controller
 	public function close_announcement()
 	{
 		// Check the link hash to protect against CSRF/XSRF attacks
-		if ((!check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement')) || !$this->config['board_announcements_dismiss'])
+		if (!check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement') || !$this->config['board_announcements_dismiss'])
 		{
 			return $this->helper->error($this->user->lang('GENERAL_ERROR'), 200);
 		}
