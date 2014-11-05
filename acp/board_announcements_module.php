@@ -104,12 +104,12 @@ class board_announcements_module
 
 			// Get new announcement text and bgcolor values from the form
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
-			$dismiss_announcements = $this->request->variable('board_announcements_dismiss', false);
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 
 			// Get config options from the form
 			$enable_announcements = $this->request->variable('board_announcements_enable', false);
 			$allow_guests = $this->request->variable('board_announcements_guests', false);
+			$dismiss_announcements = $this->request->variable('board_announcements_dismiss', false);
 
 			// Prepare announcement text for storage
 			generate_text_for_storage(
