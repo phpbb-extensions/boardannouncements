@@ -63,7 +63,11 @@ class event_listener_test extends \phpbb_database_test_case
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 
 		// Load/Mock classes required by the event listener class
-		$this->config = new \phpbb\config\config(array('board_announcements_enable' => 1, 'enable_mod_rewrite' => '0'));
+		$this->config = new \phpbb\config\config(array(
+			'board_announcements_enable' => 1,
+			'board_announcements_dismiss' => 1,
+			'enable_mod_rewrite' => '0',
+		));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 		$this->request = $this->getMock('\phpbb\request\request');
 		$this->template = new \phpbb\boardannouncements\tests\mock\template();
@@ -144,6 +148,7 @@ class event_listener_test extends \phpbb_database_test_case
 
 		$this->assertEquals(array(
 			'S_BOARD_ANNOUNCEMENT'			=> true,
+			'S_BOARD_ANNOUNCEMENT_DISMISS'	=> true,
 			'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
 			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'app.php/boardannouncements/close?hash=' . generate_link_hash('close_boardannouncement'),
