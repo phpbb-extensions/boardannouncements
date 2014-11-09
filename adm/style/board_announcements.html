@@ -27,22 +27,10 @@
 		<dl>
 			<dt><label for="board_announcements_enable">{L_BOARD_ANNOUNCEMENTS_ENABLE}{L_COLON}</label></dt>
 			<dd>
-				<label><input type="radio" class="radio" id="board_announcements_enable" name="board_announcements_enable" value="1"<!-- IF BOARD_ANNOUNCEMENTS_ENABLED --> checked="checked"<!-- ENDIF --> /> {L_ENABLED}</label>
-				<label><input type="radio" class="radio" name="board_announcements_enable" value="0"<!-- IF not BOARD_ANNOUNCEMENTS_ENABLED --> checked="checked"<!-- ENDIF --> /> {L_DISABLED}</label>
+				<label><input type="radio" class="radio" id="board_announcements_enable" name="board_announcements_enable" value="1"<!-- IF BOARD_ANNOUNCEMENTS_ENABLED --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="board_announcements_enable" value="0"<!-- IF not BOARD_ANNOUNCEMENTS_ENABLED --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
 			</dd>
 		</dl>
-	</fieldset>
-
-	<!-- IF BOARD_ANNOUNCEMENTS_PREVIEW -->
-		<fieldset>
-			<legend>{L_BOARD_ANNOUNCEMENTS_PREVIEW}</legend>
-			<div style="padding:10px; font-size:1.0em; overflow: auto; <!-- IF BOARD_ANNOUNCEMENTS_BGCOLOR -->background-color:#{BOARD_ANNOUNCEMENTS_BGCOLOR}<!-- ENDIF -->">{BOARD_ANNOUNCEMENTS_PREVIEW}</div>
-		</fieldset>
-	<!-- ENDIF -->
-
-	<fieldset>
-		<legend>{L_BOARD_ANNOUNCEMENTS_TEXT}</legend>
-
 		<dl>
 			<dt><label for="board_announcements_enable">{L_BOARD_ANNOUNCEMENTS_GUESTS}{L_COLON}</label></dt>
 			<dd>
@@ -57,9 +45,17 @@
 				<label><input type="radio" class="radio" name="board_announcements_dismiss" value="0"<!-- IF not BOARD_ANNOUNCEMENTS_DISMISS --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
 			</dd>
 		</dl>
+	</fieldset>
 
-		<br />
+	<!-- IF BOARD_ANNOUNCEMENTS_PREVIEW -->
+		<fieldset>
+			<legend>{L_BOARD_ANNOUNCEMENTS_PREVIEW}</legend>
+			<div style="padding:10px; font-size:1.0em; overflow: auto; <!-- IF BOARD_ANNOUNCEMENTS_BGCOLOR -->background-color:#{BOARD_ANNOUNCEMENTS_BGCOLOR}<!-- ENDIF -->">{BOARD_ANNOUNCEMENTS_PREVIEW}</div>
+		</fieldset>
+	<!-- ENDIF -->
 
+	<fieldset>
+		<legend>{L_BOARD_ANNOUNCEMENTS_TEXT}</legend>
 		<dl>
 			<dt><label for="board_announcements_bgcolor">{L_BOARD_ANNOUNCEMENTS_BGCOLOR}{L_COLON}</label><br /><span>{L_BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN}</span></dt>
 			<dd>
