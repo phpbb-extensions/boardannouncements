@@ -1,3 +1,3 @@
 phpbb_boardannouncements_controller:
-    pattern: /boardannouncements/close
+    path: /boardannouncements/close
     defaults: { _controller: phpbb.boardannouncements.controller:close_announcement }
