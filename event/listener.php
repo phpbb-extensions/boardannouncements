@@ -79,6 +79,12 @@ class listener implements EventSubscriberInterface
 	*/
 	public function display_board_announcements($event)
 	{
+		// Do not continue if announcement has been disabled
+		if (!$this->config['board_announcements_enable'])
+		{
+			return;
+		}
+
 		// Get board announcement data from the config_text object
 		$board_announcement_data = $this->config_text->get_array(array(
 			'announcement_text',
@@ -92,8 +98,8 @@ class listener implements EventSubscriberInterface
 		// Get announcement cookie if one exists
 		$cookie = $this->request->variable($this->config['cookie_name'] . '_baid', '', true, \phpbb\request\request_interface::COOKIE);
 
-		// Do not continue if announcement has been disabled or dismissed
-		if (!$this->config['board_announcements_enable'] || !$this->user->data['board_announcements_status'] || $cookie == $board_announcement_data['announcement_timestamp'])
+		// Do not continue if announcement has been dismissed
+		if (!$this->user->data['board_announcements_status'] || $cookie == $board_announcement_data['announcement_timestamp'])
 		{
 			return;
 		}
