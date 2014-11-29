@@ -11,6 +11,7 @@
 - Fixed some coding guidelines issues
 - Added Arabic language pack
 - Added Dutch language pack
+- Added Estonian language pack
 - Added French language pack
 - Added Polish language pack
 - Added Portuguese language pack
