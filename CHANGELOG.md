@@ -15,6 +15,7 @@
 - Added French language pack
 - Added Polish language pack
 - Added Portuguese language pack
+- Added Romanian language pack
 - Added Russian language pack
 - Added Spanish language pack
 - Added Swedish language pack
