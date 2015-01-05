@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 - 2015-01-04
+- Fixed some very minor coding issues
+- Switched to Titania hosted version checking
+
 ## 1.0.1 - 2014-11-28
 
 - Add new option to toggle the ability for users to close announcements
