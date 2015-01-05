@@ -2,7 +2,7 @@
 	"name": "phpbb/boardannouncements",
 	"type": "phpbb-extension",
 	"description": "An extension which allows you to create board-wide announcements for your phpBB forum",
-	"homepage": "https://phpbb.com",
+	"homepage": "https://www.phpbb.com",
 	"version": "1.0.1",
 	"keywords": ["phpbb", "extension", "announcements"],
 	"license": "GPL-2.0",
