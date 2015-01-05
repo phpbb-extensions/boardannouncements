@@ -44,7 +44,7 @@ class listener implements EventSubscriberInterface
 	* @param \phpbb\request\request      $request            Request object
 	* @param \phpbb\template\template    $template           Template object
 	* @param \phpbb\user                 $user               User object
-	* @return \phpbb\boardrules\event\listener
+	* @return \phpbb\boardannouncements\event\listener
 	* @access public
 	*/
 	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
@@ -77,7 +77,7 @@ class listener implements EventSubscriberInterface
 	* @return null
 	* @access public
 	*/
-	public function display_board_announcements($event)
+	public function display_board_announcements()
 	{
 		// Do not continue if announcement has been disabled
 		if (!$this->config['board_announcements_enable'])
