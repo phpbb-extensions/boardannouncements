@@ -77,7 +77,7 @@ class listener implements EventSubscriberInterface
 	* @return null
 	* @access public
 	*/
-	public function display_board_announcements($event)
+	public function display_board_announcements()
 	{
 		// Do not continue if announcement has been disabled
 		if (!$this->config['board_announcements_enable'])
