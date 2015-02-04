@@ -21,7 +21,6 @@ class event_listener_test extends \phpbb_database_test_case
 	* Define the extensions to be tested
 	*
 	* @return array vendor/name of extension(s) to test
-	* @access static
 	*/
 	static protected function setup_extensions()
 	{
@@ -35,7 +34,6 @@ class event_listener_test extends \phpbb_database_test_case
 	* Get data set fixtures
 	*
 	* @return PHPUnit_Extensions_Database_DataSet_XmlDataSet
-	* @access public
 	*/
 	public function getDataSet()
 	{
@@ -44,8 +42,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Setup test environment
-	*
-	* @access public
 	*/
 	public function setUp()
 	{
@@ -96,8 +92,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Create our event listener
-	*
-	* @access protected
 	*/
 	protected function set_listener()
 	{
@@ -113,8 +107,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the event listener is constructed correctly
-	*
-	* @access public
 	*/
 	public function test_construct()
 	{
@@ -124,8 +116,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the event listener is subscribing events
-	*
-	* @access public
 	*/
 	public function test_getSubscribedEvents()
 	{
@@ -136,8 +126,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the display_board_announcements event
-	*
-	* @access public
 	*/
 	public function test_display_board_announcements()
 	{
