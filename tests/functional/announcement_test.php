@@ -104,11 +104,13 @@ class announcement_test extends \phpbb_functional_test_case
 	public function test_close_announcement_fail()
 	{
 		// Wrong hash
-		$crawler = self::request('GET', 'app.php/boardannouncements/close?hash=wrong&sid=' . $this->sid);
+		$crawler = self::request('GET', 'app.php/boardannouncements/close?hash=wrong&sid=' . $this->sid, array(), false);
+		self::assert_response_status_code(500);
 		$this->assertContainsLang('GENERAL_ERROR', $crawler->text());
 
 		// No hash
-		$crawler = self::request('GET', 'app.php/boardannouncements/close?sid=' . $this->sid);
+		$crawler = self::request('GET', 'app.php/boardannouncements/close?sid=' . $this->sid, array(), false);
+		self::assert_response_status_code(500);
 		$this->assertContainsLang('GENERAL_ERROR', $crawler->text());
 	}
 
