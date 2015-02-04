@@ -100,7 +100,7 @@ class controller
 		$announcement_timestamp = $this->config_text->get('announcement_timestamp');
 
 		// Store the announcement timestamp/id in a cookie with a 1 year expiration
-		$this->user->set_cookie('baid', $announcement_timestamp, time() + 31536000);
+		$this->user->set_cookie('baid', $announcement_timestamp, strtotime('+1 year'));
 
 		return true;
 	}
