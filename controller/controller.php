@@ -62,7 +62,7 @@ class controller
 			throw new \phpbb\exception\http_exception(500, 'GENERAL_ERROR');
 		}
 
-		// Set a cookie for guests
+		// Set a cookie
 		$response = $this->set_board_announcement_cookie();
 
 		// Close the announcement for registered users
