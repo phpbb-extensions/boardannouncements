@@ -105,13 +105,13 @@ class announcement_test extends \phpbb_functional_test_case
 	{
 		// Wrong hash
 		$crawler = self::request('GET', 'app.php/boardannouncements/close?hash=wrong&sid=' . $this->sid, array(), false);
-		self::assert_response_status_code(500);
-		$this->assertContainsLang('GENERAL_ERROR', $crawler->text());
+		self::assert_response_status_code(403);
+		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// No hash
 		$crawler = self::request('GET', 'app.php/boardannouncements/close?sid=' . $this->sid, array(), false);
-		self::assert_response_status_code(500);
-		$this->assertContainsLang('GENERAL_ERROR', $crawler->text());
+		self::assert_response_status_code(403);
+		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 	}
 
 	/**

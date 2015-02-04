@@ -59,7 +59,7 @@ class controller
 		// Check the link hash to protect against CSRF/XSRF attacks
 		if (!check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement') || !$this->config['board_announcements_dismiss'])
 		{
-			throw new \phpbb\exception\http_exception(500, 'GENERAL_ERROR');
+			throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
 		// Set a cookie

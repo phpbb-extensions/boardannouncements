@@ -146,24 +146,24 @@ class controller_test extends \phpbb_database_test_case
 				'foobar', // Invalid hash
 				true,
 				true,
-				500,
-				'GENERAL_ERROR',
+				403,
+				'NO_AUTH_OPERATION',
 			),
 			array(
 				1,
 				'', // Empty hash
 				true,
 				true,
-				500,
-				'GENERAL_ERROR',
+				403,
+				'NO_AUTH_OPERATION',
 			),
 			array(
 				1,
 				'close_boardannouncement',
 				true,
 				false, // Board Announcements disabled
-				500,
-				'GENERAL_ERROR',
+				403,
+				'NO_AUTH_OPERATION',
 			),
 		);
 	}
