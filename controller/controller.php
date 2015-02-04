@@ -84,7 +84,7 @@ class controller
 		$redirect = reapply_sid($redirect);
 		redirect($redirect);
 
-		// We shouldn't get here, but if throw an http exception just in case
+		// We shouldn't get here, but throw an http exception just in case
 		throw new \phpbb\exception\http_exception(500, 'GENERAL_ERROR');
 	}
 
