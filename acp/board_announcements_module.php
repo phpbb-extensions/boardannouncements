@@ -33,9 +33,6 @@ class board_announcements_module
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var ContainerInterface */
-	protected $phpbb_container;
-
 	/** @var string */
 	protected $phpbb_root_path;
 
@@ -47,12 +44,12 @@ class board_announcements_module
 
 	public function main($id, $mode)
 	{
-		global $config, $db, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container;
+		global $config, $db, $phpbb_log, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container;
 
 		$this->config = $config;
 		$this->config_text = $phpbb_container->get('config_text');
 		$this->db = $db;
-		$this->log = $phpbb_container->get('log');
+		$this->log = $phpbb_log;
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
