@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* French translation by ForumsFaciles (www.forumsfaciles.fr) & Galixte (http://www.galixte.com)
+* French translation by ForumsFaciles (www.forumsfaciles.fr)
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,5 +39,5 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENT_CLOSE'		=> 'Fermer l’annonce du forum',
+	'BOARD_ANNOUNCEMENT_CLOSE'		=> 'Fermer l’annonce',
 ));
