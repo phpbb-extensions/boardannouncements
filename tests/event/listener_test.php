@@ -15,13 +15,12 @@ require_once dirname(__FILE__) . '/../../../../../includes/functions.php';
 require_once dirname(__FILE__) . '/../../../../../includes/functions_content.php';
 require_once dirname(__FILE__) . '/../../../../../includes/utf/utf_tools.php';
 
-class event_listener_test extends \phpbb_database_test_case
+class listener_test extends \phpbb_database_test_case
 {
 	/**
 	* Define the extensions to be tested
 	*
 	* @return array vendor/name of extension(s) to test
-	* @access static
 	*/
 	static protected function setup_extensions()
 	{
@@ -31,11 +30,17 @@ class event_listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\boardannouncements\event\listener */
 	protected $listener;
 
+	protected $config;
+	protected $config_text;
+	protected $controller_helper;
+	protected $request;
+	protected $template;
+	protected $user;
+
 	/**
 	* Get data set fixtures
 	*
 	* @return PHPUnit_Extensions_Database_DataSet_XmlDataSet
-	* @access public
 	*/
 	public function getDataSet()
 	{
@@ -44,8 +49,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Setup test environment
-	*
-	* @access public
 	*/
 	public function setUp()
 	{
@@ -70,7 +73,8 @@ class event_listener_test extends \phpbb_database_test_case
 		));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 		$this->request = $this->getMock('\phpbb\request\request');
-		$this->template = new \phpbb\boardannouncements\tests\mock\template();
+		$this->template = $this->getMockBuilder('\phpbb\template\template')
+			->getMock();
 		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 		$this->user->data['board_announcements_status'] = 1;
 
@@ -96,8 +100,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Create our event listener
-	*
-	* @access protected
 	*/
 	protected function set_listener()
 	{
@@ -113,8 +115,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the event listener is constructed correctly
-	*
-	* @access public
 	*/
 	public function test_construct()
 	{
@@ -124,8 +124,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the event listener is subscribing events
-	*
-	* @access public
 	*/
 	public function test_getSubscribedEvents()
 	{
@@ -136,23 +134,23 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the display_board_announcements event
-	*
-	* @access public
 	*/
 	public function test_display_board_announcements()
 	{
 		$this->set_listener();
 
+		$this->template->expects($this->once())
+			->method('assign_vars')
+			->with(array(
+				'S_BOARD_ANNOUNCEMENT'			=> true,
+				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> true,
+				'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
+				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
+				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'app.php/boardannouncements/close?hash=' . generate_link_hash('close_boardannouncement'),
+			));
+
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
 		$dispatcher->addListener('core.page_header_after', array($this->listener, 'display_board_announcements'));
 		$dispatcher->dispatch('core.page_header_after');
-
-		$this->assertEquals(array(
-			'S_BOARD_ANNOUNCEMENT'			=> true,
-			'S_BOARD_ANNOUNCEMENT_DISMISS'	=> true,
-			'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
-			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
-			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'app.php/boardannouncements/close?hash=' . generate_link_hash('close_boardannouncement'),
-		), $this->template->get_template_vars());
 	}
 }

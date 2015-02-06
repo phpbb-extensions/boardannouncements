@@ -21,9 +21,6 @@ class controller
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
-	/** @var \phpbb\controller\helper */
-	protected $helper;
-
 	/** @var \phpbb\request\request */
 	protected $request;
 
@@ -36,18 +33,16 @@ class controller
 	* @param \phpbb\config\config                $config         Config object
 	* @param \phpbb\config\db_text               $config_text    DB text object
 	* @param \phpbb\db\driver\driver_interface   $db             Database object
-	* @param \phpbb\controller\helper            $helper         Controller helper object
 	* @param \phpbb\request\request              $request        Request object
 	* @param \phpbb\user                         $user           User object
 	* @return \phpbb\boardannouncements\controller\controller
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user)
+	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\user $user)
 	{
 		$this->config = $config;
 		$this->config_text = $config_text;
 		$this->db = $db;
-		$this->helper = $helper;
 		$this->request = $request;
 		$this->user = $user;
 	}
@@ -55,7 +50,8 @@ class controller
 	/**
 	* Board Announcements controller accessed from the URL /boardannouncements/close
 	*
-	* @return null
+	* @throws \phpbb\exception\http_exception An http exception
+	* @return \Symfony\Component\HttpFoundation\JsonResponse A Symfony JSON Response object
 	* @access public
 	*/
 	public function close_announcement()
@@ -63,10 +59,10 @@ class controller
 		// Check the link hash to protect against CSRF/XSRF attacks
 		if (!check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement') || !$this->config['board_announcements_dismiss'])
 		{
-			return $this->helper->error($this->user->lang('GENERAL_ERROR'), 200);
+			throw new \phpbb\exception\http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
-		// Set a cookie for guests
+		// Set a cookie
 		$response = $this->set_board_announcement_cookie();
 
 		// Close the announcement for registered users
@@ -78,8 +74,7 @@ class controller
 		// Send a JSON response if an AJAX request was used
 		if ($this->request->is_ajax())
 		{
-			$json_response = new \phpbb\json_response;
-			$json_response->send(array(
+			return new \Symfony\Component\HttpFoundation\JsonResponse(array(
 				'success' => $response,
 			));
 		}
@@ -88,6 +83,9 @@ class controller
 		$redirect = $this->request->variable('redirect', $this->user->data['session_page']);
 		$redirect = reapply_sid($redirect);
 		redirect($redirect);
+
+		// We shouldn't get here, but throw an http exception just in case
+		throw new \phpbb\exception\http_exception(500, 'GENERAL_ERROR');
 	}
 
 	/**
@@ -102,7 +100,7 @@ class controller
 		$announcement_timestamp = $this->config_text->get('announcement_timestamp');
 
 		// Store the announcement timestamp/id in a cookie with a 1 year expiration
-		$this->user->set_cookie('baid', $announcement_timestamp, time() + 31536000);
+		$this->user->set_cookie('baid', $announcement_timestamp, strtotime('+1 year'));
 
 		return true;
 	}

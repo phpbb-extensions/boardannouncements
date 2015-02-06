@@ -17,6 +17,5 @@ services:
             - @config
             - @config_text
             - @dbal.conn
-            - @controller.helper
             - @request
             - @user
