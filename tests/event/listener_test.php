@@ -137,7 +137,7 @@ class listener_test extends \phpbb_database_test_case
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> true,
 				'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
-				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'phpbb_boardannouncements_controller#a:1:{s:4:"hash";s:8:"' . generate_link_hash('close_boardannouncement') . '";}',
+				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'phpbb_boardannouncements_controller#' . serialize(array('hash' => generate_link_hash('close_boardannouncement'))),
 			));
 
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
