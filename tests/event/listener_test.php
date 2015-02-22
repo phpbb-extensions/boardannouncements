@@ -78,24 +78,15 @@ class listener_test extends \phpbb_database_test_case
 		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 		$this->user->data['board_announcements_status'] = 1;
 
-		$request = new \phpbb_mock_request();
-		$request->overwrite('SCRIPT_NAME', 'app.php', \phpbb\request\request_interface::SERVER);
-		$request->overwrite('SCRIPT_FILENAME', 'app.php', \phpbb\request\request_interface::SERVER);
-		$request->overwrite('REQUEST_URI', 'app.php', \phpbb\request\request_interface::SERVER);
-
-		$this->controller_helper = new \phpbb_mock_controller_helper(
-			$this->template,
-			$this->user,
-			$this->config,
-			new \phpbb\controller\provider(),
-			new \phpbb_mock_extension_manager($phpbb_root_path),
-			new \phpbb\symfony_request($request),
-			$request,
-			new \phpbb\filesystem(),
-			'',
-			$phpEx,
-			dirname(__FILE__) . '/../../'
-		);
+		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->controller_helper->expects($this->any())
+			->method('route')
+			->willReturnCallback(function ($route, array $params = array()) {
+				return $route . '#' . serialize($params);
+			})
+		;
 	}
 
 	/**
@@ -146,7 +137,7 @@ class listener_test extends \phpbb_database_test_case
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> true,
 				'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
-				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'app.php/boardannouncements/close?hash=' . generate_link_hash('close_boardannouncement'),
+				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'phpbb_boardannouncements_controller#' . serialize(array('hash' => generate_link_hash('close_boardannouncement'))),
 			));
 
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();

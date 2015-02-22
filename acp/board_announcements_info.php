@@ -12,7 +12,7 @@ namespace phpbb\boardannouncements\acp;
 
 class board_announcements_info
 {
-	function module()
+	public function module()
 	{
 		return array(
 			'filename'	=> '\phpbb\boardannouncements\acp\board_announcements_module',
