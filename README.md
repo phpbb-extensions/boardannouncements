@@ -8,9 +8,9 @@ This is the repository for the development of the phpBB Board Announcements Exte
 
 1. [Download the latest validated release](https://www.phpbb.com/customise/db/extension/boardannouncements/).
 2. Unzip the downloaded release and copy it to the `ext` directory of your phpBB board.
-5. Navigate in the ACP to `Customise -> Manage extensions`.
-6. Look for `Board Announcements` under the Disabled Extensions list, and click its `Enable` link.
-7. Set up and configure Board Announcements by navigating in the ACP to `Extensions` -> `Board Announcements`.
+3. Navigate in the ACP to `Customise -> Manage extensions`.
+4. Look for `Board Announcements` under the Disabled Extensions list, and click its `Enable` link.
+5. Set up and configure Board Announcements by navigating in the ACP to `Extensions` -> `Board Announcements`.
 
 ## Uninstall
 
