@@ -12,6 +12,9 @@ namespace phpbb\boardannouncements\acp;
 
 class board_announcements_module
 {
+	/** @var \phpbb\cache\driver\driver_interface */
+	protected $cache;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -44,8 +47,9 @@ class board_announcements_module
 
 	public function main($id, $mode)
 	{
-		global $config, $db, $phpbb_log, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container;
+		global $cache, $config, $db, $phpbb_log, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container;
 
+		$this->cache = $cache;
 		$this->config = $config;
 		$this->config_text = $phpbb_container->get('config_text');
 		$this->db = $db;
@@ -155,6 +159,9 @@ class board_announcements_module
 
 				// Log the announcement update
 				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_UPDATED_LOG');
+
+				// Destroy any cached board announcement data
+				$this->cache->destroy('_board_announcement_data');
 
 				// Output message to user for the announcement update
 				trigger_error($this->user->lang('BOARD_ANNOUNCEMENTS_UPDATED') . adm_back_link($this->u_action));

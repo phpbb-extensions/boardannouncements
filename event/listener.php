@@ -17,6 +17,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 */
 class listener implements EventSubscriberInterface
 {
+	/** @var \phpbb\cache\driver\driver_interface */
+	protected $cache;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -38,16 +41,18 @@ class listener implements EventSubscriberInterface
 	/**
 	* Constructor
 	*
-	* @param \phpbb\config\config        $config             Config object
-	* @param \phpbb\config\db_text       $config_text        DB text object
-	* @param \phpbb\controller\helper    $controller_helper  Controller helper object
-	* @param \phpbb\request\request      $request            Request object
-	* @param \phpbb\template\template    $template           Template object
-	* @param \phpbb\user                 $user               User object
+	* @param \phpbb\cache\driver\driver_interface $cache             Cache driver interface
+	* @param \phpbb\config\config                 $config            Config object
+	* @param \phpbb\config\db_text                $config_text       DB text object
+	* @param \phpbb\controller\helper             $controller_helper Controller helper object
+	* @param \phpbb\request\request               $request           Request object
+	* @param \phpbb\template\template             $template          Template object
+	* @param \phpbb\user                          $user              User object
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\cache\driver\driver_interface $cache, \phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
 	{
+		$this->cache = $cache;
 		$this->config = $config;
 		$this->config_text = $config_text;
 		$this->controller_helper = $controller_helper;
@@ -84,15 +89,24 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
-		// Get board announcement data from the config_text object
-		$board_announcement_data = $this->config_text->get_array(array(
-			'announcement_text',
-			'announcement_uid',
-			'announcement_bitfield',
-			'announcement_options',
-			'announcement_bgcolor',
-			'announcement_timestamp',
-		));
+		// Get board announcement data from the cache
+		$board_announcement_data = $this->cache->get('_board_announcement_data');
+
+		if ($board_announcement_data === false)
+		{
+			// Get board announcement data from the config_text object
+			$board_announcement_data = $this->config_text->get_array(array(
+				'announcement_text',
+				'announcement_uid',
+				'announcement_bitfield',
+				'announcement_options',
+				'announcement_bgcolor',
+				'announcement_timestamp',
+			));
+
+			// Cache board announcement data
+			$this->cache->put('_board_announcement_data', $board_announcement_data);
+		}
 
 		// Get announcement cookie if one exists
 		$cookie = $this->request->variable($this->config['cookie_name'] . '_baid', '', true, \phpbb\request\request_interface::COOKIE);
