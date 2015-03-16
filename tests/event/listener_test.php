@@ -30,9 +30,11 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\boardannouncements\event\listener */
 	protected $listener;
 
+	protected $cache;
 	protected $config;
 	protected $config_text;
 	protected $controller_helper;
+	protected $db;
 	protected $request;
 	protected $template;
 	protected $user;
@@ -40,7 +42,7 @@ class listener_test extends \phpbb_database_test_case
 	/**
 	* Get data set fixtures
 	*
-	* @return PHPUnit_Extensions_Database_DataSet_XmlDataSet
+	* @return \PHPUnit_Extensions_Database_DataSet_XmlDataSet
 	*/
 	public function getDataSet()
 	{
@@ -54,13 +56,13 @@ class listener_test extends \phpbb_database_test_case
 	{
 		parent::setUp();
 
-		global $cache, $user, $phpbb_dispatcher, $phpbb_root_path, $phpEx;
+		global $cache, $user, $phpbb_dispatcher;
 
 		// Load the database class
 		$this->db = $this->new_dbal();
 
 		// Mock some global classes that may be called during code execution
-		$cache = new \phpbb_mock_cache;
+		$cache = $this->cache = new \phpbb_mock_cache;
 		$user = new \phpbb_mock_user;
 		$user->optionset('viewcensors', false);
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
@@ -95,6 +97,7 @@ class listener_test extends \phpbb_database_test_case
 	protected function set_listener()
 	{
 		$this->listener = new \phpbb\boardannouncements\event\listener(
+			$this->cache,
 			$this->config,
 			$this->config_text,
 			$this->controller_helper,
