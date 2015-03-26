@@ -147,4 +147,39 @@ class listener_test extends \phpbb_database_test_case
 		$dispatcher->addListener('core.page_header_after', array($this->listener, 'display_board_announcements'));
 		$dispatcher->dispatch('core.page_header_after');
 	}
+
+	/**
+	 * Data set for test_display_board_announcements_disabled
+	 *
+	 * @return array
+	 */
+	public function display_board_announcements_disabled_data()
+	{
+		return array(
+			array(false, true),
+			array(true, false),
+		);
+	}
+
+	/**
+	 * Test the display_board_announcements event when disabled
+	 *
+	 * @dataProvider display_board_announcements_disabled_data
+	 */
+	public function test_display_board_announcements_disabled($enabled, $status)
+	{
+		// override config and user data
+		$this->config['board_announcements_enable'] = $enabled;
+		$this->user->data['board_announcements_status'] = $status;
+
+		$this->set_listener();
+
+		// Test that assign_vars is never called
+		$this->template->expects($this->never())
+			->method('assign_vars');
+
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.page_header_after', array($this->listener, 'display_board_announcements'));
+		$dispatcher->dispatch('core.page_header_after');
+	}
 }
