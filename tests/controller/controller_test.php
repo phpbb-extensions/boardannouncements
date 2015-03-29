@@ -208,5 +208,4 @@ class controller_test extends \phpbb_database_test_case
 
 		return (int) $status;
 	}
-
 }
