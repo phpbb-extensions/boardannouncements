@@ -53,12 +53,13 @@ class controller_test extends \phpbb_database_test_case
 	/**
 	* Create our controller
 	*/
-	protected function get_controller($user_id, $mode, $ajax)
+	protected function get_controller($user_id, $is_registered, $mode, $ajax)
 	{
 		$config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 		$user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 		$user->data['board_announcements_status'] = 1;
 		$user->data['user_id'] = $user_id;
+		$user->data['is_registered'] = $is_registered;
 
 		$request = $this->getMock('\phpbb\request\request');
 		$request->expects($this->any())
@@ -92,6 +93,7 @@ class controller_test extends \phpbb_database_test_case
 		return array(
 			array(
 				1, // Guest
+				false, // Guest is not a registered user
 				'close_boardannouncement',
 				true,
 				200,
@@ -100,6 +102,7 @@ class controller_test extends \phpbb_database_test_case
 			),
 			array(
 				2, // Member
+				true, // Member is a registered user
 				'close_boardannouncement',
 				true,
 				200,
@@ -108,6 +111,7 @@ class controller_test extends \phpbb_database_test_case
 			),
 			array(
 				0, // Invalid member
+				true, // Set is_registered to true to test close_announcement() with invalid user_id
 				'close_boardannouncement',
 				true,
 				200,
@@ -122,9 +126,9 @@ class controller_test extends \phpbb_database_test_case
 	 *
 	 * @dataProvider controller_data
 	 */
-	public function test_controller($user_id, $mode, $ajax, $status_code, $content, $expected)
+	public function test_controller($user_id, $is_registered, $mode, $ajax, $status_code, $content, $expected)
 	{
-		$controller = $this->get_controller($user_id, $mode, $ajax);
+		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);
 
 		$response = $controller->close_announcement();
 		$this->assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
@@ -143,6 +147,7 @@ class controller_test extends \phpbb_database_test_case
 		return array(
 			array(
 				1,
+				false, // Guest is not a registered user
 				'foobar', // Invalid hash
 				true,
 				true,
@@ -151,6 +156,7 @@ class controller_test extends \phpbb_database_test_case
 			),
 			array(
 				1,
+				false, // Guest is not a registered user
 				'', // Empty hash
 				true,
 				true,
@@ -159,6 +165,7 @@ class controller_test extends \phpbb_database_test_case
 			),
 			array(
 				1,
+				false, // Guest is not a registered user
 				'close_boardannouncement',
 				true,
 				false, // Board Announcements disabled
@@ -173,11 +180,11 @@ class controller_test extends \phpbb_database_test_case
 	 *
 	 * @dataProvider controller_fails_data
 	 */
-	public function test_controller_fails($user_id, $mode, $ajax, $enabled, $status_code, $content)
+	public function test_controller_fails($user_id, $is_registered, $mode, $ajax, $enabled, $status_code, $content)
 	{
 		$this->config['board_announcements_dismiss'] = $enabled;
 
-		$controller = $this->get_controller($user_id, $mode, $ajax);
+		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);
 
 		try
 		{

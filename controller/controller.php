@@ -66,7 +66,7 @@ class controller
 		$response = $this->set_board_announcement_cookie();
 
 		// Close the announcement for registered users
-		if ($this->user->data['user_id'] != ANONYMOUS)
+		if ($this->user->data['is_registered'])
 		{
 			$response = $this->update_board_announcement_status();
 		}
