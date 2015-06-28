@@ -209,7 +209,7 @@ class board_announcements_module
 			'U_ACTION'				=> $this->u_action,
 		));
 
-		// Assigning custom bbcodes
+		// Build custom bbcodes array
 		display_custom_bbcodes();
 	}
 }
