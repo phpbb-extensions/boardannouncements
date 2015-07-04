@@ -76,6 +76,20 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
+	* Test loading the board announcement as a new just registered user
+	*/
+	public function test_view_as_new_user()
+	{
+		$this->logout();
+
+		$this->create_user('new_user1');
+		$this->login('new_user1');
+
+		$crawler = self::request('GET', 'index.php');
+		$this->assertContains('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
+	}
+
+	/**
 	* Test loading the board announcement as a guest
 	*/
 	public function test_view_as_guest()
