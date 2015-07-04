@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4 - 2015-07-04
+
+- Fixed an issue where announcement disappears after a new user registers
+
 ## 1.0.3 - 2015-05-22
 
 - Improve performance by caching the board announcement query
