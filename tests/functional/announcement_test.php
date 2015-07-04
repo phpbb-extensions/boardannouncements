@@ -76,7 +76,7 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	* Test loading the board announcement as a new just registered user
+	* Test loading the board announcement as a newly registered user
 	*/
 	public function test_view_as_new_user()
 	{
