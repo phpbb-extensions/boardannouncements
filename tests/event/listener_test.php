@@ -30,13 +30,28 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\boardannouncements\event\listener */
 	protected $listener;
 
+	/** @var \phpbb_mock_cache */
 	protected $cache;
+
+	/** @var \phpbb\config\config */
 	protected $config;
+
+	/** @var \phpbb\config\db_text */
 	protected $config_text;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\controller\helper */
 	protected $controller_helper;
+
+	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\request\request */
 	protected $request;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\template\template */
 	protected $template;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\user */
 	protected $user;
 
 	/**
