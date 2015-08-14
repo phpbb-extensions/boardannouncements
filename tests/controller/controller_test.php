@@ -24,7 +24,10 @@ class controller_test extends \phpbb_database_test_case
 		return array('phpbb/boardannouncements');
 	}
 
+	/** @var \phpbb\config\config */
 	protected $config;
+
+	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
 	/**
@@ -56,11 +59,14 @@ class controller_test extends \phpbb_database_test_case
 	protected function get_controller($user_id, $is_registered, $mode, $ajax)
 	{
 		$config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
+
+		/** @var $user \PHPUnit_Framework_MockObject_MockObject|\phpbb\user */
 		$user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 		$user->data['board_announcements_status'] = 1;
 		$user->data['user_id'] = $user_id;
 		$user->data['is_registered'] = $is_registered;
 
+		/** @var $request \PHPUnit_Framework_MockObject_MockObject|\phpbb\request\request */
 		$request = $this->getMock('\phpbb\request\request');
 		$request->expects($this->any())
 			->method('is_ajax')
