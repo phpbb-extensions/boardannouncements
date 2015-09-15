@@ -63,6 +63,10 @@ class announcement_test extends \phpbb_functional_test_case
 		// Submit form and test success
 		$crawler = self::submit($form);
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_UPDATED', $crawler->text());
+
+		// Confirm the log entry has been added correctly
+		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
+		$this->assertContains(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_UPDATED_LOG')), $crawler->text());
 	}
 
 	/**
