@@ -45,20 +45,20 @@ class board_announcements_module
 	/** @var string */
 	public $u_action;
 
-	public function main($id, $mode)
+	public function main()
 	{
-		global $cache, $config, $db, $phpbb_log, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container;
+		global $phpbb_container;
 
-		$this->cache = $cache;
-		$this->config = $config;
+		$this->cache = $phpbb_container->get('cache.driver');
+		$this->config = $phpbb_container->get('config');
 		$this->config_text = $phpbb_container->get('config_text');
-		$this->db = $db;
-		$this->log = $phpbb_log;
-		$this->request = $request;
-		$this->template = $template;
-		$this->user = $user;
-		$this->phpbb_root_path = $phpbb_root_path;
-		$this->php_ext = $phpEx;
+		$this->db = $phpbb_container->get('dbal.conn');
+		$this->log = $phpbb_container->get('log');
+		$this->request = $phpbb_container->get('request');
+		$this->template = $phpbb_container->get('template');
+		$this->user = $phpbb_container->get('user');
+		$this->phpbb_root_path = $phpbb_container->getParameter('core.root_path');
+		$this->php_ext = $phpbb_container->getParameter('core.php_ext');
 
 		// Add the posting lang file needed by BBCodes
 		$this->user->add_lang(array('posting'));
@@ -181,9 +181,9 @@ class board_announcements_module
 		// Output data to the template
 		$this->template->assign_vars(array(
 			'ERRORS'						=> $error,
-			'BOARD_ANNOUNCEMENTS_ENABLED'	=> (isset($enable_announcements)) ? $enable_announcements : $this->config['board_announcements_enable'],
-			'BOARD_ANNOUNCEMENTS_GUESTS'	=> (isset($allow_guests)) ? $allow_guests: $this->config['board_announcements_guests'],
-			'BOARD_ANNOUNCEMENTS_DISMISS'	=> (isset($dismiss_announcements)) ? $dismiss_announcements : $this->config['board_announcements_dismiss'],
+			'BOARD_ANNOUNCEMENTS_ENABLED'	=> isset($enable_announcements) ? $enable_announcements : $this->config['board_announcements_enable'],
+			'BOARD_ANNOUNCEMENTS_GUESTS'	=> isset($allow_guests) ? $allow_guests : $this->config['board_announcements_guests'],
+			'BOARD_ANNOUNCEMENTS_DISMISS'	=> isset($dismiss_announcements) ? $dismiss_announcements : $this->config['board_announcements_dismiss'],
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
