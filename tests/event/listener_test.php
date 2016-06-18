@@ -11,9 +11,9 @@
 
 namespace phpbb\boardannouncements\tests\event;
 
-require_once dirname(__FILE__) . '/../../../../../includes/functions.php';
-require_once dirname(__FILE__) . '/../../../../../includes/functions_content.php';
-require_once dirname(__FILE__) . '/../../../../../includes/utf/utf_tools.php';
+require_once __DIR__ . '/../../../../../includes/functions.php';
+require_once __DIR__ . '/../../../../../includes/functions_content.php';
+require_once __DIR__ . '/../../../../../includes/utf/utf_tools.php';
 
 class listener_test extends \phpbb_database_test_case
 {
@@ -61,7 +61,7 @@ class listener_test extends \phpbb_database_test_case
 	*/
 	public function getDataSet()
 	{
-		return $this->createXMLDataSet(dirname(__FILE__) . '/fixtures/config_text.xml');
+		return $this->createXMLDataSet(__DIR__ . '/fixtures/config_text.xml');
 	}
 
 	/**
