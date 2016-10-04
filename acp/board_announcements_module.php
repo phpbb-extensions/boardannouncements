@@ -82,7 +82,7 @@ class board_announcements_module
 		// Include files needed for displaying BBCodes
 		if (!function_exists('display_custom_bbcodes'))
 		{
-			include($this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext);
+			include $this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext;
 		}
 
 		// Get all board announcement data from the config_text table in the database
