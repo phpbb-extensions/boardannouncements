@@ -78,7 +78,7 @@ class listener implements EventSubscriberInterface
 	/**
 	* Display board announcements
 	*
-	* @return null
+	* @return void
 	* @access public
 	*/
 	public function display_board_announcements()

@@ -35,7 +35,6 @@ class controller
 	* @param \phpbb\db\driver\driver_interface   $db             Database object
 	* @param \phpbb\request\request              $request        Request object
 	* @param \phpbb\user                         $user           User object
-	* @return \phpbb\boardannouncements\controller\controller
 	* @access public
 	*/
 	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\db\driver\driver_interface $db, \phpbb\request\request $request, \phpbb\user $user)
