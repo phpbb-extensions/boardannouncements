@@ -24,7 +24,10 @@ class m5_enable_announcements_for_new_users extends \phpbb\db\migration\migratio
 	*/
 	static public function depends_on()
 	{
-		return array('\phpbb\boardannouncements\migrations\v10x\m1_initial_schema');
+		return array(
+			'\phpbb\boardannouncements\migrations\v10x\m1_initial_schema',
+			'\phpbb\boardannouncements\migrations\v10x\m4_announcements_dismiss_config',
+		);
 	}
 
 	/**
