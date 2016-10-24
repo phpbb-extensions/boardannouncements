@@ -43,8 +43,12 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Her kan du oprette og ændre annonceringer som vises på alle sider på dit board.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Aktiver boardannonceringer',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Tillad at gæster at kan læse boardannonceringer',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Tillad at brugere kan afvise denne boardannoncering',
+
+	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
+	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
+	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Baggrundsfarve',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ændre boardannonceringens baggrundsfarve med en hexcode for den ønskede farve (f.eks: FFFF80). Efterlades feltet tomt anvendes standardfarven.',

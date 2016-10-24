@@ -43,8 +43,12 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'هنا يمكنك إدارة وإنشاء لوحات إعلانية تظهر في جميع صفحات منتداك.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'عرض لوحة الإعلانات هذه',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'السماح للزوار بمشاهدة لوحة الاعلانات هذه',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'السماح للمستخدمين برفض لوحة الإعلانات هذه',
+
+	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
+	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
+	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'لون خلفية لوحة الإعلانات',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'يمكنك تغيير لون خلفية لوحة الاعلانات باستعمال كود hex (مثل: FFFF80). اترك هذا الحقل فارغا لاستعمال اللون الافتراضي.',
