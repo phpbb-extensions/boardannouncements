@@ -11,6 +11,8 @@
 
 namespace phpbb\boardannouncements\tests\event;
 
+use phpbb\boardannouncements\acp\board_announcements_module;
+
 require_once __DIR__ . '/../../../../../includes/functions.php';
 require_once __DIR__ . '/../../../../../includes/functions_content.php';
 require_once __DIR__ . '/../../../../../includes/utf/utf_tools.php';
@@ -171,8 +173,9 @@ class listener_test extends \phpbb_database_test_case
 	public function display_board_announcements_disabled_data()
 	{
 		return array(
-			array(false, true),
-			array(true, false),
+			array(false, 1, 1, board_announcements_module::ALL), // test when BA is disabled
+			array(true, 0, 1, board_announcements_module::ALL), // test when BA is disabled by the current user
+			array(true, 1, 2, board_announcements_module::GUESTS), // test when BA is only for guests but user is newly reg.
 		);
 	}
 
@@ -181,11 +184,13 @@ class listener_test extends \phpbb_database_test_case
 	 *
 	 * @dataProvider display_board_announcements_disabled_data
 	 */
-	public function test_display_board_announcements_disabled($enabled, $status)
+	public function test_display_board_announcements_disabled($enabled, $status, $user_id, $allowed_users)
 	{
 		// override config and user data
 		$this->config['board_announcements_enable'] = $enabled;
+		$this->config['board_announcements_users'] = $allowed_users;
 		$this->user->data['board_announcements_status'] = $status;
+		$this->user->data['user_id'] = $user_id;
 
 		$this->set_listener();
 

@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\tests\functional;
 
+use phpbb\boardannouncements\acp\board_announcements_module;
+
 /**
 * @group functional
 */
@@ -90,6 +92,14 @@ class announcement_test extends \phpbb_functional_test_case
 
 		$crawler = self::request('GET', 'index.php');
 		$this->assertContains('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
+
+		// Verify that new users won't see the announcement if it's Guest only
+		$this->db->sql_query('UPDATE ' . CONFIG_TABLE . ' SET config_value = ' .
+			(int) board_announcements_module::GUESTS . " 
+			WHERE config_name = 'board_announcements_users'");
+		$this->purge_cache();
+		$crawler = self::request('GET', 'index.php');
+		$this->assertNotContains('This is a board announcement test.', $crawler->text());
 	}
 
 	/**
