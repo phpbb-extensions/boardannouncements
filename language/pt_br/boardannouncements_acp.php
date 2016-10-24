@@ -46,9 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permitir que usuários para fechar este anúncio',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos los usuários',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Cor de fundo do anúncio',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Você pode mudar a cor do anúncio usando um código hexadecimal de fundo (por exemplo: FFFF80). Deixe este campo em branco para usar a cor padrão.',

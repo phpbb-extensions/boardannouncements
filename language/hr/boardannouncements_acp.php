@@ -46,9 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Omogući korisnicima/ama zatvaranje forumskih obavijesti',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Svatko',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Pozadinska boja forumskih obavijesti',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pozadinsku boja forumskih obavijesti možeš mijenjati korištenjem hex kodova (npr.: FFFF80).<br />Za korištenje zadane boje, ostavi ovo polje praznim.',

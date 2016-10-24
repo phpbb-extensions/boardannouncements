@@ -45,9 +45,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Allow users to dismiss this board announcement',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Everyone',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Board announcement background color',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'You can change the background color of the announcement using a hex code (e.g: FFFF80). Leave this field blank to use the default color.',

@@ -45,9 +45,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permite utilizatorilor să respingă anunţul',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Toata lumea',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Culoarea background-ului',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puteţi schimba culoarea de fundal a anunţului folosind un cod hex (Ex: FFFF80). Lasă acest câmp necompletat pentru a utiliza culoarea prestabilită.',

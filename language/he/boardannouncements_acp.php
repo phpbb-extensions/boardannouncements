@@ -45,9 +45,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'אפשר למשתמשים להסתיר את הכרזת המערכת',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'כל אחד',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'צבע רקע של הכרזת המערכת',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'אתה יכול לשנות את צבע הרקע של ההכרזה באמצעות שימוש בקוד HEX (לדוגמה:FFF80).אל תכתוב דבר אם ברצונך להשתמש בצבע ברירת מחדל.',

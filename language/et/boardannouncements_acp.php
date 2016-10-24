@@ -46,9 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Luba liikmetel sellest foorumi teadaandest keelduda',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Igaüks',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '“Foorumi teadaande” tagatausta värv',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Sa saad muuta tagatausta värvi teadaandel, kasutades hex koodi (näiteks: FFFF80). Jäta see väli tühjaks, et kasutada vaikimisi värvi.',

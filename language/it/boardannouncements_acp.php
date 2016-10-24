@@ -45,9 +45,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permetti agli utenti di chiudere quest’annuncio',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Tutti',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Colore di sfondo annuncio',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'È possibile cambiare il colore di sfondo dell’annuncio usando un codice esadecimale (per esempio FFFF80). Lasciare questo campo in bianco per usare il colore predefinito.',

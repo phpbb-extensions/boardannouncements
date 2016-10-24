@@ -46,9 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Zezwalaj użytkownikom na zamknięcie ogłoszenia',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Wszyscy',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Kolor tła ogłoszenia',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Możesz zmienić kolor tła ogłoszenia używając kodu hex (szesnastkowego) np.: FFFF80. Pozostaw pole puste, aby użyć domyślnego koloru.',

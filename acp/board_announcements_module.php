@@ -204,9 +204,9 @@ class board_announcements_module
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
 
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select(array(
-				self::ALL		=> 'BOARD_ANNOUNCEMENTS_ALL_USERS',
-				self::MEMBERS	=> 'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY',
-				self::GUESTS	=> 'BOARD_ANNOUNCEMENTS_GUESTS_ONLY',
+				self::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
+				self::MEMBERS	=> 'G_REGISTERED',
+				self::GUESTS	=> 'G_GUESTS',
 			), isset($allowed_users) ? $allowed_users : $this->config['board_announcements_users']),
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],

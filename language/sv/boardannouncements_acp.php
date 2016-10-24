@@ -46,9 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Tillåt användare att stänga detta forummeddelande',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alla',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forummeddelandets bakgrundsfärg',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ändra forummeddelandets bakgrundsfärg genom att ange en hex-kod (t.ex.: FFFF80). Lämna fältet tomt om du vill använda standardfärgen.',

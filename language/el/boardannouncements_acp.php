@@ -46,9 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Επιτρέψτε στα μέλη να κλείνουν το πλαίσιο της ανακοίνωσης',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Καθένας',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Χρώμα φόντου ανακοίνωσης',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Μπορείτε να αλλάξετε το χρώμα του φόντου της ανακοίνωσης χρησιμοποιώντας δεκαεξαδικό κωδικό χρώματος (π.χ: FFFF80). Αφήστε αυτό το πεδίο κενό για να χρησιμοποιήσετε το προεπιλεγμένο χρώμα.',

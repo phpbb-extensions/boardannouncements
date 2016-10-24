@@ -43,12 +43,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Hier kan je een forumaankondiging beheren en aanmaken, die weergegeven zal worden op elke pagina van je forum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Laat deze forumaankondiging zien',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Wie kan deze forumaankondiging bekijken',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Sta gebruikers toe om deze forumaankondiging te sluiten',
 
-	'BOARD_ANNOUNCEMENTS_ALL_USERS'			=> 'Everyone',
-	'BOARD_ANNOUNCEMENTS_MEMBERS_ONLY'		=> 'Members only',
-	'BOARD_ANNOUNCEMENTS_GUESTS_ONLY'		=> 'Guests only',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Iedereen',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forumaankondiging-achtergrondkleur',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Je kan de achtergrondkleur van de aankondiging veranderen door gebruik te maken van een hex-code (bijv.: FFFF80). Laat dit veld leeg om de standaard kleur te gebruiken.',
