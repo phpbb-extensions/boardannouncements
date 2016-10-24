@@ -43,7 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Tutaj możesz zarządzać i stworzyć ogłoszenie, które będzie wyświetlane na każdej stronie forum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Wyświetlaj ogłoszenie',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kto może zobaczyć tę zobaczyć ogłoszenie',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Zezwalaj użytkownikom na zamknięcie ogłoszenia',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Wszyscy',

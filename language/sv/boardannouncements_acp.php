@@ -43,7 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Här kan du hantera och skapa ett forummeddelande som kommer att visas på varje sida i ditt forum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Visa detta forummeddelande',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Vem kan se detta forummeddelande',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Tillåt användare att stänga detta forummeddelande',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alla',

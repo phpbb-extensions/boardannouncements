@@ -43,7 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aqui você pode gerenciar e criar um anúncio que será exibido em cada página do seu fórum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Ativar anúncio',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Quién puede ver este anúncio',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permitir que usuários para fechar este anúncio',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos los usuários',
