@@ -47,6 +47,12 @@ class board_announcements_module
 	protected $php_ext;
 
 	/** @var string */
+	public $page_title;
+
+	/** @var string */
+	public $tpl_name;
+
+	/** @var string */
 	public $u_action;
 
 	public function main()
