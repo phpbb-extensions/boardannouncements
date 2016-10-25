@@ -42,8 +42,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Здесь вы можете управлять и создавать объявления, которые будут отображаться на каждой странице вашего сайта.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Показывать эту доску объявлений',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Разрешить гостям просматривать доску объявлений',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Кто может видеть доску объявлений',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Разрешить пользователям выключать это объявление',
+
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Все',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Цвет фона объявления',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Вы можете изменить цвет фона объявления, используя шестнадцатеричный код (например: FFFF80). Оставьте это поле пустым, чтобы использовать цвет фона по умолчанию.',

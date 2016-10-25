@@ -42,8 +42,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aici puteţi gestiona sau crea anunţuri care vor fi afişate pe fiecare pagină a forumului.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Afişează acest anunţ',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Permite vizitatorilor să vizualizeze anunţurile',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Cine poate vedea acest anunț',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permite utilizatorilor să respingă anunţul',
+
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Toata lumea',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Culoarea background-ului',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puteţi schimba culoarea de fundal a anunţului folosind un cod hex (Ex: FFFF80). Lasă acest câmp necompletat pentru a utiliza culoarea prestabilită.',

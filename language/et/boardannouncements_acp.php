@@ -43,8 +43,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Siin lehel saad hallata ja luua foorumi teadaannet, mida näidatakse igal foorumi leheküljel.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Näita seda foorumi teadaannet',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Luba külalistel vaadata seda teadaannet',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kes saab vaadata foorumi teadaannet',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Luba liikmetel sellest foorumi teadaandest keelduda',
+
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Igaüks',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '“Foorumi teadaande” tagatausta värv',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Sa saad muuta tagatausta värvi teadaandel, kasutades hex koodi (näiteks: FFFF80). Jäta see väli tühjaks, et kasutada vaikimisi värvi.',

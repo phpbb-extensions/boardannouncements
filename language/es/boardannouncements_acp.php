@@ -43,8 +43,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aquí puede gestionar y crear un anuncio del foro que se mostrará en cada página de su foro.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Mostrar este Anuncio del Foro',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Permitir a los invitados ver los anuncios del foro',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> '¿Quién puede ver los anuncios del foro?',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permitir a los usuarios descartar este Anuncio del Foro',
+
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos los usarios',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Color del fondo del anuncio del foro',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puede cambiar el color del fondo del anuncio usando código hexadecimal (por ejemplo: FFFF80). Deje este campo en blanco para usar el color por defecto.',

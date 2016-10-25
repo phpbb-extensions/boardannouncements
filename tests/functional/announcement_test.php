@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\tests\functional;
 
+use phpbb\boardannouncements\acp\board_announcements_module;
+
 /**
 * @group functional
 */
@@ -44,7 +46,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Test that our settings fields are found
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE', $crawler->text());
-		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_GUESTS', $crawler->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_USERS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_DISMISS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_BGCOLOR', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_TEXT', $crawler->text());
@@ -53,7 +55,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
 		$values = array(
 			'board_announcements_enable'	=> true,
-			'board_announcements_guests'	=> true,
+			'board_announcements_users'		=> 0,
 			'board_announcements_dismiss'	=> true,
 			'board_announcements_bgcolor'	=> 'ff0000',
 			'board_announcements_text'		=> 'This is a board announcement test.',
@@ -90,6 +92,14 @@ class announcement_test extends \phpbb_functional_test_case
 
 		$crawler = self::request('GET', 'index.php');
 		$this->assertContains('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
+
+		// Verify that new users won't see the announcement if it's Guest only
+		$this->db->sql_query('UPDATE ' . CONFIG_TABLE . ' SET config_value = ' .
+			(int) board_announcements_module::GUESTS . " 
+			WHERE config_name = 'board_announcements_users'");
+		$this->purge_cache();
+		$crawler = self::request('GET', 'index.php');
+		$this->assertNotContains('This is a board announcement test.', $crawler->text());
 	}
 
 	/**

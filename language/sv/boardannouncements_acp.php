@@ -43,8 +43,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Här kan du hantera och skapa ett forummeddelande som kommer att visas på varje sida i ditt forum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Visa detta forummeddelande',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Tillåt gäster att se detta forummeddelande',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Vem kan se detta forummeddelande',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Tillåt användare att stänga detta forummeddelande',
+
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alla',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forummeddelandets bakgrundsfärg',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ändra forummeddelandets bakgrundsfärg genom att ange en hex-kod (t.ex.: FFFF80). Lämna fältet tomt om du vill använda standardfärgen.',

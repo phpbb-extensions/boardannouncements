@@ -43,8 +43,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Tutaj możesz zarządzać i stworzyć ogłoszenie, które będzie wyświetlane na każdej stronie forum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Wyświetlaj ogłoszenie',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Czy goście mogą zobaczyć ogłoszenie?',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kto może zobaczyć tę zobaczyć ogłoszenie',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Zezwalaj użytkownikom na zamknięcie ogłoszenia',
+
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Wszyscy',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Kolor tła ogłoszenia',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Możesz zmienić kolor tła ogłoszenia używając kodu hex (szesnastkowego) np.: FFFF80. Pozostaw pole puste, aby użyć domyślnego koloru.',

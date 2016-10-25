@@ -43,8 +43,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aqui pode gerir e criar um comunicado que será exibido em cada página do seu Fórum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Ativar o comunicado',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Permitir aos visitantes ver o comunicado',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Quem pode ver este comunicado',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permitir aos utilizadores fechar este comunicado',
+
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos os usuários',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Cor do fundo do comunicado',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pode mudar a cor do fundo do comunicado usando um código hexadecimal (exemplo: FFFF80). Deixe este campo em branco para usar a cor padrão.',
