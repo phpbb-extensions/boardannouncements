@@ -152,8 +152,8 @@ class board_announcements_module
 				));
 
 				$announcement_text = (!empty($data['announcement_text']));
-				$guests_only  = $allowed_users === self::GUESTS;
-				$members_only = $allowed_users === self::MEMBERS;
+				$guests_only  = ($allowed_users === self::GUESTS);
+				$members_only = ($allowed_users === self::MEMBERS);
 
 				$this->db->sql_transaction('begin');
 
