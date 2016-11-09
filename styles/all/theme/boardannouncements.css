@@ -16,6 +16,14 @@
 	line-height: 1.5em;
 }
 
+/* make posted images responsive */
+#phpbb_announcement img.postimage {
+	max-width: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 /* style the close button */
 #phpbb_announcement .close {
 	float: right;
