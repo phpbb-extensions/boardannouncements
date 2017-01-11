@@ -25,6 +25,9 @@ class board_announcements_module
 	/** @var \phpbb\config\db_text */
 	protected $config_text;
 
+	/** @var \phpbb\controller\helper $controller_helper */
+	protected $controller_helper;
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
@@ -62,6 +65,7 @@ class board_announcements_module
 		$this->cache = $phpbb_container->get('cache.driver');
 		$this->config = $phpbb_container->get('config');
 		$this->config_text = $phpbb_container->get('config_text');
+		$this->controller_helper = $phpbb_container->get('controller.helper');
 		$this->db = $phpbb_container->get('dbal.conn');
 		$this->log = $phpbb_container->get('log');
 		$this->request = $phpbb_container->get('request');
@@ -213,7 +217,7 @@ class board_announcements_module
 			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
 			'S_MAGIC_URL_DISABLE_CHECKED'	=> !$announcement_text_edit['allow_urls'],
 
-			'BBCODE_STATUS'			=> $this->user->lang('BBCODE_IS_ON', '<a href="' . append_sid("{$this->phpbb_root_path}faq.{$this->php_ext}", 'mode=bbcode') . '">', '</a>'),
+			'BBCODE_STATUS'			=> $this->user->lang('BBCODE_IS_ON', '<a href="' . $this->controller_helper->route('phpbb_help_bbcode_controller') . '">', '</a>'),
 			'SMILIES_STATUS'		=> $this->user->lang('SMILIES_ARE_ON'),
 			'IMG_STATUS'			=> $this->user->lang('IMAGES_ARE_ON'),
 			'FLASH_STATUS'			=> $this->user->lang('FLASH_IS_ON'),
