@@ -13,10 +13,6 @@ namespace phpbb\boardannouncements\tests\event;
 
 use phpbb\boardannouncements\acp\board_announcements_module;
 
-require_once __DIR__ . '/../../../../../includes/functions.php';
-require_once __DIR__ . '/../../../../../includes/functions_content.php';
-require_once __DIR__ . '/../../../../../includes/utf/utf_tools.php';
-
 class listener_test extends \phpbb_database_test_case
 {
 	/**
@@ -73,7 +69,7 @@ class listener_test extends \phpbb_database_test_case
 	{
 		parent::setUp();
 
-		global $cache, $user, $phpbb_dispatcher;
+		global $cache, $user, $phpbb_dispatcher, $phpbb_root_path, $phpEx;
 
 		// Load the database class
 		$this->db = $this->new_dbal();
@@ -94,7 +90,10 @@ class listener_test extends \phpbb_database_test_case
 		$this->request = $this->getMock('\phpbb\request\request');
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
-		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
+		$this->user = $this->getMock('\phpbb\user', array(), array(
+			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
+			'\phpbb\datetime'
+		));
 		$this->user->data['board_announcements_status'] = 1;
 
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
