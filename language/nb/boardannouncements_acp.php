@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* @正體中文化 竹貓星球 <http://phpbb-tw.net/phpbb/>
+* Norwegian translation by Rolv R. Hauge (http://rolvhauge.no)
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,20 +39,20 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> '討論區公告設定',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> '在這裡，您可以管理與建立討論區公告，它將顯示在討論區的每一頁。',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Instillinger for forummeldinger',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Her kan du behandle og opprette en forummelding som vil bli vist på hver side i forumet ditt.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '顯示這則討論區公告設定',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> '可查看論壇公告的用戶',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允許使用者關閉這則討論區公告',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Vis denne forummeldingen',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Hvem kan se denne forummeldingen',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'La brukere lukke denne forummeldingen',
 
-	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '大家',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alle',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '討論區公告背景顏色',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六進制代碼改變討論區公告背景顏色（例如：FFFF80）。欄位留白，則使用預設的顏色。',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Bakgrunnsfarge for forummeldingen',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan endre bakgrunnsfarge for forummeldingen ved å angi en hex-kode (f.eks.: FFFF80). La dette feltet stå tomt for å bruke standardfargen.',
 
-	'BOARD_ANNOUNCEMENTS_TEXT'				=> '討論區公告訊息',
-	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> '討論區公告 - 預覽',
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Forummelding',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Forummelding - forhåndsvisning',
 
-	'BOARD_ANNOUNCEMENTS_UPDATED'			=> '討論區公告已更新。',
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Forummeldingen har blitt oppdatert.',
 ));

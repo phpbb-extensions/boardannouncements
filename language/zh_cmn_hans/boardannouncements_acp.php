@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* @正體中文化 竹貓星球 <http://phpbb-tw.net/phpbb/>
+* @简体中文语言　David Yin <http://www.g2soft.net/>
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,20 +39,20 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> '討論區公告設定',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> '在這裡，您可以管理與建立討論區公告，它將顯示在討論區的每一頁。',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> '论坛公告设定',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> '在这里，您可以建立并管理论坛公告，它将会显示在论坛的每个页面。',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '顯示這則討論區公告設定',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> '可查看論壇公告的用戶',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允許使用者關閉這則討論區公告',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '显示这条论坛公告',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> '允许查看公告的用户',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允许用户关闭这条论坛公告',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '大家',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '討論區公告背景顏色',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六進制代碼改變討論區公告背景顏色（例如：FFFF80）。欄位留白，則使用預設的顏色。',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '论坛公告背景颜色',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六进制代码改变论坛公告北京颜色（比如：FFFF80）。留空则使用默认的背景颜色。',
 
-	'BOARD_ANNOUNCEMENTS_TEXT'				=> '討論區公告訊息',
-	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> '討論區公告 - 預覽',
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> '论坛公告信息',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> '论坛公告 -  预览',
 
-	'BOARD_ANNOUNCEMENTS_UPDATED'			=> '討論區公告已更新。',
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> '论坛公告已更新。',
 ));
