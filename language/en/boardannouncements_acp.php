@@ -53,7 +53,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Board announcement expiration date',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Set the date the announcement will expire and be disabled. Leave this field blank if you do not want the announcement to expire.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY/MM/DD HH:MM',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'The expiration date is invalid or has already expired.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'The expiration date was invalid or has already expired.',
 
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Board announcement message',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Board announcement - Preview',

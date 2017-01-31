@@ -106,10 +106,10 @@ class board_announcements_module
 		));
 
 		// Get config options from the config table in the database
-		$enable_announcements = $this->config['board_announcements_enable'];
-		$allowed_users = $this->config['board_announcements_users'];
-		$dismiss_announcements = $this->config['board_announcements_dismiss'];
-		$expiry_announcements = $this->config['board_announcements_expiry'];
+		$board_announcements_enable = $this->config['board_announcements_enable'];
+		$board_announcements_users = $this->config['board_announcements_users'];
+		$board_announcements_dismiss = $this->config['board_announcements_dismiss'];
+		$board_announcements_expiry = $this->config['board_announcements_expiry'];
 
 		// If form is submitted or previewed
 		if ($this->request->is_set_post('submit') || $this->request->is_set_post('preview'))
@@ -125,13 +125,17 @@ class board_announcements_module
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 
 			// Get config options from the form
-			$enable_announcements = $this->request->variable('board_announcements_enable', false);
-			$allowed_users = $this->request->variable('board_announcements_users', self::ALL);
-			$dismiss_announcements = $this->request->variable('board_announcements_dismiss', false);
-			$expiry_announcements = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $this->request->variable('board_announcements_expiry', ''));
-			if ($expiry_announcements && $expiry_announcements < time())
+			$board_announcements_enable = $this->request->variable('board_announcements_enable', false);
+			$board_announcements_users = $this->request->variable('board_announcements_users', self::ALL);
+			$board_announcements_dismiss = $this->request->variable('board_announcements_dismiss', false);
+			$board_announcements_expiry = $this->request->variable('board_announcements_expiry', '');
+			if ($board_announcements_expiry !== '')
 			{
-				$errors[] = $this->user->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+				$board_announcements_expiry = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $board_announcements_expiry);
+				if ($board_announcements_expiry < time())
+				{
+					$errors[] = $this->user->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+				}
 			}
 
 			// Prepare announcement text for storage
@@ -149,10 +153,10 @@ class board_announcements_module
 			if (empty($errors) && $this->request->is_set_post('submit'))
 			{
 				// Store the config enable/disable state
-				$this->config->set('board_announcements_enable', $enable_announcements);
-				$this->config->set('board_announcements_users', $allowed_users);
-				$this->config->set('board_announcements_dismiss', $dismiss_announcements);
-				$this->config->set('board_announcements_expiry', $expiry_announcements);
+				$this->config->set('board_announcements_enable', $board_announcements_enable);
+				$this->config->set('board_announcements_users', $board_announcements_users);
+				$this->config->set('board_announcements_dismiss', $board_announcements_dismiss);
+				$this->config->set('board_announcements_expiry', $board_announcements_expiry);
 
 				// Store the announcement settings to the config_table in the database
 				$this->config_text->set_array(array(
@@ -165,8 +169,8 @@ class board_announcements_module
 				));
 
 				$announcement_text = (!empty($data['announcement_text']));
-				$guests_only  = ($allowed_users === self::GUESTS);
-				$members_only = ($allowed_users === self::MEMBERS);
+				$guests_only  = ($board_announcements_users === self::GUESTS);
+				$members_only = ($board_announcements_users === self::MEMBERS);
 
 				$this->db->sql_transaction('begin');
 
@@ -210,18 +214,18 @@ class board_announcements_module
 		// Output data to the template
 		$this->template->assign_vars(array(
 			'ERRORS'						=> count($errors) ? implode('<br />', $errors) : '',
-			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $enable_announcements,
-			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $dismiss_announcements,
+			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $board_announcements_enable,
+			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $board_announcements_dismiss,
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
-			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $expiry_announcements ? $this->user->format_date($expiry_announcements, self::DATE_FORMAT) : '',
+			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $board_announcements_expiry ? $this->user->format_date($board_announcements_expiry, self::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
 
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select(array(
 				self::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
 				self::MEMBERS	=> 'G_REGISTERED',
 				self::GUESTS	=> 'G_GUESTS',
-			), $allowed_users),
+			), $board_announcements_users),
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],
 			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
