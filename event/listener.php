@@ -90,6 +90,13 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
+		// Do not continue if board announcement is expired
+		if ($this->config['board_announcements_expiry'] && $this->config['board_announcements_expiry'] < time())
+		{
+			$this->config->set('board_announcements_enable', 0);
+			return;
+		}
+
 		// Do not continue if user is registered, but announcement is for guests only
 		// This is to prevent newly registered users from seeing guest only announcements
 		if ($this->user->data['user_id'] != ANONYMOUS && $this->config['board_announcements_users'] == board_announcements_module::GUESTS)

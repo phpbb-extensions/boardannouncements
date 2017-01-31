@@ -15,6 +15,7 @@ class board_announcements_module
 	const ALL = 0;
 	const MEMBERS = 1;
 	const GUESTS = 2;
+	const DATE_FORMAT = 'Y/m/d H:i';
 
 	/** @var \phpbb\cache\driver\driver_interface */
 	protected $cache;
@@ -86,8 +87,8 @@ class board_announcements_module
 		$form_name = 'acp_board_announcements';
 		add_form_key($form_name);
 
-		// Set an empty error string
-		$error = '';
+		// Set an empty error array
+		$errors = array();
 
 		// Include files needed for displaying BBCodes
 		if (!function_exists('display_custom_bbcodes'))
@@ -104,13 +105,19 @@ class board_announcements_module
 			'announcement_bgcolor',
 		));
 
+		// Get config options from the config table in the database
+		$enable_announcements = $this->config['board_announcements_enable'];
+		$allowed_users = $this->config['board_announcements_users'];
+		$dismiss_announcements = $this->config['board_announcements_dismiss'];
+		$expiry_announcements = $this->config['board_announcements_expiry'];
+
 		// If form is submitted or previewed
 		if ($this->request->is_set_post('submit') || $this->request->is_set_post('preview'))
 		{
 			// Test if form key is valid
 			if (!check_form_key($form_name))
 			{
-				$error = $this->user->lang('FORM_INVALID');
+				$errors[] = $this->user->lang('FORM_INVALID');
 			}
 
 			// Get new announcement text and bgcolor values from the form
@@ -121,6 +128,11 @@ class board_announcements_module
 			$enable_announcements = $this->request->variable('board_announcements_enable', false);
 			$allowed_users = $this->request->variable('board_announcements_users', self::ALL);
 			$dismiss_announcements = $this->request->variable('board_announcements_dismiss', false);
+			$expiry_announcements = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $this->request->variable('board_announcements_expiry', ''));
+			if ($expiry_announcements && $expiry_announcements < time())
+			{
+				$errors[] = $this->user->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+			}
 
 			// Prepare announcement text for storage
 			generate_text_for_storage(
@@ -134,12 +146,13 @@ class board_announcements_module
 			);
 
 			// Store the announcement text and settings if submitted with no errors
-			if (empty($error) && $this->request->is_set_post('submit'))
+			if (empty($errors) && $this->request->is_set_post('submit'))
 			{
 				// Store the config enable/disable state
 				$this->config->set('board_announcements_enable', $enable_announcements);
 				$this->config->set('board_announcements_users', $allowed_users);
 				$this->config->set('board_announcements_dismiss', $dismiss_announcements);
+				$this->config->set('board_announcements_expiry', $expiry_announcements);
 
 				// Store the announcement settings to the config_table in the database
 				$this->config_text->set_array(array(
@@ -196,18 +209,19 @@ class board_announcements_module
 
 		// Output data to the template
 		$this->template->assign_vars(array(
-			'ERRORS'						=> $error,
-			'BOARD_ANNOUNCEMENTS_ENABLED'	=> isset($enable_announcements) ? $enable_announcements : $this->config['board_announcements_enable'],
-			'BOARD_ANNOUNCEMENTS_DISMISS'	=> isset($dismiss_announcements) ? $dismiss_announcements : $this->config['board_announcements_dismiss'],
+			'ERRORS'						=> count($errors) ? implode('<br />', $errors) : '',
+			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $enable_announcements,
+			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $dismiss_announcements,
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
+			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $expiry_announcements ? $this->user->format_date($expiry_announcements, self::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
 
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select(array(
 				self::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
 				self::MEMBERS	=> 'G_REGISTERED',
 				self::GUESTS	=> 'G_GUESTS',
-			), isset($allowed_users) ? $allowed_users : $this->config['board_announcements_users']),
+			), $allowed_users),
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],
 			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
