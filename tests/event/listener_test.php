@@ -84,6 +84,7 @@ class listener_test extends \phpbb_database_test_case
 		$this->config = new \phpbb\config\config(array(
 			'board_announcements_enable' => 1,
 			'board_announcements_dismiss' => 1,
+			'board_announcements_expiry' => strtotime('+1 month'),
 			'enable_mod_rewrite' => '0',
 		));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
@@ -172,9 +173,30 @@ class listener_test extends \phpbb_database_test_case
 	public function display_board_announcements_disabled_data()
 	{
 		return array(
-			array(false, 1, 1, board_announcements_module::ALL), // test when BA is disabled
-			array(true, 0, 1, board_announcements_module::ALL), // test when BA is disabled by the current user
-			array(true, 1, 2, board_announcements_module::GUESTS), // test when BA is only for guests but user is newly reg.
+			// test when BA is disabled
+			array(1, 1, array(
+				'enabled'       => false,
+				'expiry'        => '',
+				'allowed_users' => board_announcements_module::ALL),
+			),
+			// test when BA is expired
+			array(1, 1, array(
+				'enabled'       => true,
+				'expiry'        => strtotime('1 minute ago'),
+				'allowed_users' => board_announcements_module::ALL),
+			),
+			// test when BA is disabled by the current user
+			array(1, 0, array(
+				'enabled'       => true,
+				'expiry'        => '',
+				'allowed_users' => board_announcements_module::ALL),
+			),
+			// test when BA is only for guests but user is newly reg.
+			array(2, 1, array(
+				'enabled'       => true,
+				'expiry'        => '',
+				'allowed_users' => board_announcements_module::GUESTS),
+			),
 		);
 	}
 
@@ -183,11 +205,12 @@ class listener_test extends \phpbb_database_test_case
 	 *
 	 * @dataProvider display_board_announcements_disabled_data
 	 */
-	public function test_display_board_announcements_disabled($enabled, $status, $user_id, $allowed_users)
+	public function test_display_board_announcements_disabled($user_id, $status, $configs)
 	{
 		// override config and user data
-		$this->config['board_announcements_enable'] = $enabled;
-		$this->config['board_announcements_users'] = $allowed_users;
+		$this->config['board_announcements_enable'] = $configs['enabled'];
+		$this->config['board_announcements_expiry'] = $configs['expiry'];
+		$this->config['board_announcements_users'] = $configs['allowed_users'];
 		$this->user->data['board_announcements_status'] = $status;
 		$this->user->data['user_id'] = $user_id;
 
