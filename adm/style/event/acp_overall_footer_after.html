@@ -5,6 +5,11 @@
 	<!-- DEFINE $INCLUDED_COLPICKJS = true -->
 <!-- ENDIF -->
 
+<!-- IF not $INCLUDED_DATETIMEPICKERJS -->
+	<!-- INCLUDEJS @phpbb_boardannouncements/datetimepicker/jquery.datetimepicker.full.min.js -->
+	<!-- DEFINE $INCLUDED_DATETIMEPICKERJS = true -->
+<!-- ENDIF -->
+
 <script>
 jQuery(function($) {
 	var bgcolor = '{BOARD_ANNOUNCEMENTS_BGCOLOR}';
@@ -30,6 +35,8 @@ jQuery(function($) {
 	}).keyup(function() {
 		$(this).colpickSetColor(this.value || 'ffffff');
 	});
+	$('#board_announcements_expiry').datetimepicker();
+	$.datetimepicker.setLocale('{S_USER_LANG}')
 });
 </script>
 
