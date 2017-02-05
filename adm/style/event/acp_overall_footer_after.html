@@ -35,7 +35,11 @@ jQuery(function($) {
 	}).keyup(function() {
 		$(this).colpickSetColor(this.value || 'ffffff');
 	});
-	$('#board_announcements_expiry').datetimepicker();
+	$('#board_announcements_expiry').datetimepicker({
+		format:'{{ PICKER_DATE_FORMAT|e('js') }}',
+		validateOnBlur: false,
+		minDate: 0
+	});
 	$.datetimepicker.setLocale('{S_USER_LANG}')
 });
 </script>

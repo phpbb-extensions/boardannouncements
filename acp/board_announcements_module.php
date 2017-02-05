@@ -15,7 +15,7 @@ class board_announcements_module
 	const ALL = 0;
 	const MEMBERS = 1;
 	const GUESTS = 2;
-	const DATE_FORMAT = 'Y/m/d H:i';
+	const DATE_FORMAT = 'Y-m-d H:i';
 
 	/** @var \phpbb\cache\driver\driver_interface */
 	protected $cache;
@@ -242,8 +242,9 @@ class board_announcements_module
 			'S_BBCODE_IMG'			=> true,
 			'S_BBCODE_FLASH'		=> true,
 			'S_LINKS_ALLOWED'		=> true,
-
 			'S_BOARD_ANNOUNCEMENTS'	=> true,
+
+			'PICKER_DATE_FORMAT'	=> self::DATE_FORMAT,
 
 			'U_ACTION'				=> $this->u_action,
 		));
