@@ -1,37 +1,37 @@
 /* style the announcement banner */
 #phpbb_announcement {
-	margin: 10px 0;
 	font-size: 1.1em;
-	padding: 10px;
+	background-color: #ecd5d8; /* default color */
 	border-radius: 7px;
-	background-color: #ECD5D8; /* default color */
+	margin: 10px 0;
+	padding: 10px;
 }
 
 /* zero out any text margins and scroll any overflow */
 #phpbb_announcement div {
-	margin: 0;
-	overflow-x: auto;
-	overflow: hidden;
 	font-size: 1.1em;
 	line-height: 1.5em;
+	overflow-x: auto;
+	overflow: hidden;
+	margin: 0;
 }
 
 /* make posted images responsive */
-#phpbb_announcement img.postimage {
-	max-width: 100%;
-	-webkit-box-sizing: border-box;
+#phpbb_announcement .postimage {
 	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
+	max-width: 100%;
 }
 
 /* style the close button */
 #phpbb_announcement .close {
+	background: transparent url('images/close.png') no-repeat 0 0;
+	opacity: 0.6;
 	float: right;
-	margin: 0 0 0 4px;
 	width: 12px;
 	height: 12px;
-	background: transparent url("images/close.png") no-repeat 0 0;
-	opacity: 0.6;
+	margin: 0 0 0 4px;
 }
 
 /* reposition close button for right to left languages */
@@ -43,7 +43,7 @@
 /* hide close button on desktops by default */
 .notouch #phpbb_announcement .close {
 	opacity: 0;
-	transition: opacity .5s;
+	transition: opacity 0.5s;
 }
 
 /* display the close button on mouse-over of the banner */
@@ -52,20 +52,22 @@
 }
 
 /* fix for lists, force them to display inside containing div */
-#phpbb_announcement ul, #phpbb_announcement ol {
+#phpbb_announcement ul,
+#phpbb_announcement ol {
 	margin-left: 20px;
 }
 
-.rtl #phpbb_announcement ul, .rtl #phpbb_announcement ol {
-	margin-left: 0;
+.rtl #phpbb_announcement ul,
+.rtl #phpbb_announcement ol {
 	margin-right: 20px;
+	margin-left: 0;
 }
 
 /* clear floats */
 .clearfix:after {
-	content: '.';
-	visibility: hidden;
 	display: block;
-	height: 0;
+	visibility: hidden;
 	clear: both;
+	height: 0;
+	content: '.';
 }
