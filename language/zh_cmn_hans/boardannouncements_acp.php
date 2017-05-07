@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* @简体中文语言　David Yin <http://www.g2soft.net/>
+* @简体中文语言　David Yin <https://www.phpbbchinese.com/>
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -46,7 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '允许查看公告的用户',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允许用户关闭这条论坛公告',
 
-	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '大家',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '所有用户',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '论坛公告背景颜色',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六进制代码改变论坛公告北京颜色（比如：FFFF80）。留空则使用默认的背景颜色。',
