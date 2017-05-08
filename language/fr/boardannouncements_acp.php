@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Couleur d’arrière-plan de l’annonce du forum',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Vous pouvez modifier la couleur d’arrière-plan de l’annonce en utilisant un code hexadécimal (ex.: FFFF80). Laissez ce champ vide pour utiliser la couleur par défaut.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Date d’expiration de l’annonce du forum',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Permet de définir la date d’expiration, après laquelle, l’annonce du forum sera désactivée. Laisser ce champ vide pour ne pas expirer l’annonce du forum.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'La date d’expiration était invalide ou a déjà expirée.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'AAAA-MM-JJ HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Message de l’annonce du forum',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Aperçu de l’annonce du forum',
 
