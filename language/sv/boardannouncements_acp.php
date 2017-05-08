@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forummeddelandets bakgrundsfärg',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ändra forummeddelandets bakgrundsfärg genom att ange en hex-kod (t.ex.: FFFF80). Lämna fältet tomt om du vill använda standardfärgen.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Forummeddelandets utgångsdatum',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Ange datum då meddelandet upphör och bli inaktiverat. Lämna det här fältet tomt om du inte vill att meddelandet upphör att gälla.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Utgångsdatumet var ogiltigt eller har redan gått ut.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Forummeddelande',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Forummeddelande - förhandsgranskning',
 

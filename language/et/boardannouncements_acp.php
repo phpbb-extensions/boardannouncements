@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '“Foorumi teadaande” tagatausta värv',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Sa saad muuta tagatausta värvi teadaandel, kasutades hex koodi (näiteks: FFFF80). Jäta see väli tühjaks, et kasutada vaikimisi värvi.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Foorumi teadaanne aegumise kuupäev',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Määrake kuupäev väljakuulutamist aegub ja invaliidistunud. Jäta see väli tühjaks, kui sa ei taha teadaanne kehtivuse.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Aegumiskuupäev oli vigane või on juba lõppenud.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> '“Foorumi teadaande” sisu',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> '“Foorumi teadaande” eelvaade',
 

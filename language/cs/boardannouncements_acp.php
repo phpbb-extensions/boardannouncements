@@ -49,7 +49,12 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Každý',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Barva pozadí oznámení',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Můžete změnit barvu pozadí (například: FFFF80). Ponechte toto pole prázdné pokud chcete  výchozí barvu.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Můžete změnit barvu pozadí (například: FFFF80). Ponechte toto pole prázdné pokud chcete výchozí barvu.',
+
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Datum vypršení platnosti oznámení',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Nastavte datum vypršení platnosti oznámení a jeho zrušení. Nechte toto pole prázdné, pokud nechcete, aby oznámení vypršela.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Datum vypršení platnosti bylo neplatné nebo již vypršela.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
 
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Board oznámení zpráva',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Board oznámení - náhled',

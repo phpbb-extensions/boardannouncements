@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'لون خلفية لوحة الإعلانات',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'يمكنك تغيير لون خلفية لوحة الاعلانات باستعمال كود hex (مثل: FFFF80). اترك هذا الحقل فارغا لاستعمال اللون الافتراضي.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'تاريخ نهاية لوحة الإعلانات',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'ضع تاريخ لإخفاء لوحة الإعلانات أوتوماتيكيا. اتركها فارغة لجعل لوحة الإعلانات دائمة وغير محددة بتاريخ.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'تاريخ الانتهاء غير صالح أو أنه مضى.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'رسالة لوحة الاعلانات',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'معاينة - لوحة الاعلانات',
 
