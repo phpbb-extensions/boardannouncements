@@ -50,6 +50,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Site duyurusu arkaplan rengi',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Site duyurusu arkaplan rengini hex kodu kullanarak değiştirebilirsin (ör: FFFF80). VArsayılan rengi kullanmak için boş bırak.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Site duyurusu son kullanma tarihi',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Duyurunun kullanımının sona ereceği tarihi ayarlayın ve böylece o tarihte devre dışı bırakın. Duyurunun sona ermesini istemiyorsanız bu alanı boş bırakın.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Son kullanma tarihi geçersiz veya zaten süresi dolmuş.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-AA-GG SS:DD',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Site duyurusu mesajı',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Site duyurusu - Önizleme',
 

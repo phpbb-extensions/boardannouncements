@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '论坛公告背景颜色',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六进制代码改变论坛公告北京颜色（比如：FFFF80）。留空则使用默认的背景颜色。',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> '论坛公告到期日期',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> '设置论坛公告自动过期失效的日期。留空将长期有效。',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> '到期日期无效或者已经过期。',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> '论坛公告信息',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> '论坛公告 -  预览',
 

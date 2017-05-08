@@ -50,6 +50,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Colore di sfondo annuncio',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'È possibile cambiare il colore di sfondo dell’annuncio usando un codice esadecimale (per esempio FFFF80). Lasciare questo campo in bianco per usare il colore predefinito.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data di scadenza annuncio',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Imposta la data in cui scadrà l’annuncio. Per non avere una scadenza, lasciare questo campo in bianco.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Data di scadenza non valida o già trascorsa.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Testo dell’annuncio',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Anteprima annuncio',
 

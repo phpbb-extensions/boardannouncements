@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Color del fondo del anuncio del foro',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puede cambiar el color del fondo del anuncio usando código hexadecimal (por ejemplo: FFFF80). Deje este campo en blanco para usar el color por defecto.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Fecha de caducidad del anuncio del foro',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Establezca la fecha en que el anuncio expirará y se desactivará. Deje este campo en blanco si no desea que el anuncio expire.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'La fecha de caducidad no es válida, o ya ha caducado.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'AAAA-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Mensaje del anuncio del foro',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Anuncio del foro - Vista previa',
 
