@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Kolor tła ogłoszenia',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Możesz zmienić kolor tła ogłoszenia używając kodu hex (szesnastkowego) np.: FFFF80. Pozostaw pole puste, aby użyć domyślnego koloru.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Deska data ważności ogłoszenia',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Ustaw datę wygaśnięcia ogłoszenia i stanie się niedostępna. Pozostaw puste pole, jeśli nie chcesz, aby ogłoszenie przestało obowiązywać.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Data ważności była nieprawidłowa lub już wygasła.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Treść ogłoszenia',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Ogłoszenie - Podgląd',
 

@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forumaankondiging-achtergrondkleur',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Je kan de achtergrondkleur van de aankondiging veranderen door gebruik te maken van een hex-code (bijv.: FFFF80). Laat dit veld leeg om de standaard kleur te gebruiken.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Vervaldatum forumaankondiging',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Stel een datum in waarop de forumaankondiging vervalt en uitgeschakeld wordt. Laat dit veld leeg als je de forumaankondiging niet wilt laten vervallen.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'De vervaldatum is ongeldig of is al verlopen.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Forumaankondigings-bericht',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Forumaankondiging - Voorbeeld',
 

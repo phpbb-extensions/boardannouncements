@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* @简体中文语言　David Yin <https://www.phpbbchinese.com/>
+* Czech - translation by Josef Kažimír (www.webcrew.cz) "kazimir@webcrew.cz"
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,5 +39,5 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENT_CLOSE'		=> '关闭公告',
+	'BOARD_ANNOUNCEMENT_CLOSE'		=> 'Zavřít oznámení',
 ));

@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Cor do fundo do comunicado',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pode mudar a cor do fundo do comunicado usando um código hexadecimal (exemplo: FFFF80). Deixe este campo em branco para usar a cor padrão.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data de expiração do anúncio',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Defina a data em que o anúncio expirará e ficará desabilitado. Deixe este campo em branco se você não quiser que o anúncio expire.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'A data de validade foi inválida ou já expirou.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Mensagem do comunicado',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Pré visualizar comunicado',
 
