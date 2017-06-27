@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Hintergrundfarbe für die Board-Ankündigung einstellen',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Die Hintergrundfarbe kannst du im HEX-Code (Beispiel: #FFFF80) hinterlegen. Lasse den Wert frei, um die Standardfarbe zu nutzen.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Ablaufdatum der Board-Ankündigung einstellen',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Setzen Sie das Datum, an dem die Ansage abläuft und deaktiviert wird. Lassen Sie dieses Feld leer, wenn Sie nicht möchten, dass die Ankündigung abläuft.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Das Verfallsdatum war ungültig oder ist bereits abgelaufen.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Text der Board-Ankündigung',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Vorschau der Board-Ankündigung',
 

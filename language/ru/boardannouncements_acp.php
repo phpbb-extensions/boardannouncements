@@ -50,6 +50,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Цвет фона объявления',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Вы можете изменить цвет фона объявления, используя шестнадцатеричный код (например: FFFF80). Оставьте это поле пустым, чтобы использовать цвет фона по умолчанию.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Срок действия объявления',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Установка даты и времени, при наступлении которых объявление будет отключено. Оставьте поле пустым, чтобы сделать объявление постоянным.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Дата задана некорректно или уже прошла.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'ГГГГ-ММ-ДД ЧЧ:ММ',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Сообщение доски объявлений',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Доска объявлений - Предпросмотр',
 

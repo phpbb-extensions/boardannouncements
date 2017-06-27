@@ -50,6 +50,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'צבע רקע של הכרזת המערכת',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'אתה יכול לשנות את צבע הרקע של ההכרזה באמצעות שימוש בקוד HEX (לדוגמה:FFF80).אל תכתוב דבר אם ברצונך להשתמש בצבע ברירת מחדל.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'מועד הפסקת פרסום של הכרזת פורום',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'בחר תאריך שבו ההכרזה תפסיק להיות מפורסמת. השאר ריק אם ברצונך שההכרזה לא תופסק.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'תאריך הפסקת הפרסום שגוי או הינו בעבר.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'תוכן הכרזת המערכת',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'תצוגה מקדימה של הכרזת המערכת',
 

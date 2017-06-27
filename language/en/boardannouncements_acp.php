@@ -51,7 +51,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'You can change the background color of the announcement using a hex code (e.g: FFFF80). Leave this field blank to use the default color.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Board announcement expiration date',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Set the date the announcement will expire and be disabled. Leave this field blank if you do not want the announcement to expire.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Set the date the announcement will expire and become disabled. Leave this field blank if you do not want the announcement to expire.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'The expiration date was invalid or has already expired.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
 

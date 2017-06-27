@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.6 - 2017-05-07
+
+- Feature: added the option to set an expiration date/time for the announcement
+- Added language packs:
+    - Czech
+    - Turkish
+
 ## 1.0.5 - 2016-10-26
 
 - Announcement can now be shown to only registered users, only guests, or everybody 

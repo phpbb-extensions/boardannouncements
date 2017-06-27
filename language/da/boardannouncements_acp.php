@@ -51,6 +51,11 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Baggrundsfarve',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ændre boardannonceringens baggrundsfarve med en hexcode for den ønskede farve (f.eks: FFFF80). Efterlades feltet tomt anvendes standardfarven.',
 
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Board annoncering udløbsdato',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Indstil datoen, hvor meddelelsen udløber og deaktiveres. Lad feltet være tomt, hvis du ikke ønsker, at meddelelsen skal udløbe.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Udløbsdatoen var ugyldig eller er allerede udløbet.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Annonceringens test',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Vis annoncering',
 
