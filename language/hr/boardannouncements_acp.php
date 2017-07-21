@@ -42,18 +42,18 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Postavke forumskih obavijesti',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Ovdje možeš dodavati i upravljati forumskim obavijestima (a) koje će biti prikazane na svakoj stranici foruma.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Prikaži forumske obavijesti',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Tko može vidjeti ovu forumskih obavijesti',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Omogući korisnicima/ama zatvaranje forumskih obavijesti',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Prikaži ovu forumsku obavijest',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Tko može vidjeti ovu forumsku obavijest',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Omogući korisnicima/ama zatvaranje ove forumske obavijesti',
 
-	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Svatko',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Svi/e',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Pozadinska boja forumskih obavijesti',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pozadinsku boja forumskih obavijesti možeš mijenjati korištenjem hex kodova (npr.: FFFF80).<br />Za korištenje zadane boje, ostavi ovo polje praznim.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Pozadinska boja forumske obavijesti',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pozadinsku boju forumske obavijesti možeš mijenjati korištenjem hex kodova (npr.: FFFF80).<br />Za korištenje zadane boje, ostavi ovo polje praznim.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Datum isteka najava za forum',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Postavite datum kada će najava istekati i onemogućiti. Ostavite ovo polje prazno ako ne želite da najava istekne.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Datum isteka nije bio valjan ili je već istekao.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Datum isteka forumske obavijesti',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Na postavljeni datum, forumska obavijest će isteći i postati onemogućena. Ukoliko ne želiš da forumska obavijest istekne, ostavi ovo polje praznim.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Datum isteka je neispravan ili je već prošao.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
 
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Poruka forumske obavijesti',

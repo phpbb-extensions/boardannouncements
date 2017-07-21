@@ -44,5 +44,5 @@ $lang = array_merge($lang, array(
 	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Postavke obavijesti',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Postavke izmijenjenih forumskih obavijesti</strong>',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Izmijenjene postavke forumskih obavijesti</strong>',
 ));
