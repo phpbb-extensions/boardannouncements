@@ -108,6 +108,7 @@ class board_announcements_module
 		// Get config options from the config table in the database
 		$board_announcements_enable = $this->config['board_announcements_enable'];
 		$board_announcements_users = $this->config['board_announcements_users'];
+		$board_announcements_index_only = $this->config['board_announcements_index_only'];
 		$board_announcements_dismiss = $this->config['board_announcements_dismiss'];
 		$board_announcements_expiry = $this->config['board_announcements_expiry'];
 
@@ -127,6 +128,7 @@ class board_announcements_module
 			// Get config options from the form
 			$board_announcements_enable = $this->request->variable('board_announcements_enable', false);
 			$board_announcements_users = $this->request->variable('board_announcements_users', self::ALL);
+			$board_announcements_index_only = $this->request->variable('board_announcements_index_only', false);
 			$board_announcements_dismiss = $this->request->variable('board_announcements_dismiss', false);
 			$board_announcements_expiry = $this->request->variable('board_announcements_expiry', '');
 			if ($board_announcements_expiry !== '')
@@ -155,6 +157,7 @@ class board_announcements_module
 				// Store the config enable/disable state
 				$this->config->set('board_announcements_enable', $board_announcements_enable);
 				$this->config->set('board_announcements_users', $board_announcements_users);
+				$this->config->set('board_announcements_index_only', $board_announcements_index_only);
 				$this->config->set('board_announcements_dismiss', $board_announcements_dismiss);
 				$this->config->set('board_announcements_expiry', $board_announcements_expiry);
 
@@ -215,6 +218,7 @@ class board_announcements_module
 		$this->template->assign_vars(array(
 			'ERRORS'						=> count($errors) ? implode('<br />', $errors) : '',
 			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $board_announcements_enable,
+			'BOARD_ANNOUNCEMENTS_INDEX_ONLY'=> $board_announcements_index_only,
 			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $board_announcements_dismiss,
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,

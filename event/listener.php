@@ -104,6 +104,13 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
+		// Do not continue if announcements are only displayed on the board index,
+		// and the user is not currently viewing the board index
+		if ($this->config['board_announcements_index_only'] && strpos($this->user->page['page_name'], 'index') === false)
+		{
+			return;
+		}
+
 		// Get board announcement data from the cache
 		$board_announcement_data = $this->cache->get('_board_announcement_data');
 
