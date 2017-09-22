@@ -52,6 +52,9 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\user */
 	protected $user;
 
+	/** @var string */
+	protected $php_ext;
+
 	/**
 	* Get data set fixtures
 	*
@@ -107,6 +110,7 @@ class listener_test extends \phpbb_database_test_case
 				return $route . '#' . serialize($params);
 			})
 		;
+		$this->php_ext = $phpEx;
 	}
 
 	/**
@@ -121,7 +125,8 @@ class listener_test extends \phpbb_database_test_case
 			$this->controller_helper,
 			$this->request,
 			$this->template,
-			$this->user
+			$this->user,
+			$this->php_ext
 		);
 	}
 
