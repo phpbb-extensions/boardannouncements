@@ -46,6 +46,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Test that our settings fields are found
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE', $crawler->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_INDEX_ONLY', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_USERS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_DISMISS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_BGCOLOR', $crawler->text());
@@ -55,6 +56,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
 		$values = array(
 			'board_announcements_enable'	=> true,
+			'board_announcements_index_only'=> true,
 			'board_announcements_users'		=> 0,
 			'board_announcements_dismiss'	=> true,
 			'board_announcements_bgcolor'	=> 'ff0000',
@@ -78,6 +80,15 @@ class announcement_test extends \phpbb_functional_test_case
 	{
 		$crawler = self::request('GET', 'index.php');
 		$this->assertContains('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
+	}
+
+	/**
+	 * Test board announcement displays on index only (as configured in test_set_acp_settings)
+	 */
+	public function test_view_off_index()
+	{
+		$crawler = self::request('GET', 'memberlist.php');
+		$this->assertCount(0, $crawler->filter('#phpbb_announcement'));
 	}
 
 	/**

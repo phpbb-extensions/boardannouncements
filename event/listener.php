@@ -39,6 +39,9 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\user */
 	protected $user;
 
+	/** @var string */
+	protected $php_ext;
+
 	/**
 	* Constructor
 	*
@@ -49,9 +52,10 @@ class listener implements EventSubscriberInterface
 	* @param \phpbb\request\request               $request           Request object
 	* @param \phpbb\template\template             $template          Template object
 	* @param \phpbb\user                          $user              User object
+	* @param string                               $php_ext           PHP extension
 	* @access public
 	*/
-	public function __construct(\phpbb\cache\driver\driver_interface $cache, \phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\cache\driver\driver_interface $cache, \phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, $php_ext)
 	{
 		$this->cache = $cache;
 		$this->config = $config;
@@ -60,6 +64,7 @@ class listener implements EventSubscriberInterface
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
+		$this->php_ext = $php_ext;
 	}
 
 	/**
@@ -100,6 +105,13 @@ class listener implements EventSubscriberInterface
 		// Do not continue if user is registered, but announcement is for guests only
 		// This is to prevent newly registered users from seeing guest only announcements
 		if ($this->user->data['user_id'] != ANONYMOUS && $this->config['board_announcements_users'] == board_announcements_module::GUESTS)
+		{
+			return;
+		}
+
+		// Do not continue if announcements are only displayed on the board index,
+		// and the user is not currently viewing the board index
+		if ($this->config['board_announcements_index_only'] && $this->user->page['page_name'] !== "index.{$this->php_ext}")
 		{
 			return;
 		}
