@@ -52,6 +52,9 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\user */
 	protected $user;
 
+	/** @var string */
+	protected $php_ext;
+
 	/**
 	* Get data set fixtures
 	*
@@ -83,6 +86,7 @@ class listener_test extends \phpbb_database_test_case
 		// Load/Mock classes required by the event listener class
 		$this->config = new \phpbb\config\config(array(
 			'board_announcements_enable' => 1,
+			'board_announcements_index_only' => 0,
 			'board_announcements_dismiss' => 1,
 			'board_announcements_expiry' => strtotime('+1 month'),
 			'enable_mod_rewrite' => '0',
@@ -106,6 +110,7 @@ class listener_test extends \phpbb_database_test_case
 				return $route . '#' . serialize($params);
 			})
 		;
+		$this->php_ext = $phpEx;
 	}
 
 	/**
@@ -120,7 +125,8 @@ class listener_test extends \phpbb_database_test_case
 			$this->controller_helper,
 			$this->request,
 			$this->template,
-			$this->user
+			$this->user,
+			$this->php_ext
 		);
 	}
 
@@ -176,26 +182,37 @@ class listener_test extends \phpbb_database_test_case
 			// test when BA is disabled
 			array(1, 1, array(
 				'enabled'       => false,
+				'index_only'	=> false,
 				'expiry'        => '',
 				'allowed_users' => board_announcements_module::ALL),
 			),
 			// test when BA is expired
 			array(1, 1, array(
 				'enabled'       => true,
+				'index_only'	=> false,
 				'expiry'        => strtotime('1 minute ago'),
 				'allowed_users' => board_announcements_module::ALL),
 			),
 			// test when BA is disabled by the current user
 			array(1, 0, array(
 				'enabled'       => true,
+				'index_only'	=> false,
 				'expiry'        => '',
 				'allowed_users' => board_announcements_module::ALL),
 			),
 			// test when BA is only for guests but user is newly reg.
 			array(2, 1, array(
 				'enabled'       => true,
+				'index_only'	=> false,
 				'expiry'        => '',
 				'allowed_users' => board_announcements_module::GUESTS),
+			),
+			// test when BA is only for index.
+			array(1, 1, array(
+				'enabled'       => true,
+				'index_only'	=> true,
+				'expiry'        => '',
+				'allowed_users' => board_announcements_module::ALL),
 			),
 		);
 	}
@@ -209,6 +226,7 @@ class listener_test extends \phpbb_database_test_case
 	{
 		// override config and user data
 		$this->config['board_announcements_enable'] = $configs['enabled'];
+		$this->config['board_announcements_index_only'] = $configs['index_only'];
 		$this->config['board_announcements_expiry'] = $configs['expiry'];
 		$this->config['board_announcements_users'] = $configs['allowed_users'];
 		$this->user->data['board_announcements_status'] = $status;

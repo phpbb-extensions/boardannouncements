@@ -9,6 +9,7 @@ services:
             - '@request'
             - '@template'
             - '@user'
+            - '%core.php_ext%'
         tags:
             - { name: event.listener }
 
