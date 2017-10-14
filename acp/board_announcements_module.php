@@ -12,6 +12,14 @@ namespace phpbb\boardannouncements\acp;
 
 class board_announcements_module
 {
+	const ALL = 0;
+	const MEMBERS = 1;
+	const GUESTS = 2;
+	const DATE_FORMAT = 'Y-m-d H:i';
+
+	/** @var \phpbb\cache\driver\driver_interface */
+	protected $cache;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -33,9 +41,6 @@ class board_announcements_module
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var ContainerInterface */
-	protected $phpbb_container;
-
 	/** @var string */
 	protected $phpbb_root_path;
 
@@ -43,21 +48,28 @@ class board_announcements_module
 	protected $php_ext;
 
 	/** @var string */
+	public $page_title;
+
+	/** @var string */
+	public $tpl_name;
+
+	/** @var string */
 	public $u_action;
 
-	public function main($id, $mode)
+	public function main()
 	{
-		global $config, $db, $request, $template, $user, $phpbb_root_path, $phpEx, $phpbb_container;
+		global $phpbb_container;
 
-		$this->config = $config;
+		$this->cache = $phpbb_container->get('cache.driver');
+		$this->config = $phpbb_container->get('config');
 		$this->config_text = $phpbb_container->get('config_text');
-		$this->db = $db;
+		$this->db = $phpbb_container->get('dbal.conn');
 		$this->log = $phpbb_container->get('log');
-		$this->request = $request;
-		$this->template = $template;
-		$this->user = $user;
-		$this->phpbb_root_path = $phpbb_root_path;
-		$this->php_ext = $phpEx;
+		$this->request = $phpbb_container->get('request');
+		$this->template = $phpbb_container->get('template');
+		$this->user = $phpbb_container->get('user');
+		$this->phpbb_root_path = $phpbb_container->getParameter('core.root_path');
+		$this->php_ext = $phpbb_container->getParameter('core.php_ext');
 
 		// Add the posting lang file needed by BBCodes
 		$this->user->add_lang(array('posting'));
@@ -75,13 +87,13 @@ class board_announcements_module
 		$form_name = 'acp_board_announcements';
 		add_form_key($form_name);
 
-		// Set an empty error string
-		$error = '';
+		// Set an empty error array
+		$errors = array();
 
 		// Include files needed for displaying BBCodes
 		if (!function_exists('display_custom_bbcodes'))
 		{
-			include($this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext);
+			include $this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext;
 		}
 
 		// Get all board announcement data from the config_text table in the database
@@ -93,13 +105,20 @@ class board_announcements_module
 			'announcement_bgcolor',
 		));
 
+		// Get config options from the config table in the database
+		$board_announcements_enable = $this->config['board_announcements_enable'];
+		$board_announcements_users = $this->config['board_announcements_users'];
+		$board_announcements_index_only = $this->config['board_announcements_index_only'];
+		$board_announcements_dismiss = $this->config['board_announcements_dismiss'];
+		$board_announcements_expiry = $this->config['board_announcements_expiry'];
+
 		// If form is submitted or previewed
 		if ($this->request->is_set_post('submit') || $this->request->is_set_post('preview'))
 		{
 			// Test if form key is valid
 			if (!check_form_key($form_name))
 			{
-				$error = $this->user->lang('FORM_INVALID');
+				$errors[] = $this->user->lang('FORM_INVALID');
 			}
 
 			// Get new announcement text and bgcolor values from the form
@@ -107,9 +126,19 @@ class board_announcements_module
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 
 			// Get config options from the form
-			$enable_announcements = $this->request->variable('board_announcements_enable', false);
-			$allow_guests = $this->request->variable('board_announcements_guests', false);
-			$dismiss_announcements = $this->request->variable('board_announcements_dismiss', false);
+			$board_announcements_enable = $this->request->variable('board_announcements_enable', false);
+			$board_announcements_users = $this->request->variable('board_announcements_users', self::ALL);
+			$board_announcements_index_only = $this->request->variable('board_announcements_index_only', false);
+			$board_announcements_dismiss = $this->request->variable('board_announcements_dismiss', false);
+			$board_announcements_expiry = $this->request->variable('board_announcements_expiry', '');
+			if ($board_announcements_expiry !== '')
+			{
+				$board_announcements_expiry = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $board_announcements_expiry);
+				if ($board_announcements_expiry < time())
+				{
+					$errors[] = $this->user->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+				}
+			}
 
 			// Prepare announcement text for storage
 			generate_text_for_storage(
@@ -123,12 +152,14 @@ class board_announcements_module
 			);
 
 			// Store the announcement text and settings if submitted with no errors
-			if (empty($error) && $this->request->is_set_post('submit'))
+			if (empty($errors) && $this->request->is_set_post('submit'))
 			{
 				// Store the config enable/disable state
-				$this->config->set('board_announcements_enable', $enable_announcements);
-				$this->config->set('board_announcements_guests', $allow_guests);
-				$this->config->set('board_announcements_dismiss', $dismiss_announcements);
+				$this->config->set('board_announcements_enable', $board_announcements_enable);
+				$this->config->set('board_announcements_users', $board_announcements_users);
+				$this->config->set('board_announcements_index_only', $board_announcements_index_only);
+				$this->config->set('board_announcements_dismiss', $board_announcements_dismiss);
+				$this->config->set('board_announcements_expiry', $board_announcements_expiry);
 
 				// Store the announcement settings to the config_table in the database
 				$this->config_text->set_array(array(
@@ -140,11 +171,15 @@ class board_announcements_module
 					'announcement_timestamp'	=> time(),
 				));
 
-				// Set the board_announcements_status for all normal users
-				// to 1 when an announcement is created, or 0 when announcement is empty
-				$announcement_status = (!empty($data['announcement_text'])) ? 1 : 0;
+				$announcement_text = (!empty($data['announcement_text']));
+				$guests_only  = ($board_announcements_users === self::GUESTS);
+				$members_only = ($board_announcements_users === self::MEMBERS);
+
+				$this->db->sql_transaction('begin');
+
+				// Set the board_announcements_status for all registered users
 				$sql = 'UPDATE ' . USERS_TABLE . '
-					SET board_announcements_status = ' . $announcement_status . '
+					SET board_announcements_status = ' . ($announcement_text && !$guests_only ? 1 : 0) . '
 					WHERE user_type <> ' . USER_IGNORE;
 				$this->db->sql_query($sql);
 
@@ -152,12 +187,17 @@ class board_announcements_module
 				// We do this separately for guests to make sure it is always set to
 				// the correct value every time.
 				$sql = 'UPDATE ' . USERS_TABLE . '
-					SET board_announcements_status = ' . (($allow_guests && $announcement_status ) ? 1 : 0) . '
+					SET board_announcements_status = ' . ($announcement_text && !$members_only ? 1 : 0) . '
 					WHERE user_id = ' . ANONYMOUS;
 				$this->db->sql_query($sql);
 
+				$this->db->sql_transaction('commit');
+
 				// Log the announcement update
 				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_UPDATED_LOG');
+
+				// Destroy any cached board announcement data
+				$this->cache->destroy('_board_announcement_data');
 
 				// Output message to user for the announcement update
 				trigger_error($this->user->lang('BOARD_ANNOUNCEMENTS_UPDATED') . adm_back_link($this->u_action));
@@ -176,13 +216,20 @@ class board_announcements_module
 
 		// Output data to the template
 		$this->template->assign_vars(array(
-			'ERRORS'						=> $error,
-			'BOARD_ANNOUNCEMENTS_ENABLED'	=> (isset($enable_announcements)) ? $enable_announcements : $this->config['board_announcements_enable'],
-			'BOARD_ANNOUNCEMENTS_GUESTS'	=> (isset($allow_guests)) ? $allow_guests: $this->config['board_announcements_guests'],
-			'BOARD_ANNOUNCEMENTS_DISMISS'	=> (isset($dismiss_announcements)) ? $dismiss_announcements : $this->config['board_announcements_dismiss'],
+			'ERRORS'						=> count($errors) ? implode('<br />', $errors) : '',
+			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $board_announcements_enable,
+			'BOARD_ANNOUNCEMENTS_INDEX_ONLY'=> $board_announcements_index_only,
+			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $board_announcements_dismiss,
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
+			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $board_announcements_expiry ? $this->user->format_date($board_announcements_expiry, self::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
+
+			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select(array(
+				self::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
+				self::MEMBERS	=> 'G_REGISTERED',
+				self::GUESTS	=> 'G_GUESTS',
+			), $board_announcements_users),
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],
 			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
@@ -199,13 +246,14 @@ class board_announcements_module
 			'S_BBCODE_IMG'			=> true,
 			'S_BBCODE_FLASH'		=> true,
 			'S_LINKS_ALLOWED'		=> true,
-
 			'S_BOARD_ANNOUNCEMENTS'	=> true,
+
+			'PICKER_DATE_FORMAT'	=> self::DATE_FORMAT,
 
 			'U_ACTION'				=> $this->u_action,
 		));
 
-		// Assigning custom bbcodes
+		// Build custom bbcodes array
 		display_custom_bbcodes();
 	}
 }

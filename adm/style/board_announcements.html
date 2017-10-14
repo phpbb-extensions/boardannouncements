@@ -32,10 +32,10 @@
 			</dd>
 		</dl>
 		<dl>
-			<dt><label for="board_announcements_enable">{L_BOARD_ANNOUNCEMENTS_GUESTS}{L_COLON}</label></dt>
+			<dt><label for="board_announcements_index_only">{L_BOARD_ANNOUNCEMENTS_INDEX_ONLY}{L_COLON}</label></dt>
 			<dd>
-				<label><input type="radio" class="radio" id="board_announcements_guests" name="board_announcements_guests" value="1"<!-- IF BOARD_ANNOUNCEMENTS_GUESTS --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
-				<label><input type="radio" class="radio" name="board_announcements_guests" value="0"<!-- IF not BOARD_ANNOUNCEMENTS_GUESTS --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+				<label><input type="radio" class="radio" id="board_announcements_index_only" name="board_announcements_index_only" value="1"<!-- IF BOARD_ANNOUNCEMENTS_INDEX_ONLY --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="board_announcements_index_only" value="0"<!-- IF not BOARD_ANNOUNCEMENTS_INDEX_ONLY --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
 			</dd>
 		</dl>
 		<dl>
@@ -43,6 +43,12 @@
 			<dd>
 				<label><input type="radio" class="radio" id="board_announcements_dismiss" name="board_announcements_dismiss" value="1"<!-- IF BOARD_ANNOUNCEMENTS_DISMISS --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
 				<label><input type="radio" class="radio" name="board_announcements_dismiss" value="0"<!-- IF not BOARD_ANNOUNCEMENTS_DISMISS --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="board_announcements_users">{L_BOARD_ANNOUNCEMENTS_USERS}{L_COLON}</label></dt>
+			<dd>
+				<select name="board_announcements_users">{S_BOARD_ANNOUNCEMENTS_USERS}</select>
 			</dd>
 		</dl>
 	</fieldset>
@@ -56,6 +62,12 @@
 
 	<fieldset>
 		<legend>{L_BOARD_ANNOUNCEMENTS_TEXT}</legend>
+		<dl>
+			<dt><label for="board_announcements_expiry">{L_BOARD_ANNOUNCEMENTS_EXPIRY}{L_COLON}</label><br /><span>{L_BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN}</span></dt>
+			<dd>
+				<input name="board_announcements_expiry" type="text" id="board_announcements_expiry" value="{BOARD_ANNOUNCEMENTS_EXPIRY}" size="20" maxlength="20" /> <samp>{L_BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT}</samp>
+			</dd>
+		</dl>
 		<dl>
 			<dt><label for="board_announcements_bgcolor">{L_BOARD_ANNOUNCEMENTS_BGCOLOR}{L_COLON}</label><br /><span>{L_BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN}</span></dt>
 			<dd>

@@ -19,7 +19,6 @@ class version_check_test extends \phpbb_functional_test_case
 	* Define the extensions to be tested
 	*
 	* @return array vendor/name of extension(s) to test
-	* @access static
 	*/
 	static protected function setup_extensions()
 	{
@@ -28,8 +27,6 @@ class version_check_test extends \phpbb_functional_test_case
 
 	/**
 	* Test extension manager version check
-	*
-	* @access public
 	*/
 	public function test_version_check()
 	{

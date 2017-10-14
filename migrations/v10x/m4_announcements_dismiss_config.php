@@ -16,6 +16,18 @@ namespace phpbb\boardannouncements\migrations\v10x;
 class m4_announcements_dismiss_config extends \phpbb\db\migration\migration
 {
 	/**
+	* Assign migration file dependencies for this migration
+	*
+	* @return array Array of migration files
+	* @static
+	* @access public
+	*/
+	static public function depends_on()
+	{
+		return array('\phpbb\boardannouncements\migrations\v10x\m3_initial_module');
+	}
+
+	/**
 	* Add board announcements data to the database.
 	*
 	* @return array Array of table data

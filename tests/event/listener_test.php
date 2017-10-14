@@ -11,17 +11,14 @@
 
 namespace phpbb\boardannouncements\tests\event;
 
-require_once dirname(__FILE__) . '/../../../../../includes/functions.php';
-require_once dirname(__FILE__) . '/../../../../../includes/functions_content.php';
-require_once dirname(__FILE__) . '/../../../../../includes/utf/utf_tools.php';
+use phpbb\boardannouncements\acp\board_announcements_module;
 
-class event_listener_test extends \phpbb_database_test_case
+class listener_test extends \phpbb_database_test_case
 {
 	/**
 	* Define the extensions to be tested
 	*
 	* @return array vendor/name of extension(s) to test
-	* @access static
 	*/
 	static protected function setup_extensions()
 	{
@@ -31,21 +28,45 @@ class event_listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\boardannouncements\event\listener */
 	protected $listener;
 
+	/** @var \phpbb_mock_cache */
+	protected $cache;
+
+	/** @var \phpbb\config\config */
+	protected $config;
+
+	/** @var \phpbb\config\db_text */
+	protected $config_text;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\controller\helper */
+	protected $controller_helper;
+
+	/** @var \phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\request\request */
+	protected $request;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\template\template */
+	protected $template;
+
+	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\user */
+	protected $user;
+
+	/** @var string */
+	protected $php_ext;
+
 	/**
 	* Get data set fixtures
 	*
-	* @return PHPUnit_Extensions_Database_DataSet_XmlDataSet
-	* @access public
+	* @return \PHPUnit_Extensions_Database_DataSet_XmlDataSet
 	*/
 	public function getDataSet()
 	{
-		return $this->createXMLDataSet(dirname(__FILE__) . '/fixtures/config_text.xml');
+		return $this->createXMLDataSet(__DIR__ . '/fixtures/config_text.xml');
 	}
 
 	/**
 	* Setup test environment
-	*
-	* @access public
 	*/
 	public function setUp()
 	{
@@ -57,7 +78,7 @@ class event_listener_test extends \phpbb_database_test_case
 		$this->db = $this->new_dbal();
 
 		// Mock some global classes that may be called during code execution
-		$cache = new \phpbb_mock_cache;
+		$cache = $this->cache = new \phpbb_mock_cache;
 		$user = new \phpbb_mock_user;
 		$user->optionset('viewcensors', false);
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
@@ -65,56 +86,52 @@ class event_listener_test extends \phpbb_database_test_case
 		// Load/Mock classes required by the event listener class
 		$this->config = new \phpbb\config\config(array(
 			'board_announcements_enable' => 1,
+			'board_announcements_index_only' => 0,
 			'board_announcements_dismiss' => 1,
+			'board_announcements_expiry' => strtotime('+1 month'),
 			'enable_mod_rewrite' => '0',
 		));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 		$this->request = $this->getMock('\phpbb\request\request');
-		$this->template = new \phpbb\boardannouncements\tests\mock\template();
-		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
+		$this->template = $this->getMockBuilder('\phpbb\template\template')
+			->getMock();
+		$this->user = $this->getMock('\phpbb\user', array(), array(
+			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
+			'\phpbb\datetime'
+		));
 		$this->user->data['board_announcements_status'] = 1;
 
-		$request = new \phpbb_mock_request();
-		$request->overwrite('SCRIPT_NAME', 'app.php', \phpbb\request\request_interface::SERVER);
-		$request->overwrite('SCRIPT_FILENAME', 'app.php', \phpbb\request\request_interface::SERVER);
-		$request->overwrite('REQUEST_URI', 'app.php', \phpbb\request\request_interface::SERVER);
-
-		$this->controller_helper = new \phpbb_mock_controller_helper(
-			$this->template,
-			$this->user,
-			$this->config,
-			new \phpbb\controller\provider(),
-			new \phpbb_mock_extension_manager($phpbb_root_path),
-			new \phpbb\symfony_request($request),
-			$request,
-			new \phpbb\filesystem(),
-			'',
-			$phpEx,
-			dirname(__FILE__) . '/../../'
-		);
+		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->controller_helper->expects($this->any())
+			->method('route')
+			->willReturnCallback(function ($route, array $params = array()) {
+				return $route . '#' . serialize($params);
+			})
+		;
+		$this->php_ext = $phpEx;
 	}
 
 	/**
 	* Create our event listener
-	*
-	* @access protected
 	*/
 	protected function set_listener()
 	{
 		$this->listener = new \phpbb\boardannouncements\event\listener(
+			$this->cache,
 			$this->config,
 			$this->config_text,
 			$this->controller_helper,
 			$this->request,
 			$this->template,
-			$this->user
+			$this->user,
+			$this->php_ext
 		);
 	}
 
 	/**
 	* Test the event listener is constructed correctly
-	*
-	* @access public
 	*/
 	public function test_construct()
 	{
@@ -124,8 +141,6 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the event listener is subscribing events
-	*
-	* @access public
 	*/
 	public function test_getSubscribedEvents()
 	{
@@ -136,23 +151,95 @@ class event_listener_test extends \phpbb_database_test_case
 
 	/**
 	* Test the display_board_announcements event
-	*
-	* @access public
 	*/
 	public function test_display_board_announcements()
 	{
 		$this->set_listener();
 
+		$this->template->expects($this->once())
+			->method('assign_vars')
+			->with(array(
+				'S_BOARD_ANNOUNCEMENT'			=> true,
+				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> true,
+				'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
+				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
+				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'phpbb_boardannouncements_controller#' . serialize(array('hash' => generate_link_hash('close_boardannouncement'))),
+			));
+
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
 		$dispatcher->addListener('core.page_header_after', array($this->listener, 'display_board_announcements'));
 		$dispatcher->dispatch('core.page_header_after');
+	}
 
-		$this->assertEquals(array(
-			'S_BOARD_ANNOUNCEMENT'			=> true,
-			'S_BOARD_ANNOUNCEMENT_DISMISS'	=> true,
-			'BOARD_ANNOUNCEMENT' 			=> 'Hello world!',
-			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> 'FF0000',
-			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'app.php/boardannouncements/close?hash=' . generate_link_hash('close_boardannouncement'),
-		), $this->template->get_template_vars());
+	/**
+	 * Data set for test_display_board_announcements_disabled
+	 *
+	 * @return array
+	 */
+	public function display_board_announcements_disabled_data()
+	{
+		return array(
+			// test when BA is disabled
+			array(1, 1, array(
+				'enabled'       => false,
+				'index_only'	=> false,
+				'expiry'        => '',
+				'allowed_users' => board_announcements_module::ALL),
+			),
+			// test when BA is expired
+			array(1, 1, array(
+				'enabled'       => true,
+				'index_only'	=> false,
+				'expiry'        => strtotime('1 minute ago'),
+				'allowed_users' => board_announcements_module::ALL),
+			),
+			// test when BA is disabled by the current user
+			array(1, 0, array(
+				'enabled'       => true,
+				'index_only'	=> false,
+				'expiry'        => '',
+				'allowed_users' => board_announcements_module::ALL),
+			),
+			// test when BA is only for guests but user is newly reg.
+			array(2, 1, array(
+				'enabled'       => true,
+				'index_only'	=> false,
+				'expiry'        => '',
+				'allowed_users' => board_announcements_module::GUESTS),
+			),
+			// test when BA is only for index.
+			array(1, 1, array(
+				'enabled'       => true,
+				'index_only'	=> true,
+				'expiry'        => '',
+				'allowed_users' => board_announcements_module::ALL),
+			),
+		);
+	}
+
+	/**
+	 * Test the display_board_announcements event when disabled
+	 *
+	 * @dataProvider display_board_announcements_disabled_data
+	 */
+	public function test_display_board_announcements_disabled($user_id, $status, $configs)
+	{
+		// override config and user data
+		$this->config['board_announcements_enable'] = $configs['enabled'];
+		$this->config['board_announcements_index_only'] = $configs['index_only'];
+		$this->config['board_announcements_expiry'] = $configs['expiry'];
+		$this->config['board_announcements_users'] = $configs['allowed_users'];
+		$this->user->data['board_announcements_status'] = $status;
+		$this->user->data['user_id'] = $user_id;
+
+		$this->set_listener();
+
+		// Test that assign_vars is never called
+		$this->template->expects($this->never())
+			->method('assign_vars');
+
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.page_header_after', array($this->listener, 'display_board_announcements'));
+		$dispatcher->dispatch('core.page_header_after');
 	}
 }

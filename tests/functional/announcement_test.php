@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\tests\functional;
 
+use phpbb\boardannouncements\acp\board_announcements_module;
+
 /**
 * @group functional
 */
@@ -19,7 +21,6 @@ class announcement_test extends \phpbb_functional_test_case
 	* Define the extensions to be tested
 	*
 	* @return array vendor/name of extension(s) to test
-	* @access static
 	*/
 	static protected function setup_extensions()
 	{
@@ -34,8 +35,6 @@ class announcement_test extends \phpbb_functional_test_case
 
 	/**
 	* Test board announcement ACP page and save settings
-	*
-	* @access public
 	*/
 	public function test_set_acp_settings()
 	{
@@ -47,17 +46,18 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Test that our settings fields are found
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE', $crawler->text());
-		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_GUESTS', $crawler->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_INDEX_ONLY', $crawler->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_USERS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_DISMISS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_BGCOLOR', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_TEXT', $crawler->text());
 
 		// Set some form values
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
-		$values = $form->getValues();
 		$values = array(
 			'board_announcements_enable'	=> true,
-			'board_announcements_guests'	=> true,
+			'board_announcements_index_only'=> true,
+			'board_announcements_users'		=> 0,
 			'board_announcements_dismiss'	=> true,
 			'board_announcements_bgcolor'	=> 'ff0000',
 			'board_announcements_text'		=> 'This is a board announcement test.',
@@ -67,12 +67,14 @@ class announcement_test extends \phpbb_functional_test_case
 		// Submit form and test success
 		$crawler = self::submit($form);
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_UPDATED', $crawler->text());
+
+		// Confirm the log entry has been added correctly
+		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
+		$this->assertContains(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_UPDATED_LOG')), $crawler->text());
 	}
 
 	/**
 	* Test loading the board announcement as a user
-	*
-	* @access public
 	*/
 	public function test_view_as_user()
 	{
@@ -81,9 +83,38 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
+	 * Test board announcement displays on index only (as configured in test_set_acp_settings)
+	 */
+	public function test_view_off_index()
+	{
+		$crawler = self::request('GET', 'memberlist.php');
+		$this->assertCount(0, $crawler->filter('#phpbb_announcement'));
+	}
+
+	/**
+	* Test loading the board announcement as a newly registered user
+	*/
+	public function test_view_as_new_user()
+	{
+		$this->logout();
+
+		$this->create_user('new_user1');
+		$this->login('new_user1');
+
+		$crawler = self::request('GET', 'index.php');
+		$this->assertContains('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
+
+		// Verify that new users won't see the announcement if it's Guest only
+		$this->db->sql_query('UPDATE ' . CONFIG_TABLE . ' SET config_value = ' .
+			(int) board_announcements_module::GUESTS . " 
+			WHERE config_name = 'board_announcements_users'");
+		$this->purge_cache();
+		$crawler = self::request('GET', 'index.php');
+		$this->assertNotContains('This is a board announcement test.', $crawler->text());
+	}
+
+	/**
 	* Test loading the board announcement as a guest
-	*
-	* @access public
 	*/
 	public function test_view_as_guest()
 	{
@@ -95,8 +126,6 @@ class announcement_test extends \phpbb_functional_test_case
 
 	/**
 	* Test closing the board announcement
-	*
-	* @access public
 	*/
 	public function test_close_announcement()
 	{
@@ -109,18 +138,18 @@ class announcement_test extends \phpbb_functional_test_case
 
 	/**
 	* Test closing the board announcement failure
-	*
-	* @access public
 	*/
 	public function test_close_announcement_fail()
 	{
 		// Wrong hash
-		$crawler = self::request('GET', 'app.php/boardannouncements/close?hash=wrong&sid=' . $this->sid);
-		$this->assertContainsLang('GENERAL_ERROR', $crawler->text());
+		$crawler = self::request('GET', 'app.php/boardannouncements/close?hash=wrong&sid=' . $this->sid, array(), false);
+		self::assert_response_status_code(403);
+		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// No hash
-		$crawler = self::request('GET', 'app.php/boardannouncements/close?sid=' . $this->sid);
-		$this->assertContainsLang('GENERAL_ERROR', $crawler->text());
+		$crawler = self::request('GET', 'app.php/boardannouncements/close?sid=' . $this->sid, array(), false);
+		self::assert_response_status_code(403);
+		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 	}
 
 	/**

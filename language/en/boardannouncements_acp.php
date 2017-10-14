@@ -42,11 +42,19 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Here you can manage and create a board announcement that will be displayed on each page of your board.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Display this board announcement',
-	'BOARD_ANNOUNCEMENTS_GUESTS'			=> 'Allow guests to view this board announcement',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this board announcement',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Allow users to dismiss this board announcement',
+
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Everyone',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Board announcement background color',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'You can change the background color of the announcement using a hex code (e.g: FFFF80). Leave this field blank to use the default color.',
+
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Board announcement expiration date',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Set the date the announcement will expire and become disabled. Leave this field blank if you do not want the announcement to expire.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'The expiration date was invalid or has already expired.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
 
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Board announcement message',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Board announcement - Preview',

@@ -10,6 +10,7 @@
 
 namespace phpbb\boardannouncements\event;
 
+use phpbb\boardannouncements\acp\board_announcements_module;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -17,6 +18,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 */
 class listener implements EventSubscriberInterface
 {
+	/** @var \phpbb\cache\driver\driver_interface */
+	protected $cache;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -35,26 +39,32 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\user */
 	protected $user;
 
+	/** @var string */
+	protected $php_ext;
+
 	/**
 	* Constructor
 	*
-	* @param \phpbb\config\config        $config             Config object
-	* @param \phpbb\config\db_text       $config_text        DB text object
-	* @param \phpbb\controller\helper    $controller_helper  Controller helper object
-	* @param \phpbb\request\request      $request            Request object
-	* @param \phpbb\template\template    $template           Template object
-	* @param \phpbb\user                 $user               User object
-	* @return \phpbb\boardrules\event\listener
+	* @param \phpbb\cache\driver\driver_interface $cache             Cache driver interface
+	* @param \phpbb\config\config                 $config            Config object
+	* @param \phpbb\config\db_text                $config_text       DB text object
+	* @param \phpbb\controller\helper             $controller_helper Controller helper object
+	* @param \phpbb\request\request               $request           Request object
+	* @param \phpbb\template\template             $template          Template object
+	* @param \phpbb\user                          $user              User object
+	* @param string                               $php_ext           PHP extension
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\cache\driver\driver_interface $cache, \phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, $php_ext)
 	{
+		$this->cache = $cache;
 		$this->config = $config;
 		$this->config_text = $config_text;
 		$this->controller_helper = $controller_helper;
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
+		$this->php_ext = $php_ext;
 	}
 
 	/**
@@ -74,10 +84,10 @@ class listener implements EventSubscriberInterface
 	/**
 	* Display board announcements
 	*
-	* @return null
+	* @return void
 	* @access public
 	*/
-	public function display_board_announcements($event)
+	public function display_board_announcements()
 	{
 		// Do not continue if announcement has been disabled
 		if (!$this->config['board_announcements_enable'])
@@ -85,15 +95,45 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
-		// Get board announcement data from the config_text object
-		$board_announcement_data = $this->config_text->get_array(array(
-			'announcement_text',
-			'announcement_uid',
-			'announcement_bitfield',
-			'announcement_options',
-			'announcement_bgcolor',
-			'announcement_timestamp',
-		));
+		// Do not continue if board announcement is expired
+		if ($this->config['board_announcements_expiry'] && $this->config['board_announcements_expiry'] < time())
+		{
+			$this->config->set('board_announcements_enable', 0);
+			return;
+		}
+
+		// Do not continue if user is registered, but announcement is for guests only
+		// This is to prevent newly registered users from seeing guest only announcements
+		if ($this->user->data['user_id'] != ANONYMOUS && $this->config['board_announcements_users'] == board_announcements_module::GUESTS)
+		{
+			return;
+		}
+
+		// Do not continue if announcements are only displayed on the board index,
+		// and the user is not currently viewing the board index
+		if ($this->config['board_announcements_index_only'] && $this->user->page['page_name'] !== "index.{$this->php_ext}")
+		{
+			return;
+		}
+
+		// Get board announcement data from the cache
+		$board_announcement_data = $this->cache->get('_board_announcement_data');
+
+		if ($board_announcement_data === false)
+		{
+			// Get board announcement data from the config_text object
+			$board_announcement_data = $this->config_text->get_array(array(
+				'announcement_text',
+				'announcement_uid',
+				'announcement_bitfield',
+				'announcement_options',
+				'announcement_bgcolor',
+				'announcement_timestamp',
+			));
+
+			// Cache board announcement data
+			$this->cache->put('_board_announcement_data', $board_announcement_data);
+		}
 
 		// Get announcement cookie if one exists
 		$cookie = $this->request->variable($this->config['cookie_name'] . '_baid', '', true, \phpbb\request\request_interface::COOKIE);
@@ -118,7 +158,7 @@ class listener implements EventSubscriberInterface
 		// Output board announcement to the template
 		$this->template->assign_vars(array(
 			'S_BOARD_ANNOUNCEMENT'			=> true,
-			'S_BOARD_ANNOUNCEMENT_DISMISS'	=> ($this->config['board_announcements_dismiss']) ? true : false,
+			'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $this->config['board_announcements_dismiss'],
 
 			'BOARD_ANNOUNCEMENT'			=> $announcement_message,
 			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
