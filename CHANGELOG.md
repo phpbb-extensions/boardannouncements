@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.7 - 2018-03-14
+
+- Feature: added a new option to display the board announcement on the board index page only
+- Minor coding improvements and translation updates
+
 ## 1.0.6 - 2017-05-07
 
 - Feature: added the option to set an expiration date/time for the announcement
