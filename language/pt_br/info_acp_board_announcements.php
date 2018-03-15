@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* Portuguese Brazil translation by henrique.seven2011 (http://suportephpbb.com.br/)
+* Brazilian Portuguese translation by henrique.seven2011 (http://suportephpbb.com.br/) and update by eunaumtenhoid (c) 2017 [ver 1.0.6] (https://github.com/phpBBTraducoes)
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -40,9 +40,9 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Anúncios',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Configurações de anúncio',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Board Announcements',
+	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Configurar anúncio',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Configurações do anúncio foram alteradas</strong>',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>As configurações do Board announcement foram alteradas</strong>',
 ));
