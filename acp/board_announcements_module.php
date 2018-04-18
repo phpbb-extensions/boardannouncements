@@ -179,9 +179,9 @@ class board_announcements_module
 					'announcement_timestamp'	=> time(),
 				));
 
-				$announcement_text = (!empty($data['announcement_text']));
-				$guests_only  = ($board_announcements_users === self::GUESTS);
-				$members_only = ($board_announcements_users === self::MEMBERS);
+				$announcement_text = !empty($data['announcement_text']);
+				$guests_only  = $board_announcements_users === self::GUESTS;
+				$members_only = $board_announcements_users === self::MEMBERS;
 
 				$this->db->sql_transaction('begin');
 
