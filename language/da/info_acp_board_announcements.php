@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* Danish translation by jask (phpbb3.dk)
+* Danish translation by jask (phpbb3.dk) and scootergrisen
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -40,9 +40,9 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Boardannoncering',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Indstillinger for annoncering',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Boardbekendtgørelser',
+	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Indstillinger for bekendtgørelse',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Indstillinger for boardannoncering ændret</strong>',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Indstillinger for boardbekendtgørelse ændret</strong>',
 ));

@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Tu môžete spravovať a vytvárať oznam fóra, ktorý bude zobrazený na každej stránke vášho fóra.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Zobraziť tento oznam',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kto môže vidieť tento oznam',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Povoliť používateľom skyť tento oznam',
 

@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Siin lehel saad hallata ja luua foorumi teadaannet, mida näidatakse igal foorumi leheküljel.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Näita seda foorumi teadaannet',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kes saab vaadata foorumi teadaannet',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Luba liikmetel sellest foorumi teadaandest keelduda',
 

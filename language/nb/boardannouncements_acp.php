@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Her kan du behandle og opprette en forummelding som vil bli vist på hver side i forumet ditt.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Vis denne forummeldingen',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Hvem kan se denne forummeldingen',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'La brukere lukke denne forummeldingen',
 

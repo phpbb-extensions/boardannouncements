@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* Danish translation by jask (phpbb3.dk)
+* Danish translation by jask (phpbb3.dk) and scootergrisen
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,25 +39,26 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Boardannonceringer',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Her kan du oprette og ændre annonceringer som vises på alle sider på dit board.',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Indstillinger for boardbekendtgørelser',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Her kan du håndtere og oprette en boardbekendtgørelse som vises på alle sider på dit board.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Aktiver boardannonceringer',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Hvem kan se dette boardannonceringer',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Tillad at brugere kan afvise denne boardannoncering',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Vis boardbekendtgørelsen',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Hvem kan se boardbekendtgørelsen',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Tillad brugere at lukke boardbekendtgørelsen',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alle',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Baggrundsfarve',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ændre boardannonceringens baggrundsfarve med en hexcode for den ønskede farve (f.eks: FFFF80). Efterlades feltet tomt anvendes standardfarven.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Baggrundsfarve for boardbekendtgørelse',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ændre bekendtgørelsens baggrundsfarve med en hex-kode (f.eks.: FFFF80). Lad feltet være tomt, for at anvende standardfarven.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Board annoncering udløbsdato',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Indstil datoen, hvor meddelelsen udløber og deaktiveres. Lad feltet være tomt, hvis du ikke ønsker, at meddelelsen skal udløbe.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Udløbsdato for boardbekendtgørelse',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Indstil datoen, hvor bekendtgørelsen udløber og deaktiveres. Lad feltet være tomt, hvis bekendtgørelsen ikke skal udløbe.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Udløbsdatoen var ugyldig eller er allerede udløbet.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'ÅÅÅÅ-MM-DD TT:MM',
 
-	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Annonceringens test',
-	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Vis annoncering',
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Boardbekendtgørelsens tekst',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Forhåndsvis boardbekendtgørelse',
 
-	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Boardannoncering er opdateret.',
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Boardbekendtgørelsen er opdateret.',
 ));

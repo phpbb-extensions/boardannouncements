@@ -42,6 +42,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'כאן תוכל לנהל וליצור הכרזת מערכת שתופיע בכל עמוד במערכת שלך.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'הצג את הכרזת המערכת',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'מי רשאי לצפות בהכרזה זו',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'אפשר למשתמשים להסתיר את הכרזת המערכת',
 

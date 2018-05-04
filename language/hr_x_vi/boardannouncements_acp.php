@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Ovdje možete dodavati i upravljati forumskim obavijestima (a) koje će biti prikazane na svakoj stranici foruma.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Prikažite ovu forumsku obavijest',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Tko može vidjeti ovu forumsku obavijest',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Omogućite korisnicima/ama zatvaranje ove forumske obavijesti',
 
