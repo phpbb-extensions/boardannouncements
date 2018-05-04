@@ -42,7 +42,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Buradan sitenin her sayfasında görünecek site duyurusunu yönetebilir ve yeni bir duyuru oluşturabilirsin.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Bu site duyurusunu göster',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Sadece forum anasayfasında göster',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Bu site duyurusunu kimler görebilir',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Kullanıcıların bu site duyurusunu savmalarına izin ver',
 

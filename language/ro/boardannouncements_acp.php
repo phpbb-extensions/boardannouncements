@@ -42,7 +42,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aici puteţi gestiona sau crea anunţuri care vor fi afişate pe fiecare pagină a forumului.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Afişează acest anunţ',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Afișare doar pe prima pagină',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Cine poate vedea acest anunț',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permite utilizatorilor să respingă anunţul',
 

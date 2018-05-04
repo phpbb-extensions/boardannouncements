@@ -43,7 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Her kan du håndtere og oprette en boardbekendtgørelse som vises på alle sider på dit board.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Vis boardbekendtgørelsen',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Vis kun på boardindeks',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Hvem kan se boardbekendtgørelsen',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Tillad brugere at lukke boardbekendtgørelsen',
 
