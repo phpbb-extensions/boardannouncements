@@ -26,8 +26,14 @@ class board_announcements_module
 	/** @var \phpbb\config\db_text */
 	protected $config_text;
 
+	/** @var \phpbb\controller\helper $controller_helper */
+	protected $controller_helper;
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
+
+	/** @var \phpbb\language\language */
+	protected $language;
 
 	/** @var \phpbb\log\log */
 	protected $log;
@@ -63,7 +69,9 @@ class board_announcements_module
 		$this->cache = $phpbb_container->get('cache.driver');
 		$this->config = $phpbb_container->get('config');
 		$this->config_text = $phpbb_container->get('config_text');
+		$this->controller_helper = $phpbb_container->get('controller.helper');
 		$this->db = $phpbb_container->get('dbal.conn');
+		$this->language = $phpbb_container->get('language');
 		$this->log = $phpbb_container->get('log');
 		$this->request = $phpbb_container->get('request');
 		$this->template = $phpbb_container->get('template');
@@ -72,10 +80,10 @@ class board_announcements_module
 		$this->php_ext = $phpbb_container->getParameter('core.php_ext');
 
 		// Add the posting lang file needed by BBCodes
-		$this->user->add_lang(array('posting'));
+		$this->language->add_lang('posting');
 
 		// Add the board announcements ACP lang file
-		$this->user->add_lang_ext('phpbb/boardannouncements', 'boardannouncements_acp');
+		$this->language->add_lang( 'boardannouncements_acp', 'phpbb/boardannouncements');
 
 		// Load a template from adm/style for our ACP page
 		$this->tpl_name = 'board_announcements';
@@ -118,7 +126,7 @@ class board_announcements_module
 			// Test if form key is valid
 			if (!check_form_key($form_name))
 			{
-				$errors[] = $this->user->lang('FORM_INVALID');
+				$errors[] = $this->language->lang('FORM_INVALID');
 			}
 
 			// Get new announcement text and bgcolor values from the form
@@ -136,7 +144,7 @@ class board_announcements_module
 				$board_announcements_expiry = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $board_announcements_expiry);
 				if ($board_announcements_expiry < time())
 				{
-					$errors[] = $this->user->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
 				}
 			}
 
@@ -171,9 +179,9 @@ class board_announcements_module
 					'announcement_timestamp'	=> time(),
 				));
 
-				$announcement_text = (!empty($data['announcement_text']));
-				$guests_only  = ($board_announcements_users === self::GUESTS);
-				$members_only = ($board_announcements_users === self::MEMBERS);
+				$announcement_text = !empty($data['announcement_text']);
+				$guests_only  = $board_announcements_users === self::GUESTS;
+				$members_only = $board_announcements_users === self::MEMBERS;
 
 				$this->db->sql_transaction('begin');
 
@@ -200,7 +208,7 @@ class board_announcements_module
 				$this->cache->destroy('_board_announcement_data');
 
 				// Output message to user for the announcement update
-				trigger_error($this->user->lang('BOARD_ANNOUNCEMENTS_UPDATED') . adm_back_link($this->u_action));
+				trigger_error($this->language->lang('BOARD_ANNOUNCEMENTS_UPDATED') . adm_back_link($this->u_action));
 			}
 		}
 
@@ -235,11 +243,11 @@ class board_announcements_module
 			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
 			'S_MAGIC_URL_DISABLE_CHECKED'	=> !$announcement_text_edit['allow_urls'],
 
-			'BBCODE_STATUS'			=> $this->user->lang('BBCODE_IS_ON', '<a href="' . append_sid("{$this->phpbb_root_path}faq.{$this->php_ext}", 'mode=bbcode') . '">', '</a>'),
-			'SMILIES_STATUS'		=> $this->user->lang('SMILIES_ARE_ON'),
-			'IMG_STATUS'			=> $this->user->lang('IMAGES_ARE_ON'),
-			'FLASH_STATUS'			=> $this->user->lang('FLASH_IS_ON'),
-			'URL_STATUS'			=> $this->user->lang('URL_IS_ON'),
+			'BBCODE_STATUS'			=> $this->language->lang('BBCODE_IS_ON', '<a href="' . $this->controller_helper->route('phpbb_help_bbcode_controller') . '">', '</a>'),
+			'SMILIES_STATUS'		=> $this->language->lang('SMILIES_ARE_ON'),
+			'IMG_STATUS'			=> $this->language->lang('IMAGES_ARE_ON'),
+			'FLASH_STATUS'			=> $this->language->lang('FLASH_IS_ON'),
+			'URL_STATUS'			=> $this->language->lang('URL_IS_ON'),
 
 			'S_BBCODE_ALLOWED'		=> true,
 			'S_SMILIES_ALLOWED'		=> true,
