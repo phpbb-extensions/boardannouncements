@@ -1,9 +1,11 @@
 # Changelog
 
-## 1.0.7 - 2018-03-14
+## 1.1.0 - 2018-05-12
 
-- Feature: added a new option to display the board announcement on the board index page only
-- Minor coding improvements and translation updates
+- Feature: added the option to display the announcement on the board index only
+- Dropped support for phpBB 3.1.x. Now requires phpBB 3.2.0 or newer
+- Added language packs:
+    - Slovakian
 
 ## 1.0.6 - 2017-05-07
 
