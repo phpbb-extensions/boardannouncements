@@ -6,6 +6,7 @@ services:
             - '@config'
             - '@config_text'
             - '@controller.helper'
+            - '@language'
             - '@request'
             - '@template'
             - '@user'

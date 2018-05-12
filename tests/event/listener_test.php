@@ -43,6 +43,9 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\language\language */
+	protected $language;
+
 	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\request\request */
 	protected $request;
 
@@ -92,13 +95,11 @@ class listener_test extends \phpbb_database_test_case
 			'enable_mod_rewrite' => '0',
 		));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
+		$this->language = new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx));
 		$this->request = $this->getMock('\phpbb\request\request');
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
-		$this->user = $this->getMock('\phpbb\user', array(), array(
-			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
-			'\phpbb\datetime'
-		));
+		$this->user = $this->getMock('\phpbb\user', array(), array($this->language, '\phpbb\datetime'));
 		$this->user->data['board_announcements_status'] = 1;
 
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
@@ -123,6 +124,7 @@ class listener_test extends \phpbb_database_test_case
 			$this->config,
 			$this->config_text,
 			$this->controller_helper,
+			$this->language,
 			$this->request,
 			$this->template,
 			$this->user,
