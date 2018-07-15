@@ -42,6 +42,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Здесь вы можете управлять и создавать объявления, которые будут отображаться на каждой странице вашего сайта.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Показывать эту доску объявлений',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Кто может видеть доску объявлений',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Разрешить пользователям выключать это объявление',
 

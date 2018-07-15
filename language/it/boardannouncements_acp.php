@@ -42,6 +42,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Qui è possibile gestire e creare un annuncio che sarà mostrato in ogni pagina del forum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Abilita annuncio',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Chi può vedere quest’annuncio',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permetti agli utenti di chiudere quest’annuncio',
 

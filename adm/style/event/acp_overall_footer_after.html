@@ -14,7 +14,7 @@
 
 	<script>
 	jQuery(function($) {
-		var bgcolor = '{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}';
+		var bgcolor = '{{ BOARD_ANNOUNCEMENTS_BGCOLOR|e('js') }}';
 		$('#board_announcements_bgcolor').colpick({
 			layout: 'hex',
 			submit: 0,

@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Zde můžete spravovat a vytvořit oznámení, které se bude zobrazovat na každé stránce vašeho fóra.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Zobrazí toto oznámení',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Komu nechat zobrazit toto oznámení',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Povolit uživatelům odmítnout toto oznámení',
 

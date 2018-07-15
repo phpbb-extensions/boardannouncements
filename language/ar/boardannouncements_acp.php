@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'هنا يمكنك إدارة وإنشاء لوحات إعلانية تظهر في جميع صفحات منتداك.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'عرض لوحة الإعلانات هذه',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'عرض في رئيسية المنتدى فقط',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'من يستطيع مشاهدة لوحة الإعلانات هذه',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'السماح للمستخدمين برفض لوحة الإعلانات هذه',
 

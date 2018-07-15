@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aqui pode gerir e criar um comunicado que será exibido em cada página do seu Fórum.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Ativar o comunicado',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Quem pode ver este comunicado',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permitir aos utilizadores fechar este comunicado',
 

@@ -42,8 +42,9 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Ustawienia ogłoszeń',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Tutaj możesz zarządzać i stworzyć ogłoszenie, które będzie wyświetlane na każdej stronie forum.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Wyświetlaj ogłoszenie',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kto może zobaczyć tę zobaczyć ogłoszenie',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Wyświetl ogłoszenie',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Wyświetl tylko na stronie głównej forum',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kto może zobaczyć to ogłoszenie',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Zezwalaj użytkownikom na zamknięcie ogłoszenia',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Wszyscy',
@@ -51,8 +52,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Kolor tła ogłoszenia',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Możesz zmienić kolor tła ogłoszenia używając kodu hex (szesnastkowego) np.: FFFF80. Pozostaw pole puste, aby użyć domyślnego koloru.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Deska data ważności ogłoszenia',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Ustaw datę wygaśnięcia ogłoszenia i stanie się niedostępna. Pozostaw puste pole, jeśli nie chcesz, aby ogłoszenie przestało obowiązywać.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data ważności ogłoszenia forum',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Ustaw datę kiedy ogłoszenie wygaśnie i stanie się niedostępne. Pozostaw puste pole, jeśli nie chcesz, aby ogłoszenie przestało obowiązywać.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Data ważności była nieprawidłowa lub już wygasła.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
 

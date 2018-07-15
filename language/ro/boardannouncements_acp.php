@@ -42,16 +42,17 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aici puteţi gestiona sau crea anunţuri care vor fi afişate pe fiecare pagină a forumului.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Afişează acest anunţ',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Afișare doar pe prima pagină',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Cine poate vedea acest anunț',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permite utilizatorilor să respingă anunţul',
 
-	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Toata lumea',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Toată lumea',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Culoarea background-ului',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puteţi schimba culoarea de fundal a anunţului folosind un cod hex (Ex: FFFF80). Lasă acest câmp necompletat pentru a utiliza culoarea prestabilită.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Anunt data de expirare',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Setați data la care anunța va expira și va deveni dezactivată. Lăsați acest câmp necompletat dacă nu doriți ca anunțul să expire.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data de expirare a anunțului',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Setați data la care anunțul va expira și va deveni dezactivat. Lăsați acest câmp necompletat dacă nu doriți ca anunțul să expire.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Data de expirare a fost nevalidă sau a expirat deja.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
 
