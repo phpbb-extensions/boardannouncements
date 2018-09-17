@@ -61,16 +61,21 @@ class controller_test extends \phpbb_database_test_case
 		$config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 
 		/** @var $user \PHPUnit_Framework_MockObject_MockObject|\phpbb\user */
-		$user = $this->getMock('\phpbb\user', array(), array(
-			new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
-			'\phpbb\datetime'
-		));
+		$user = $this->getMockBuilder('\phpbb\user')
+			->setConstructorArgs(array(
+				new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
+				'\phpbb\datetime'
+			))
+			->getMock();
+
 		$user->data['board_announcements_status'] = 1;
 		$user->data['user_id'] = $user_id;
 		$user->data['is_registered'] = $is_registered;
 
 		/** @var $request \PHPUnit_Framework_MockObject_MockObject|\phpbb\request\request */
-		$request = $this->getMock('\phpbb\request\request');
+		$request = $this->getMockBuilder('\phpbb\request\request')
+			->disableOriginalConstructor()
+			->getMock();
 		$request->expects($this->any())
 			->method('is_ajax')
 			->will($this->returnValue($ajax)
