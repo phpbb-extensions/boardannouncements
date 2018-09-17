@@ -96,10 +96,18 @@ class listener_test extends \phpbb_database_test_case
 		));
 		$this->config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 		$this->language = new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx));
-		$this->request = $this->getMock('\phpbb\request\request');
+		$this->request = $this->getMockBuilder('\phpbb\request\request')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
-		$this->user = $this->getMock('\phpbb\user', array(), array($this->language, '\phpbb\datetime'));
+		$this->user = $this->getMockBuilder('\phpbb\user')
+			->setConstructorArgs(array(
+				$this->language,
+				'\phpbb\datetime'
+			))
+			->getMock();
+
 		$this->user->data['board_announcements_status'] = 1;
 
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
