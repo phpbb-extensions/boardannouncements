@@ -62,6 +62,11 @@ class board_announcements_module
 	/** @var string */
 	public $u_action;
 
+	/**
+	 * Main ACP module
+	 *
+	 * @throws \Exception
+	 */
 	public function main()
 	{
 		global $phpbb_container;
