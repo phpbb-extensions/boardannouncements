@@ -79,7 +79,7 @@ class listener implements EventSubscriberInterface
 	* @static
 	* @access public
 	*/
-	static public function getSubscribedEvents()
+	public static function getSubscribedEvents()
 	{
 		return array(
 			'core.page_header_after'	=> 'display_board_announcements',
