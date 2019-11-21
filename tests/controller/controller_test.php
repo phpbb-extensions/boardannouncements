@@ -17,7 +17,7 @@ class controller_test extends \phpbb_database_test_case
 	*
 	* @return array vendor/name of extension(s) to test
 	*/
-	static protected function setup_extensions()
+	protected static function setup_extensions()
 	{
 		return array('phpbb/boardannouncements');
 	}
@@ -39,7 +39,7 @@ class controller_test extends \phpbb_database_test_case
 	/**
 	* Setup test environment
 	*/
-	public function setUp()
+	public function setUp(): void
 	{
 		parent::setUp();
 
@@ -54,9 +54,9 @@ class controller_test extends \phpbb_database_test_case
 	/**
 	* Create our controller
 	*/
-	protected function get_controller($user_id, $is_registered, $mode, $ajax)
+	protected function get_controller($user_id, $is_registered, $mode, $ajax, $enabled = true)
 	{
-		global $phpbb_root_path, $phpEx;
+		global $user, $phpbb_root_path, $phpEx;
 
 		$config_text = new \phpbb\config\db_text($this->db, 'phpbb_config_text');
 
@@ -64,7 +64,7 @@ class controller_test extends \phpbb_database_test_case
 		$user = $this->getMockBuilder('\phpbb\user')
 			->setConstructorArgs(array(
 				new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
-				'\phpbb\datetime'
+				'\phpbb\datetime',
 			))
 			->getMock();
 
@@ -76,16 +76,16 @@ class controller_test extends \phpbb_database_test_case
 		$request = $this->getMockBuilder('\phpbb\request\request')
 			->disableOriginalConstructor()
 			->getMock();
-		$request->expects($this->any())
+		$request->expects($this->atMost(1))
 			->method('is_ajax')
-			->will($this->returnValue($ajax)
+			->willReturn($ajax
 		);
-		$request->expects($this->any())
+		$request->expects(($enabled ? $this->once() : $this->never()))
 			->method('variable')
 			->with($this->anything())
-			->will($this->returnValueMap(array(
-				array('hash', '', false, \phpbb\request\request_interface::REQUEST, generate_link_hash($mode))
-			))
+			->willReturnMap(array(
+				array('hash', '', false, \phpbb\request\request_interface::REQUEST, generate_link_hash($mode)),
+			)
 		);
 
 		return new \phpbb\boardannouncements\controller\controller(
@@ -198,7 +198,7 @@ class controller_test extends \phpbb_database_test_case
 	{
 		$this->config['board_announcements_dismiss'] = $enabled;
 
-		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);
+		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax, $enabled);
 
 		try
 		{

@@ -22,12 +22,12 @@ class announcement_test extends \phpbb_functional_test_case
 	*
 	* @return array vendor/name of extension(s) to test
 	*/
-	static protected function setup_extensions()
+	protected static function setup_extensions()
 	{
 		return array('phpbb/boardannouncements');
 	}
 
-	public function setUp()
+	public function setUp(): void
 	{
 		parent::setUp();
 		$this->add_lang_ext('phpbb/boardannouncements', array('boardannouncements_acp', 'info_acp_board_announcements'));

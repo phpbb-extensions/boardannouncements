@@ -20,7 +20,7 @@ class listener_test extends \phpbb_database_test_case
 	*
 	* @return array vendor/name of extension(s) to test
 	*/
-	static protected function setup_extensions()
+	protected static function setup_extensions()
 	{
 		return array('phpbb/boardannouncements');
 	}
@@ -61,7 +61,7 @@ class listener_test extends \phpbb_database_test_case
 	/**
 	* Get data set fixtures
 	*
-	* @return \PHPUnit_Extensions_Database_DataSet_XmlDataSet
+	* @return \PHPUnit\DbUnit\DataSet\DefaultDataSet|\PHPUnit\DbUnit\DataSet\XmlDataSet
 	*/
 	public function getDataSet()
 	{
@@ -71,7 +71,7 @@ class listener_test extends \phpbb_database_test_case
 	/**
 	* Setup test environment
 	*/
-	public function setUp()
+	public function setUp(): void
 	{
 		parent::setUp();
 
@@ -113,7 +113,7 @@ class listener_test extends \phpbb_database_test_case
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->controller_helper->expects($this->any())
+		$this->controller_helper->expects($this->atMost(1))
 			->method('route')
 			->willReturnCallback(function ($route, array $params = array()) {
 				return $route . '#' . serialize($params);
