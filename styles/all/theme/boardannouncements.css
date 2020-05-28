@@ -26,12 +26,11 @@
 
 /* style the close button */
 #phpbb_announcement .close {
-	background: transparent url('images/close.png') no-repeat 0 0;
 	opacity: 0.6;
 	float: right;
-	width: 12px;
-	height: 12px;
-	margin: 0 0 0 4px;
+	width: 14px;
+	height: 14px;
+	margin: -4px 0 0;
 }
 
 /* reposition close button for right to left languages */
