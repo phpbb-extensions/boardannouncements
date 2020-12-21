@@ -75,19 +75,21 @@ class listener_test extends \phpbb_database_test_case
 	{
 		parent::setUp();
 
-		global $cache, $user, $phpbb_dispatcher, $phpbb_root_path, $phpEx;
+		global $auth, $cache, $config, $user, $phpbb_dispatcher, $phpbb_root_path, $phpEx;
 
 		// Load the database class
 		$this->db = $this->new_dbal();
 
 		// Mock some global classes that may be called during code execution
+		$auth = $this->auth = new \phpbb_mock_notifications_auth();
 		$cache = $this->cache = new \phpbb_mock_cache;
 		$user = new \phpbb_mock_user;
+		$user->data['user_form_salt'] = '';
 		$user->optionset('viewcensors', false);
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 
 		// Load/Mock classes required by the event listener class
-		$this->config = new \phpbb\config\config(array(
+		$this->config = $config = new \phpbb\config\config(array(
 			'board_announcements_enable' => 1,
 			'board_announcements_index_only' => 0,
 			'board_announcements_dismiss' => 1,
@@ -109,6 +111,7 @@ class listener_test extends \phpbb_database_test_case
 			->getMock();
 
 		$this->user->data['board_announcements_status'] = 1;
+		$this->user->page['page_name'] = '';
 
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
 			->disableOriginalConstructor()
@@ -164,6 +167,8 @@ class listener_test extends \phpbb_database_test_case
 	*/
 	public function test_display_board_announcements()
 	{
+		$this->user->data['user_id'] = ANONYMOUS;
+
 		$this->set_listener();
 
 		$this->template->expects(self::once())

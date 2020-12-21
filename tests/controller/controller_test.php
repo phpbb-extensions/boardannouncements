@@ -67,6 +67,7 @@ class controller_test extends \phpbb_database_test_case
 				'\phpbb\datetime',
 			))
 			->getMock();
+		$user->data['user_form_salt'] = '';
 
 		$user->data['board_announcements_status'] = 1;
 		$user->data['user_id'] = $user_id;
