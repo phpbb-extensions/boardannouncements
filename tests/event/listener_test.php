@@ -71,7 +71,7 @@ class listener_test extends \phpbb_database_test_case
 	/**
 	* Setup test environment
 	*/
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 
@@ -113,7 +113,7 @@ class listener_test extends \phpbb_database_test_case
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->controller_helper->expects($this->atMost(1))
+		$this->controller_helper->expects(self::atMost(1))
 			->method('route')
 			->willReturnCallback(function ($route, array $params = array()) {
 				return $route . '#' . serialize($params);
@@ -146,7 +146,7 @@ class listener_test extends \phpbb_database_test_case
 	public function test_construct()
 	{
 		$this->set_listener();
-		$this->assertInstanceOf('\Symfony\Component\EventDispatcher\EventSubscriberInterface', $this->listener);
+		self::assertInstanceOf('\Symfony\Component\EventDispatcher\EventSubscriberInterface', $this->listener);
 	}
 
 	/**
@@ -154,7 +154,7 @@ class listener_test extends \phpbb_database_test_case
 	*/
 	public function test_getSubscribedEvents()
 	{
-		$this->assertEquals(array(
+		self::assertEquals(array(
 			'core.page_header_after',
 		), array_keys(\phpbb\boardannouncements\event\listener::getSubscribedEvents()));
 	}
@@ -166,7 +166,7 @@ class listener_test extends \phpbb_database_test_case
 	{
 		$this->set_listener();
 
-		$this->template->expects($this->once())
+		$this->template->expects(self::once())
 			->method('assign_vars')
 			->with(array(
 				'S_BOARD_ANNOUNCEMENT'			=> true,
@@ -245,7 +245,7 @@ class listener_test extends \phpbb_database_test_case
 		$this->set_listener();
 
 		// Test that assign_vars is never called
-		$this->template->expects($this->never())
+		$this->template->expects(self::never())
 			->method('assign_vars');
 
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();

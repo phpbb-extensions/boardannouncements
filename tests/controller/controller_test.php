@@ -39,7 +39,7 @@ class controller_test extends \phpbb_database_test_case
 	/**
 	* Setup test environment
 	*/
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 
@@ -76,13 +76,13 @@ class controller_test extends \phpbb_database_test_case
 		$request = $this->getMockBuilder('\phpbb\request\request')
 			->disableOriginalConstructor()
 			->getMock();
-		$request->expects($this->atMost(1))
+		$request->expects(self::atMost(1))
 			->method('is_ajax')
 			->willReturn($ajax
 		);
-		$request->expects(($enabled ? $this->once() : $this->never()))
+		$request->expects(($enabled ? self::once() : self::never()))
 			->method('variable')
-			->with($this->anything())
+			->with(self::anything())
 			->willReturnMap(array(
 				array('hash', '', false, \phpbb\request\request_interface::REQUEST, generate_link_hash($mode)),
 			)
@@ -145,10 +145,10 @@ class controller_test extends \phpbb_database_test_case
 		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);
 
 		$response = $controller->close_announcement();
-		$this->assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
-		$this->assertEquals($status_code, $response->getStatusCode());
-		$this->assertEquals($content, $response->getContent());
-		$this->assertEquals($expected, $this->check_board_announcement_status($user_id));
+		self::assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
+		self::assertEquals($status_code, $response->getStatusCode());
+		self::assertEquals($content, $response->getContent());
+		self::assertEquals($expected, $this->check_board_announcement_status($user_id));
 	}
 
 	/**
@@ -203,12 +203,12 @@ class controller_test extends \phpbb_database_test_case
 		try
 		{
 			$controller->close_announcement();
-			$this->fail('The expected \phpbb\exception\http_exception was not thrown');
+			self::fail('The expected \phpbb\exception\http_exception was not thrown');
 		}
 		catch (\phpbb\exception\http_exception $exception)
 		{
-			$this->assertEquals($status_code, $exception->getStatusCode());
-			$this->assertEquals($content, $exception->getMessage());
+			self::assertEquals($status_code, $exception->getStatusCode());
+			self::assertEquals($content, $exception->getMessage());
 		}
 	}
 

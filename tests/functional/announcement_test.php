@@ -27,7 +27,7 @@ class announcement_test extends \phpbb_functional_test_case
 		return array('phpbb/boardannouncements');
 	}
 
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 		$this->add_lang_ext('phpbb/boardannouncements', array('boardannouncements_acp', 'info_acp_board_announcements'));
@@ -70,7 +70,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Confirm the log entry has been added correctly
 		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
-		$this->assertContains(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_UPDATED_LOG')), $crawler->text());
+		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_UPDATED_LOG')), $crawler->text());
 	}
 
 	/**
@@ -79,7 +79,7 @@ class announcement_test extends \phpbb_functional_test_case
 	public function test_view_as_user()
 	{
 		$crawler = self::request('GET', 'index.php');
-		$this->assertContains('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
+		self::assertStringContainsString('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
 	}
 
 	/**
@@ -88,7 +88,7 @@ class announcement_test extends \phpbb_functional_test_case
 	public function test_view_off_index()
 	{
 		$crawler = self::request('GET', 'memberlist.php');
-		$this->assertCount(0, $crawler->filter('#phpbb_announcement'));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement'));
 	}
 
 	/**
@@ -102,15 +102,15 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login('new_user1');
 
 		$crawler = self::request('GET', 'index.php');
-		$this->assertContains('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
+		self::assertStringContainsString('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
 
 		// Verify that new users won't see the announcement if it's Guest only
 		$this->db->sql_query('UPDATE ' . CONFIG_TABLE . ' SET config_value = ' .
-			(int) board_announcements_module::GUESTS . " 
+			(int) board_announcements_module::GUESTS . "
 			WHERE config_name = 'board_announcements_users'");
 		$this->purge_cache();
 		$crawler = self::request('GET', 'index.php');
-		$this->assertNotContains('This is a board announcement test.', $crawler->text());
+		self::assertStringNotContainsString('This is a board announcement test.', $crawler->text());
 	}
 
 	/**
@@ -121,7 +121,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->logout();
 
 		$crawler = self::request('GET', 'index.php');
-		$this->assertContains('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
+		self::assertStringContainsString('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
 	}
 
 	/**
@@ -133,7 +133,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		self::request('GET', 'app.php/boardannouncements/close?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid);
 		$crawler = self::request('GET', 'index.php');
-		$this->assertCount(0, $crawler->filter('#phpbb_announcement'));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement'));
 	}
 
 	/**
