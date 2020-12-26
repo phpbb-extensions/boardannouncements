@@ -2,7 +2,7 @@
 
 This is the repository for the development of the phpBB Board Announcements Extension.
 
-[![Build Status](https://travis-ci.org/phpbb-extensions/boardannouncements.png)](https://travis-ci.org/phpbb-extensions/boardannouncements)
+[![Build Status](https://github.com/phpbb-extensions/boardannouncements/workflows/Tests/badge.svg)](https://github.com/phpbb-extensions/boardannouncements/actions)
 
 ## Install
 
