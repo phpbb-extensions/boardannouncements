@@ -22,7 +22,7 @@ class m4_announcements_dismiss_config extends \phpbb\db\migration\migration
 	* @static
 	* @access public
 	*/
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\phpbb\boardannouncements\migrations\v10x\m3_initial_module');
 	}

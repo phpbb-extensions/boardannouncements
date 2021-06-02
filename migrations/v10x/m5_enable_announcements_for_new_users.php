@@ -22,7 +22,7 @@ class m5_enable_announcements_for_new_users extends \phpbb\db\migration\migratio
 	* @static
 	* @access public
 	*/
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array(
 			'\phpbb\boardannouncements\migrations\v10x\m1_initial_schema',
