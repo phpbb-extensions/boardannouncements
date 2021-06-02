@@ -1,8 +1,8 @@
 {% if S_BOARD_ANNOUNCEMENTS %}
 
 	{% if not definition.INCLUDED_COLPICKJS %}
-		{% INCLUDEJS '@phpbb_boardannouncements/colpick.js' %}
-		{% INCLUDECSS '@phpbb_boardannouncements/colpick.css' %}
+		{% INCLUDEJS '@phpbb_boardannouncements/colpick/colpick.js' %}
+		{% INCLUDECSS '@phpbb_boardannouncements/colpick/colpick.css' %}
 		{% DEFINE INCLUDED_COLPICKJS = true %}
 	{% endif %}
 
