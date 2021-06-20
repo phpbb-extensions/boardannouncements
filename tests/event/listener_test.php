@@ -37,7 +37,7 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\config\db_text */
 	protected $config_text;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\controller\helper */
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\controller\helper */
 	protected $controller_helper;
 
 	/** @var \phpbb\db\driver\driver_interface */
@@ -46,13 +46,13 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\language\language */
 	protected $language;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\request\request */
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\request\request */
 	protected $request;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\template\template */
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\template\template */
 	protected $template;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\user */
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\user */
 	protected $user;
 
 	/** @var string */
@@ -181,9 +181,9 @@ class listener_test extends \phpbb_database_test_case
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> 'phpbb_boardannouncements_controller#' . serialize(array('hash' => generate_link_hash('close_boardannouncement'))),
 			));
 
-		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.page_header_after', array($this->listener, 'display_board_announcements'));
-		$dispatcher->dispatch('core.page_header_after');
+		$dispatcher->trigger_event('core.page_header_after');
 	}
 
 	/**
@@ -253,8 +253,8 @@ class listener_test extends \phpbb_database_test_case
 		$this->template->expects(self::never())
 			->method('assign_vars');
 
-		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.page_header_after', array($this->listener, 'display_board_announcements'));
-		$dispatcher->dispatch('core.page_header_after');
+		$dispatcher->trigger_event('core.page_header_after');
 	}
 }

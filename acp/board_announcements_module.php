@@ -126,7 +126,9 @@ class board_announcements_module
 		$board_announcements_expiry = $this->config['board_announcements_expiry'];
 
 		// If form is submitted or previewed
-		if ($this->request->is_set_post('submit') || $this->request->is_set_post('preview'))
+		$submit  = $this->request->is_set_post('submit');
+		$preview = $this->request->is_set_post('preview');
+		if ($submit || $preview)
 		{
 			// Test if form key is valid
 			if (!check_form_key($form_name))
@@ -165,7 +167,7 @@ class board_announcements_module
 			);
 
 			// Store the announcement text and settings if submitted with no errors
-			if (empty($errors) && $this->request->is_set_post('submit'))
+			if ($submit && empty($errors))
 			{
 				// Store the config enable/disable state
 				$this->config->set('board_announcements_enable', $board_announcements_enable);
@@ -219,7 +221,7 @@ class board_announcements_module
 
 		// Prepare a fresh announcement preview
 		$announcement_text_preview = '';
-		if ($this->request->is_set_post('preview'))
+		if ($preview)
 		{
 			$announcement_text_preview = generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_options']);
 		}

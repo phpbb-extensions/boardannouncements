@@ -18,7 +18,7 @@ class m8_index_only extends \phpbb\db\migration\migration
 	/**
 	 * {@inheritdoc}
 	 */
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\phpbb\boardannouncements\migrations\v10x\m2_initial_data');
 	}
