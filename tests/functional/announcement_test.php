@@ -78,6 +78,7 @@ class announcement_test extends \phpbb_functional_test_case
 	*/
 	public function test_view_as_user()
 	{
+		$this->login();
 		$crawler = self::request('GET', 'index.php');
 		self::assertStringContainsString('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
 	}
@@ -87,6 +88,7 @@ class announcement_test extends \phpbb_functional_test_case
 	 */
 	public function test_view_off_index()
 	{
+		$this->login();
 		$crawler = self::request('GET', 'memberlist.php');
 		self::assertCount(0, $crawler->filter('#phpbb_announcement'));
 	}
@@ -96,8 +98,6 @@ class announcement_test extends \phpbb_functional_test_case
 	*/
 	public function test_view_as_new_user()
 	{
-		$this->logout();
-
 		$this->create_user('new_user1');
 		$this->login('new_user1');
 
@@ -118,9 +118,8 @@ class announcement_test extends \phpbb_functional_test_case
 	*/
 	public function test_view_as_guest()
 	{
-		$this->logout();
-
 		$crawler = self::request('GET', 'index.php');
+		self::assertStringContainsString($this->lang('LOGIN'), $crawler->filter('.navbar')->text());
 		self::assertStringContainsString('This is a board announcement test.', $crawler->filter('#phpbb_announcement')->text());
 	}
 
@@ -141,6 +140,8 @@ class announcement_test extends \phpbb_functional_test_case
 	*/
 	public function test_close_announcement_fail()
 	{
+		$this->login();
+
 		// Wrong hash
 		$crawler = self::request('GET', 'app.php/boardannouncements/close?hash=wrong&sid=' . $this->sid, array(), false);
 		self::assert_response_status_code(403);
