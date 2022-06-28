@@ -39,26 +39,26 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Forumaankondigings-instellingen',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Hier kan je een forumaankondiging beheren en aanmaken, die weergegeven zal worden op elke pagina van je forum.',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Forum aankondigings instellingen',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Hier kan je een forum aankondiging beheren en aanmaken, die weergegeven zal worden op elke pagina van je forum.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Laat deze forumaankondiging zien',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Wie kan deze forumaankondiging bekijken',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Sta gebruikers toe om deze forumaankondiging te sluiten',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Laat deze forum aankondiging zien',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Toon enkel op de forum index pagina',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Wie kan deze forum aankondiging bekijken',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Sta gebruikers toe om deze forum aankondiging te sluiten',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Iedereen',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forumaankondiging-achtergrondkleur',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forum aankondiging achtergrondkleur',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Je kan de achtergrondkleur van de aankondiging veranderen door gebruik te maken van een hex-code (bijv.: FFFF80). Laat dit veld leeg om de standaard kleur te gebruiken.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Vervaldatum forumaankondiging',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Stel een datum in waarop de forumaankondiging vervalt en uitgeschakeld wordt. Laat dit veld leeg als je de forumaankondiging niet wilt laten vervallen.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Vervaldatum forum aankondiging',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Stel een datum in waarop de forum aankondiging vervalt en uitgeschakeld wordt. Laat dit veld leeg als je de forum aankondiging niet wilt laten vervallen.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'De vervaldatum is ongeldig of is al verlopen.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
 
-	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Forumaankondigings-bericht',
-	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Forumaankondiging - Voorbeeld',
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Forum aankondigings-bericht',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Forum aankondiging - Voorbeeld',
 
-	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Forumaankondiging is bijgewerkt.',
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Forum aankondiging is bijgewerkt.',
 ));

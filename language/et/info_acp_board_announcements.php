@@ -39,10 +39,10 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	// ACP Module => AJP Moodul
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Foorumi teadaanded',
+	// ACP Module
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Foorumi teadaanne',
 	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Teadaande seaded',
 
-	// ACP Logs => AJP Logid
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>“Foorumi teadaande” seaded muudetud</strong>',
+	// ACP Logs
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Foorumi Teadaannete seaded edukalt muudetud</strong>',
 ));
