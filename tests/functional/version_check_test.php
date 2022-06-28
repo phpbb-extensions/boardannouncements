@@ -41,7 +41,7 @@ class version_check_test extends \phpbb_functional_test_case
 		// Load the Board Rules details
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&action=details&ext_name=phpbb%2Fboardannouncements&sid=' . $this->sid);
 
-		// Assert extension is up to date
+		// Assert extension is up-to-date
 		self::assertGreaterThan(0, $crawler->filter('.successbox')->count());
 		self::assertStringContainsString($this->lang('UP_TO_DATE', 'Board Announcements'), $crawler->text());
 	}

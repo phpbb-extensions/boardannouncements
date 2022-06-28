@@ -49,7 +49,7 @@ class controller
 	/**
 	* Board Announcements controller accessed from the URL /boardannouncements/close
 	*
-	* @throws \phpbb\exception\http_exception An http exception
+	* @throws \phpbb\exception\http_exception A http exception
 	* @return \Symfony\Component\HttpFoundation\JsonResponse A Symfony JSON Response object
 	* @access public
 	*/
@@ -83,7 +83,7 @@ class controller
 		$redirect = reapply_sid($redirect);
 		redirect($redirect);
 
-		// We shouldn't get here, but throw an http exception just in case
+		// We shouldn't get here, but throw a http exception just in case
 		throw new \phpbb\exception\http_exception(500, 'GENERAL_ERROR');
 	}
 
@@ -98,7 +98,7 @@ class controller
 		// Get board announcement data from the DB text object
 		$announcement_timestamp = $this->config_text->get('announcement_timestamp');
 
-		// Store the announcement timestamp/id in a cookie with a 1 year expiration
+		// Store the announcement timestamp/id in a cookie with a 1-year expiration
 		$this->user->set_cookie('baid', $announcement_timestamp, strtotime('+1 year'));
 
 		return true;
