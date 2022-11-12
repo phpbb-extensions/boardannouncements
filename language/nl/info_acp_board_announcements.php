@@ -40,9 +40,9 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Forumaankondigingen',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Aankondigingsinstellingen',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Forum aankondigingen',
+	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Aankondiging Instellingen',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Forumaankondigings-instellingen aangepast</strong>',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Forum aankondigings instellingen aangepast</strong>',
 ));

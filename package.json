@@ -1,14 +1,10 @@
 {
 	"name": "phpbb-boardannouncements",
-	"version": "1.1.1",
 	"author": "phpBB Limited",
 	"license": "GPL-2.0",
 	"scripts": {
 		"copy-colpick": "copyfiles --flat node_modules/jquery-colpick/css/colpick.css node_modules/jquery-colpick/js/colpick.js adm/style/colpick",
-		"copy-datetimepicker": "copyfiles --flat node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.js node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js node_modules/jquery-datetimepicker/build/jquery.datetimepicker.css node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css adm/style/datetimepicker",
-		"bump-major": "npm version major --git-tag-version=false",
-		"bump-minor": "npm version minor --git-tag-version=false",
-		"bump-patch": "npm version patch --git-tag-version=false"
+		"copy-datetimepicker": "copyfiles --flat node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.js node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js node_modules/jquery-datetimepicker/build/jquery.datetimepicker.css node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css adm/style/datetimepicker"
 	},
 	"dependencies": {
 		"jquery-colpick": "^3.1.0",

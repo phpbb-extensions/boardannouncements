@@ -43,7 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> '在这里，您可以建立并管理论坛公告，它将会显示在论坛的每个页面。',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '显示这条论坛公告',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> '只有顯示在論壇首頁',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> '只显示在论坛的首页',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '允许查看公告的用户',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允许用户关闭这条论坛公告',
 

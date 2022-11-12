@@ -43,7 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Verwaltung der Board-Ankündigung, die auf jeder Seite im Board angezeigt werden wird.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Diese Board-Ankündigung anzeigen',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Nur auf der Index-Seite im Board anzeigen',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Die Board-Ankündigung nur auf der INDEX Seite anzeigen.',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Wer kann diese Board-Ankündigung sehen',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Nutzern erlauben, die Board-Ankündigung zu schließen',
 

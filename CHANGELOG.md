@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1 - 2022-06-27
+
+- Replaced the close announcement icon image with a Font Awesome icon
+- Minor under the hood updates
+- Added language packs:
+  - Vietnamese
+
 ## 1.1.0 - 2018-05-12
 
 - Feature: added the option to display the announcement on the board index only
