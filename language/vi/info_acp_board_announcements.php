@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* Estonian translation by phpBBeesti.com <http://www.phpbbeesti.com>
+* Vietnamese translate by phpBBVietnam <https://phpbbvietnam.com>
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -40,9 +40,9 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Foorumi teadaanne',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Teadaande seaded',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Bảng thông báo',
+	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Cấu hình bảng thông báo',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Foorumi Teadaannete seaded edukalt muudetud</strong>',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Đã cập nhật nội dung bảng thông báo</strong>',
 ));

@@ -43,7 +43,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> '在這裡，您可以管理與建立討論區公告，它將顯示在討論區的每一頁。',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '顯示這則討論區公告設定',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> '只显示在论坛首页',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> '只顯示在討論區首頁',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '誰可以查看此討論區公告',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允許使用者關閉這則討論區公告',
 

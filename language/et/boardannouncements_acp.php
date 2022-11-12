@@ -39,26 +39,26 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Foorumi teadaande seaded',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Siin lehel saad hallata ja luua foorumi teadaannet, mida näidatakse igal foorumi leheküljel.',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Foorumi Teadaannete seaded',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Siin saate hallata ja luua foorumil olevat teadaannet, mis kuvatakse teie foorumi kõigil lehtedel.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Näita seda foorumi teadaannet',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Kuva see Foorumi Teadaanne',
 	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kes saab vaadata foorumi teadaannet',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Luba liikmetel sellest foorumi teadaandest keelduda',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kes saab vaadata seda Foorumi Teadaannet',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Luba kasutajatel keelata Foorumi Teadaannet',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Igaüks',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '“Foorumi teadaande” tagatausta värv',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Sa saad muuta tagatausta värvi teadaandel, kasutades hex koodi (näiteks: FFFF80). Jäta see väli tühjaks, et kasutada vaikimisi värvi.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Foorumi Teadaannete tausta värv',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Te saate muuta teate taustavärvi hex-koodi abil (näiteks: FFFF80). Vaikimisi värvi kasutamiseks jätke see väli tühjaks.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Foorumi teadaanne aegumise kuupäev',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Määrake kuupäev väljakuulutamist aegub ja invaliidistunud. Jäta see väli tühjaks, kui sa ei taha teadaanne kehtivuse.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Aegumiskuupäev oli vigane või on juba lõppenud.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Foorumi Teadaande aegumise kuupäev',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Määrake kuupäev, millal teadeanne lõppeb ja muutub nähtamatuks. Jätke see väli tühjaks, kui te ei soovi, et teadeanne aeguks.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Aegumise kuupäev on vigane või on juba aegunud.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'AAAA-KK-PP HH:MM',
 
-	'BOARD_ANNOUNCEMENTS_TEXT'				=> '“Foorumi teadaande” sisu',
-	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> '“Foorumi teadaande” eelvaade',
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Foorumi Teadaande sõnum',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Foorumi Teadaande - Eelvaade',
 
-	'BOARD_ANNOUNCEMENTS_UPDATED'			=> '“Foorumi teadaanne” on uuendatud.',
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Foorumi Teadaanne on uuendatud.',
 ));
