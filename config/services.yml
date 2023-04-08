@@ -2,9 +2,8 @@ services:
     phpbb.boardannouncements.listener:
         class: phpbb\boardannouncements\event\listener
         arguments:
-            - '@cache.driver'
+            - '@phpbb.boardannouncements.manager'
             - '@config'
-            - '@config_text'
             - '@controller.helper'
             - '@language'
             - '@request'
@@ -17,8 +16,13 @@ services:
     phpbb.boardannouncements.controller:
         class: phpbb\boardannouncements\controller\controller
         arguments:
-            - '@config'
-            - '@config_text'
-            - '@dbal.conn'
+            - '@phpbb.boardannouncements.manager'
             - '@request'
             - '@user'
+
+    phpbb.boardannouncements.manager:
+        class: phpbb\boardannouncements\manager\manager
+        arguments:
+            - '@dbal.conn'
+            - '%core.table_prefix%board_announcements'
+            - '%core.table_prefix%board_announcements_track'
