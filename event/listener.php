@@ -109,13 +109,6 @@ class listener implements EventSubscriberInterface
 
 		foreach ($board_announcements_data as $board_announcement_data)
 		{
-			// Do not continue if board announcement is expired
-//			if ($board_announcement_data['announcement_expiry'] && $board_announcement_data['announcement_expiry'] < time())
-//			{
-//				$this->manager->disable_announcement($board_announcement_data['announcement_id']);
-//				continue;
-//			}
-
 			// Do not continue if user is registered, but announcement is for guests only
 			// This is to prevent newly registered users from seeing guest only announcements
 			if ($this->user->data['user_id'] != ANONYMOUS && $board_announcement_data['announcement_users'] == acp_controller::GUESTS)

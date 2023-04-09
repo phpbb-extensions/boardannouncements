@@ -46,6 +46,13 @@ services:
         class: phpbb\boardannouncements\manager\nestedset
         arguments:
             - '@dbal.conn'
-            - '@phpbb.cannedmessages.table_lock'
+            - '@phpbb.boardannouncements.table_lock'
             - '%phpbb.board.announcements.tables.announcements%'
             - '%phpbb.board.announcements.tables.announcements_track%'
+
+    phpbb.boardannouncements.table_lock:
+        class: phpbb\lock\db
+        arguments:
+            - boardannouncements.table_lock.board_announcements_table
+            - '@config'
+            - '@dbal.conn'

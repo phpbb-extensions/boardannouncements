@@ -11,7 +11,7 @@
 namespace phpbb\boardannouncements\manager;
 
 /**
- * Nested set class for Topic Prefixes
+ * Nested set class
  */
 class nestedset extends \phpbb\tree\nestedset
 {
