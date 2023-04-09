@@ -47,6 +47,23 @@ class nestedset extends \phpbb\tree\nestedset
 	}
 
 	/**
+	 * Set additional sql where restrictions to find items that are enabled,
+	 * not being tracked by the user as closed, and not expired.
+	 *
+	 * @param int $user_id The user identifier
+	 * @return nestedset $this object for chaining calls
+	 */
+	public function where_visible($user_id)
+	{
+		$this->sql_where = '%s' . $this->column_item_id . ' NOT IN(SELECT ' . $this->column_item_id . '
+			FROM ' . $this->tracking_table_name . ' WHERE user_id = ' . (int) $user_id . ')
+			AND announcement_enabled = 1
+			AND (announcement_expiry = 0 OR announcement_expiry > ' . time() . ')';
+
+		return $this;
+	}
+
+	/**
 	 * Update a nested item
 	 *
 	 * @param int   $item_id   The item identifier
@@ -67,40 +84,6 @@ class nestedset extends \phpbb\tree\nestedset
 		$this->db->sql_query($sql);
 
 		return $this->db->sql_affectedrows();
-	}
-
-	/**
-	 * Get one column of data from an item
-	 *
-	 * @param int $item_id The item identifier
-	 * @param string $column The name of a column
-	 * @return string|false The value in the column
-	 */
-	public function get_item_column($item_id, $column)
-	{
-		$sql = 'SELECT ' . $this->db->sql_escape($column) . '
-			FROM ' . $this->table_name . '
-			WHERE announcement_id = ' . (int) $item_id;
-		$result = $this->db->sql_query($sql);
-		$value = $this->db->sql_fetchfield($column);
-		$this->db->sql_freeresult($result);
-
-		return $value;
-	}
-
-	/**
-	 * Run a query on a given SQL statement
-	 *
-	 * @param string $sql SQL statement
-	 * @return array Array of data
-	 */
-	public function get_from_query($sql)
-	{
-		$result = $this->db->sql_query($sql);
-		$rows = $this->db->sql_fetchrowset($result);
-		$this->db->sql_freeresult($result);
-
-		return $rows !== false ? $rows : [];
 	}
 
 	/**

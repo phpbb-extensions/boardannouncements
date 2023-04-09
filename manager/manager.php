@@ -15,24 +15,14 @@ class manager
 	/** @var \phpbb\boardannouncements\manager\nestedset */
 	protected $nestedset;
 
-	/** @var string */
-	protected $announcements_table;
-
-	/** @var string */
-	protected $announcements_tracking_table;
-
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\boardannouncements\manager\nestedset $nestedset
-	 * @param string $announcements_table
-	 * @param string $announcements_tracking_table
 	 */
-	public function __construct(\phpbb\boardannouncements\manager\nestedset $nestedset, $announcements_table, $announcements_tracking_table)
+	public function __construct(\phpbb\boardannouncements\manager\nestedset $nestedset)
 	{
 		$this->nestedset = $nestedset;
-		$this->announcements_table = $announcements_table;
-		$this->announcements_tracking_table = $announcements_tracking_table;
 	}
 
 	/**
@@ -66,15 +56,7 @@ class manager
 	 */
 	public function get_visible_announcements($user_id)
 	{
-		$sql = "SELECT b.announcement_id, b.announcement_text, b.announcement_bgcolor, b.announcement_indexonly, b.announcement_dismissable, b.announcement_users, b.announcement_timestamp, b.announcement_expiry
-			FROM $this->announcements_table b
-			LEFT JOIN $this->announcements_tracking_table u
-			    ON u.announcement_id = b.announcement_id
-			    AND u.user_id = " . (int) $user_id . '
-			WHERE u.announcement_id IS NULL
-				AND b.announcement_enabled = 1
-				AND (b.announcement_expiry = 0 OR b.announcement_expiry > ' . time() . ')';
-		return $this->nestedset->get_from_query($sql);
+		return $this->nestedset->where_visible($user_id)->get_all_tree_data();
 	}
 
 	/**
@@ -82,11 +64,13 @@ class manager
 	 *
 	 * @param int $id An announcement identifier
 	 * @param string $column Name of a column
-	 * @return string|false The value of the column
+	 * @return string The value of the column
 	 */
 	public function get_announcement_data($id, $column)
 	{
-		return $this->nestedset->get_item_column($id, $column);
+		$data = $this->nestedset->get_subtree_data($id);
+
+		return $data[$id][$column] ?? '';
 	}
 
 	/**
@@ -108,7 +92,32 @@ class manager
 	 */
 	public function update_announcement($id, $data)
 	{
-		return (bool) $this->nestedset->update_item($id, $this->intersect_data($data));
+		$updated = (bool) $this->nestedset->update_item($id, $this->intersect_data($data));
+
+		if ($updated)
+		{
+			$this->delete_announcement_tracking($id);
+		}
+
+		return $updated;
+	}
+
+	/**
+	 * Delete an announcement from the database
+	 *
+	 * @param int $id An announcement identifier
+	 * @return bool
+	 */
+	public function delete_announcement($id)
+	{
+		$deleted = (bool) $this->nestedset->delete($id);
+
+		if ($deleted)
+		{
+			$this->delete_announcement_tracking($id);
+		}
+
+		return $deleted;
 	}
 
 	/**
@@ -135,24 +144,6 @@ class manager
 	public function disable_announcement($id)
 	{
 		return $this->nestedset->update_item($id, ['announcement_enabled' => 0]) === false;
-	}
-
-	/**
-	 * Delete a board announcement
-	 *
-	 * @param int $id An announcement identifier
-	 * @return bool
-	 */
-	public function delete_announcement($id)
-	{
-		$deleted = (bool) $this->nestedset->delete($id);
-
-		if ($deleted)
-		{
-			$this->delete_announcement_tracking($id);
-		}
-
-		return $deleted;
 	}
 
 	/**

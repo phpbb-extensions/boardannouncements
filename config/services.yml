@@ -27,8 +27,6 @@ services:
         class: phpbb\boardannouncements\manager\manager
         arguments:
             - '@phpbb.boardannouncements.nestedset'
-            - '%phpbb.board.announcements.tables.announcements%'
-            - '%phpbb.board.announcements.tables.announcements_track%'
 
     phpbb.boardannouncements.acp.controller:
         class: phpbb\boardannouncements\controller\acp_controller

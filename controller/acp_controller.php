@@ -236,10 +236,7 @@ class acp_controller
 			{
 				if ($id)
 				{
-					if ($this->manager->update_announcement($id, $data))
-					{
-						$this->manager->delete_announcement_tracking($id);
-					}
+					$this->manager->update_announcement($id, $data);
 				}
 				else
 				{
