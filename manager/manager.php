@@ -10,12 +10,10 @@
 
 namespace phpbb\boardannouncements\manager;
 
-use phpbb\db\driver\driver_interface;
-
 class manager
 {
-	/** @var driver_interface */
-	protected $db;
+	/** @var \phpbb\boardannouncements\manager\nestedset */
+	protected $nestedset;
 
 	/** @var string */
 	protected $announcements_table;
@@ -26,13 +24,13 @@ class manager
 	/**
 	 * Constructor
 	 *
-	 * @param driver_interface $db
+	 * @param \phpbb\boardannouncements\manager\nestedset $nestedset
 	 * @param string $announcements_table
 	 * @param string $announcements_tracking_table
 	 */
-	public function __construct(driver_interface $db, $announcements_table, $announcements_tracking_table)
+	public function __construct(\phpbb\boardannouncements\manager\nestedset $nestedset, $announcements_table, $announcements_tracking_table)
 	{
-		$this->db = $db;
+		$this->nestedset = $nestedset;
 		$this->announcements_table = $announcements_table;
 		$this->announcements_tracking_table = $announcements_tracking_table;
 	}
@@ -45,14 +43,9 @@ class manager
 	 */
 	public function get_announcement($id)
 	{
-		$sql = 'SELECT *
-			FROM ' . $this->announcements_table . '
-			WHERE announcement_id = ' . (int) $id;
-		$result = $this->db->sql_query($sql);
-		$data = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
+		$data = $this->nestedset->get_subtree_data($id);
 
-		return $data !== false ? $data : [];
+		return count($data) ? $data[$id] : [];
 	}
 
 	/**
@@ -62,12 +55,7 @@ class manager
 	 */
 	public function get_announcements()
 	{
-		$sql = "SELECT * FROM $this->announcements_table";
-		$result = $this->db->sql_query($sql);
-		$data = $this->db->sql_fetchrowset($result);
-		$this->db->sql_freeresult($result);
-
-		return $data !== false ? $data : [];
+		return $this->nestedset->get_all_tree_data();
 	}
 
 	/**
@@ -86,11 +74,7 @@ class manager
 			WHERE u.announcement_id IS NULL
 				AND b.announcement_enabled = 1
 				AND (b.announcement_expiry = 0 OR b.announcement_expiry > ' . time() . ')';
-		$result = $this->db->sql_query($sql);
-		$data = $this->db->sql_fetchrowset($result);
-		$this->db->sql_freeresult($result);
-
-		return $data !== false ? $data : [];
+		return $this->nestedset->get_from_query($sql);
 	}
 
 	/**
@@ -102,30 +86,17 @@ class manager
 	 */
 	public function get_announcement_data($id, $column)
 	{
-		$sql = 'SELECT ' . $this->db->sql_escape($column) . '
-			FROM ' . $this->announcements_table . '
-			WHERE announcement_id = ' . (int) $id;
-		$result = $this->db->sql_query($sql);
-		$value = $this->db->sql_fetchfield($column);
-		$this->db->sql_freeresult($result);
-
-		return $value;
+		return $this->nestedset->get_item_column($id, $column);
 	}
 
 	/**
 	 * Save an announcement to the database
 	 *
 	 * @param array $data An array of announcement data
-	 * @return int
 	 */
 	public function save_announcement($data)
 	{
-		$data = $this->intersect_data($data);
-
-		$sql = "INSERT INTO " . $this->announcements_table . ' ' . $this->db->sql_build_array('INSERT', $data);
-		$this->db->sql_query($sql);
-
-		return (int) $this->db->sql_nextid();
+		$this->nestedset->insert($this->intersect_data($data));
 	}
 
 	/**
@@ -137,14 +108,33 @@ class manager
 	 */
 	public function update_announcement($id, $data)
 	{
-		$data = $this->intersect_data($data);
+		return (bool) $this->nestedset->update_item($id, $this->intersect_data($data));
+	}
 
-		$sql = "UPDATE $this->announcements_table
-			SET " . $this->db->sql_build_array('UPDATE', $data) . '
-			WHERE announcement_id = ' . (int) $id;
-		$this->db->sql_query($sql);
+	/**
+	 * Move an announcement up or down
+	 *
+	 * @param int $id An announcement identifier
+	 * @param string $direction up or down
+	 * @param int $amount
+	 * @return void
+	 */
+	public function move_announcement($id, $direction = 'up', $amount = 1)
+	{
+		$amount = (int) $amount;
 
-		return (bool) $this->db->sql_affectedrows();
+		$this->nestedset->move($id, ($direction !== 'up' ? -$amount : $amount));
+	}
+
+	/**
+	 * Set an announcement to disabled state
+	 *
+	 * @param int $id An announcement identifier
+	 * @return bool Return enabled state of announcement, true if still enabled, false if successfully disabled
+	 */
+	public function disable_announcement($id)
+	{
+		return $this->nestedset->update_item($id, ['announcement_enabled' => 0]) === false;
 	}
 
 	/**
@@ -155,11 +145,7 @@ class manager
 	 */
 	public function delete_announcement($id)
 	{
-		$sql = "DELETE FROM $this->announcements_table
-			WHERE announcement_id = " . (int) $id;
-		$this->db->sql_query($sql);
-
-		$deleted = (bool) $this->db->sql_affectedrows();
+		$deleted = (bool) $this->nestedset->delete($id);
 
 		if ($deleted)
 		{
@@ -177,27 +163,7 @@ class manager
 	 */
 	public function delete_announcement_tracking($id)
 	{
-		$sql = "DELETE FROM $this->announcements_tracking_table
-			WHERE announcement_id = " . (int) $id;
-		$this->db->sql_query($sql);
-
-		return (bool) $this->db->sql_affectedrows();
-	}
-
-	/**
-	 * Set an announcement to disabled state
-	 *
-	 * @param int $id An announcement identifier
-	 * @return bool Return enabled state of announcement, true if still enabled, false if successfully disabled
-	 */
-	public function disable_announcement($id)
-	{
-		$sql = "UPDATE $this->announcements_table
-			SET announcement_enabled = 0
-			WHERE announcement_id = " . (int) $id;
-		$this->db->sql_query($sql);
-
-		return !$this->db->sql_affectedrows();
+		return (bool) $this->nestedset->delete_tracked_items($id);
 	}
 
 	/**
@@ -209,13 +175,7 @@ class manager
 	 */
 	public function close_announcement($id, $user_id)
 	{
-		$sql = 'INSERT INTO ' . $this->announcements_tracking_table . ' ' . $this->db->sql_build_array('INSERT', [
-			'user_id'			=> (int) $user_id,
-			'announcement_id'	=> (int) $id,
-		]);
-		$this->db->sql_query($sql);
-
-		return (bool) $this->db->sql_affectedrows();
+		return (bool) $this->nestedset->insert_tracked_item($id, ['user_id' => (int) $user_id]);
 	}
 
 	/**

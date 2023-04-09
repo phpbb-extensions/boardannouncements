@@ -82,4 +82,9 @@ $lang = array_merge($lang, array(
 
 	'ACP_DELETE_SUCCESS'					=> 'The board announcement was deleted',
 	'ACP_DELETE_ERROR'						=> 'The board announcement could not be deleted',
+
+	// Nested set exception messages (only appears in PHP error logging)
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
 ));

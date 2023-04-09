@@ -1,3 +1,6 @@
+imports:
+    - { resource: tables.yml }
+
 services:
     phpbb.boardannouncements.listener:
         class: phpbb\boardannouncements\event\listener
@@ -23,9 +26,9 @@ services:
     phpbb.boardannouncements.manager:
         class: phpbb\boardannouncements\manager\manager
         arguments:
-            - '@dbal.conn'
-            - '%core.table_prefix%board_announcements'
-            - '%core.table_prefix%board_announcements_track'
+            - '@phpbb.boardannouncements.nestedset'
+            - '%phpbb.board.announcements.tables.announcements%'
+            - '%phpbb.board.announcements.tables.announcements_track%'
 
     phpbb.boardannouncements.acp.controller:
         class: phpbb\boardannouncements\controller\acp_controller
@@ -39,3 +42,11 @@ services:
             - '@user'
             - '%core.root_path%'
             - '%core.php_ext%'
+
+    phpbb.boardannouncements.nestedset:
+        class: phpbb\boardannouncements\manager\nestedset
+        arguments:
+            - '@dbal.conn'
+            - '@phpbb.cannedmessages.table_lock'
+            - '%phpbb.board.announcements.tables.announcements%'
+            - '%phpbb.board.announcements.tables.announcements_track%'
