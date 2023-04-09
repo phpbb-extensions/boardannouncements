@@ -44,4 +44,6 @@ $lang = array_merge($lang, array(
 
 	// ACP Logs
 	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Altered board announcement settings</strong>',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>A board announcement was deleted</strong><br>» %s',
+
 ));

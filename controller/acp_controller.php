@@ -1,0 +1,360 @@
+<?php
+/**
+*
+* Board Announcements extension for the phpBB Forum Software package.
+*
+* @copyright (c) 2023 phpBB Limited <https://www.phpbb.com>
+* @license GNU General Public License, version 2 (GPL-2.0)
+*
+*/
+
+namespace phpbb\boardannouncements\controller;
+
+use phpbb\boardannouncements\manager\manager;
+use phpbb\controller\helper;
+use phpbb\language\language;
+use phpbb\log\log;
+use phpbb\request\request;
+use phpbb\template\template;
+use phpbb\user;
+
+class acp_controller
+{
+	public const ALL = 0;
+	public const MEMBERS = 1;
+	public const GUESTS = 2;
+	public const DATE_FORMAT = 'Y-m-d H:i';
+
+	/** @var manager $manager */
+	protected $manager;
+
+	/** @var helper $controller_helper */
+	protected $controller_helper;
+
+	/** @var language */
+	protected $language;
+
+	/** @var log */
+	protected $log;
+
+	/** @var request */
+	protected $request;
+
+	/** @var template */
+	protected $template;
+
+	/** @var user */
+	protected $user;
+
+	/** @var string */
+	protected $phpbb_root_path;
+
+	/** @var string */
+	protected $php_ext;
+
+	/** @var string Custom form action */
+	protected $u_action;
+
+	/**
+	 * Constructor
+	 *
+	 * @param manager $manager
+	 * @param helper $controller_helper
+	 * @param language $language
+	 * @param log $log
+	 * @param request $request
+	 * @param template $template
+	 * @param user $user
+	 * @param $phpbb_root_path
+	 * @param $php_ext
+	 */
+	public function __construct(manager $manager, helper $controller_helper, language $language, log $log, request $request, template $template, user $user, $phpbb_root_path, $php_ext)
+	{
+		$this->manager = $manager;
+		$this->controller_helper = $controller_helper;
+		$this->language = $language;
+		$this->log = $log;
+		$this->request = $request;
+		$this->template = $template;
+		$this->user = $user;
+		$this->phpbb_root_path = $phpbb_root_path;
+		$this->php_ext = $php_ext;
+
+		$this->language->add_lang('posting');
+		$this->language->add_lang( 'boardannouncements_acp', 'phpbb/boardannouncements');
+	}
+
+	/**
+	 * Set page url
+	 *
+	 * @param	string	$u_action	Custom form action
+	 * @return	void
+	 */
+	public function set_page_url($u_action)
+	{
+		$this->u_action = $u_action;
+	}
+
+	/**
+	 * Handle user request for management mode
+	 *
+	 * @return	void
+	 */
+	public function mode_manage()
+	{
+		// Trigger specific action
+		$action = $this->request->variable('action', '');
+		if (in_array($action, ['add', 'delete']))
+		{
+			$this->{"action_$action"}();
+		}
+		else
+		{
+			// Otherwise default to this
+			$this->list_announcements();
+		}
+	}
+
+	/**
+	 * Generate a list of all board announcements for the ACP
+	 *
+	 * @return void
+	 */
+	protected function list_announcements()
+	{
+		foreach ($this->manager->get_announcements() as $row)
+		{
+			$enabled = (int) $row['announcement_enabled'];
+			$expired = (int) $row['announcement_expiry'] > 0 && (int) $row['announcement_expiry'] < time();
+
+			// if an enabled ad has expired, let's disable it now
+			if ($expired && $enabled)
+			{
+				$enabled = $this->manager->disable_announcement($row['announcement_id']);
+			}
+
+			$this->template->assign_block_vars('announcements' , [
+				'DESCRIPTION'  => $row['announcement_description'],
+				'INDEX_ONLY'   => $row['announcement_indexonly'],
+				'USERS'        => $row['announcement_users'],
+				'CREATED_DATE' => $row['announcement_timestamp'],
+				'EXPIRY_DATE'  => $row['announcement_expiry'],
+				'S_EXPIRED'    => $expired,
+				'S_ENABLED'    => $enabled,
+				'U_EDIT'       => $this->u_action . '&amp;action=add&amp;id=' . $row['announcement_id'],
+				'U_DELETE'     => $this->u_action . '&amp;action=delete&amp;id=' . $row['announcement_id'],
+			]);
+		}
+
+		// Set output vars for display in the template
+		$this->template->assign_var('U_ACTION_ADD', $this->u_action . '&amp;action=add');
+	}
+
+	public function action_add()
+	{
+		// Define the name of the form for use as a form key
+		$form_name = 'acp_board_announcements';
+		add_form_key($form_name);
+
+		// Set an empty error array
+		$errors = [];
+
+		// Include files needed for displaying BBCodes
+		if (!function_exists('display_custom_bbcodes'))
+		{
+			include $this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext;
+		}
+
+		// Get board announcement data from the database if it already exists
+		$data = $this->manager->announcement_columns();
+		$id = $this->request->variable('id', 0);
+		if ($id)
+		{
+			$data = $this->manager->get_announcement($id);
+		}
+
+		// If form is submitted or previewed
+		$submit  = $this->request->is_set_post('submit');
+		$preview = $this->request->is_set_post('preview');
+		if ($submit || $preview)
+		{
+			// Test if form key is valid
+			if (!check_form_key($form_name))
+			{
+				$errors[] = $this->language->lang('FORM_INVALID');
+			}
+
+			// Get new announcement values from the form
+			$data['announcement_timestamp']	= time();
+			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
+			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);
+			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
+			$data['announcement_enabled'] = $this->request->variable('board_announcements_enable', false);
+			$data['announcement_users'] = $this->request->variable('board_announcements_users', self::ALL);
+			$data['announcement_indexonly'] = $this->request->variable('board_announcements_index_only', false);
+			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', false);
+			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
+
+			if ($data['announcement_expiry'] !== '')
+			{
+				$data['announcement_expiry'] = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $data['announcement_expiry']);
+				if ($data['announcement_expiry'] < time())
+				{
+					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+				}
+			}
+
+			// Prepare announcement text for storage
+			$uid = $bitfield = $options = '';
+			generate_text_for_storage(
+				$data['announcement_text'],
+				$uid,
+				$bitfield,
+				$options,
+				!$this->request->variable('disable_bbcode', false),
+				!$this->request->variable('disable_magic_url', false),
+				!$this->request->variable('disable_smilies', false)
+			);
+
+			// Store the announcement text and settings if submitted with no errors
+			if ($submit && empty($errors))
+			{
+				if ($id)
+				{
+					$this->manager->update_announcement($id, $data);
+				}
+				else
+				{
+					$this->manager->save_announcement($data);
+				}
+
+				// Log the announcement update
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_UPDATED_LOG');
+
+				// Output message to user for the announcement update
+				$this->success('BOARD_ANNOUNCEMENTS_UPDATED');
+			}
+		}
+
+		// Prepare a fresh announcement preview
+		$announcement_text_preview = '';
+		if ($preview)
+		{
+			$announcement_text_preview = generate_text_for_display($data['announcement_text'], '', '', (OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS));
+		}
+
+		// Prepare the announcement text for editing inside the text box
+		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], '', (OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS));
+
+		// Output data to the template
+		$this->template->assign_vars([
+			'ERRORS'						=> count($errors) ? implode('<br>', $errors) : '',
+			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $data['announcement_enabled'],
+			'BOARD_ANNOUNCEMENTS_INDEX_ONLY'=> $data['announcement_indexonly'],
+			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $data['announcement_dismissable'],
+			'BOARD_ANNOUNCEMENTS_DESC'		=> $data['announcement_description'],
+			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
+			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
+			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $data['announcement_expiry'] ? $this->user->format_date($data['announcement_expiry'], self::DATE_FORMAT) : '',
+			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
+
+			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select([
+				self::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
+				self::MEMBERS	=> 'G_REGISTERED',
+				self::GUESTS	=> 'G_GUESTS',
+			], $data['announcement_users']),
+
+			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],
+			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
+			'S_MAGIC_URL_DISABLE_CHECKED'	=> !$announcement_text_edit['allow_urls'],
+
+			'BBCODE_STATUS'			=> $this->language->lang('BBCODE_IS_ON', '<a href="' . $this->controller_helper->route('phpbb_help_bbcode_controller') . '">', '</a>'),
+			'SMILIES_STATUS'		=> $this->language->lang('SMILIES_ARE_ON'),
+			'IMG_STATUS'			=> $this->language->lang('IMAGES_ARE_ON'),
+			'FLASH_STATUS'			=> $this->language->lang('FLASH_IS_ON'),
+			'URL_STATUS'			=> $this->language->lang('URL_IS_ON'),
+
+			'S_BBCODE_ALLOWED'		=> true,
+			'S_SMILIES_ALLOWED'		=> true,
+			'S_BBCODE_IMG'			=> true,
+			'S_BBCODE_FLASH'		=> true,
+			'S_LINKS_ALLOWED'		=> true,
+			'S_BOARD_ANNOUNCEMENTS'	=> true,
+			'S_ADD'					=> empty($id),
+			'S_EDIT'				=> !empty($id),
+
+			'PICKER_DATE_FORMAT'	=> self::DATE_FORMAT,
+
+			'U_BACK'				=> $this->u_action,
+			'U_ACTION'				=> $this->u_action . '&amp;action=add' . (!empty($id) ? '&amp;id=' . (int) $id : ''),
+		]);
+
+		// Build custom bbcodes array
+		display_custom_bbcodes();
+	}
+
+	/**
+	 * Delete an announcement
+	 *
+	 * @return void
+	 */
+	protected function action_delete()
+	{
+		$id = $this->request->variable('id', 0);
+		if (confirm_box(true))
+		{
+			// Get announcement description for logs
+			$description = $this->manager->get_announcement_data($id, 'announcement_description');
+
+			// Delete announcement
+			$success = $this->manager->delete_announcement($id);
+
+			// Only notify user on error or if not ajax
+			if (!$success)
+			{
+				$this->error('ACP_DELETE_ERROR');
+			}
+			else
+			{
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_DELETED_LOG', time(), [$description]);
+
+				if (!$this->request->is_ajax())
+				{
+					$this->success('ACP_DELETE_SUCCESS');
+				}
+			}
+		}
+		else
+		{
+			confirm_box(false, $this->language->lang('CONFIRM_OPERATION'), build_hidden_fields([
+				'id'     => $id,
+				'i'      => $this->request->variable('i', ''),
+				'mode'   => $this->request->variable('mode', ''),
+				'action' => 'delete',
+			]));
+
+			// When you don't confirm deleting action
+			$this->list_announcements();
+		}
+	}
+
+	/**
+	 * Print success message.
+	 *
+	 * @param	string	$msg	Message lang key
+	 */
+	protected function success($msg)
+	{
+		trigger_error($this->language->lang($msg) . adm_back_link($this->u_action));
+	}
+
+	/**
+	 * Print error message.
+	 *
+	 * @param	string	$msg	Message lang key
+	 */
+	protected function error($msg)
+	{
+		trigger_error($this->language->lang($msg) . adm_back_link($this->u_action), E_USER_WARNING);
+	}
+}

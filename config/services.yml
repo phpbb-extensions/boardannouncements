@@ -26,3 +26,16 @@ services:
             - '@dbal.conn'
             - '%core.table_prefix%board_announcements'
             - '%core.table_prefix%board_announcements_track'
+
+    phpbb.boardannouncements.acp.controller:
+        class: phpbb\boardannouncements\controller\acp_controller
+        arguments:
+            - '@phpbb.boardannouncements.manager'
+            - '@controller.helper'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '%core.root_path%'
+            - '%core.php_ext%'

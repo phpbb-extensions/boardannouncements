@@ -10,7 +10,7 @@
 
 namespace phpbb\boardannouncements\event;
 
-use phpbb\boardannouncements\acp\board_announcements_module;
+use phpbb\boardannouncements\controller\acp_controller;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
@@ -104,15 +104,15 @@ class listener implements EventSubscriberInterface
 		foreach ($board_announcements_data as $board_announcement_data)
 		{
 			// Do not continue if board announcement is expired
-			if ($board_announcement_data['announcement_expiry'] && $board_announcement_data['announcement_expiry'] < time())
-			{
-				$this->manager->disable_announcement($board_announcement_data['announcement_id']);
-				continue;
-			}
+//			if ($board_announcement_data['announcement_expiry'] && $board_announcement_data['announcement_expiry'] < time())
+//			{
+//				$this->manager->disable_announcement($board_announcement_data['announcement_id']);
+//				continue;
+//			}
 
 			// Do not continue if user is registered, but announcement is for guests only
 			// This is to prevent newly registered users from seeing guest only announcements
-			if ($this->user->data['user_id'] != ANONYMOUS && $board_announcement_data['announcement_users'] == board_announcements_module::GUESTS)
+			if ($this->user->data['user_id'] != ANONYMOUS && $board_announcement_data['announcement_users'] == acp_controller::GUESTS)
 			{
 				continue;
 			}
@@ -134,12 +134,7 @@ class listener implements EventSubscriberInterface
 			$this->template->assign_block_vars('board_announcements', [
 				'BOARD_ANNOUNCEMENT_ID'			=> $board_announcement_data['announcement_id'],
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $board_announcement_data['announcement_dismissable'],
-				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display(
-					$board_announcement_data['announcement_text'],
-					$board_announcement_data['announcement_uid'],
-					$board_announcement_data['announcement_bitfield'],
-					$board_announcement_data['announcement_options']
-				),
+				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($board_announcement_data['announcement_text'], '', '', (OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS)),
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
 					'id'	=> $board_announcement_data['announcement_id'],
