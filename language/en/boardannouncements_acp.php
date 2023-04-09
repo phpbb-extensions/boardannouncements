@@ -41,6 +41,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Board announcements settings',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Here you can create and manage your board’s announcements.',
 
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
@@ -63,6 +65,7 @@ $lang = array_merge($lang, array(
 
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Board announcement message',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Board announcement - Preview',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Board announcement has been updated.',
 

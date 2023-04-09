@@ -96,6 +96,12 @@ class listener implements EventSubscriberInterface
 	*/
 	public function display_board_announcements()
 	{
+		// Do not continue if board announcements are disabled
+		if (!$this->config->offsetGet('board_announcements_enable'))
+		{
+			return;
+		}
+
 		// Add board announcements language file
 		$this->language->add_lang('boardannouncements','phpbb/boardannouncements');
 

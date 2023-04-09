@@ -11,6 +11,7 @@
 namespace phpbb\boardannouncements\controller;
 
 use phpbb\boardannouncements\manager\manager;
+use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\language\language;
 use phpbb\log\log;
@@ -27,6 +28,9 @@ class acp_controller
 
 	/** @var manager $manager */
 	protected $manager;
+
+	/** @var config */
+	protected $config;
 
 	/** @var helper $controller_helper */
 	protected $controller_helper;
@@ -68,9 +72,10 @@ class acp_controller
 	 * @param $phpbb_root_path
 	 * @param $php_ext
 	 */
-	public function __construct(manager $manager, helper $controller_helper, language $language, log $log, request $request, template $template, user $user, $phpbb_root_path, $php_ext)
+	public function __construct(manager $manager, config $config, helper $controller_helper, language $language, log $log, request $request, template $template, user $user, $phpbb_root_path, $php_ext)
 	{
 		$this->manager = $manager;
+		$this->config = $config;
 		$this->controller_helper = $controller_helper;
 		$this->language = $language;
 		$this->log = $log;
@@ -104,7 +109,7 @@ class acp_controller
 	{
 		// Trigger specific action
 		$action = $this->request->variable('action', '');
-		if (in_array($action, ['add', 'delete']))
+		if (in_array($action, ['add', 'delete', 'move', 'settings']))
 		{
 			$this->{"action_$action"}();
 		}
@@ -143,11 +148,16 @@ class acp_controller
 				'S_ENABLED'    => $enabled,
 				'U_EDIT'       => $this->u_action . '&amp;action=add&amp;id=' . $row['announcement_id'],
 				'U_DELETE'     => $this->u_action . '&amp;action=delete&amp;id=' . $row['announcement_id'],
+				'U_MOVE_UP'    => $this->u_action . '&amp;action=move&amp;id=' . $row['announcement_id'] . '&amp;dir=up&amp;hash=' . generate_link_hash('up' . $row['announcement_id']),
+				'U_MOVE_DOWN'  => $this->u_action . '&amp;action=move&amp;id=' . $row['announcement_id'] . '&amp;dir=down&amp;hash=' . generate_link_hash('down' . $row['announcement_id']),
 			]);
 		}
 
 		// Set output vars for display in the template
-		$this->template->assign_var('U_ACTION_ADD', $this->u_action . '&amp;action=add');
+		$this->template->assign_vars([
+			'U_ACTION_ADD'						=> $this->u_action . '&amp;action=add',
+			'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config->offsetGet('board_announcements_enable'),
+		]);
 	}
 
 	public function action_add()
@@ -195,6 +205,11 @@ class acp_controller
 			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', false);
 			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
 
+			if ($data['announcement_text'] === '')
+			{
+				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TEXT_INVALID');
+			}
+
 			if ($data['announcement_expiry'] !== '')
 			{
 				$data['announcement_expiry'] = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $data['announcement_expiry']);
@@ -221,7 +236,10 @@ class acp_controller
 			{
 				if ($id)
 				{
-					$this->manager->update_announcement($id, $data);
+					if ($this->manager->update_announcement($id, $data))
+					{
+						$this->manager->delete_announcement_tracking($id);
+					}
 				}
 				else
 				{
@@ -338,6 +356,44 @@ class acp_controller
 		}
 	}
 
+	public function action_move()
+	{
+		$id = $this->request->variable('id', 0);
+		$dir = $this->request->variable('dir', '');
+
+		if (!$this->check_hash($dir . $id))
+		{
+			$this->error('FORM_INVALID');
+		}
+
+		try
+		{
+			$this->manager->move_announcement($id, $dir);
+		}
+		catch (\OutOfBoundsException $e)
+		{
+			$this->error($e->getMessage());
+		}
+
+		if ($this->request->is_ajax())
+		{
+			$json_response = new \phpbb\json_response;
+			$json_response->send(['success' => true]);
+		}
+	}
+
+	/**
+	 * Submit settings
+	 *
+	 * @return void
+	 */
+	public function action_settings()
+	{
+		$this->config->set('board_announcements_enable', $this->request->variable('board_announcements_enable_all', 0));
+
+		$this->success('CONFIG_UPDATED');
+	}
+
 	/**
 	 * Print success message.
 	 *
@@ -356,5 +412,16 @@ class acp_controller
 	protected function error($msg)
 	{
 		trigger_error($this->language->lang($msg) . adm_back_link($this->u_action), E_USER_WARNING);
+	}
+
+	/**
+	 * Check link hash helper
+	 *
+	 * @param string $hash A hashed string
+	 * @return bool True if hash matches, false if not
+	 */
+	protected function check_hash($hash)
+	{
+		return check_link_hash($this->request->variable('hash', ''), $hash);
 	}
 }
