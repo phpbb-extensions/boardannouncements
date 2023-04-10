@@ -56,7 +56,14 @@ class manager
 	 */
 	public function get_visible_announcements($user_id)
 	{
-		return $this->nestedset->where_visible($user_id)->get_all_tree_data();
+		$data = $this->nestedset->where_visible($user_id)->get_all_tree_data();
+
+		if ((int) $user_id === ANONYMOUS)
+		{
+			return array_filter($data, [$this, 'filter_members']);
+		}
+
+		return array_filter($data, [$this, 'filter_guests']);
 	}
 
 	/**
@@ -167,6 +174,28 @@ class manager
 	public function close_announcement($id, $user_id)
 	{
 		return (bool) $this->nestedset->insert_tracked_item($id, ['user_id' => (int) $user_id]);
+	}
+
+	/**
+	 * Filter members only announcements
+	 *
+	 * @param array $row
+	 * @return bool
+	 */
+	protected function filter_members(array $row)
+	{
+		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\controller\acp_controller::MEMBERS;
+	}
+
+	/**
+	 * Filter guests only announcements
+	 *
+	 * @param array $row
+	 * @return bool
+	 */
+	protected function filter_guests(array $row)
+	{
+		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\controller\acp_controller::GUESTS;
 	}
 
 	/**

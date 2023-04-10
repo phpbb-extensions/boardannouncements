@@ -109,15 +109,7 @@ class listener implements EventSubscriberInterface
 
 		foreach ($board_announcements_data as $board_announcement_data)
 		{
-			// Do not continue if user is registered, but announcement is for guests only
-			// This is to prevent newly registered users from seeing guest only announcements
-			if ($this->user->data['user_id'] != ANONYMOUS && $board_announcement_data['announcement_users'] == acp_controller::GUESTS)
-			{
-				continue;
-			}
-
-			// Do not continue if announcements are only displayed on the board index,
-			// and the user is not currently viewing the board index
+			// Do not continue if announcements are only displayed on the board index, and the user is not currently viewing the board index
 			if ($board_announcement_data['announcement_indexonly'] && $this->user->page['page_name'] !== "index.$this->php_ext")
 			{
 				continue;
