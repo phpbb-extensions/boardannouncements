@@ -73,7 +73,7 @@ class nestedset extends \phpbb\tree\nestedset
 	 */
 	public function update_item($item_id, array $item_data)
 	{
-		if (!$item_id)
+		if (!$item_id || empty($item_data))
 		{
 			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
 		}
@@ -94,6 +94,11 @@ class nestedset extends \phpbb\tree\nestedset
 	 */
 	public function delete_tracked_items($item_id)
 	{
+		if (!$item_id)
+		{
+			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
+		}
+
 		$sql = 'DELETE FROM ' . $this->tracking_table_name . '
 			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id;
 		$this->db->sql_query($sql);
@@ -110,6 +115,15 @@ class nestedset extends \phpbb\tree\nestedset
 	 */
 	public function insert_tracked_item($item_id, $data)
 	{
+		$item = $this->get_subtree_data($item_id);
+
+		if (empty($item))
+		{
+			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
+		}
+
+		unset($item);
+
 		$sql = 'INSERT INTO ' . $this->tracking_table_name . ' ' . $this->db->sql_build_array('INSERT', array_merge($data, [
 			$this->column_item_id => (int) $item_id
 		]));
