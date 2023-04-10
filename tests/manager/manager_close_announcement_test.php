@@ -62,6 +62,7 @@ class manager_close_announcement_test extends manager_base
 		{
 			$ids[] = $row['announcement_id'];
 		}
+		$this->db->sql_freeresult($result);
 		return $ids;
 	}
 }
