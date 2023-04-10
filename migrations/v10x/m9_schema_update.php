@@ -68,19 +68,11 @@ class m9_schema_update extends \phpbb\db\migration\migration
 					'PRIMARY_KEY'	=> ['announcement_id', 'user_id'],
 				],
 			],
-			'drop_columns'	=> [
-				$this->table_prefix . 'users'	=> [
-					'board_announcements_status',
-				],
-			],
 		];
 	}
 
 	/**
-	 * Drop the board announcements column from the users table.
-	 *
-	 * @return array Array of table schema
-	 * @access public
+	 * {@inheritdoc}
 	 */
 	public function revert_schema()
 	{
@@ -88,11 +80,6 @@ class m9_schema_update extends \phpbb\db\migration\migration
 			'drop_tables'	=> [
 				$this->table_prefix . 'board_announcements',
 				$this->table_prefix . 'board_announcements_track',
-			],
-			'add_columns'	=> [
-				$this->table_prefix . 'users'	=> [
-					'board_announcements_status'	=> ['BOOL', 0],
-				],
 			],
 		];
 	}

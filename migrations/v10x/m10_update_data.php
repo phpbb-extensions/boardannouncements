@@ -41,6 +41,9 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 		return !$this->config->offsetExists('board_announcements_dismiss');
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function update_data()
 	{
 		return [
@@ -58,6 +61,11 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 		];
 	}
 
+	/**
+	 * Custom function to move old board announcement data to the new schema
+	 *
+	 * @return void
+	 */
 	public function convert_board_announcements()
 	{
 		$config_text = $this->container->get('config_text');
@@ -76,8 +84,13 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 		// If we have data to import, let's go!! :)
 		if (!empty($import_data['announcement_text'] ))
 		{
-			$nestedset = $this->get_nestedset();
-			$nestedset->insert($import_data);
+			$result = $this->get_nestedset()->insert($import_data);
+		}
+
+		// Also get any user data for dismissed announcements
+		if (isset($result['announcement_id']))
+		{
+			$this->migrate_user_data($result['announcement_id']);
 		}
 	}
 
@@ -86,7 +99,7 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 	 *
 	 * @return nestedset
 	 */
-	public function get_nestedset()
+	protected function get_nestedset()
 	{
 		/** @var \phpbb\db\driver\driver_interface $db */
 		$db = $this->container->get('dbal.conn');
@@ -94,5 +107,29 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 		$lock = new \phpbb\lock\db('boardannouncements.table_lock.board_announcements_table', $this->config, $db);
 
 		return new nestedset($db, $lock, $this->table_prefix . 'board_announcements', $this->table_prefix . 'board_announcements_track');
+	}
+
+	/**
+	 * Inserts user tracking, if users have dismissed the old announcement,
+	 * we add that data to the new table, so we keep the announcement closed.
+	 *
+	 * @param int $id The announcement identifier
+	 * @return void
+	 */
+	protected function migrate_user_data($id)
+	{
+		$sql_ary = [];
+		$sql = 'SELECT * FROM ' . $this->table_prefix . 'users
+         	WHERE board_announcements_status = 0
+         	AND user_type <> ' . USER_IGNORE;
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$sql_ary[] = [
+				'announcement_id'	=> $id,
+				'user_id'			=> $row['user_id'],
+			];
+		}
+		$this->db->sql_multi_insert($this->table_prefix . 'board_announcements_track', $sql_ary);
 	}
 }
