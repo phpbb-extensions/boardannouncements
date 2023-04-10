@@ -29,7 +29,7 @@ class manager_save_announcement_test extends manager_base
 				'announcement_dismissable'	=> 1,
 				'announcement_users'		=> 0,
 				'announcement_timestamp'	=> time(),
-				'announcement_expiry'		=> '',
+				'announcement_expiry'		=> 0,
 			]],
 		];
 	}

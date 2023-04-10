@@ -162,62 +162,66 @@ class listener_test extends \phpbb_database_test_case
 	 */
 	public function display_board_announcements_data()
 	{
+		global $user;
+		$user = new \phpbb_mock_user();
+		$user->data['user_form_salt'] = '';
+
 		return [
 			[ANONYMOUS, 'index', true,
 				[
 					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => '1',
+						'BOARD_ANNOUNCEMENT_ID' => 1,
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => '1', 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement')]),
 					]],
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => '3',
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 3',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '000000',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => '3', 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3, 'hash' => generate_link_hash('close_boardannouncement')]),
 					]],
 				]
 			],
 			[2, 'index', true,
 				[
 					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => '1',
+						'BOARD_ANNOUNCEMENT_ID' => 1,
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => '1', 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement')]),
 					]],
 				]
 			],
 			[3, 'index', true,
 				[
 					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => '1',
+						'BOARD_ANNOUNCEMENT_ID' => 1,
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => '1', 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement')]),
 					]],
 					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => '2',
+						'BOARD_ANNOUNCEMENT_ID' => 2,
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 2',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => 'ffffff',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => '2', 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement')]),
 					]],
 				]
 			],
 			[4, 'viewforum', true,
 				[
 					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => '2',
+						'BOARD_ANNOUNCEMENT_ID' => 2,
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 2',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => 'ffffff',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => '2', 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement')]),
 					]],
 				]
 			],

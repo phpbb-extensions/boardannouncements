@@ -124,9 +124,8 @@ class nestedset extends \phpbb\tree\nestedset
 
 		unset($item);
 
-		$sql = 'INSERT INTO ' . $this->tracking_table_name . ' ' . $this->db->sql_build_array('INSERT', array_merge($data, [
-			$this->column_item_id => (int) $item_id
-		]));
+		$sql = 'INSERT INTO ' . $this->tracking_table_name . ' ' .
+			$this->db->sql_build_array('INSERT', array_merge($data, [$this->column_item_id => (int) $item_id]));
 		$this->db->sql_query($sql);
 
 		return $this->db->sql_affectedrows();

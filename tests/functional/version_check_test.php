@@ -22,7 +22,7 @@ class version_check_test extends \phpbb_functional_test_case
 	*/
 	protected static function setup_extensions()
 	{
-		return array('phpbb/boardannouncements');
+		return ['phpbb/boardannouncements'];
 	}
 
 	/**
@@ -36,9 +36,9 @@ class version_check_test extends \phpbb_functional_test_case
 
 		// Load language files
 		$this->add_lang('acp/extensions');
-		$this->add_lang_ext('phpbb/boardannouncements', array('boardannouncements_acp', 'info_acp_board_announcements'));
+		$this->add_lang_ext('phpbb/boardannouncements', ['boardannouncements_acp', 'info_acp_board_announcements']);
 
-		// Load the Board Rules details
+		// Load the Board Announcements details
 		$crawler = self::request('GET', 'adm/index.php?i=acp_extensions&mode=main&action=details&ext_name=phpbb%2Fboardannouncements&sid=' . $this->sid);
 
 		// Assert extension is up-to-date

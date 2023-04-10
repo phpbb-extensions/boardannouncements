@@ -85,8 +85,7 @@ class controller_test extends \phpbb_database_test_case
 		$request->method('variable')
 			->with(self::anything())
 			->willReturnMap([
-				['hash', '', false, \phpbb\request\request_interface::REQUEST, generate_link_hash($mode)],
-				]
+				['hash', '', false, \phpbb\request\request_interface::REQUEST, generate_link_hash($mode)]]
 		);
 
 		$manager = new \phpbb\boardannouncements\manager\manager(
@@ -120,7 +119,7 @@ class controller_test extends \phpbb_database_test_case
 				'close_boardannouncement',
 				true,
 				200,
-				'{"success":true,"id":"1"}', // True because a cookie was set
+				'{"success":true,"id":1}', // True because a cookie was set
 				false,
 			],
 			[
@@ -130,7 +129,7 @@ class controller_test extends \phpbb_database_test_case
 				'close_boardannouncement',
 				true,
 				200,
-				'{"success":true,"id":"1"}', // True because a cookie and status were set
+				'{"success":true,"id":1}', // True because a cookie and status were set
 				true,
 			],
 			[
@@ -140,7 +139,7 @@ class controller_test extends \phpbb_database_test_case
 				'close_boardannouncement',
 				true,
 				200,
-				'{"success":true,"id":"1"}', // True because a cookie was set
+				'{"success":true,"id":1}', // True because a cookie was set
 				false, // Status should return false due to user not existing
 			],
 			[
@@ -150,7 +149,7 @@ class controller_test extends \phpbb_database_test_case
 				'close_boardannouncement',
 				false,
 				200,
-				'{"success":true,"id":"1"}', // True because a cookie was set
+				'{"success":true,"id":1}', // True because a cookie was set
 				false,
 			],
 		];

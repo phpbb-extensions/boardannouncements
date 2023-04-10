@@ -209,6 +209,7 @@ class acp_controller
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TEXT_INVALID');
 			}
 
+			// Special handling for the expiration date, convert from date string to timestamp
 			if ($data['announcement_expiry'] !== '')
 			{
 				$data['announcement_expiry'] = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $data['announcement_expiry']);
@@ -216,6 +217,10 @@ class acp_controller
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
 				}
+			}
+			else
+			{
+				$data['announcement_expiry'] = 0;
 			}
 
 			// Prepare announcement text for storage

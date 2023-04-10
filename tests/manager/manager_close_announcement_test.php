@@ -56,7 +56,10 @@ class manager_close_announcement_test extends manager_base
 	protected function get_closed_announcements($user_id)
 	{
 		$ids = [];
-		$sql = 'SELECT announcement_id FROM phpbb_board_announcements_track WHERE user_id = ' . (int) $user_id;
+		$sql = 'SELECT announcement_id
+			FROM phpbb_board_announcements_track
+			WHERE user_id = ' . (int) $user_id . '
+			ORDER BY announcement_id ASC';
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{

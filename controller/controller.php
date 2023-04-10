@@ -75,7 +75,7 @@ class controller
 		{
 			return new JsonResponse([
 				'success' 	=> $response,
-				'id'		=> $announcement['announcement_id']
+				'id'		=> (int) $announcement['announcement_id']
 			]);
 		}
 

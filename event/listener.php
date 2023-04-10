@@ -127,7 +127,7 @@ class listener implements EventSubscriberInterface
 				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($board_announcement_data['announcement_text'], '', '', (OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS)),
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
-					'id'	=> $board_announcement_data['announcement_id'],
+					'id'	=> (int) $board_announcement_data['announcement_id'],
 					'hash'	=> generate_link_hash('close_boardannouncement')
 				]),
 			]);

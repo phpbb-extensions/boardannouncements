@@ -52,7 +52,7 @@ class m9_schema_update extends \phpbb\db\migration\migration
 						'announcement_dismissable'	=> ['BOOL', 0],
 						'announcement_users'		=> ['UINT', 0],
 						'announcement_timestamp'	=> ['TIMESTAMP', 0],
-						'announcement_expiry'		=> ['VCHAR:11', ''],
+						'announcement_expiry'		=> ['TIMESTAMP', 0],
 						'announcement_parent_id'	=> ['UINT', 0],
 						'announcement_left_id'		=> ['UINT', 0],
 						'announcement_right_id'		=> ['UINT', 0],
@@ -65,7 +65,10 @@ class m9_schema_update extends \phpbb\db\migration\migration
 						'announcement_id'	=> ['UINT', 0],
 						'user_id'			=> ['UINT', 0],
 					],
-					'PRIMARY_KEY'	=> ['announcement_id', 'user_id'],
+					'KEYS'	=> [
+						'announcement_id'	=> ['INDEX', 'announcement_id'],
+						'user_id'			=> ['INDEX', 'user_id'],
+					],
 				],
 			],
 		];
