@@ -10,7 +10,6 @@
 
 namespace phpbb\boardannouncements\event;
 
-use phpbb\boardannouncements\controller\acp_controller;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;

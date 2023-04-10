@@ -184,7 +184,7 @@ class manager
 	 */
 	protected function filter_members(array $row)
 	{
-		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\controller\acp_controller::MEMBERS;
+		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\ext::MEMBERS;
 	}
 
 	/**
@@ -195,7 +195,7 @@ class manager
 	 */
 	protected function filter_guests(array $row)
 	{
-		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\controller\acp_controller::GUESTS;
+		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\ext::GUESTS;
 	}
 
 	/**

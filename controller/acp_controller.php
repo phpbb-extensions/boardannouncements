@@ -10,6 +10,7 @@
 
 namespace phpbb\boardannouncements\controller;
 
+use phpbb\boardannouncements\ext;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
@@ -21,9 +22,6 @@ use phpbb\user;
 
 class acp_controller
 {
-	public const ALL = 0;
-	public const MEMBERS = 1;
-	public const GUESTS = 2;
 	public const DATE_FORMAT = 'Y-m-d H:i';
 
 	/** @var manager $manager */
@@ -63,6 +61,7 @@ class acp_controller
 	 * Constructor
 	 *
 	 * @param manager $manager
+	 * @param config $config
 	 * @param helper $controller_helper
 	 * @param language $language
 	 * @param log $log
@@ -200,7 +199,7 @@ class acp_controller
 			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 			$data['announcement_enabled'] = $this->request->variable('board_announcements_enable', false);
-			$data['announcement_users'] = $this->request->variable('board_announcements_users', self::ALL);
+			$data['announcement_users'] = $this->request->variable('board_announcements_users', ext::ALL);
 			$data['announcement_indexonly'] = $this->request->variable('board_announcements_index_only', false);
 			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', false);
 			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
@@ -274,9 +273,9 @@ class acp_controller
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
 
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select([
-				self::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
-				self::MEMBERS	=> 'G_REGISTERED',
-				self::GUESTS	=> 'G_GUESTS',
+				ext::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
+				ext::MEMBERS	=> 'G_REGISTERED',
+				ext::GUESTS	=> 'G_GUESTS',
 			], $data['announcement_users']),
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],

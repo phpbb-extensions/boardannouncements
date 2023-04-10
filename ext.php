@@ -15,16 +15,20 @@ namespace phpbb\boardannouncements;
 */
 class ext extends \phpbb\extension\base
 {
+	public const ALL = 0;
+	public const MEMBERS = 1;
+	public const GUESTS = 2;
+
 	/**
 	 * Enable extension if phpBB minimum version requirement is met
 	 *
-	 * Requires phpBB 3.2.0 due to new INCLUDECSS and BBCode FAQ controller usage
+	 * Requires phpBB 3.3.0
 	 *
 	 * @return bool
 	 * @aceess public
 	 */
 	public function is_enableable()
 	{
-		return phpbb_version_compare(PHPBB_VERSION, '3.2.0', '>=');
+		return phpbb_version_compare(PHPBB_VERSION, '3.3.0', '>=');
 	}
 }

@@ -171,11 +171,11 @@
 				<tr>
 					<td>{{ ba.DESCRIPTION }}</td>
 					<td>{{ ba.INDEX_ONLY ? lang('INDEX_ONLY') : lang('EVERYWHERE') }}</td>
-					<td>{% if ba.USERS == constant('\\phpbb\\boardannouncements\\controller\\acp_controller::ALL') %}
+					<td>{% if ba.USERS == constant('\\phpbb\\boardannouncements\\ext::ALL') %}
 							{{ lang('BOARD_ANNOUNCEMENTS_EVERYONE') }}
-						{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\controller\\acp_controller::MEMBERS') %}
+						{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::MEMBERS') %}
 							{{ lang('G_REGISTERED') }}
-						{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\controller\\acp_controller::GUESTS') %}
+						{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::GUESTS') %}
 							{{ lang('G_GUESTS') }}
 						{% endif %}
 					</td>

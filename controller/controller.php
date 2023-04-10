@@ -54,13 +54,8 @@ class controller
 		// Get the announcements data
 		$announcement = $this->manager->get_announcement($id);
 
-		if (empty($announcement))
-		{
-			throw new http_exception(500, 'GENERAL_ERROR');
-		}
-
-		// Check the link hash to protect against CSRF/XSRF attacks
-		if (!$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement'))
+		// Check for unauthorized attacks
+		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement'))
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
