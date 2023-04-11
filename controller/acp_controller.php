@@ -155,11 +155,11 @@ class acp_controller
 		// Set output vars for display in the template
 		$this->template->assign_vars([
 			'U_ACTION_ADD'						=> $this->u_action . '&amp;action=add',
-			'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config->offsetGet('board_announcements_enable'),
+			'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config['board_announcements_enable'],
 		]);
 	}
 
-	public function action_add()
+	protected function action_add()
 	{
 		// Define the name of the form for use as a form key
 		$form_name = 'acp_board_announcements';
@@ -198,10 +198,10 @@ class acp_controller
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
 			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
-			$data['announcement_enabled'] = $this->request->variable('board_announcements_enable', false);
+			$data['announcement_enabled'] = $this->request->variable('board_announcements_enabled', true);
 			$data['announcement_users'] = $this->request->variable('board_announcements_users', ext::ALL);
 			$data['announcement_indexonly'] = $this->request->variable('board_announcements_index_only', false);
-			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', false);
+			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', true);
 			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
 
 			if ($data['announcement_text'] === '')
@@ -290,13 +290,11 @@ class acp_controller
 			'BBCODE_STATUS'			=> $this->language->lang('BBCODE_IS_ON', '<a href="' . $this->controller_helper->route('phpbb_help_bbcode_controller') . '">', '</a>'),
 			'SMILIES_STATUS'		=> $this->language->lang('SMILIES_ARE_ON'),
 			'IMG_STATUS'			=> $this->language->lang('IMAGES_ARE_ON'),
-			'FLASH_STATUS'			=> $this->language->lang('FLASH_IS_ON'),
 			'URL_STATUS'			=> $this->language->lang('URL_IS_ON'),
 
 			'S_BBCODE_ALLOWED'		=> true,
 			'S_SMILIES_ALLOWED'		=> true,
 			'S_BBCODE_IMG'			=> true,
-			'S_BBCODE_FLASH'		=> true,
 			'S_LINKS_ALLOWED'		=> true,
 			'S_BOARD_ANNOUNCEMENTS'	=> true,
 			'S_ADD'					=> empty($id),
@@ -357,7 +355,7 @@ class acp_controller
 		}
 	}
 
-	public function action_move()
+	protected function action_move()
 	{
 		$id = $this->request->variable('id', 0);
 		$dir = $this->request->variable('dir', '');
@@ -388,7 +386,7 @@ class acp_controller
 	 *
 	 * @return void
 	 */
-	public function action_settings()
+	protected function action_settings()
 	{
 		$this->config->set('board_announcements_enable', $this->request->variable('board_announcements_enable_all', 0));
 

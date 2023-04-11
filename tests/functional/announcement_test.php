@@ -65,7 +65,7 @@ class announcement_test extends \phpbb_functional_test_case
 		// Set some form values
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
 		$values = [
-			'board_announcements_enable'		=> true,
+			'board_announcements_enabled'		=> true,
 			'board_announcements_index_only'	=> true,
 			'board_announcements_users'			=> 0,
 			'board_announcements_dismiss'		=> true,

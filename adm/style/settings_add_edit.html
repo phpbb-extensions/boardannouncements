@@ -23,10 +23,10 @@
 	<fieldset>
 		<legend>{{ lang('BOARD_ANNOUNCEMENTS_OPTIONS') }}</legend>
 		<dl>
-			<dt><label for="board_announcements_enable">{{ lang('BOARD_ANNOUNCEMENTS_ENABLE') ~ lang('COLON') }}</label></dt>
+			<dt><label for="board_announcements_enabled">{{ lang('BOARD_ANNOUNCEMENTS_ENABLE') ~ lang('COLON') }}</label></dt>
 			<dd>
-				<label><input type="radio" class="radio" id="board_announcements_enable" name="board_announcements_enable" value="1"{% if BOARD_ANNOUNCEMENTS_ENABLED %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="board_announcements_enable" value="0"{% if not BOARD_ANNOUNCEMENTS_ENABLED %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
+				<label><input type="radio" class="radio" id="board_announcements_enabled" name="board_announcements_enable" value="1"{% if BOARD_ANNOUNCEMENTS_ENABLED %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="board_announcements_enabled" value="0"{% if not BOARD_ANNOUNCEMENTS_ENABLED %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
 			</dd>
 		</dl>
 		<dl>
@@ -99,7 +99,7 @@
 					<label><input type="checkbox" class="radio" name="disable_magic_url"{% if S_MAGIC_URL_DISABLE_CHECKED %} checked="checked"{% endif %}> {{ lang('DISABLE_MAGIC_URL') }}</label>
 				{% endif %}
 			</dd>
-			<dd style="margin-{{ S_CONTENT_FLOW_BEGIN }}: 90px; margin-top: 10px;"><strong>{{ lang('OPTIONS') ~ lang('COLON') }} </strong>{{ BBCODE_STATUS }} :: {{ IMG_STATUS }} :: {{ FLASH_STATUS }} :: {{ URL_STATUS }} :: {{ SMILIES_STATUS }}</dd>
+			<dd style="margin-{{ S_CONTENT_FLOW_BEGIN }}: 90px; margin-top: 10px;"><strong>{{ lang('OPTIONS') ~ lang('COLON') }} </strong>{{ BBCODE_STATUS }} :: {{ IMG_STATUS }} :: {{ URL_STATUS }} :: {{ SMILIES_STATUS }}</dd>
 		</dl>
 	</fieldset>
 
