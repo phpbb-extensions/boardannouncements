@@ -154,6 +154,7 @@ class acp_controller
 
 		// Set output vars for display in the template
 		$this->template->assign_vars([
+			'U_ACTION'							=> $this->u_action,
 			'U_ACTION_ADD'						=> $this->u_action . '&amp;action=add',
 			'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config['board_announcements_enable'],
 		]);
@@ -280,7 +281,7 @@ class acp_controller
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select([
 				ext::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
 				ext::MEMBERS	=> 'G_REGISTERED',
-				ext::GUESTS	=> 'G_GUESTS',
+				ext::GUESTS		=> 'G_GUESTS',
 			], $data['announcement_users']),
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],

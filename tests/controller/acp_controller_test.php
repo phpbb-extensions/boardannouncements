@@ -61,11 +61,14 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		parent::setUp();
 
-		global $phpbb_dispatcher, /*$cache, $db,*/ $user, $phpbb_root_path, $phpEx;
+		global $phpbb_container, $phpbb_dispatcher, $user, $phpbb_root_path, $phpEx;
 
-		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
+		// This is needed to set up the s9e text formatter services
+		$this->get_test_case_helpers()->set_s9e_services($phpbb_container);
 
 		// Load/Mock classes required by the controller class
+		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
+		$this->language = new \phpbb\language\language($lang_loader);
 		$this->config = $this->getMockBuilder('\phpbb\config\config')
 			->disableOriginalConstructor()
 			->getMock();
@@ -75,7 +78,6 @@ class acp_controller_test extends \phpbb_test_case
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->language = new \phpbb\language\language($lang_loader);
 		$this->log = $this->getMockBuilder('\phpbb\log\log')
 			->disableOriginalConstructor()
 			->getMock();
@@ -83,6 +85,15 @@ class acp_controller_test extends \phpbb_test_case
 			->disableOriginalConstructor()
 			->getMock();
 		$this->user = $user = new \phpbb\user($this->language, '\phpbb\datetime');
+		$user->data['user_id'] = 2;
+		$user->data['user_form_salt'] = '';
+		$user->data['user_timezone'] = 'UTC';
+		$user->data['user_options'] = 230271;
+		$user->optionset('viewcensors', true);
+		$user->optionset('viewflash', true);
+		$user->optionset('viewimg', true);
+		$user->optionset('viewsmilies', true);
+
 		$this->root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
 
@@ -223,6 +234,7 @@ class acp_controller_test extends \phpbb_test_case
 		$this->template->expects(self::once())
 			->method('assign_vars')
 			->with([
+				'U_ACTION'							=> $this->u_action,
 				'U_ACTION_ADD'						=> $this->u_action . '&amp;action=add',
 				'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config['board_announcements_enable'],
 			]);
@@ -247,11 +259,25 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_id'			=> 1,
 				'announcement_text'			=> 'Announcement sample text 1',
 				'announcement_description'	=> 'Announcement 1',
+				'announcement_bgcolor'		=> '',
+				'announcement_enabled'		=> true,
+				'announcement_indexonly'	=> false,
+				'announcement_dismissable'	=> true,
+				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+				'announcement_timestamp'	=> '',
+				'announcement_expiry'		=> '',
 			]],
 			[0, [
 				'announcement_id'			=> 2,
 				'announcement_text'			=> 'Announcement sample text 2',
 				'announcement_description'	=> 'Announcement 2',
+				'announcement_bgcolor'		=> '',
+				'announcement_enabled'		=> true,
+				'announcement_indexonly'	=> false,
+				'announcement_dismissable'	=> true,
+				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+				'announcement_timestamp'	=> '',
+				'announcement_expiry'		=> '',
 			]],
 		];
 	}
@@ -286,6 +312,13 @@ class acp_controller_test extends \phpbb_test_case
 			->willReturn([
 				'announcement_text'			=> '',
 				'announcement_description'	=> '',
+				'announcement_bgcolor'		=> '',
+				'announcement_enabled'		=> true,
+				'announcement_indexonly'	=> false,
+				'announcement_dismissable'	=> true,
+				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+				'announcement_timestamp'	=> '',
+				'announcement_expiry'		=> '',
 			]);
 
 		$this->manager->expects($id ? self::once() : self::never())
@@ -333,9 +366,6 @@ class acp_controller_test extends \phpbb_test_case
 	 */
 	public function test_action_add_submit($id, $form, $preview, $submit, $valid_form, $errors)
 	{
-		// This is needed to set up the s9e text formatter services
-		$this->get_test_case_helpers()->set_s9e_services();
-
 		$controller = $this->get_controller();
 
 		self::$valid_form = $valid_form;
@@ -608,5 +638,13 @@ function check_form_key()
  * Note: use the same namespace as the acp_controller
  */
 function display_custom_bbcodes()
+{
+}
+
+/**
+ * Mock display_custom_bbcodes()
+ * Note: use the same namespace as the acp_controller
+ */
+function build_select()
 {
 }
