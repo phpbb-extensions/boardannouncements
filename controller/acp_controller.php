@@ -1,12 +1,12 @@
 <?php
 /**
-*
-* Board Announcements extension for the phpBB Forum Software package.
-*
-* @copyright (c) 2023 phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Board Announcements extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2023 phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace phpbb\boardannouncements\controller;
 
@@ -24,13 +24,13 @@ class acp_controller
 {
 	public const DATE_FORMAT = 'Y-m-d H:i';
 
-	/** @var manager $manager */
+	/** @var manager */
 	protected $manager;
 
 	/** @var config */
 	protected $config;
 
-	/** @var helper $controller_helper */
+	/** @var helper */
 	protected $controller_helper;
 
 	/** @var language */
@@ -54,7 +54,7 @@ class acp_controller
 	/** @var string */
 	protected $php_ext;
 
-	/** @var string Custom form action */
+	/** @var string */
 	protected $u_action;
 
 	/**
@@ -160,6 +160,11 @@ class acp_controller
 		]);
 	}
 
+	/**
+	 * Add, update and preview an announcement
+	 *
+	 * @return void
+	 */
 	protected function action_add()
 	{
 		// Define the name of the form for use as a form key
@@ -242,14 +247,13 @@ class acp_controller
 				if ($id)
 				{
 					$this->manager->update_announcement($id, $data);
+					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $data['announcement_description']);
 				}
 				else
 				{
 					$this->manager->save_announcement($data);
+					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $data['announcement_description']);
 				}
-
-				// Log the announcement update
-				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_UPDATED_LOG');
 
 				// Output message to user for the announcement update
 				$this->success('BOARD_ANNOUNCEMENTS_UPDATED');
@@ -257,14 +261,10 @@ class acp_controller
 		}
 
 		// Prepare a fresh announcement preview
-		$announcement_text_preview = '';
-		if ($preview)
-		{
-			$announcement_text_preview = generate_text_for_display($data['announcement_text'], '', '', (OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS));
-		}
+		$announcement_text_preview = $preview ? generate_text_for_display($data['announcement_text'], '', '', ext::FLAGS) : '';
 
 		// Prepare the announcement text for editing inside the text box
-		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], '', (OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS));
+		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], '', ext::FLAGS);
 
 		// Output data to the template
 		$this->template->assign_vars([
@@ -330,15 +330,15 @@ class acp_controller
 			// Only notify user on error or if not ajax
 			if (!$success)
 			{
-				$this->error('ACP_DELETE_ERROR');
+				$this->error('BOARD_ANNOUNCEMENTS_DELETE_ERROR');
 			}
 			else
 			{
-				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'BOARD_ANNOUNCEMENTS_DELETED_LOG', time(), [$description]);
+				$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $description);
 
 				if (!$this->request->is_ajax())
 				{
-					$this->success('ACP_DELETE_SUCCESS');
+					$this->success('BOARD_ANNOUNCEMENTS_DELETE_SUCCESS');
 				}
 			}
 		}
@@ -356,6 +356,11 @@ class acp_controller
 		}
 	}
 
+	/**
+	 * Move an announcement up or down
+	 *
+	 * @return void
+	 */
 	protected function action_move()
 	{
 		$id = $this->request->variable('id', 0);
@@ -423,5 +428,17 @@ class acp_controller
 	protected function check_hash($hash)
 	{
 		return check_link_hash($this->request->variable('hash', ''), $hash);
+	}
+
+	/**
+	 * Add operations to the system log
+	 *
+	 * @param string $msg
+	 * @param string $params
+	 * @return void
+	 */
+	protected function log_change($msg, $params)
+	{
+		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $msg, time(), [$params]);
 	}
 }

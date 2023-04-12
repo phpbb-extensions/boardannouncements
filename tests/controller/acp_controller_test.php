@@ -468,13 +468,13 @@ class acp_controller_test extends \phpbb_test_case
 		{
 			if ($success)
 			{
-				$this->setExpectedTriggerError(E_USER_NOTICE, 'ACP_DELETE_SUCCESS');
+				$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS');
 				$this->log->expects(self::once())
 					->method('add');
 			}
 			else
 			{
-				$this->setExpectedTriggerError(E_USER_WARNING, 'ACP_DELETE_ERROR');
+				$this->setExpectedTriggerError(E_USER_WARNING, 'BOARD_ANNOUNCEMENTS_DELETE_ERROR');
 			}
 			$this->manager->expects(self::once())
 				->method('get_announcement_data')

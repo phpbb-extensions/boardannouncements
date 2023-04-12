@@ -1,15 +1,16 @@
 <?php
 /**
-*
-* Board Announcements extension for the phpBB Forum Software package.
-*
-* @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Board Announcements extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace phpbb\boardannouncements\event;
 
+use phpbb\boardannouncements\ext;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
@@ -20,8 +21,8 @@ use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
-* Event listener
-*/
+ * Event listener
+ */
 class listener implements EventSubscriberInterface
 {
 	/** @var manager $manager */
@@ -74,25 +75,25 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	* Assign functions defined in this class to event listeners in the core
-	*
-	* @return array
-	* @static
-	* @access public
-	*/
+	 * Assign functions defined in this class to event listeners in the core
+	 *
+	 * @return array
+	 * @static
+	 * @access public
+	 */
 	public static function getSubscribedEvents()
 	{
-		return array(
-			'core.page_header_after'	=> 'display_board_announcements',
-		);
+		return [
+			'core.page_header_after' => 'display_board_announcements',
+		];
 	}
 
 	/**
-	* Display board announcements
-	*
-	* @return void
-	* @access public
-	*/
+	 * Display board announcements
+	 *
+	 * @return void
+	 * @access public
+	 */
 	public function display_board_announcements()
 	{
 		// Do not continue if board announcements are disabled
@@ -102,7 +103,7 @@ class listener implements EventSubscriberInterface
 		}
 
 		// Add board announcements language file
-		$this->language->add_lang('boardannouncements','phpbb/boardannouncements');
+		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
 
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
@@ -124,7 +125,7 @@ class listener implements EventSubscriberInterface
 			$this->template->assign_block_vars('board_announcements', [
 				'BOARD_ANNOUNCEMENT_ID'			=> $board_announcement_data['announcement_id'],
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $board_announcement_data['announcement_dismissable'],
-				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($board_announcement_data['announcement_text'], '', '', (OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS)),
+				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($board_announcement_data['announcement_text'], '', '', ext::FLAGS),
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
 					'id'	=> (int) $board_announcement_data['announcement_id'],

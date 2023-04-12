@@ -15,9 +15,9 @@ namespace phpbb\boardannouncements\manager;
  */
 class nestedset extends \phpbb\tree\nestedset
 {
-
 	/** @var string */
 	protected $tracking_table_name;
+
 	/**
 	 * Construct
 	 *

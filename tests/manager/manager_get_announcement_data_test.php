@@ -39,7 +39,8 @@ class manager_get_announcement_data_test extends manager_base
 	 * Test the get_announcement_data() method
 	 *
 	 * @dataProvider data_get_announcement_data
-	 * @param int $user_id
+	 * @param $id
+	 * @param $column
 	 * @param string $expected
 	 */
 	public function test_get_announcement_data($id, $column, $expected)

@@ -68,9 +68,9 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 	 */
 	public function convert_board_announcements()
 	{
+		/** @var \phpbb\config\db_text $config_text */
 		$config_text = $this->container->get('config_text');
 
-		$import_data = [];
 		$import_data['announcement_description'] = '';
 		$import_data['announcement_text']        = $config_text->get('announcement_text');
 		$import_data['announcement_bgcolor']     = $config_text->get('announcement_bgcolor');
@@ -119,7 +119,7 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 	protected function migrate_user_data($id)
 	{
 		$sql_ary = [];
-		$sql = 'SELECT * FROM ' . $this->table_prefix . 'users
+		$sql = 'SELECT user_id FROM ' . $this->table_prefix . 'users
          	WHERE board_announcements_status = 0
          	AND user_type <> ' . USER_IGNORE;
 		$result = $this->db->sql_query($sql);

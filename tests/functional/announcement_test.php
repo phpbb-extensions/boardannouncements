@@ -81,7 +81,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Confirm the log entry has been added correctly
 		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
-		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_UPDATED_LOG')), $crawler->text());
+		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_CREATED_LOG', $values['board_announcements_description'])), $crawler->text());
 
 		// Confirm ACP page shows added announcement
 		$crawler = self::request('GET', 'adm/index.php?i=\phpbb\boardannouncements\acp\board_announcements_module&mode=settings&sid=' . $this->sid);

@@ -102,7 +102,7 @@ class acp_module_test extends \phpbb_test_case
 			->getMock();
 
 		$phpbb_container
-			->expects(self::exactly(1))
+			->expects(self::once())
 			->method('get')
 			->with('phpbb.boardannouncements.acp.controller')
 			->willReturn($acp_controller);
