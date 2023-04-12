@@ -1,12 +1,12 @@
 <?php
 /**
-*
-* Board Announcements extension for the phpBB Forum Software package.
-*
-* @copyright (c) 2015 phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Board Announcements extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2015 phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace phpbb\boardannouncements\tests\controller;
 

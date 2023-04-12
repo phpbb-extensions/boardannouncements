@@ -1,5 +1,6 @@
 imports:
     - { resource: tables.yml }
+    - { resource: cron.yml }
 
 services:
     phpbb.boardannouncements.listener:

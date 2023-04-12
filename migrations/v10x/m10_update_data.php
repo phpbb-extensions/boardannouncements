@@ -47,7 +47,10 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 	public function update_data()
 	{
 		return [
+			// convert old announcement to new schema
 			['custom', [[$this, 'convert_board_announcements']]],
+
+			// remove old announcement data
 			['config.remove', ['board_announcements_dismiss']],
 			['config.remove', ['board_announcements_users']],
 			['config.remove', ['board_announcements_expiry']],
@@ -58,6 +61,9 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 			['config_text.remove', ['announcement_options']],
 			['config_text.remove', ['announcement_bgcolor']],
 			['config_text.remove', ['announcement_timestamp']],
+
+			// add new announcements data
+			['config.add', ['board_announcements_cron_last_run', 0, true]],
 		];
 	}
 

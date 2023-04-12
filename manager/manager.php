@@ -154,6 +154,19 @@ class manager
 	}
 
 	/**
+	 * Get expired announcements
+	 *
+	 * @param string $column Get only a single column of announcement data
+	 * @return array An array of expired announcements or announcement column data, or empty if none
+	 */
+	public function get_expired_announcements($column)
+	{
+		$data = array_filter($this->get_announcements(), [$this, 'filter_expired']);
+
+		return $column ? array_column($data, $column) : $data;
+	}
+
+	/**
 	 * Delete user tracking for a board announcement
 	 *
 	 * @param int $id An announcement identifier
@@ -196,6 +209,17 @@ class manager
 	protected function filter_guests(array $row)
 	{
 		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\ext::GUESTS;
+	}
+
+	/**
+	 * Filter enabled expired announcements
+	 *
+	 * @param array $row
+	 * @return bool
+	 */
+	protected function filter_expired(array $row)
+	{
+		return $row['announcement_enabled'] && $row['announcement_expiry'] && (int) $row['announcement_expiry'] < time();
 	}
 
 	/**
