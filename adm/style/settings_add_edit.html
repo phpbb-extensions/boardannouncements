@@ -1,3 +1,4 @@
+{% INCLUDECSS '@phpbb_boardannouncements/boardannouncements.css' %}
 <a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
 
 <h1>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS') }}</h1>
@@ -54,7 +55,7 @@
 	{% if BOARD_ANNOUNCEMENTS_PREVIEW %}
 		<fieldset>
 			<legend>{{ lang('BOARD_ANNOUNCEMENTS_PREVIEW') }}</legend>
-			<div style="padding:10px; font-size:1.0em; overflow: auto; {% if BOARD_ANNOUNCEMENTS_BGCOLOR %}background-color:#{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}{% endif %}">{{ BOARD_ANNOUNCEMENTS_PREVIEW }}</div>
+			<div class="phpbb_announcement"{% if BOARD_ANNOUNCEMENTS_BGCOLOR %} style="background-color:#{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}"{% endif %}>{{ BOARD_ANNOUNCEMENTS_PREVIEW }}</div>
 		</fieldset>
 	{% endif %}
 
