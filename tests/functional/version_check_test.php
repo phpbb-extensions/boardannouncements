@@ -1,33 +1,33 @@
 <?php
 /**
-*
-* Board Announcements extension for the phpBB Forum Software package.
-*
-* @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Board Announcements extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace phpbb\boardannouncements\tests\functional;
 
 /**
-* @group functional
-*/
+ * @group functional
+ */
 class version_check_test extends \phpbb_functional_test_case
 {
 	/**
-	* Define the extensions to be tested
-	*
-	* @return array vendor/name of extension(s) to test
-	*/
+	 * Define the extensions to be tested
+	 *
+	 * @return array vendor/name of extension(s) to test
+	 */
 	protected static function setup_extensions()
 	{
 		return ['phpbb/boardannouncements'];
 	}
 
 	/**
-	* Test extension manager version check
-	*/
+	 * Test extension manager version check
+	 */
 	public function test_version_check()
 	{
 		// Log in to the ACP

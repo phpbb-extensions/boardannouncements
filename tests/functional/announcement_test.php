@@ -1,25 +1,25 @@
 <?php
 /**
-*
-* Board Announcements extension for the phpBB Forum Software package.
-*
-* @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Board Announcements extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace phpbb\boardannouncements\tests\functional;
 
 /**
-* @group functional
-*/
+ * @group functional
+ */
 class announcement_test extends \phpbb_functional_test_case
 {
 	/**
-	* Define the extensions to be tested
-	*
-	* @return array vendor/name of extension(s) to test
-	*/
+	 * Define the extensions to be tested
+	 *
+	 * @return array vendor/name of extension(s) to test
+	 */
 	protected static function setup_extensions()
 	{
 		return ['phpbb/boardannouncements'];
@@ -32,8 +32,8 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	* Test board announcement ACP page and save settings
-	*/
+	 * Test board announcement ACP page and save settings
+	 */
 	public function test_set_acp_settings()
 	{
 		$this->login();
@@ -44,7 +44,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Enable announcements
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
-		$values = ['board_announcements_enable_all'	=> true];
+		$values = ['board_announcements_enable_all' => true];
 		$form->setValues($values);
 		$crawler = self::submit($form);
 		$this->assertContainsLang('CONFIG_UPDATED', $crawler->text());
@@ -90,8 +90,8 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	* Test loading the board announcement as a user
-	*/
+	 * Test loading the board announcement as a user
+	 */
 	public function test_view_as_user()
 	{
 		$this->login();
@@ -110,8 +110,8 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	* Test loading the board announcement as a guest
-	*/
+	 * Test loading the board announcement as a guest
+	 */
 	public function test_view_as_guest()
 	{
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
@@ -120,8 +120,8 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	* Test closing the board announcement failure
-	*/
+	 * Test closing the board announcement failure
+	 */
 	public function test_close_announcement_fail()
 	{
 		$this->login();
@@ -150,16 +150,16 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 
 		self::request('GET', 'app.php/boardannouncements/close/1?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid);
-		$crawler = self::request('GET', 'index.php?sid='. $this->sid);
+		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
 	}
 
 	/**
-	* Create a link hash for the user 'admin'
-	*
-	* @param string  $link_name The name of the link
-	* @return string the hash
-	*/
+	 * Create a link hash for the user 'admin'
+	 *
+	 * @param string $link_name The name of the link
+	 * @return string the hash
+	 */
 	protected function mock_link_hash($link_name)
 	{
 		$this->get_db();

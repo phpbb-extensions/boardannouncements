@@ -1,23 +1,23 @@
 <?php
 /**
-*
-* Board Announcements extension for the phpBB Forum Software package.
-* (Thanks/credit to nickvergessen for desigining these tests)
-*
-* @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Board Announcements extension for the phpBB Forum Software package.
+ * (Thanks/credit to nickvergessen for desigining these tests)
+ *
+ * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace phpbb\boardannouncements\tests\event;
 
 class listener_test extends \phpbb_database_test_case
 {
 	/**
-	* Define the extensions to be tested
-	*
-	* @return array vendor/name of extension(s) to test
-	*/
+	 * Define the extensions to be tested
+	 *
+	 * @return array vendor/name of extension(s) to test
+	 */
 	protected static function setup_extensions()
 	{
 		return ['phpbb/boardannouncements'];
@@ -54,18 +54,18 @@ class listener_test extends \phpbb_database_test_case
 	protected $php_ext;
 
 	/**
-	* Get data set fixtures
-	*
-	* @return \PHPUnit\DbUnit\DataSet\DefaultDataSet|\PHPUnit\DbUnit\DataSet\XmlDataSet
-	*/
+	 * Get data set fixtures
+	 *
+	 * @return \PHPUnit\DbUnit\DataSet\DefaultDataSet|\PHPUnit\DbUnit\DataSet\XmlDataSet
+	 */
 	public function getDataSet()
 	{
 		return $this->createXMLDataSet(__DIR__ . '/../fixtures/board_announcements.xml');
 	}
 
 	/**
-	* Setup test environment
-	*/
+	 * Setup test environment
+	 */
 	protected function setUp(): void
 	{
 		parent::setUp();
@@ -122,8 +122,8 @@ class listener_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Create our event listener
-	*/
+	 * Create our event listener
+	 */
 	protected function set_listener()
 	{
 		$this->listener = new \phpbb\boardannouncements\event\listener(
@@ -139,8 +139,8 @@ class listener_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Test the event listener is constructed correctly
-	*/
+	 * Test the event listener is constructed correctly
+	 */
 	public function test_construct()
 	{
 		$this->set_listener();
@@ -148,8 +148,8 @@ class listener_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Test the event listener is subscribing events
-	*/
+	 * Test the event listener is subscribing events
+	 */
 	public function test_getSubscribedEvents()
 	{
 		self::assertEquals([
