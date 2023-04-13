@@ -3,6 +3,7 @@
 This is the repository for the development of the phpBB Board Announcements Extension.
 
 [![Build Status](https://github.com/phpbb-extensions/boardannouncements/workflows/Tests/badge.svg)](https://github.com/phpbb-extensions/boardannouncements/actions)
+[![codecov](https://codecov.io/gh/phpbb-extensions/boardannouncements/branch/master/graph/badge.svg?token=9laLSqCOgN)](https://codecov.io/gh/phpbb-extensions/boardannouncements)
 
 ## Install
 
@@ -29,4 +30,4 @@ This is the repository for the development of the phpBB Board Announcements Exte
 * Translations should be posted to the [Board Announcements topic at phpBB.com](https://www.phpbb.com/customise/db/extension/boardannouncements/support/topic/130751). We accept pull requests for translation corrections, but we do not accept pull requests for new translations.
 
 ## License
-[GNU General Public License v2](http://opensource.org/licenses/GPL-2.0)
+[GNU General Public License v2](https://opensource.org/licenses/GPL-2.0)
