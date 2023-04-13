@@ -20,6 +20,7 @@ class manager_get_expired_announcements_test extends manager_base
 	public function data_get_expired_announcements()
 	{
 		return [
+			['foo', []],
 			['announcement_id', [4]],
 			['announcement_description', ['ANNOUNCEMENT 4']],
 			[null, [4 => [
