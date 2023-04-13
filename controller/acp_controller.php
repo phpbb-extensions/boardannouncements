@@ -22,8 +22,6 @@ use phpbb\user;
 
 class acp_controller
 {
-	public const DATE_FORMAT = 'Y-m-d H:i';
-
 	/** @var manager */
 	protected $manager;
 
@@ -218,7 +216,7 @@ class acp_controller
 			// Special handling for the expiration date, convert from date string to timestamp
 			if ($data['announcement_expiry'] !== '')
 			{
-				$data['announcement_expiry'] = $this->user->get_timestamp_from_format(self::DATE_FORMAT, $data['announcement_expiry']);
+				$data['announcement_expiry'] = $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $data['announcement_expiry']);
 				if ($data['announcement_expiry'] < time())
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
@@ -275,7 +273,7 @@ class acp_controller
 			'BOARD_ANNOUNCEMENTS_DESC'		=> $data['announcement_description'],
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
-			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $data['announcement_expiry'] ? $this->user->format_date($data['announcement_expiry'], self::DATE_FORMAT) : '',
+			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $data['announcement_expiry'] ? $this->user->format_date($data['announcement_expiry'], ext::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
 
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select([
@@ -301,7 +299,7 @@ class acp_controller
 			'S_ADD'					=> empty($id),
 			'S_EDIT'				=> !empty($id),
 
-			'PICKER_DATE_FORMAT'	=> self::DATE_FORMAT,
+			'PICKER_DATE_FORMAT'	=> ext::DATE_FORMAT,
 
 			'U_BACK'				=> $this->u_action,
 			'U_ACTION'				=> $this->u_action . '&amp;action=add' . (!empty($id) ? '&amp;id=' . (int) $id : ''),

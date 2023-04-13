@@ -50,9 +50,9 @@
 					{{ lang('G_GUESTS') }}
 				{% endif %}
 			</td>
-			<td>{{ ba.CREATED_DATE ? ba.CREATED_DATE|date("Y-m-d") : '' }}</td>
+			<td>{{ ba.CREATED_DATE ? ba.CREATED_DATE|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) : '' }}</td>
 			<td>{{ ba.S_ENABLED ? _self.baIcon('YES') : _self.baIcon('NO') }}</td>
-			<td>{{ ba.EXPIRY_DATE ? ba.EXPIRY_DATE|date("Y-m-d") : '' }}</td>
+			<td>{{ ba.EXPIRY_DATE ? ba.EXPIRY_DATE|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) : '' }}</td>
 			<td>{{ ba.S_EXPIRED ? lang('YES') : lang('NO') }}</td>
 			<td class="actions">
 				<span class="up-disabled" style="display:none;">{{ ICON_MOVE_UP_DISABLED }}</span>

@@ -69,7 +69,7 @@
 		<dl>
 			<dt><label for="board_announcements_expiry">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY') ~ lang('COLON') }}</label><br><span>{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN') }}</span></dt>
 			<dd>
-				<input name="board_announcements_expiry" type="text" id="board_announcements_expiry" value="{{ BOARD_ANNOUNCEMENTS_EXPIRY }}" size="20" maxlength="20"> <samp>{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT') }}</samp>
+				<input name="board_announcements_expiry" type="text" id="board_announcements_expiry" value="{{ BOARD_ANNOUNCEMENTS_EXPIRY }}" size="20" maxlength="20" placeholder="{{ "now"|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) }}">
 			</dd>
 		</dl>
 		<dl>
