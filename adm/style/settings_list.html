@@ -41,7 +41,7 @@
 	{% for ba in announcements %}
 		<tr>
 			<td>{{ ba.DESCRIPTION }}</td>
-			<td>{{ ba.INDEX_ONLY ? lang('INDEX_ONLY') : lang('EVERYWHERE') }}</td>
+			<td>{{ ba.INDEX_ONLY ? lang('INDEX') : lang('BOARD_ANNOUNCEMENTS_EVERYWHERE') }}</td>
 			<td>{% if ba.USERS == constant('\\phpbb\\boardannouncements\\ext::ALL') %}
 					{{ lang('BOARD_ANNOUNCEMENTS_EVERYONE') }}
 				{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::MEMBERS') %}
