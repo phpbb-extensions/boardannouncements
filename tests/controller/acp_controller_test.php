@@ -61,12 +61,13 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		parent::setUp();
 
-		global $phpbb_container, $phpbb_dispatcher, $user, $phpbb_root_path, $phpEx;
+		global $cache, $phpbb_container, $phpbb_dispatcher, $user, $phpbb_root_path, $phpEx;
 
 		// This is needed to set up the s9e text formatter services
 		$this->get_test_case_helpers()->set_s9e_services($phpbb_container);
 
 		// Load/Mock classes required by the controller class
+		$cache = new \phpbb_mock_cache;
 		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
 		$this->language = new \phpbb\language\language($lang_loader);
 		$this->config = $this->getMockBuilder('\phpbb\config\config')

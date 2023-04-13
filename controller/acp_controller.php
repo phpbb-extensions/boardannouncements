@@ -259,7 +259,7 @@ class acp_controller
 		}
 
 		// Prepare a fresh announcement preview
-		$announcement_text_preview = $preview ? generate_text_for_display($data['announcement_text'], '', '', ext::FLAGS) : '';
+		$announcement_text_preview = $id || $preview ? generate_text_for_display($data['announcement_text'], '', '', ext::FLAGS) : '';
 
 		// Prepare the announcement text for editing inside the text box
 		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], '', ext::FLAGS);
