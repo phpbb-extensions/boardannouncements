@@ -266,7 +266,7 @@ class acp_controller
 
 		// Output data to the template
 		$this->template->assign_vars([
-			'ERRORS'						=> count($errors) ? implode('<br>', $errors) : '',
+			'ERRORS'						=> implode('<br>', $errors),
 			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $data['announcement_enabled'],
 			'BOARD_ANNOUNCEMENTS_INDEX_ONLY'=> $data['announcement_indexonly'],
 			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $data['announcement_dismissable'],
@@ -295,14 +295,12 @@ class acp_controller
 			'S_SMILIES_ALLOWED'		=> true,
 			'S_BBCODE_IMG'			=> true,
 			'S_LINKS_ALLOWED'		=> true,
-			'S_BOARD_ANNOUNCEMENTS'	=> true,
-			'S_ADD'					=> empty($id),
-			'S_EDIT'				=> !empty($id),
+			'S_ADD_ANNOUNCEMENT'	=> true,
 
 			'PICKER_DATE_FORMAT'	=> ext::DATE_FORMAT,
 
 			'U_BACK'				=> $this->u_action,
-			'U_ACTION'				=> $this->u_action . '&amp;action=add' . (!empty($id) ? '&amp;id=' . (int) $id : ''),
+			'U_ACTION'				=> $this->u_action . '&amp;action=add' . ($id ? '&amp;id=' . (int) $id : ''),
 		]);
 
 		// Build custom bbcodes array
