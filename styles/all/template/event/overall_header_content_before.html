@@ -1,8 +1,14 @@
-{% if S_BOARD_ANNOUNCEMENT %}
+{% if board_announcements|length %}
 	{% INCLUDECSS '@phpbb_boardannouncements/boardannouncements.css' %}
 	{% INCLUDEJS '@phpbb_boardannouncements/js/boardannouncements.js' %}
-	<div id="phpbb_announcement" class="phpbb_announcement"{% if BOARD_ANNOUNCEMENT_BGCOLOR %} style="background-color:#{{ BOARD_ANNOUNCEMENT_BGCOLOR }}"{% endif %}>
-		{% if S_BOARD_ANNOUNCEMENT_DISMISS %}<a href="{{ U_BOARD_ANNOUNCEMENT_CLOSE }}" data-ajax="close_announcement" data-overlay="false" class="close clearfix" title="{{ lang('BOARD_ANNOUNCEMENT_CLOSE') }}"><i class="icon fa-fw fa-times"></i></a>{% endif %}
-		<div>{{ BOARD_ANNOUNCEMENT }}</div>
-	</div>
 {% endif %}
+{% for announcement in board_announcements %}
+	<div id="phpbb_announcement_{{ announcement.BOARD_ANNOUNCEMENT_ID }}" class="phpbb_announcement"{% if announcement.BOARD_ANNOUNCEMENT_BGCOLOR %} style="background-color:#{{ announcement.BOARD_ANNOUNCEMENT_BGCOLOR }}"{% endif %}>
+		{% if announcement.S_BOARD_ANNOUNCEMENT_DISMISS %}
+			<a href="{{ announcement.U_BOARD_ANNOUNCEMENT_CLOSE }}" data-ajax="close_announcement" data-overlay="false" class="close" title="{{ lang('BOARD_ANNOUNCEMENT_CLOSE') }}">
+				<i class="icon fa-fw fa-times"></i>
+			</a>
+		{% endif %}
+		<div>{{ announcement.BOARD_ANNOUNCEMENT }}</div>
+	</div>
+{% endfor %}

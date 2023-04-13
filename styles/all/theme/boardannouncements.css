@@ -3,16 +3,16 @@
 	font-size: 0.85rem;
 	background-color: #ecd5d8; /* default color */
 	border-radius: 7px;
+	position: relative;
 	margin: 10px 0;
 	padding: 10px;
 }
 
 /* zero out any text margins and scroll any overflow */
 .phpbb_announcement div {
-	font-size: 0.85rem;
+	font-size: 0.75rem;
 	line-height: 1.25rem;
-	overflow-x: auto;
-	overflow: hidden;
+	overflow: auto hidden;
 	margin: 0;
 }
 
@@ -27,16 +27,17 @@
 /* style the close button */
 .phpbb_announcement .close {
 	opacity: 0.6;
-	float: right;
-	width: 14px;
-	height: 14px;
-	margin: -4px 0 0;
+	position: absolute;
+	z-index: 999;
+	top: 4px;
+	right: 4px;
+	left: auto;
 }
 
-/* reposition close button for right to left languages */
+/* reposition close button for right-to-left languages */
 .rtl .phpbb_announcement .close {
-	float: left;
-	margin: 0 4px 0 0;
+	right: auto;
+	left: 4px;
 }
 
 /* hide close button on desktops by default */
@@ -60,13 +61,4 @@
 .rtl .phpbb_announcement ol {
 	margin-right: 20px;
 	margin-left: 0;
-}
-
-/* clear floats */
-.clearfix:after {
-	display: block;
-	visibility: hidden;
-	clear: both;
-	height: 0;
-	content: ".";
 }
