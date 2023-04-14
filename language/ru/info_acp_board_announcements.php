@@ -39,9 +39,11 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Доска объявлений',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Настройки объявлений',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Объявления',
+	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Настройки',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Измененные настройки доски объявлений</strong>',
+	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>Cоздано объявление</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Изменено объявление</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>Удалено объявление</strong><br>» %s',
 ));
