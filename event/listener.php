@@ -1,69 +1,71 @@
 <?php
 /**
-*
-* Board Announcements extension for the phpBB Forum Software package.
-*
-* @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Board Announcements extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace phpbb\boardannouncements\event;
 
-use phpbb\boardannouncements\acp\board_announcements_module;
+use phpbb\boardannouncements\ext;
+use phpbb\boardannouncements\manager\manager;
+use phpbb\config\config;
+use phpbb\controller\helper;
+use phpbb\language\language;
+use phpbb\request\request;
+use phpbb\template\template;
+use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
-* Event listener
-*/
+ * Event listener
+ */
 class listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\cache\driver\driver_interface */
-	protected $cache;
+	/** @var manager $manager */
+	protected $manager;
 
-	/** @var \phpbb\config\config */
+	/** @var config $config */
 	protected $config;
 
-	/** @var \phpbb\config\db_text */
-	protected $config_text;
-
-	/** @var \phpbb\controller\helper */
+	/** @var helper $controller_helper */
 	protected $controller_helper;
 
-	/** @var \phpbb\language\language */
+	/** @var language $language */
 	protected $language;
 
-	/** @var \phpbb\request\request */
+	/** @var request $request */
 	protected $request;
 
-	/** @var \phpbb\template\template */
+	/** @var template $template */
 	protected $template;
 
-	/** @var \phpbb\user */
+	/** @var user $user */
 	protected $user;
 
-	/** @var string */
+	/** @var string $php_ext */
 	protected $php_ext;
 
 	/**
-	* Constructor
-	*
-	* @param \phpbb\cache\driver\driver_interface $cache             Cache driver interface
-	* @param \phpbb\config\config                 $config            Config object
-	* @param \phpbb\config\db_text                $config_text       DB text object
-	* @param \phpbb\controller\helper             $controller_helper Controller helper object
-	* @param \phpbb\language\language             $language          Language object
-	* @param \phpbb\request\request               $request           Request object
-	* @param \phpbb\template\template             $template          Template object
-	* @param \phpbb\user                          $user              User object
-	* @param string                               $php_ext           PHP extension
-	* @access public
-	*/
-	public function __construct(\phpbb\cache\driver\driver_interface $cache, \phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\controller\helper $controller_helper, \phpbb\language\language $language, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, $php_ext)
+	 * Constructor
+	 *
+	 * @param manager $manager
+	 * @param config $config Config object
+	 * @param helper $controller_helper Controller helper object
+	 * @param language $language Language object
+	 * @param request $request Request object
+	 * @param template $template Template object
+	 * @param user $user User object
+	 * @param string $php_ext PHP extension
+	 * @access public
+	 */
+	public function __construct(manager $manager, config $config, helper $controller_helper, language $language, request $request, template $template, user $user, $php_ext)
 	{
-		$this->cache = $cache;
+		$this->manager = $manager;
 		$this->config = $config;
-		$this->config_text = $config_text;
 		$this->controller_helper = $controller_helper;
 		$this->language = $language;
 		$this->request = $request;
@@ -73,104 +75,63 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	* Assign functions defined in this class to event listeners in the core
-	*
-	* @return array
-	* @static
-	* @access public
-	*/
+	 * Assign functions defined in this class to event listeners in the core
+	 *
+	 * @return array
+	 * @static
+	 * @access public
+	 */
 	public static function getSubscribedEvents()
 	{
-		return array(
-			'core.page_header_after'	=> 'display_board_announcements',
-		);
+		return [
+			'core.page_header_after' => 'display_board_announcements',
+		];
 	}
 
 	/**
-	* Display board announcements
-	*
-	* @return void
-	* @access public
-	*/
+	 * Display board announcements
+	 *
+	 * @return void
+	 * @access public
+	 */
 	public function display_board_announcements()
 	{
-		// Do not continue if announcement has been disabled
-		if (!$this->config['board_announcements_enable'])
+		// Do not continue if board announcements are disabled
+		if (!$this->config->offsetGet('board_announcements_enable'))
 		{
 			return;
 		}
-
-		// Do not continue if board announcement is expired
-		if ($this->config['board_announcements_expiry'] && $this->config['board_announcements_expiry'] < time())
-		{
-			$this->config->set('board_announcements_enable', 0);
-			return;
-		}
-
-		// Do not continue if user is registered, but announcement is for guests only
-		// This is to prevent newly registered users from seeing guest only announcements
-		if ($this->user->data['user_id'] != ANONYMOUS && $this->config['board_announcements_users'] == board_announcements_module::GUESTS)
-		{
-			return;
-		}
-
-		// Do not continue if announcements are only displayed on the board index,
-		// and the user is not currently viewing the board index
-		if ($this->config['board_announcements_index_only'] && $this->user->page['page_name'] !== "index.$this->php_ext")
-		{
-			return;
-		}
-
-		// Get board announcement data from the cache
-		$board_announcement_data = $this->cache->get('_board_announcement_data');
-
-		if ($board_announcement_data === false)
-		{
-			// Get board announcement data from the config_text object
-			$board_announcement_data = $this->config_text->get_array(array(
-				'announcement_text',
-				'announcement_uid',
-				'announcement_bitfield',
-				'announcement_options',
-				'announcement_bgcolor',
-				'announcement_timestamp',
-			));
-
-			// Cache board announcement data
-			$this->cache->put('_board_announcement_data', $board_announcement_data);
-		}
-
-		// Get announcement cookie if one exists
-		$cookie = $this->request->variable($this->config['cookie_name'] . '_baid', '', true, \phpbb\request\request_interface::COOKIE);
-
-		// Do not continue if announcement has been dismissed
-		if (!$this->user->data['board_announcements_status'] || $cookie == $board_announcement_data['announcement_timestamp'])
-		{
-			return;
-		}
-
-		// Prepare board announcement message for display
-		$announcement_message = generate_text_for_display(
-			$board_announcement_data['announcement_text'],
-			$board_announcement_data['announcement_uid'],
-			$board_announcement_data['announcement_bitfield'],
-			$board_announcement_data['announcement_options']
-		);
 
 		// Add board announcements language file
-		$this->language->add_lang('boardannouncements','phpbb/boardannouncements');
+		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
 
-		// Output board announcement to the template
-		$this->template->assign_vars(array(
-			'S_BOARD_ANNOUNCEMENT'			=> true,
-			'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $this->config['board_announcements_dismiss'],
+		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
-			'BOARD_ANNOUNCEMENT'			=> $announcement_message,
-			'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
+		foreach ($board_announcements_data as $board_announcement_data)
+		{
+			// Do not continue if announcements are only displayed on the board index, and the user is not currently viewing the board index
+			if ($board_announcement_data['announcement_indexonly'] && $this->user->page['page_name'] !== "index.$this->php_ext")
+			{
+				continue;
+			}
 
-			'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', array(
-				'hash' => generate_link_hash('close_boardannouncement')
-			)),
-		));
+			// Do not continue if announcement has been dismissed
+			if ($this->request->variable($this->config['cookie_name'] . '_ba_' . $board_announcement_data['announcement_id'], '', true, \phpbb\request\request_interface::COOKIE) == $board_announcement_data['announcement_timestamp'])
+			{
+				continue;
+			}
+
+			// Output board announcement to the template
+			$this->template->assign_block_vars('board_announcements', [
+				'BOARD_ANNOUNCEMENT_ID'			=> $board_announcement_data['announcement_id'],
+				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $board_announcement_data['announcement_dismissable'],
+				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($board_announcement_data['announcement_text'], '', '', ext::FLAGS),
+				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
+				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
+					'id'	=> (int) $board_announcement_data['announcement_id'],
+					'hash'	=> generate_link_hash('close_boardannouncement')
+				]),
+			]);
+		}
 	}
 }

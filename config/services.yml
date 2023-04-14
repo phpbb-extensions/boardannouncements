@@ -1,10 +1,13 @@
+imports:
+    - { resource: tables.yml }
+    - { resource: cron.yml }
+
 services:
     phpbb.boardannouncements.listener:
         class: phpbb\boardannouncements\event\listener
         arguments:
-            - '@cache.driver'
+            - '@phpbb.boardannouncements.manager'
             - '@config'
-            - '@config_text'
             - '@controller.helper'
             - '@language'
             - '@request'
@@ -17,8 +20,40 @@ services:
     phpbb.boardannouncements.controller:
         class: phpbb\boardannouncements\controller\controller
         arguments:
-            - '@config'
-            - '@config_text'
-            - '@dbal.conn'
+            - '@phpbb.boardannouncements.manager'
             - '@request'
             - '@user'
+
+    phpbb.boardannouncements.manager:
+        class: phpbb\boardannouncements\manager\manager
+        arguments:
+            - '@phpbb.boardannouncements.nestedset'
+
+    phpbb.boardannouncements.acp.controller:
+        class: phpbb\boardannouncements\controller\acp_controller
+        arguments:
+            - '@phpbb.boardannouncements.manager'
+            - '@config'
+            - '@controller.helper'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    phpbb.boardannouncements.nestedset:
+        class: phpbb\boardannouncements\manager\nestedset
+        arguments:
+            - '@dbal.conn'
+            - '@phpbb.boardannouncements.table_lock'
+            - '%phpbb.board.announcements.tables.announcements%'
+            - '%phpbb.board.announcements.tables.announcements_track%'
+
+    phpbb.boardannouncements.table_lock:
+        class: phpbb\lock\db
+        arguments:
+            - boardannouncements.table_lock.board_announcements_table
+            - '@config'
+            - '@dbal.conn'

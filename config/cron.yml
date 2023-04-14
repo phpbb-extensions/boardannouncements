@@ -1,0 +1,11 @@
+services:
+# ----- Cron tasks -----
+    phpbb.boardannouncements.cron.task.disable_expired:
+        class: phpbb\boardannouncements\cron\disable_expired
+        arguments:
+            - '@config'
+            - '@phpbb.boardannouncements.manager'
+        calls:
+            - [set_name, [cron.task.disable_expired]]
+        tags:
+            - { name: cron.task }

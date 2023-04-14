@@ -1,3 +1,5 @@
 phpbb_boardannouncements_controller:
-    path: /boardannouncements/close
+    path: /boardannouncements/close/{id}
     defaults: { _controller: phpbb.boardannouncements.controller:close_announcement }
+    requirements:
+        id: \d+

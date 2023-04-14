@@ -50,7 +50,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Svi/e',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Pozadinska boja forumske obavijesti',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pozadinsku boju forumske obavijesti možete mijenjati korištenjem hex kodova (npr.: FFFF80).<br />Za korištenje zadane boje, ostavite ovo polje praznim.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pozadinsku boju forumske obavijesti možete mijenjati korištenjem hex kodova (npr.: FFFF80).<br>Za korištenje zadane boje, ostavite ovo polje praznim.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Datum isteka forumske obavijesti',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Na postavljeni datum, forumska obavijest će isteći i postati onemogućena. Ukoliko ne želite da forumska obavijest istekne, ostavite ovo polje praznim.',

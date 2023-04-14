@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+	<table name="phpbb_board_announcements">
+		<column>announcement_id</column>
+		<column>announcement_text</column>
+		<column>announcement_description</column>
+		<column>announcement_bgcolor</column>
+		<column>announcement_enabled</column>
+		<column>announcement_indexonly</column>
+		<column>announcement_dismissable</column>
+		<column>announcement_users</column>
+		<column>announcement_timestamp</column>
+		<column>announcement_expiry</column>
+		<column>announcement_parent_id</column>
+		<column>announcement_left_id</column>
+		<column>announcement_right_id</column>
+		<column>announcement_parents</column>
+		<row>
+			<value>1</value>
+			<value>Sample Announcement Test Text 1</value>
+			<value>ANNOUNCEMENT 1</value>
+			<value></value>
+			<value>1</value>
+			<value>1</value>
+			<value>1</value>
+			<value>0</value>
+			<value>1586466410</value>
+			<value>0</value>
+			<value>0</value>
+			<value>1</value>
+			<value>2</value>
+			<value></value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>Sample Announcement Test Text 2</value>
+			<value>ANNOUNCEMENT 2</value>
+			<value>ffffff</value>
+			<value>1</value>
+			<value>0</value>
+			<value>1</value>
+			<value>1</value>
+			<value>1586466510</value>
+			<value>0</value>
+			<value>0</value>
+			<value>3</value>
+			<value>4</value>
+			<value></value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>Sample Announcement Test Text 3</value>
+			<value>ANNOUNCEMENT 3</value>
+			<value>000000</value>
+			<value>1</value>
+			<value>0</value>
+			<value>1</value>
+			<value>2</value>
+			<value>1586466610</value>
+			<value>0</value>
+			<value>0</value>
+			<value>5</value>
+			<value>6</value>
+			<value></value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>Sample Announcement Test Text 4</value>
+			<value>ANNOUNCEMENT 4</value>
+			<value></value>
+			<value>1</value>
+			<value>0</value>
+			<value>0</value>
+			<value>0</value>
+			<value>1586466710</value>
+			<value>1586466810</value>
+			<value>0</value>
+			<value>7</value>
+			<value>8</value>
+			<value></value>
+		</row>
+		<row>
+			<value>5</value>
+			<value>Sample Announcement Test Text 5</value>
+			<value>ANNOUNCEMENT 5</value>
+			<value></value>
+			<value>0</value>
+			<value>0</value>
+			<value>0</value>
+			<value>0</value>
+			<value>1586466810</value>
+			<value>0</value>
+			<value>0</value>
+			<value>9</value>
+			<value>10</value>
+			<value></value>
+		</row>
+	</table>
+	<table name="phpbb_board_announcements_track">
+		<column>announcement_id</column>
+		<column>user_id</column>
+		<row>
+			<value>2</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>2</value>
+		</row>
+	</table>
+</dataset>
