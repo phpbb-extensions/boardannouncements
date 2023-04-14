@@ -42,6 +42,13 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Nastavenia oznámení fóra',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Tu môžete spravovať a vytvárať oznam fóra, ktorý bude zobrazený na každej stránke vášho fóra.',
 
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+
+	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
+
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Zobraziť tento oznam',
 	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kto môže vidieť tento oznam',
@@ -55,10 +62,32 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Dátum platnosti oznamu',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Nastavte dátum, kedy skončí platnosť oznamu a bude vypnutý. Ak nechcete aby oznam expiroval, nechajte toto pole prázdne.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Dátum platnosti je nesprávny alebo už starý.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'RRRR-MM-DD HH:MM',
 
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Text oznamu fóra',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Oznam fóra - Náhľad',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Oznam fóra bol aktualizovaný.',
+
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
+
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+
+	// Nested set exception messages (only appears in PHP error logging)
+	// Translating these strings is optional.
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
 ));

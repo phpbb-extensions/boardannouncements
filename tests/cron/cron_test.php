@@ -85,8 +85,8 @@ class cron_test extends \phpbb_test_case
 	{
 		return [
 			[time(), false],
-			[strtotime('5 days ago'), false],
-			[strtotime('2 weeks ago'), true],
+			[strtotime('12 hours ago'), false],
+			[strtotime('48 hours ago'), true],
 			['', true],
 			[0, true],
 			[null, true],
