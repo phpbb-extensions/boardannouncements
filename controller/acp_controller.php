@@ -108,7 +108,7 @@ class acp_controller
 		$action = $this->request->variable('action', '');
 		if (in_array($action, ['add', 'delete', 'move', 'settings']))
 		{
-			$this->{"action_$action"}();
+			$this->{'action_' . $action}();
 		}
 		else
 		{
