@@ -40,7 +40,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Ajustes de anuncios del foro',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aquí puede gestionar y crear un anuncio del foro que se mostrará en cada página de su foro.',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Aquí puedes gestionar y crear un anuncio del foro que se mostrará en cada página de tu foro.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Habilitar anuncios del foro',
 
@@ -57,10 +57,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos los usarios',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Color del fondo del anuncio del foro',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puede cambiar el color del fondo del anuncio usando código hexadecimal (por ejemplo: FFFF80). Deje este campo en blanco para usar el color por defecto.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puedes cambiar el color del fondo del anuncio usando código hexadecimal (por ejemplo: FFFF80). Deja este campo en blanco para usar el color por defecto.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Fecha de caducidad del anuncio del foro',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Establezca la fecha en que el anuncio expirará y se desactivará. Deje este campo en blanco si no desea que el anuncio expire.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Establece la fecha en que el anuncio expirará y se desactivará. Deja este campo en blanco si no deseas que el anuncio expire.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'La fecha de caducidad no es válida, o ya ha caducado.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'AAAA-MM-DD HH:MM',
 
