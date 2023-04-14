@@ -55,6 +55,6 @@ class disable_expired extends \phpbb\cron\task\base
 	 */
 	public function should_run()
 	{
-		return $this->config['board_announcements_cron_last_run'] < strtotime('1 week ago');
+		return $this->config['board_announcements_cron_last_run'] < strtotime('24 hours ago');
 	}
 }
