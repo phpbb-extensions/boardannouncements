@@ -44,8 +44,8 @@ class m9_schema_update extends \phpbb\db\migration\migration
 				$this->table_prefix . 'board_announcements'	=> [
 					'COLUMNS'	=> [
 						'announcement_id'			=> ['UINT', null, 'auto_increment'],
-						'announcement_text'			=> ['TEXT_UNI', ''],
-						'announcement_description'	=> ['MTEXT_UNI', ''],
+						'announcement_text'			=> ['MTEXT_UNI', ''],
+						'announcement_description'	=> ['VCHAR:255', ''],
 						'announcement_bgcolor'		=> ['VCHAR:255', ''],
 						'announcement_enabled'		=> ['BOOL', 0],
 						'announcement_indexonly'	=> ['BOOL', 0],
