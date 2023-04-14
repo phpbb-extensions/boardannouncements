@@ -2,6 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
+* Spanish translation by Raul [ThE KuKa] (www.phpbb-es.com)
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -38,5 +39,5 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENT_CLOSE'		=> 'Скрыть объявление',
+	'BOARD_ANNOUNCEMENT_CLOSE'		=> 'Cerrar anuncio',
 ));

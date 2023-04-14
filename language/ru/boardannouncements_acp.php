@@ -38,51 +38,51 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Настройки доски объявлений',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Здесь вы можете управлять и создавать объявления, которые будут отображаться на каждой странице вашего сайта.',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Настройки объявлений',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Здесь вы можете создавать и управлять объявлениями, которые будут отображаться на страницах вашей конференции.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Разрешить объявления',
 
-	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
+	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Параметры объявления',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Описание',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Краткое описание, которое будет видно только в ACP и поможет идентифицировать данное объявление.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Показывать эту доску объявлений',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Display on board index only',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Кто может видеть доску объявлений',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Разрешить пользователям выключать это объявление',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Показывать это объявление',
+	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Показывать только на главной странице',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Кто может видеть это объявление',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Разрешить пользователям скрывать это объявление',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Все',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Цвет фона объявления',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Цвет фона',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Вы можете изменить цвет фона объявления, используя шестнадцатеричный код (например: FFFF80). Оставьте это поле пустым, чтобы использовать цвет фона по умолчанию.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Срок действия объявления',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Срок действия',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Установка даты и времени, при наступлении которых объявление будет отключено. Оставьте поле пустым, чтобы сделать объявление постоянным.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Дата задана некорректно или уже прошла.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Дата задана некорректно или уже прошла',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
-	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Сообщение доски объявлений',
-	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Доска объявлений - Предпросмотр',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Отсутствует текст объявления',
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Текст объявления',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Предпросмотр объявления',
 
-	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Доска объявлений была обновлена.',
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Изменения в объявлении сохранены',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Описание',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Размещение',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Видимость',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Включено',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Дата создания',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Дата завершения',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Завершено',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Везде',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Нет объявлений для отображения',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Создать объявление',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Объявление было удалено',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Объявление не может быть удалено',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
