@@ -108,7 +108,7 @@ class acp_controller
 		$action = $this->request->variable('action', '');
 		if (in_array($action, ['add', 'delete', 'move', 'settings']))
 		{
-			$this->{"action_$action"}();
+			$this->{'action_' . $action}();
 		}
 		else
 		{
@@ -156,6 +156,8 @@ class acp_controller
 			'U_ACTION_ADD'						=> $this->u_action . '&amp;action=add',
 			'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config['board_announcements_enable'],
 		]);
+
+		add_form_key('board_announcement_settings');
 	}
 
 	/**
@@ -166,7 +168,7 @@ class acp_controller
 	protected function action_add()
 	{
 		// Define the name of the form for use as a form key
-		$form_name = 'acp_board_announcements';
+		$form_name = 'add_board_announcements';
 		add_form_key($form_name);
 
 		// Set an empty error array
@@ -390,6 +392,11 @@ class acp_controller
 	 */
 	protected function action_settings()
 	{
+		if (!check_form_key('board_announcement_settings'))
+		{
+			$this->error('FORM_INVALID');
+		}
+
 		$this->config->set('board_announcements_enable', $this->request->variable('board_announcements_enable_all', 0));
 
 		$this->success('CONFIG_UPDATED');
