@@ -38,7 +38,7 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 	 */
 	public function effectively_installed()
 	{
-		return !$this->config->offsetExists('board_announcements_dismiss');
+		return $this->config->offsetExists('board_announcements_cron_last_run');
 	}
 
 	/**
@@ -77,17 +77,19 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 		/** @var \phpbb\config\db_text $config_text */
 		$config_text = $this->container->get('config_text');
 
-		$import_data['announcement_description'] = '';
-		$import_data['announcement_text']        = $config_text->get('announcement_text');
-		$import_data['announcement_bgcolor']     = $config_text->get('announcement_bgcolor');
-		$import_data['announcement_timestamp']   = (int) $config_text->get('announcement_timestamp');
-		$import_data['announcement_enabled']     = (int) $this->config->offsetGet('board_announcements_enable');
-		$import_data['announcement_indexonly']   = (int) $this->config->offsetGet('board_announcements_index_only');
-		$import_data['announcement_dismissable'] = (int) $this->config->offsetGet('board_announcements_dismiss');
-		$import_data['announcement_users']       = (int) $this->config->offsetGet('board_announcements_users');
-		$import_data['announcement_expiry']      = (int) $this->config->offsetGet('board_announcements_expiry');
+		$import_data = [
+			'announcement_description' => '',
+			'announcement_text'        => $config_text->get('announcement_text'),
+			'announcement_bgcolor'     => $config_text->get('announcement_bgcolor'),
+			'announcement_timestamp'   => (int) $config_text->get('announcement_timestamp'),
+			'announcement_enabled'     => (int) $this->config->offsetGet('board_announcements_enable'),
+			'announcement_indexonly'   => (int) $this->config->offsetGet('board_announcements_index_only'),
+			'announcement_dismissable' => (int) $this->config->offsetGet('board_announcements_dismiss'),
+			'announcement_users'       => (int) $this->config->offsetGet('board_announcements_users'),
+			'announcement_expiry'      => (int) $this->config->offsetGet('board_announcements_expiry'),
+		];
 
-		// If we have data to import, let's go!! :)
+		// If we have an announcement to import, let's go!! :)
 		if (!empty($import_data['announcement_text'] ))
 		{
 			$result = $this->get_nestedset()->insert($import_data);
@@ -110,9 +112,12 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 		/** @var \phpbb\db\driver\driver_interface $db */
 		$db = $this->container->get('dbal.conn');
 
-		$lock = new \phpbb\lock\db('boardannouncements.table_lock.board_announcements_table', $this->config, $db);
-
-		return new nestedset($db, $lock, $this->table_prefix . 'board_announcements', $this->table_prefix . 'board_announcements_track');
+		return new nestedset(
+			$db,
+			new \phpbb\lock\db('boardannouncements.table_lock.board_announcements_table', $this->config, $db),
+			$this->table_prefix . 'board_announcements',
+			$this->table_prefix . 'board_announcements_track'
+		);
 	}
 
 	/**

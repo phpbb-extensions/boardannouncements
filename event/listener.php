@@ -97,7 +97,7 @@ class listener implements EventSubscriberInterface
 	public function display_board_announcements()
 	{
 		// Do not continue if board announcements are disabled
-		if (!$this->config->offsetGet('board_announcements_enable'))
+		if (!$this->config['board_announcements_enable'])
 		{
 			return;
 		}
