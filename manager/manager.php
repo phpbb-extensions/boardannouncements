@@ -35,7 +35,7 @@ class manager
 	{
 		$data = $this->nestedset->get_subtree_data($id);
 
-		return count($data) ? $data[$id] : [];
+		return $data[$id] ?? [];
 	}
 
 	/**
@@ -248,8 +248,11 @@ class manager
 			'announcement_indexonly'	=> false,
 			'announcement_dismissable'	=> true,
 			'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
-			'announcement_timestamp'	=> '',
-			'announcement_expiry'		=> '',
+			'announcement_timestamp'	=> 0,
+			'announcement_expiry'		=> 0,
+			'announcement_uid'			=> '',
+			'announcement_bitfield'		=> '',
+			'announcement_flags'			=> OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS,
 		];
 	}
 }
