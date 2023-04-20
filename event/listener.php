@@ -10,7 +10,6 @@
 
 namespace phpbb\boardannouncements\event;
 
-use phpbb\boardannouncements\ext;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
@@ -107,28 +106,28 @@ class listener implements EventSubscriberInterface
 
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
-		foreach ($board_announcements_data as $board_announcement_data)
+		foreach ($board_announcements_data as $data)
 		{
 			// Do not continue if announcements are only displayed on the board index, and the user is not currently viewing the board index
-			if ($board_announcement_data['announcement_indexonly'] && $this->user->page['page_name'] !== "index.$this->php_ext")
+			if ($data['announcement_indexonly'] && $this->user->page['page_name'] !== "index.$this->php_ext")
 			{
 				continue;
 			}
 
 			// Do not continue if announcement has been dismissed
-			if ($this->request->variable($this->config['cookie_name'] . '_ba_' . $board_announcement_data['announcement_id'], '', true, \phpbb\request\request_interface::COOKIE) == $board_announcement_data['announcement_timestamp'])
+			if ($this->request->variable($this->config['cookie_name'] . '_ba_' . $data['announcement_id'], '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'])
 			{
 				continue;
 			}
 
 			// Output board announcement to the template
 			$this->template->assign_block_vars('board_announcements', [
-				'BOARD_ANNOUNCEMENT_ID'			=> $board_announcement_data['announcement_id'],
-				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $board_announcement_data['announcement_dismissable'],
-				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($board_announcement_data['announcement_text'], '', '', ext::FLAGS),
-				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $board_announcement_data['announcement_bgcolor'],
+				'BOARD_ANNOUNCEMENT_ID'			=> $data['announcement_id'],
+				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $data['announcement_dismissable'],
+				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_flags']),
+				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $data['announcement_bgcolor'],
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
-					'id'	=> (int) $board_announcement_data['announcement_id'],
+					'id'	=> (int) $data['announcement_id'],
 					'hash'	=> generate_link_hash('close_boardannouncement')
 				]),
 			]);

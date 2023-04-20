@@ -11,6 +11,9 @@
 		<column>announcement_users</column>
 		<column>announcement_timestamp</column>
 		<column>announcement_expiry</column>
+		<column>announcement_uid</column>
+		<column>announcement_bitfield</column>
+		<column>announcement_flags</column>
 		<column>announcement_parent_id</column>
 		<column>announcement_left_id</column>
 		<column>announcement_right_id</column>
@@ -26,6 +29,9 @@
 			<value>0</value>
 			<value>1586466410</value>
 			<value>0</value>
+			<value></value>
+			<value></value>
+			<value>7</value>
 			<value>0</value>
 			<value>1</value>
 			<value>2</value>
@@ -42,6 +48,9 @@
 			<value>1</value>
 			<value>1586466510</value>
 			<value>0</value>
+			<value></value>
+			<value></value>
+			<value>7</value>
 			<value>0</value>
 			<value>3</value>
 			<value>4</value>
@@ -58,6 +67,9 @@
 			<value>2</value>
 			<value>1586466610</value>
 			<value>0</value>
+			<value></value>
+			<value></value>
+			<value>7</value>
 			<value>0</value>
 			<value>5</value>
 			<value>6</value>
@@ -74,6 +86,9 @@
 			<value>0</value>
 			<value>1586466710</value>
 			<value>1586466810</value>
+			<value></value>
+			<value></value>
+			<value>7</value>
 			<value>0</value>
 			<value>7</value>
 			<value>8</value>
@@ -90,6 +105,9 @@
 			<value>0</value>
 			<value>1586466810</value>
 			<value>0</value>
+			<value></value>
+			<value></value>
+			<value>7</value>
 			<value>0</value>
 			<value>9</value>
 			<value>10</value>

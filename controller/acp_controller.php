@@ -230,12 +230,11 @@ class acp_controller
 			}
 
 			// Prepare announcement text for storage
-			$uid = $bitfield = $options = '';
 			generate_text_for_storage(
 				$data['announcement_text'],
-				$uid,
-				$bitfield,
-				$options,
+				$data['announcement_uid'],
+				$data['announcement_bitfield'],
+				$data['announcement_flags'],
 				!$this->request->variable('disable_bbcode', false),
 				!$this->request->variable('disable_magic_url', false),
 				!$this->request->variable('disable_smilies', false)
@@ -261,10 +260,10 @@ class acp_controller
 		}
 
 		// Prepare a fresh announcement preview
-		$announcement_text_preview = $id || $preview ? generate_text_for_display($data['announcement_text'], '', '', ext::FLAGS) : '';
+		$announcement_text_preview = $id || $preview ? generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_flags']) : '';
 
 		// Prepare the announcement text for editing inside the text box
-		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], '', ext::FLAGS);
+		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], $data['announcement_uid'], $data['announcement_flags']);
 
 		// Output data to the template
 		$this->template->assign_vars([
