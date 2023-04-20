@@ -30,6 +30,10 @@ class manager_save_announcement_test extends manager_base
 				'announcement_users'		=> 0,
 				'announcement_timestamp'	=> time(),
 				'announcement_expiry'		=> 0,
+				'announcement_uid'			=> '',
+				'announcement_bitfield'		=> '',
+				'announcement_flags'			=> 7,
+
 			]],
 		];
 	}
@@ -38,22 +42,17 @@ class manager_save_announcement_test extends manager_base
 	 * Test the save_announcement() method
 	 *
 	 * @dataProvider data_save_announcement
-	 * @param int $expected_id
+	 * @param int $id
 	 * @param array $data
 	 */
-	public function test_save_announcement($expected_id, $data)
+	public function test_save_announcement($id, $data)
 	{
 		$this->manager->save_announcement($data);
 
-		self::assertEquals($expected_id, $this->manager->get_announcement_data($expected_id, 'announcement_id'));
-		self::assertEquals($data['announcement_text'], $this->manager->get_announcement_data($expected_id, 'announcement_text'));
-		self::assertEquals($data['announcement_description'], $this->manager->get_announcement_data($expected_id, 'announcement_description'));
-		self::assertEquals($data['announcement_bgcolor'], $this->manager->get_announcement_data($expected_id, 'announcement_bgcolor'));
-		self::assertEquals($data['announcement_enabled'], $this->manager->get_announcement_data($expected_id, 'announcement_enabled'));
-		self::assertEquals($data['announcement_indexonly'], $this->manager->get_announcement_data($expected_id, 'announcement_indexonly'));
-		self::assertEquals($data['announcement_dismissable'], $this->manager->get_announcement_data($expected_id, 'announcement_dismissable'));
-		self::assertEquals($data['announcement_users'], $this->manager->get_announcement_data($expected_id, 'announcement_users'));
-		self::assertEquals($data['announcement_timestamp'], $this->manager->get_announcement_data($expected_id, 'announcement_timestamp'));
-		self::assertEquals($data['announcement_expiry'], $this->manager->get_announcement_data($expected_id, 'announcement_expiry'));
+		self::assertEquals($id, $this->manager->get_announcement_data($id, 'announcement_id'));
+		foreach ($data as $key => $expected)
+		{
+			self::assertEquals($expected, $this->manager->get_announcement_data($id, $key));
+		}
 	}
 }

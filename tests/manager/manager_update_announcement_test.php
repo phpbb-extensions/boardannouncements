@@ -30,6 +30,9 @@ class manager_update_announcement_test extends manager_base
 				'announcement_users'		=> 1,
 				'announcement_timestamp'	=> time(),
 				'announcement_expiry'		=> 1,
+				'announcement_uid'			=> '',
+				'announcement_bitfield'		=> '',
+				'announcement_flags'			=> 7,
 			]],
 			[9, []],
 		];

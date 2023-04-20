@@ -19,7 +19,6 @@ class ext extends \phpbb\extension\base
 	public const MEMBERS = 1;
 	public const GUESTS = 2;
 	public const DATE_FORMAT = 'd M Y, H:i';
-	public const FLAGS = OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS;
 
 	/**
 	 * Enable extension if phpBB minimum version requirement is met

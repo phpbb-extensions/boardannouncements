@@ -267,6 +267,9 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 				'announcement_timestamp'	=> '',
 				'announcement_expiry'		=> '',
+				'announcement_uid'			=> '',
+				'announcement_bitfield'		=> '',
+				'announcement_flags'			=> 7,
 			]],
 			[0, [
 				'announcement_id'			=> 2,
@@ -279,6 +282,9 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 				'announcement_timestamp'	=> '',
 				'announcement_expiry'		=> '',
+				'announcement_uid'			=> '',
+				'announcement_bitfield'		=> '',
+				'announcement_flags'			=> 7,
 			]],
 		];
 	}
@@ -318,8 +324,12 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_indexonly'	=> false,
 				'announcement_dismissable'	=> true,
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
-				'announcement_timestamp'	=> '',
-				'announcement_expiry'		=> '',
+				'announcement_timestamp'	=> 0,
+				'announcement_expiry'		=> 0,
+				'announcement_uid'			=> '',
+				'announcement_bitfield'		=> '',
+				'announcement_flags'			=> 7,
+
 			]);
 
 		$this->manager->expects($id ? self::once() : self::never())
