@@ -91,7 +91,6 @@ class acp_controller_test extends \phpbb_test_case
 		$user->data['user_timezone'] = 'UTC';
 		$user->data['user_options'] = 230271;
 		$user->optionset('viewcensors', true);
-		$user->optionset('viewflash', true);
 		$user->optionset('viewimg', true);
 		$user->optionset('viewsmilies', true);
 
