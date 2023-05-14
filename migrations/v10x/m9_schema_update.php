@@ -44,8 +44,8 @@ class m9_schema_update extends \phpbb\db\migration\migration
 				$this->table_prefix . 'board_announcements'	=> [
 					'COLUMNS'	=> [
 						'announcement_id'			=> ['UINT', null, 'auto_increment'],
-						'announcement_text'			=> ['TEXT_UNI', ''],
-						'announcement_description'	=> ['MTEXT_UNI', ''],
+						'announcement_text'			=> ['MTEXT_UNI', ''],
+						'announcement_description'	=> ['VCHAR:255', ''],
 						'announcement_bgcolor'		=> ['VCHAR:255', ''],
 						'announcement_enabled'		=> ['BOOL', 0],
 						'announcement_indexonly'	=> ['BOOL', 0],
@@ -53,6 +53,9 @@ class m9_schema_update extends \phpbb\db\migration\migration
 						'announcement_users'		=> ['UINT', 0],
 						'announcement_timestamp'	=> ['TIMESTAMP', 0],
 						'announcement_expiry'		=> ['TIMESTAMP', 0],
+						'announcement_uid'			=> ['VCHAR:8', ''],
+						'announcement_bitfield'		=> ['VCHAR:255', ''],
+						'announcement_flags'			=> ['UINT:11', 7],
 						'announcement_parent_id'	=> ['UINT', 0],
 						'announcement_left_id'		=> ['UINT', 0],
 						'announcement_right_id'		=> ['UINT', 0],

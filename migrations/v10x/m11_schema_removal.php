@@ -11,7 +11,7 @@
 namespace phpbb\boardannouncements\migrations\v10x;
 
 /**
- * Migration stage 11: Remove old schema for board announcement tables
+ * Migration stage 11: Remove old board announcement schema from tables
  */
 class m11_schema_removal extends \phpbb\db\migration\migration
 {

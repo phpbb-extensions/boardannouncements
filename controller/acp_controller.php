@@ -108,7 +108,7 @@ class acp_controller
 		$action = $this->request->variable('action', '');
 		if (in_array($action, ['add', 'delete', 'move', 'settings']))
 		{
-			$this->{"action_$action"}();
+			$this->{'action_' . $action}();
 		}
 		else
 		{
@@ -156,6 +156,8 @@ class acp_controller
 			'U_ACTION_ADD'						=> $this->u_action . '&amp;action=add',
 			'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config['board_announcements_enable'],
 		]);
+
+		add_form_key('board_announcement_settings');
 	}
 
 	/**
@@ -166,7 +168,7 @@ class acp_controller
 	protected function action_add()
 	{
 		// Define the name of the form for use as a form key
-		$form_name = 'acp_board_announcements';
+		$form_name = 'add_board_announcements';
 		add_form_key($form_name);
 
 		// Set an empty error array
@@ -228,12 +230,11 @@ class acp_controller
 			}
 
 			// Prepare announcement text for storage
-			$uid = $bitfield = $options = '';
 			generate_text_for_storage(
 				$data['announcement_text'],
-				$uid,
-				$bitfield,
-				$options,
+				$data['announcement_uid'],
+				$data['announcement_bitfield'],
+				$data['announcement_flags'],
 				!$this->request->variable('disable_bbcode', false),
 				!$this->request->variable('disable_magic_url', false),
 				!$this->request->variable('disable_smilies', false)
@@ -259,10 +260,10 @@ class acp_controller
 		}
 
 		// Prepare a fresh announcement preview
-		$announcement_text_preview = $id || $preview ? generate_text_for_display($data['announcement_text'], '', '', ext::FLAGS) : '';
+		$announcement_text_preview = $id || $preview ? generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_flags']) : '';
 
 		// Prepare the announcement text for editing inside the text box
-		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], '', ext::FLAGS);
+		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], $data['announcement_uid'], $data['announcement_flags']);
 
 		// Output data to the template
 		$this->template->assign_vars([
@@ -390,6 +391,11 @@ class acp_controller
 	 */
 	protected function action_settings()
 	{
+		if (!check_form_key('board_announcement_settings'))
+		{
+			$this->error('FORM_INVALID');
+		}
+
 		$this->config->set('board_announcements_enable', $this->request->variable('board_announcements_enable_all', 0));
 
 		$this->success('CONFIG_UPDATED');

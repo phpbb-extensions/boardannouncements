@@ -266,6 +266,9 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 				'announcement_timestamp'	=> '',
 				'announcement_expiry'		=> '',
+				'announcement_uid'			=> '',
+				'announcement_bitfield'		=> '',
+				'announcement_flags'			=> 7,
 			]],
 			[0, [
 				'announcement_id'			=> 2,
@@ -278,6 +281,9 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 				'announcement_timestamp'	=> '',
 				'announcement_expiry'		=> '',
+				'announcement_uid'			=> '',
+				'announcement_bitfield'		=> '',
+				'announcement_flags'			=> 7,
 			]],
 		];
 	}
@@ -317,8 +323,12 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_indexonly'	=> false,
 				'announcement_dismissable'	=> true,
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
-				'announcement_timestamp'	=> '',
-				'announcement_expiry'		=> '',
+				'announcement_timestamp'	=> 0,
+				'announcement_expiry'		=> 0,
+				'announcement_uid'			=> '',
+				'announcement_bitfield'		=> '',
+				'announcement_flags'			=> 7,
+
 			]);
 
 		$this->manager->expects($id ? self::once() : self::never())
@@ -564,8 +574,10 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_settings_data()
 	{
 		return [
-			[1],
-			[0],
+			[1, true],
+			[0, true],
+			[1, false],
+			[0, false],
 		];
 	}
 
@@ -574,22 +586,34 @@ class acp_controller_test extends \phpbb_test_case
 	 *
 	 * @dataProvider action_settings_data
 	 * @param $enable
+	 * @param $valid_form
 	 * @return void
 	 */
-	public function test_action_settings($enable)
+	public function test_action_settings($enable, $valid_form)
 	{
+		self::$valid_form = $valid_form;
+
 		$controller = $this->get_controller();
 
-		$this->setExpectedTriggerError(E_USER_NOTICE, 'CONFIG_UPDATED');
-
-		$this->request->expects(self::exactly(2))
-			->method('variable')
-			->withConsecutive(['action', ''], ['board_announcements_enable_all', 0])
-			->willReturnOnConsecutiveCalls('settings', $enable);
-
-		$this->config->expects(self::once())
-			->method('set')
-			->with('board_announcements_enable', $enable);
+		if (!$valid_form)
+		{
+			$this->setExpectedTriggerError(E_USER_WARNING, 'The submitted form was invalid. Try submitting again.');
+			$this->request->expects(self::once())
+				->method('variable')
+				->withConsecutive(['action', ''])
+				->willReturnOnConsecutiveCalls('settings');
+		}
+		else
+		{
+			$this->setExpectedTriggerError(E_USER_NOTICE, 'CONFIG_UPDATED');
+			$this->request->expects(self::exactly(2))
+				->method('variable')
+				->withConsecutive(['action', ''], ['board_announcements_enable_all', 0])
+				->willReturnOnConsecutiveCalls('settings', $enable);
+			$this->config->expects(self::once())
+				->method('set')
+				->with('board_announcements_enable', $enable);
+		}
 
 		$controller->mode_manage();
 	}

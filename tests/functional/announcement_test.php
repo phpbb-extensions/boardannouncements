@@ -39,7 +39,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 		$this->admin_login();
 
-		$crawler = self::request('GET', 'adm/index.php?i=\phpbb\boardannouncements\acp\board_announcements_module&mode=settings&sid=' . $this->sid);
+		$crawler = self::request('GET', $this->get_acp_page());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE_ALL', $crawler->text());
 
 		// Enable announcements
@@ -50,7 +50,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->assertContainsLang('CONFIG_UPDATED', $crawler->text());
 
 		// Load Add page
-		$crawler = self::request('GET', 'adm/index.php?i=\phpbb\boardannouncements\acp\board_announcements_module&mode=settings&action=add&sid=' . $this->sid);
+		$crawler = self::request('GET', $this->get_acp_page('add'));
 
 		// Test that our settings fields are found
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE', $crawler->text());
@@ -84,9 +84,9 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_CREATED_LOG', $values['board_announcements_description'])), $crawler->text());
 
 		// Confirm ACP page shows added announcement
-		$crawler = self::request('GET', 'adm/index.php?i=\phpbb\boardannouncements\acp\board_announcements_module&mode=settings&sid=' . $this->sid);
+		$crawler = self::request('GET', $this->get_acp_page());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE_ALL', $crawler->text());
-		$this->assertStringContainsString($values['board_announcements_description'], $crawler->text());
+		$this->assertStringContainsString($values['board_announcements_description'], $crawler->filter('table > tbody > tr > td')->text());
 	}
 
 	/**
@@ -152,6 +152,48 @@ class announcement_test extends \phpbb_functional_test_case
 		self::request('GET', 'app.php/boardannouncements/close/1?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid);
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+	}
+
+	/**
+	 * Test announcement edit, preview and delete
+	 */
+	public function test_acp_editing()
+	{
+		$this->login();
+		$this->admin_login();
+
+		// Test editing announcement and preview works
+		$crawler = self::request('GET', $this->get_acp_page('add', 1));
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_PREVIEW', $crawler->text());
+		$this->assertStringContainsString('This is a board announcement test.', $crawler->text());
+
+		// Test deleting the announcement works
+		$crawler = self::request('GET', $this->get_acp_page('delete', 1));
+		$this->assertContainsLang('CONFIRM_OPERATION', $crawler->text());
+		$form_data = ['confirm' => $this->lang('YES')];
+		$form = $crawler->selectButton($this->lang('YES'))->form();
+		$crawler = self::submit($form, $form_data);
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_DELETE_SUCCESS', $crawler->filter('.successbox')->text());
+
+		// Confirm the log entry has been added correctly
+		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
+		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_DELETED_LOG', 'Test announcement')), $crawler->text());
+
+		// Confirm ACP page shows no more announcements
+		$crawler = self::request('GET', $this->get_acp_page());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_EMPTY', $crawler->text());
+	}
+
+	/**
+	 * Get the board announcements ACP page link to crawl
+	 *
+	 * @param string $action
+	 * @param int $id
+	 * @return string
+	 */
+	protected function get_acp_page($action = '', $id = 0)
+	{
+		return 'adm/index.php?i=\phpbb\boardannouncements\acp\board_announcements_module&mode=settings' . ($action ? "&action=$action"  : '') . ($id ? "&id=$id" : '') . "&sid=$this->sid";
 	}
 
 	/**

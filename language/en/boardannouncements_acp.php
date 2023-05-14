@@ -61,11 +61,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Board announcement expiration date',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Set the date the announcement will expire and become disabled. Leave this field blank if you do not want the announcement to expire.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'The expiration date was invalid or has already expired.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'YYYY-MM-DD HH:MM',
 
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Board announcement message',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Board announcement - Preview',
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Board announcement has been updated.',
 
@@ -77,8 +76,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
 
-	'INDEX_ONLY'							=> 'Index page',
-	'EVERYWHERE'							=> 'Everywhere',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
@@ -87,6 +85,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
 
 	// Nested set exception messages (only appears in PHP error logging)
+	// Translating these strings is optional.
 	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
 	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
 	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',

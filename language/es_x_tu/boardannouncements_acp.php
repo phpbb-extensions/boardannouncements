@@ -62,11 +62,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Fecha de caducidad del anuncio del foro',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Establece la fecha en que el anuncio expirará y se desactivará. Deja este campo en blanco si no deseas que el anuncio expire.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'La fecha de caducidad no es válida, o ya ha caducado.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'AAAA-MM-DD HH:MM',
 
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'El anuncio del foro no contiene ningún mensaje.',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Mensaje del anuncio del foro',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Anuncio del foro - Vista previa',
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'El anuncio del foro no contiene ningún mensaje.',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Anuncio del foro ha sido actualizado.',
 
@@ -78,8 +77,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Fecha de caducidad',
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expirado',
 
-	'INDEX_ONLY'							=> 'Página índice',
-	'EVERYWHERE'							=> 'En todos lados',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'En todos lados',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'No hay anuncios del foro para mostrar',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Crear anuncio',

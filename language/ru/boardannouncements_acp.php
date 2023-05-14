@@ -61,11 +61,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Срок действия',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Установка даты и времени, при наступлении которых объявление будет отключено. Оставьте поле пустым, чтобы сделать объявление постоянным.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Дата задана некорректно или уже прошла',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_FORMAT'		=> 'ГГГГ-ММ-ДД ЧЧ:ММ',
 
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Отсутствует текст объявления',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Текст объявления',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Предпросмотр объявления',
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Отсутствует текст объявления',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Изменения в объявлении сохранены',
 
@@ -77,8 +76,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Дата завершения',
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Завершено',
 
-	'INDEX_ONLY'							=> 'Только на главной',
-	'EVERYWHERE'							=> 'Везде',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Везде',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Нет объявлений для отображения',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Создать объявление',
@@ -87,6 +85,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Объявление не может быть удалено',
 
 	// Nested set exception messages (only appears in PHP error logging)
+	// Translating these strings is optional.
 	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
 	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
 	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',

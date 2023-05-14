@@ -1,12 +1,12 @@
-{% macro baIcon(title) %}
-	<i class="icon acp-icon acp-icon-{{ title == 'NO' ? 'delete' : 'settings' }} fa-{{ title == 'NO' ? 'times' : 'check' }} fa-fw" title="{{ lang(title) }}"></i>
+{% macro baIcon(icon, class, title) %}
+	<i class="icon acp-icon {% if class %}acp-icon-{{ class }} {% endif %}fa-{{ icon }} fa-fw" title="{{ lang(title) }}"></i>
 {% endmacro %}
 
 <h1>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS') }}</h1>
 
 <p>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN') }}</p>
 
-<form id="acp_phpbb_ba_settings" method="post" action="{{ U_ACTION }}" data-ajax="true">
+<form id="board_announcement_settings" method="post" action="{{ U_ACTION }}" data-ajax="true">
 	<fieldset>
 		<legend>{{ lang('GENERAL_OPTIONS') }}</legend>
 		<dl>
@@ -17,14 +17,14 @@
 			</dd>
 		</dl>
 		<p class="quick">
-			<input type="submit" id="board_announcements_enable_all_submit" name="board_announcements_enable_all_submit" class="button2" value="{L_SUBMIT}">
+			<input type="submit" id="board_announcements_enable_all_submit" name="board_announcements_enable_all_submit" class="button2" value="{{ lang('SUBMIT') }}">
 			<input type="hidden" name="action" value="settings">
 		</p>
-		{S_FORM_TOKEN}
+		{{ S_FORM_TOKEN }}
 	</fieldset>
 </form>
 
-<table class="table1 zebra-table fixed-width-table">
+<table class="table1 zebra-table">
 	<thead>
 	<tr>
 		<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_DESCRIPTION') }}</th>
@@ -41,7 +41,7 @@
 	{% for ba in announcements %}
 		<tr>
 			<td>{{ ba.DESCRIPTION }}</td>
-			<td>{{ ba.INDEX_ONLY ? lang('INDEX_ONLY') : lang('EVERYWHERE') }}</td>
+			<td>{{ ba.INDEX_ONLY ? lang('INDEX') : lang('BOARD_ANNOUNCEMENTS_EVERYWHERE') }}</td>
 			<td>{% if ba.USERS == constant('\\phpbb\\boardannouncements\\ext::ALL') %}
 					{{ lang('BOARD_ANNOUNCEMENTS_EVERYONE') }}
 				{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::MEMBERS') %}
@@ -51,7 +51,7 @@
 				{% endif %}
 			</td>
 			<td>{{ ba.CREATED_DATE ? ba.CREATED_DATE|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) : '' }}</td>
-			<td>{{ ba.S_ENABLED ? _self.baIcon('YES') : _self.baIcon('NO') }}</td>
+			<td>{{ ba.S_ENABLED ? _self.baIcon('check', 'settings', 'YES') : _self.baIcon('times', 'delete', 'NO') }}</td>
 			<td>{{ ba.EXPIRY_DATE ? ba.EXPIRY_DATE|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) : '' }}</td>
 			<td>{{ ba.S_EXPIRED ? lang('YES') : lang('NO') }}</td>
 			<td class="actions">
@@ -70,7 +70,7 @@
 	</tbody>
 </table>
 
-<form id="acp_phpbb_ba_quick_add" method="post" action="{{ U_ACTION_ADD }}">
+<form id="quick_add_board_announcements" method="post" action="{{ U_ACTION_ADD }}">
 	<fieldset class="quick">
 		<input class="button2" type="submit" value="{{ lang('BOARD_ANNOUNCEMENTS_ADD') }}">
 		{{ S_FORM_TOKEN }}
