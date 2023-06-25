@@ -4,6 +4,7 @@
 
 - Feature: Multiple announcements are now supported!
   - Unlimited, sortable, and individually customisable.
+- Dropped support for phpBB 3.2.x. Now requires phpBB 3.3.0 or newer
 - Added language packs:
   - Ukrainian
   - Spanish (casual honorifics)
