@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 - 2023-04-15
+
+- Feature: Multiple announcements are now supported!
+  - Unlimited, sortable, and individually customisable.
+- Added language packs:
+  - Ukrainian
+  - Spanish (casual honorifics)
+
 ## 1.1.1 - 2022-06-27
 
 - Replaced the close announcement icon image with a Font Awesome icon
