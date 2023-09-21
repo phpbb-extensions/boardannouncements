@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1 - 2023-07-30
+
+- Fixed a bug when using non-English in the ACP where the DatePicker would enter an expiration date that is not understood by PHP, reverted to the numerical date style as used in prior versions. 
+- Updated French, German, and Turkish language packs
+
 ## 1.2.0 - 2023-04-15
 
 - Feature: Multiple announcements are now supported!
