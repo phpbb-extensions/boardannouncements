@@ -41,12 +41,12 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Site Duyuruları ayarları',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Buradan sitenin her sayfasında görünecek site duyurusunu yönetebilir ve yeni bir duyuru oluşturabilirsin.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Site duyurularını etkinleştir',
 
-	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
+	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Duyuru seçenekleri',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Tanım',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Bu duyuru için kısa bir tanım. Bu, yalnızca bu duyurunun tanımlanmasına yardımcı olmak için YKP’de görünür olacaktır.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Bu site duyurusunu göster',
 	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Sadece forum anasayfasında göster',
@@ -62,31 +62,31 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Duyurunun kullanımının sona ereceği tarihi ayarlayın ve böylece o tarihte devre dışı bırakın. Duyurunun sona ermesini istemiyorsanız bu alanı boş bırakın.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Son kullanma tarihi geçersiz veya zaten süresi dolmuş.',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Site duyurusu mesaj içermiyor',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Site duyurusu mesajı',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Site duyurusu - Önizleme',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Site duyurusu güncellendi.',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Tanım',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Konum',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Şunlara görünür',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Etkinleştirilmiş',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Oluşturma Tarihi',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Son yayınlanma tarihi',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Süresi bitmiş',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Her yer',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Gösterilecek site duyurusu yok',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Duyuru Oluştur',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Site duyurusu silindi',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Site duyurusu silinemedi',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Site duyuruları tablo kilidini alamadı. Başka bir işlem kilidi tutuyor olabilir. Kilitler, 1 saatlik bir zaman aşımından sonra zorla açılır.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'İstenen duyuru mevcut değil.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'İstenen duyurunun üst öğesi yok.',
 ));

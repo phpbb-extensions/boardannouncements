@@ -18,7 +18,7 @@ class ext extends \phpbb\extension\base
 	public const ALL = 0;
 	public const MEMBERS = 1;
 	public const GUESTS = 2;
-	public const DATE_FORMAT = 'd M Y, H:i';
+	public const DATE_FORMAT = 'Y-m-d H:i';
 
 	/**
 	 * Enable extension if phpBB minimum version requirement is met

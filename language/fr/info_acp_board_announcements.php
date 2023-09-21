@@ -2,7 +2,7 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* French translation by ForumsFaciles (www.forumsfaciles.fr)
+* French translation by ForumsFaciles (www.forumsfaciles.fr) anf Fred Rimbert (https://forums.caforum.fr)
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
 	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Paramètres de l’annonce',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>A board announcement was created</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>A board announcement was updated</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>A board announcement was deleted</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>Une annonce de forum a été créée</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Une annonce de forum a été modifiée</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>Une annonce de forum a été supprimée</strong><br>» %s',
 ));
