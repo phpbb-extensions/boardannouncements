@@ -6,7 +6,7 @@
 	<div id="phpbb_announcement_{{ announcement.BOARD_ANNOUNCEMENT_ID }}" class="phpbb_announcement"{% if announcement.BOARD_ANNOUNCEMENT_BGCOLOR %} style="background-color:#{{ announcement.BOARD_ANNOUNCEMENT_BGCOLOR }}"{% endif %}>
 		{% if announcement.S_BOARD_ANNOUNCEMENT_DISMISS %}
 			<a href="{{ announcement.U_BOARD_ANNOUNCEMENT_CLOSE }}" data-ajax="close_announcement" data-overlay="false" class="close">
-				{{ Icon('iconify', 'fa:times', lang('BOARD_ANNOUNCEMENT_CLOSE'), true) }}
+				{{ Icon('font', 'times', lang('BOARD_ANNOUNCEMENT_CLOSE'), true) }}
 			</a>
 		{% endif %}
 		<div>{{ announcement.BOARD_ANNOUNCEMENT }}</div>

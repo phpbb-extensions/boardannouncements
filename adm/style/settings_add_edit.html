@@ -47,7 +47,7 @@
 		<dl>
 			<dt><label for="board_announcements_users">{{ lang('BOARD_ANNOUNCEMENTS_USERS') ~ lang('COLON') }}</label></dt>
 			<dd>
-				<select name="board_announcements_users" id="board_announcements_users">{{ S_BOARD_ANNOUNCEMENTS_USERS }}</select>
+				<select name="board_announcements_users" id="board_announcements_users">{% for item in S_BOARD_ANNOUNCEMENTS_USERS %}<option value="{{ item.value }}"{% if item.selected %} selected="selected"{% endif %}>{{ item.label }}</option>{% endfor %}</select>
 			</dd>
 		</dl>
 	</fieldset>
