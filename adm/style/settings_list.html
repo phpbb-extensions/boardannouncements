@@ -1,7 +1,3 @@
-{% macro baIcon(icon, class, title) %}
-	<i class="icon acp-icon {% if class %}acp-icon-{{ class }} {% endif %}fa-{{ icon }} fa-fw" title="{{ lang(title) }}"></i>
-{% endmacro %}
-
 <h1>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS') }}</h1>
 
 <p>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN') }}</p>
@@ -51,7 +47,9 @@
 				{% endif %}
 			</td>
 			<td>{{ ba.CREATED_DATE ? ba.CREATED_DATE|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) : '' }}</td>
-			<td>{{ ba.S_ENABLED ? _self.baIcon('check', 'settings', 'YES') : _self.baIcon('times', 'delete', 'NO') }}</td>
+			<td>
+
+				{{ ba.S_ENABLED ? Icon('font', 'check', lang('YES'), true, 'fas acp-icon acp-icon-settings') : Icon('font', 'xmark', lang('NO'), true, 'fas acp-icon acp-icon-delete') }}</td>
 			<td>{{ ba.EXPIRY_DATE ? ba.EXPIRY_DATE|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) : '' }}</td>
 			<td>{{ ba.S_EXPIRED ? lang('YES') : lang('NO') }}</td>
 			<td class="actions">
