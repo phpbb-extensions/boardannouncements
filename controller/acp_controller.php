@@ -137,7 +137,7 @@ class acp_controller
 
 			$this->template->assign_block_vars('announcements' , [
 				'DESCRIPTION'  => $row['announcement_description'],
-				'INDEX_ONLY'   => $row['announcement_indexonly'],
+				'LOCATIONS'    => json_decode($row['announcement_locations'], true),
 				'USERS'        => $row['announcement_users'],
 				'CREATED_DATE' => $row['announcement_timestamp'],
 				'EXPIRY_DATE'  => $row['announcement_expiry'],
@@ -206,7 +206,7 @@ class acp_controller
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 			$data['announcement_enabled'] = $this->request->variable('board_announcements_enabled', true);
 			$data['announcement_users'] = $this->request->variable('board_announcements_users', ext::ALL);
-			$data['announcement_indexonly'] = $this->request->variable('board_announcements_index_only', false);
+			$data['announcement_locations'] = $this->request->variable('board_announcements_locations', ['']);
 			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', true);
 			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
 
@@ -228,6 +228,8 @@ class acp_controller
 			{
 				$data['announcement_expiry'] = 0;
 			}
+
+			$data['announcement_locations'] = json_encode($data['announcement_locations']);
 
 			// Prepare announcement text for storage
 			generate_text_for_storage(
@@ -269,13 +271,14 @@ class acp_controller
 		$this->template->assign_vars([
 			'ERRORS'						=> implode('<br>', $errors),
 			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $data['announcement_enabled'],
-			'BOARD_ANNOUNCEMENTS_INDEX_ONLY'=> $data['announcement_indexonly'],
 			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $data['announcement_dismissable'],
 			'BOARD_ANNOUNCEMENTS_DESC'		=> $data['announcement_description'],
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
 			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $data['announcement_expiry'] ? $this->user->format_date($data['announcement_expiry'], ext::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
+
+			'BOARD_ANNOUNCEMENTS_LOCATIONS'	=> $this->get_location_options($data['announcement_locations']),
 
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select([
 				ext::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
@@ -442,5 +445,24 @@ class acp_controller
 	protected function log_change($msg, $params)
 	{
 		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $msg, time(), [$params]);
+	}
+
+	/**
+	 * Get an array of available locations for the announcement
+	 *
+	 * @param string $selected
+	 * @return array
+	 */
+	protected function get_location_options($locations)
+	{
+		$selected = !empty($locations) ? json_decode($locations, true) : [];
+
+		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
+
+		$forum_list[0] = array_merge(['padding' => '', 'selected' => in_array(0, $selected)], ['forum_id' => 0, 'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')]);
+
+		ksort($forum_list);
+
+		return $forum_list;
 	}
 }

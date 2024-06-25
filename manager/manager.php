@@ -245,7 +245,7 @@ class manager
 			'announcement_description'	=> '',
 			'announcement_bgcolor'		=> '',
 			'announcement_enabled'		=> true,
-			'announcement_indexonly'	=> false,
+			'announcement_locations'	=> '',
 			'announcement_dismissable'	=> true,
 			'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 			'announcement_timestamp'	=> 0,
