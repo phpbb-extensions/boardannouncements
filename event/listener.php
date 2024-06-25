@@ -108,8 +108,13 @@ class listener implements EventSubscriberInterface
 
 		foreach ($board_announcements_data as $data)
 		{
-			// Do not continue if announcements are only displayed on the board index, and the user is not currently viewing the board index
-			if ($data['announcement_indexonly'] && $this->user->page['page_name'] !== "index.$this->php_ext")
+			$locations = json_decode($data['announcement_locations'], true);
+
+			// Do not continue if announcement has locations specified, and user isn't at that location
+			if (!empty($locations) && (
+				($this->user->page['page_name'] === "index.$this->php_ext" && !in_array(0, $locations))
+				|| !in_array($this->request->variable('f', 0), $locations))
+			)
 			{
 				continue;
 			}
