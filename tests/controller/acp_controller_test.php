@@ -412,6 +412,10 @@ class acp_controller_test extends \phpbb_test_case
 			->withConsecutive(['submit'], ['preview'])
 			->willReturnOnConsecutiveCalls($submit, $preview);
 
+		$this->manager->expects($submit && !$errors ? self::never() : self::once())
+			->method('decode_json')
+			->willReturn([]);
+
 		$this->manager->expects(self::once())
 			->method('announcement_columns')
 			->willReturn([]);

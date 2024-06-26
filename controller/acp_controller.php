@@ -142,7 +142,7 @@ class acp_controller
 				'EXPIRY_DATE'  => $row['announcement_expiry'],
 				'S_EXPIRED'    => $expired,
 				'S_ENABLED'    => $enabled,
-				'LOCATIONS'    => json_decode($row['announcement_locations'], true),
+				'LOCATIONS'    => $this->manager->decode_json($row['announcement_locations']),
 				'U_EDIT'       => $this->u_action . '&amp;action=add&amp;id=' . $row['announcement_id'],
 				'U_DELETE'     => $this->u_action . '&amp;action=delete&amp;id=' . $row['announcement_id'],
 				'U_MOVE_UP'    => $this->u_action . '&amp;action=move&amp;id=' . $row['announcement_id'] . '&amp;dir=up&amp;hash=' . generate_link_hash('up' . $row['announcement_id']),
@@ -229,6 +229,7 @@ class acp_controller
 				$data['announcement_expiry'] = 0;
 			}
 
+			// Locations array should be json encoded for storage in the DB
 			$data['announcement_locations'] = json_encode($data['announcement_locations']);
 
 			// Prepare announcement text for storage
@@ -455,7 +456,7 @@ class acp_controller
 	 */
 	protected function get_location_options($locations)
 	{
-		$selected = !empty($locations) ? json_decode($locations, true) : [];
+		$selected = !empty($locations) ? $this->manager->decode_json($locations) : [];
 
 		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
 

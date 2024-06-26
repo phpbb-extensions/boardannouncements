@@ -108,7 +108,7 @@ class listener implements EventSubscriberInterface
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
 		$board_announcements_data = array_filter($board_announcements_data, function ($data) {
-			$locations = json_decode($data['announcement_locations'], true);
+			$locations = $this->manager->decode_json($data['announcement_locations']);
 			$is_index = $this->user->page['page_name'] === "index.$this->php_ext";
 			$current_page = $is_index ? ext::INDEX_ONLY : $this->request->variable('f', 0);
 

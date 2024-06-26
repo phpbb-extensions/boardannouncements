@@ -190,6 +190,18 @@ class manager
 	}
 
 	/**
+	 * Decode JSON data
+	 *
+	 * @param string $data
+	 * @return mixed decoded json data or original data if not valid json
+	 */
+	public function decode_json($data)
+	{
+		$result = json_decode($data, true);
+		return json_last_error() === JSON_ERROR_NONE ? $result : $data;
+	}
+
+	/**
 	 * Filter members only announcements
 	 *
 	 * @param array $row
