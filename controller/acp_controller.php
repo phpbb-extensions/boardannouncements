@@ -206,7 +206,7 @@ class acp_controller
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
 			$data['announcement_enabled'] = $this->request->variable('board_announcements_enabled', true);
 			$data['announcement_users'] = $this->request->variable('board_announcements_users', ext::ALL);
-			$data['announcement_locations'] = $this->request->variable('board_announcements_locations', ['']);
+			$data['announcement_locations'] = $this->request->variable('board_announcements_locations', [0]);
 			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', true);
 			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
 
@@ -460,7 +460,7 @@ class acp_controller
 		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
 
 		// Add the index page
-		$forum_list[0] = array_merge(['padding' => '', 'selected' => in_array('index', $selected)], ['forum_id' => 'index', 'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')]);
+		$forum_list[0] = array_merge(['padding' => '', 'selected' => in_array(-1, $selected)], ['forum_id' => -1, 'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')]);
 
 		ksort($forum_list);
 

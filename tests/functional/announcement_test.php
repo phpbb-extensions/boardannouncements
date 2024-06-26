@@ -68,7 +68,7 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_enabled'		=> true,
 			'board_announcements_users'			=> 0,
 			'board_announcements_dismiss'		=> true,
-			'board_announcements_locations'		=> ["index"],
+			'board_announcements_locations'		=> [-1],
 			'board_announcements_bgcolor'		=> 'ff0000',
 			'board_announcements_description'	=> 'Test announcement',
 			'board_announcements_text'			=> 'This is a board announcement test.',

@@ -54,7 +54,7 @@ class m13_locations_data extends \phpbb\db\migration\container_aware_migration
 
 	/**
 	 * Copy values of announcement_indexonly to announcement_locations
-	 * for existing announcements. New values should be 0 for index only,
+	 * for existing announcements. New values should be -1 for index only,
 	 * empty string for everywhere (all other integers will be for forums).
 	 *
 	 * @return void
@@ -69,7 +69,7 @@ class m13_locations_data extends \phpbb\db\migration\container_aware_migration
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$this->get_nestedset()->update_item($row['announcement_id'], [
-				'announcement_locations' => ($row['announcement_indexonly'] ? json_encode(['index']) : '')
+				'announcement_locations' => ($row['announcement_indexonly'] ? json_encode([-1]) : '')
 			]);
 		}
 

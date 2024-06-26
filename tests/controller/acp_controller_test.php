@@ -207,7 +207,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_enabled'		=> 1,
 				'announcement_timestamp'	=> 797442794,
 				'announcement_expiry'		=> 0,
-				'announcement_locations'	=> '["index",1]',
+				'announcement_locations'	=> '[-1,1]',
 				'announcement_users'		=> 0,
 			],
 			[
@@ -397,7 +397,7 @@ class acp_controller_test extends \phpbb_test_case
 				['board_announcements_bgcolor', ''],
 				['board_announcements_enabled', true],
 				['board_announcements_users', 0],
-				['board_announcements_locations', ['']],
+				['board_announcements_locations', [0]],
 				['board_announcements_dismiss', true],
 				['board_announcements_expiry', ''],
 				['disable_bbcode', false],

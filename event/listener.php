@@ -106,26 +106,30 @@ class listener implements EventSubscriberInterface
 
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
-		foreach ($board_announcements_data as $data)
-		{
+		$board_announcements_data = array_filter($board_announcements_data, function ($data) {
 			$locations = json_decode($data['announcement_locations'], true);
 
-			// Do not continue if announcement has locations specified, and user isn't at that location
+			// Check if announcement has locations specified, and user is at that location
 			if (!empty($locations) && (
-					($this->user->page['page_name'] === "index.$this->php_ext" && !in_array('index', $locations, true)) ||
-					($this->user->page['page_name'] !== "index.$this->php_ext" && !in_array($this->request->variable('f', 0), $locations, true))
+					($this->user->page['page_name'] === "index.$this->php_ext" && !in_array(-1, $locations)) ||
+					($this->user->page['page_name'] !== "index.$this->php_ext" && !in_array($this->request->variable('f', 0), $locations))
 				))
 			{
-				continue;
+				return false;
 			}
 
-			// Do not continue if announcement has been dismissed
+			// Check if announcement has been dismissed
 			if ($this->request->variable($this->config['cookie_name'] . '_ba_' . $data['announcement_id'], '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'])
 			{
-				continue;
+				return false;
 			}
 
-			// Output board announcement to the template
+			return true;
+		});
+
+		// Output board announcement to the template
+		foreach ($board_announcements_data as $data)
+		{
 			$this->template->assign_block_vars('board_announcements', [
 				'BOARD_ANNOUNCEMENT_ID'			=> $data['announcement_id'],
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $data['announcement_dismissable'],
