@@ -108,18 +108,20 @@ class listener implements EventSubscriberInterface
 
 		$board_announcements_data = array_filter($board_announcements_data, function ($data) {
 			$locations = json_decode($data['announcement_locations'], true);
+			$is_index = $this->user->page['page_name'] === "index.$this->php_ext";
+			$current_page = $is_index ? -1 : $this->request->variable('f', 0);
 
 			// Check if announcement has locations specified, and user is at that location
-			if (!empty($locations) && (
-					($this->user->page['page_name'] === "index.$this->php_ext" && !in_array(-1, $locations)) ||
-					($this->user->page['page_name'] !== "index.$this->php_ext" && !in_array($this->request->variable('f', 0), $locations))
-				))
+			if (!empty($locations) && !in_array($current_page, $locations))
 			{
 				return false;
 			}
 
 			// Check if announcement has been dismissed
-			if ($this->request->variable($this->config['cookie_name'] . '_ba_' . $data['announcement_id'], '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'])
+			$cookieName = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
+			$announcementDismissed = $this->request->variable($cookieName, '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'];
+
+			if ($announcementDismissed)
 			{
 				return false;
 			}
