@@ -25,7 +25,7 @@ class manager_save_announcement_test extends manager_base
 				'announcement_description'	=> 'ANNOUNCEMENT 6',
 				'announcement_bgcolor'		=> '',
 				'announcement_enabled'		=> 1,
-				'announcement_indexonly'	=> 1,
+				'announcement_locations'	=> json_encode([1,2,3]),
 				'announcement_dismissable'	=> 1,
 				'announcement_users'		=> 0,
 				'announcement_timestamp'	=> time(),

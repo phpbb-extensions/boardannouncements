@@ -29,7 +29,7 @@ class manager_get_expired_announcements_test extends manager_base
 				'announcement_description'	=> 'ANNOUNCEMENT 4',
 				'announcement_bgcolor'		=> '',
 				'announcement_enabled'		=> 1,
-				'announcement_indexonly'	=> 0,
+				'announcement_locations'	=> '',
 				'announcement_dismissable'	=> 0,
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 				'announcement_timestamp'	=> 1586466710,

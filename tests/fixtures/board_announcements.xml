@@ -6,7 +6,7 @@
 		<column>announcement_description</column>
 		<column>announcement_bgcolor</column>
 		<column>announcement_enabled</column>
-		<column>announcement_indexonly</column>
+		<column>announcement_locations</column>
 		<column>announcement_dismissable</column>
 		<column>announcement_users</column>
 		<column>announcement_timestamp</column>
@@ -24,7 +24,7 @@
 			<value>ANNOUNCEMENT 1</value>
 			<value></value>
 			<value>1</value>
-			<value>1</value>
+			<value>["index"]</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1586466410</value>
@@ -43,7 +43,7 @@
 			<value>ANNOUNCEMENT 2</value>
 			<value>ffffff</value>
 			<value>1</value>
-			<value>0</value>
+			<value></value>
 			<value>1</value>
 			<value>1</value>
 			<value>1586466510</value>
@@ -62,7 +62,7 @@
 			<value>ANNOUNCEMENT 3</value>
 			<value>000000</value>
 			<value>1</value>
-			<value>0</value>
+			<value></value>
 			<value>1</value>
 			<value>2</value>
 			<value>1586466610</value>
@@ -81,7 +81,7 @@
 			<value>ANNOUNCEMENT 4</value>
 			<value></value>
 			<value>1</value>
-			<value>0</value>
+			<value></value>
 			<value>0</value>
 			<value>0</value>
 			<value>1586466710</value>
@@ -100,7 +100,7 @@
 			<value>ANNOUNCEMENT 5</value>
 			<value></value>
 			<value>0</value>
-			<value>0</value>
+			<value>[]</value>
 			<value>0</value>
 			<value>0</value>
 			<value>1586466810</value>
