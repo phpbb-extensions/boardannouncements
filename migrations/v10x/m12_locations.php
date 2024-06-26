@@ -43,7 +43,7 @@ class m12_locations extends \phpbb\db\migration\migration
 		return [
 			'add_columns'	=> [
 				$this->table_prefix . 'board_announcements'	=> [
-					'announcement_locations'	=> ['VCHAR:255', ''],
+					'announcement_locations'	=> ['TEXT', ''],
 				],
 			],
 		];
