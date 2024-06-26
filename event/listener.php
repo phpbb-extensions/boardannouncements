@@ -118,10 +118,10 @@ class listener implements EventSubscriberInterface
 			}
 
 			// Check if announcement has been dismissed
-			$cookieName = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
-			$announcementDismissed = $this->request->variable($cookieName, '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'];
+			$cookie_name = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
+			$announcement_dismissed = $this->request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'];
 
-			if ($announcementDismissed)
+			if ($announcement_dismissed)
 			{
 				return false;
 			}
