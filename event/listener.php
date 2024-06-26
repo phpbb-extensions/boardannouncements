@@ -105,12 +105,13 @@ class listener implements EventSubscriberInterface
 		// Add board announcements language file
 		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
 
+		$is_index = $this->user->page['page_name'] === "index.$this->php_ext";
+		$current_page = $is_index ? ext::INDEX_ONLY : $this->request->variable('f', 0);
+
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
-		$board_announcements_data = array_filter($board_announcements_data, function ($data) {
+		$board_announcements_data = array_filter($board_announcements_data, function ($data) use ($current_page) {
 			$locations = $this->manager->decode_json($data['announcement_locations']);
-			$is_index = $this->user->page['page_name'] === "index.$this->php_ext";
-			$current_page = $is_index ? ext::INDEX_ONLY : $this->request->variable('f', 0);
 
 			// Check if announcement has locations specified, and user is at that location
 			if (!empty($locations) && !in_array($current_page, $locations))
