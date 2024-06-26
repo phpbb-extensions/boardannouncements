@@ -78,7 +78,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Index Page',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
 	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',

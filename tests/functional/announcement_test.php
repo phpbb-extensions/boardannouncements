@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\tests\functional;
 
+use phpbb\boardannouncements\ext;
+
 /**
  * @group functional
  */
@@ -66,7 +68,7 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_enabled'		=> true,
 			'board_announcements_users'			=> 0,
 			'board_announcements_dismiss'		=> true,
-			'board_announcements_locations'		=> [-1],
+			'board_announcements_locations'		=> [ext::INDEX_ONLY],
 			'board_announcements_bgcolor'		=> 'ff0000',
 			'board_announcements_description'	=> 'Test announcement',
 			'board_announcements_text'			=> 'This is a board announcement test.',
@@ -196,7 +198,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// show index only
 		$index_id = $this->create_announcement([
-			'board_announcements_locations'		=> [-1],
+			'board_announcements_locations'		=> [ext::INDEX_ONLY],
 			'board_announcements_description'	=> 'Board index announcement',
 			'board_announcements_text'			=> 'Board index announcement',
 		]);
@@ -210,7 +212,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// show in forum 2 and index
 		$index_forum_id = $this->create_announcement([
-			'board_announcements_locations'		=> [-1,2],
+			'board_announcements_locations'		=> [ext::INDEX_ONLY, 2],
 			'board_announcements_description'	=> 'Forum and Index announcement',
 			'board_announcements_text'			=> 'Forum and Index announcement',
 		]);

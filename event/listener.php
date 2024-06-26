@@ -10,6 +10,7 @@
 
 namespace phpbb\boardannouncements\event;
 
+use phpbb\boardannouncements\ext;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
@@ -109,7 +110,7 @@ class listener implements EventSubscriberInterface
 		$board_announcements_data = array_filter($board_announcements_data, function ($data) {
 			$locations = json_decode($data['announcement_locations'], true);
 			$is_index = $this->user->page['page_name'] === "index.$this->php_ext";
-			$current_page = $is_index ? -1 : $this->request->variable('f', 0);
+			$current_page = $is_index ? ext::INDEX_ONLY : $this->request->variable('f', 0);
 
 			// Check if announcement has locations specified, and user is at that location
 			if (!empty($locations) && !in_array($current_page, $locations))

@@ -45,7 +45,7 @@
 				{% if ba.LOCATIONS is empty %}
 					{{ lang('BOARD_ANNOUNCEMENTS_EVERYWHERE') }}
 				{% else %}
-					{% set has_index = -1 in ba.LOCATIONS %}
+					{% set has_index = constant('\\phpbb\\boardannouncements\\ext::INDEX_ONLY') in ba.LOCATIONS %}
 					{% set has_forums = ba.LOCATIONS|filter(v => v > 0)|length > 0 %}
 					{% if has_index and has_forums %}
 						{{ lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE') }}, {{ lang('BOARD_ANNOUNCEMENTS_FORUMS') }}

@@ -450,7 +450,7 @@ class acp_controller
 	/**
 	 * Get an array of available locations for the announcement
 	 *
-	 * @param string $selected
+	 * @param string $locations
 	 * @return array
 	 */
 	protected function get_location_options($locations)
@@ -459,8 +459,13 @@ class acp_controller
 
 		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
 
-		// Add the index page
-		$forum_list[0] = array_merge(['padding' => '', 'selected' => in_array(-1, $selected)], ['forum_id' => -1, 'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')]);
+		// Add the index page to the list
+		$forum_list[0] = [
+			'padding'    => '',
+			'selected'   => in_array(ext::INDEX_ONLY, $selected),
+			'forum_id'   => ext::INDEX_ONLY,
+			'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')
+		];
 
 		ksort($forum_list);
 
