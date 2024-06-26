@@ -112,9 +112,9 @@ class listener implements EventSubscriberInterface
 
 			// Do not continue if announcement has locations specified, and user isn't at that location
 			if (!empty($locations) && (
-				($this->user->page['page_name'] === "index.$this->php_ext" && !in_array(0, $locations))
-				|| !in_array($this->request->variable('f', 0), $locations))
-			)
+					($this->user->page['page_name'] === "index.$this->php_ext" && !in_array('index', $locations, true)) ||
+					($this->user->page['page_name'] !== "index.$this->php_ext" && !in_array($this->request->variable('f', 0), $locations, true))
+				))
 			{
 				continue;
 			}

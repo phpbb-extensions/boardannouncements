@@ -137,12 +137,12 @@ class acp_controller
 
 			$this->template->assign_block_vars('announcements' , [
 				'DESCRIPTION'  => $row['announcement_description'],
-				'LOCATIONS'    => json_decode($row['announcement_locations'], true),
 				'USERS'        => $row['announcement_users'],
 				'CREATED_DATE' => $row['announcement_timestamp'],
 				'EXPIRY_DATE'  => $row['announcement_expiry'],
 				'S_EXPIRED'    => $expired,
 				'S_ENABLED'    => $enabled,
+				'LOCATIONS'    => json_decode($row['announcement_locations'], true),
 				'U_EDIT'       => $this->u_action . '&amp;action=add&amp;id=' . $row['announcement_id'],
 				'U_DELETE'     => $this->u_action . '&amp;action=delete&amp;id=' . $row['announcement_id'],
 				'U_MOVE_UP'    => $this->u_action . '&amp;action=move&amp;id=' . $row['announcement_id'] . '&amp;dir=up&amp;hash=' . generate_link_hash('up' . $row['announcement_id']),
@@ -459,7 +459,8 @@ class acp_controller
 
 		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
 
-		$forum_list[0] = array_merge(['padding' => '', 'selected' => in_array(0, $selected)], ['forum_id' => 0, 'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')]);
+		// Add the index page
+		$forum_list[0] = array_merge(['padding' => '', 'selected' => in_array('index', $selected)], ['forum_id' => 'index', 'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')]);
 
 		ksort($forum_list);
 

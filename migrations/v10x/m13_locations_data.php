@@ -69,7 +69,7 @@ class m13_locations_data extends \phpbb\db\migration\container_aware_migration
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$this->get_nestedset()->update_item($row['announcement_id'], [
-				'announcement_locations' => ($row['announcement_indexonly'] ? json_encode(['0']) : '')
+				'announcement_locations' => ($row['announcement_indexonly'] ? json_encode(['index']) : '')
 			]);
 		}
 
