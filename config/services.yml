@@ -57,3 +57,9 @@ services:
             - boardannouncements.table_lock.board_announcements_table
             - '@config'
             - '@dbal.conn'
+
+    # ----- Twig extensions -----
+    phpbb.boardannouncements.twig.extension.ba_is_numeric:
+        class: phpbb\boardannouncements\template\twig\extension\ba_is_numeric
+        tags:
+            - { name: twig.extension }
