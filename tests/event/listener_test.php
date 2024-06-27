@@ -26,6 +26,9 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\boardannouncements\event\listener */
 	protected $listener;
 
+	/** @var \phpbb_mock_notifications_auth */
+	protected $auth;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -128,6 +131,7 @@ class listener_test extends \phpbb_database_test_case
 	{
 		$this->listener = new \phpbb\boardannouncements\event\listener(
 			$this->manager,
+			$this->auth,
 			$this->config,
 			$this->controller_helper,
 			$this->language,

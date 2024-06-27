@@ -10,6 +10,7 @@
 
 namespace phpbb\boardannouncements\event;
 
+use phpbb\auth\auth;
 use phpbb\boardannouncements\ext;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
@@ -27,6 +28,9 @@ class listener implements EventSubscriberInterface
 {
 	/** @var manager $manager */
 	protected $manager;
+
+	/** @var auth $auth */
+	protected $auth;
 
 	/** @var config $config */
 	protected $config;
@@ -52,7 +56,8 @@ class listener implements EventSubscriberInterface
 	/**
 	 * Constructor
 	 *
-	 * @param manager $manager
+	 * @param manager $manager Board announcements manager object
+	 * @param auth $auth Auth object
 	 * @param config $config Config object
 	 * @param helper $controller_helper Controller helper object
 	 * @param language $language Language object
@@ -62,9 +67,10 @@ class listener implements EventSubscriberInterface
 	 * @param string $php_ext PHP extension
 	 * @access public
 	 */
-	public function __construct(manager $manager, config $config, helper $controller_helper, language $language, request $request, template $template, user $user, $php_ext)
+	public function __construct(manager $manager, auth $auth, config $config, helper $controller_helper, language $language, request $request, template $template, user $user, $php_ext)
 	{
 		$this->manager = $manager;
+		$this->auth = $auth;
 		$this->config = $config;
 		$this->controller_helper = $controller_helper;
 		$this->language = $language;
@@ -107,33 +113,37 @@ class listener implements EventSubscriberInterface
 
 		$is_index = $this->user->page['page_name'] === "index.$this->php_ext";
 		$current_page = $is_index ? ext::INDEX_ONLY : $this->request->variable('f', 0);
+		$protected_forums = $this->user->get_passworded_forums();
 
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
-		$board_announcements_data = array_filter($board_announcements_data, function ($data) use ($current_page) {
+		foreach ($board_announcements_data as $data)
+		{
 			$locations = $this->manager->decode_json($data['announcement_locations']);
 
-			// Check if announcement has locations specified, and user is at that location
-			if (!empty($locations) && !in_array($current_page, $locations))
+			if (!empty($locations))
 			{
-				return false;
+				$invalid_location = !in_array($current_page, $locations);
+				$is_protected = $current_page > 0 && !empty($protected_forums) && in_array($current_page, $protected_forums);
+				$no_auth = $current_page > 0 && !$this->auth->acl_get('f_read', $current_page);
+
+				// Do not include announcement if user is in a location where it shouldn't be visible
+				if ($invalid_location || $is_protected || $no_auth)
+				{
+					continue;
+				}
 			}
 
-			// Check if announcement has been dismissed
 			$cookie_name = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
 			$announcement_dismissed = $this->request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'];
 
+			// Do not include announcement if it has been dismissed
 			if ($announcement_dismissed)
 			{
-				return false;
+				continue;
 			}
 
-			return true;
-		});
-
-		// Output board announcement to the template
-		foreach ($board_announcements_data as $data)
-		{
+			// Output board announcement to the template
 			$this->template->assign_block_vars('board_announcements', [
 				'BOARD_ANNOUNCEMENT_ID'			=> $data['announcement_id'],
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $data['announcement_dismissable'],
