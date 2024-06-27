@@ -461,7 +461,7 @@ class acp_controller
 		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
 
 		// Add the index page to the list
-		$forum_list[0] = [
+		$forum_list[ext::INDEX_ONLY] = [
 			'padding'    => '',
 			'selected'   => in_array(ext::INDEX_ONLY, $selected),
 			'forum_id'   => ext::INDEX_ONLY,
