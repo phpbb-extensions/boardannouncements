@@ -2,11 +2,10 @@
 /**
 *
 * Board Announcements extension for the phpBB Forum Software package.
-* @简体中文语言　David Yin <https://www.phpbbchinese.com/>
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
-*
+* Slovenian Translation - Marko K.(max, max-ima,...)
 */
 
 /**
@@ -40,11 +39,11 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> '论坛公告',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> '公告设定',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Obvestila na plošči/<br />Board Announcements',
+	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Nastavitve obvestil',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>一个论坛公告已创建</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>一个论坛公告已更新</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>一个论坛公告已删除</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>A board announcement was created</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Spremenjene nastavitve obveščanja na tabli</strong>',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>A board announcement was deleted</strong><br>» %s',
 ));
