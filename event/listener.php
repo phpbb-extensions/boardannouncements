@@ -53,6 +53,15 @@ class listener implements EventSubscriberInterface
 	/** @var string $php_ext */
 	protected $php_ext;
 
+	/** @var array $protected_forums*/
+	protected $protected_forums;
+
+	/** @var int $location */
+	protected $location;
+
+	/** @var bool|mixed $permission */
+	protected $permission;
+
 	/**
 	 * Constructor
 	 *
@@ -156,14 +165,12 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function get_current_location()
 	{
-		static $location;
-
-		if (!isset($location))
+		if (!isset($this->location))
 		{
-			$location = $this->user->page['page_name'] === "index.$this->php_ext" ? ext::INDEX_ONLY : $this->request->variable('f', 0);
+			$this->location = $this->user->page['page_name'] === "index.$this->php_ext" ? ext::INDEX_ONLY : $this->request->variable('f', 0);
 		}
 
-		return $location;
+		return $this->location;
 	}
 
 	/**
@@ -184,14 +191,12 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function is_protected()
 	{
-		static $protected_forums;
-
-		if (!isset($protected_forums))
+		if (!isset($this->protected_forums))
 		{
-			$protected_forums = $this->user->get_passworded_forums();
+			$this->protected_forums = $this->user->get_passworded_forums();
 		}
 
-		return $this->get_current_location() > 0 && !empty($protected_forums) && in_array($this->get_current_location(), $protected_forums);
+		return $this->get_current_location() > 0 && !empty($this->protected_forums) && in_array($this->get_current_location(), $this->protected_forums);
 	}
 
 	/**
@@ -201,13 +206,11 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function no_permission()
 	{
-		static $auth;
-
-		if (!isset($auth))
+		if (!isset($this->permission))
 		{
-			$auth = $this->auth->acl_get('f_read', $this->get_current_location());
+			$this->permission = $this->auth->acl_get('f_read', $this->get_current_location());
 		}
 
-		return $this->get_current_location() > 0 && !$auth;
+		return $this->get_current_location() > 0 && !$this->permission;
 	}
 }
