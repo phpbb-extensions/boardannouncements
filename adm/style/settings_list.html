@@ -41,7 +41,21 @@
 	{% for ba in announcements %}
 		<tr>
 			<td>{{ ba.DESCRIPTION }}</td>
-			<td>{{ ba.INDEX_ONLY ? lang('INDEX') : lang('BOARD_ANNOUNCEMENTS_EVERYWHERE') }}</td>
+			<td>
+				{% if ba.LOCATIONS is empty %}
+					{{ lang('BOARD_ANNOUNCEMENTS_EVERYWHERE') }}
+				{% else %}
+					{% set has_index = constant('\\phpbb\\boardannouncements\\ext::INDEX_ONLY') in ba.LOCATIONS %}
+					{% set has_forums = ba.LOCATIONS|filter(v => v > 0)|length > 0 %}
+					{% if has_index and has_forums %}
+						{{ lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE') }}, {{ lang('BOARD_ANNOUNCEMENTS_FORUMS') }}
+					{% elseif has_index %}
+						{{ lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE') }}
+					{% elseif has_forums %}
+						{{ lang('BOARD_ANNOUNCEMENTS_FORUMS') }}
+					{% endif %}
+				{% endif %}
+			</td>
 			<td>{% if ba.USERS == constant('\\phpbb\\boardannouncements\\ext::ALL') %}
 					{{ lang('BOARD_ANNOUNCEMENTS_EVERYONE') }}
 				{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::MEMBERS') %}

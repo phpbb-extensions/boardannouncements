@@ -31,13 +31,6 @@
 			</dd>
 		</dl>
 		<dl>
-			<dt><label for="board_announcements_index_only">{{ lang('BOARD_ANNOUNCEMENTS_INDEX_ONLY') ~ lang('COLON') }}</label></dt>
-			<dd>
-				<label><input type="radio" class="radio" id="board_announcements_index_only" name="board_announcements_index_only" value="1"{% if BOARD_ANNOUNCEMENTS_INDEX_ONLY %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="board_announcements_index_only" value="0"{% if not BOARD_ANNOUNCEMENTS_INDEX_ONLY %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
-			</dd>
-		</dl>
-		<dl>
 			<dt><label for="board_announcements_dismiss">{{ lang('BOARD_ANNOUNCEMENTS_DISMISS') ~ lang('COLON') }}</label></dt>
 			<dd>
 				<label><input type="radio" class="radio" id="board_announcements_dismiss" name="board_announcements_dismiss" value="1"{% if BOARD_ANNOUNCEMENTS_DISMISS %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
@@ -50,6 +43,19 @@
 				<select name="board_announcements_users" id="board_announcements_users">{{ S_BOARD_ANNOUNCEMENTS_USERS }}</select>
 			</dd>
 		</dl>
+		<dl>
+			<dt><label for="board_announcements_locations">{{ lang('BOARD_ANNOUNCEMENTS_LOCATIONS') ~ lang('COLON') }}</label><br><span>{{ lang('BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN') }}</span></dt>
+			<dd>
+				<select id="board_announcements_locations" name="board_announcements_locations[]" size="8" multiple="multiple">
+					{% for locations in BOARD_ANNOUNCEMENTS_LOCATIONS %}
+						<option value="{{ locations.forum_id }}"{% if locations.selected %} selected="selected"{% endif %}>
+							{{ locations.padding ~ locations.forum_name}}
+						</option>
+					{% endfor %}
+				</select>
+			</dd>
+		</dl>
+
 	</fieldset>
 
 	{% if BOARD_ANNOUNCEMENTS_PREVIEW %}
