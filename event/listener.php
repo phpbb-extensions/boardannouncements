@@ -111,10 +111,6 @@ class listener implements EventSubscriberInterface
 		// Add board announcements language file
 		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
 
-		$is_index = $this->user->page['page_name'] === "index.$this->php_ext";
-		$current_page = $is_index ? ext::INDEX_ONLY : $this->request->variable('f', 0);
-		$protected_forums = $this->user->get_passworded_forums();
-
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
 		foreach ($board_announcements_data as $data)
@@ -123,12 +119,8 @@ class listener implements EventSubscriberInterface
 
 			if (!empty($locations))
 			{
-				$invalid_location = !in_array($current_page, $locations);
-				$is_protected = $current_page > 0 && !empty($protected_forums) && in_array($current_page, $protected_forums);
-				$no_auth = $current_page > 0 && !$this->auth->acl_get('f_read', $current_page);
-
 				// Do not include announcement if user is in a location where it shouldn't be visible
-				if ($invalid_location || $is_protected || $no_auth)
+				if ($this->location_not_in($locations) || $this->is_protected() || $this->no_permission())
 				{
 					continue;
 				}
@@ -155,5 +147,67 @@ class listener implements EventSubscriberInterface
 				]),
 			]);
 		}
+	}
+
+	/**
+	 * Get the current location, board index or a forum_id
+	 *
+	 * @return int
+	 */
+	protected function get_current_location()
+	{
+		static $location;
+
+		if (!isset($location))
+		{
+			$location = $this->user->page['page_name'] === "index.$this->php_ext" ? ext::INDEX_ONLY : $this->request->variable('f', 0);
+		}
+
+		return $location;
+	}
+
+	/**
+	 * Is the current location not in the announcement's array of allowed locations?
+	 *
+	 * @param array|string $locations An array of locations
+	 * @return bool
+	 */
+	protected function location_not_in($locations)
+	{
+		return !in_array($this->get_current_location(), $locations);
+	}
+
+	/**
+	 * Is the current page a password protected forum?
+	 *
+	 * @return bool
+	 */
+	protected function is_protected()
+	{
+		static $protected_forums;
+
+		if (!isset($protected_forums))
+		{
+			$protected_forums = $this->user->get_passworded_forums();
+		}
+
+		return $this->get_current_location() > 0 && !empty($protected_forums) && in_array($this->get_current_location(), $protected_forums);
+	}
+
+	/**
+	 * Is the current page a forum not accessible to the current user?
+	 *
+	 * @return bool
+	 */
+	protected function no_permission()
+	{
+		static $auth;
+
+		if (!isset($auth))
+		{
+			$auth = $this->auth->acl_get('f_read', $this->get_current_location());
+		}
+
+		return $this->get_current_location() > 0 && !$auth;
 	}
 }
