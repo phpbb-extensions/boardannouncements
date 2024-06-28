@@ -50,9 +50,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '显示这条论坛公告',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> '只显示在论坛的首页',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '允许查看公告的用户',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允许用户关闭这条论坛公告',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '所有用户',
 
@@ -78,6 +79,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',

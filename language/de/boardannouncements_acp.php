@@ -50,9 +50,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Eine kurze Beschreibung für diese Ankündigung. Dies wird lediglich im ACP angezeigt, um bei der Identifizierung dieser Ankündigung zu helfen.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Diese Board-Ankündigung anzeigen',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Die Board-Ankündigung nur auf dem Forenindex anzeigen.',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Wer kann diese Board-Ankündigung sehen',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Mitgliedern erlauben, die Board-Ankündigung zu schließen',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alle',
 
@@ -78,6 +79,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Abgelaufen',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Überall',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Da sind keine Board-Ankündigungen zur Anzeige',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Erstelle Ankündigung',

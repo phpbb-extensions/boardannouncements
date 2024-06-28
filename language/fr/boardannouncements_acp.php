@@ -50,9 +50,10 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Une brève description de cette annonce. Cela ne sera visible qu‘ici dans le PCA pour aider à identifier cette annonce.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Afficher l’annonce du forum',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Afficher l’annonce uniquement sur la page de l’index du forum',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Qui peut voir l’annonce du forum',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permettre aux utilisateurs de masquer l’annonce du forum',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Tous les utilisateurs',
 
@@ -78,6 +79,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expirée',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Partout',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Il n‘y a aucune annonce à afficher',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Créer une annonce',
