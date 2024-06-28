@@ -126,13 +126,10 @@ class listener implements EventSubscriberInterface
 		{
 			$locations = $this->manager->decode_json($data['announcement_locations']);
 
-			if (!empty($locations))
+			// Do not include announcement if user is in a location where it shouldn't be visible
+			if (!empty($locations) && ($this->location_not_in($locations) || $this->is_protected() || $this->no_permission()))
 			{
-				// Do not include announcement if user is in a location where it shouldn't be visible
-				if ($this->location_not_in($locations) || $this->is_protected() || $this->no_permission())
-				{
-					continue;
-				}
+				continue;
 			}
 
 			$cookie_name = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
