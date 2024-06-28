@@ -25,7 +25,7 @@ class manager_update_announcement_test extends manager_base
 				'announcement_description'	=> 'ANNOUNCEMENT 1 Updated',
 				'announcement_bgcolor'		=> 'cccccc',
 				'announcement_enabled'		=> 0,
-				'announcement_indexonly'	=> 0,
+				'announcement_locations'	=> json_encode(''),
 				'announcement_dismissable'	=> 0,
 				'announcement_users'		=> 1,
 				'announcement_timestamp'	=> time(),

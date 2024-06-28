@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\event;
 
+use phpbb\auth\auth;
+use phpbb\boardannouncements\ext;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
@@ -26,6 +28,9 @@ class listener implements EventSubscriberInterface
 {
 	/** @var manager $manager */
 	protected $manager;
+
+	/** @var auth $auth */
+	protected $auth;
 
 	/** @var config $config */
 	protected $config;
@@ -48,10 +53,20 @@ class listener implements EventSubscriberInterface
 	/** @var string $php_ext */
 	protected $php_ext;
 
+	/** @var array $protected_forums*/
+	protected $protected_forums;
+
+	/** @var int $location */
+	protected $location;
+
+	/** @var bool|mixed $permission */
+	protected $permission;
+
 	/**
 	 * Constructor
 	 *
-	 * @param manager $manager
+	 * @param manager $manager Board announcements manager object
+	 * @param auth $auth Auth object
 	 * @param config $config Config object
 	 * @param helper $controller_helper Controller helper object
 	 * @param language $language Language object
@@ -61,9 +76,10 @@ class listener implements EventSubscriberInterface
 	 * @param string $php_ext PHP extension
 	 * @access public
 	 */
-	public function __construct(manager $manager, config $config, helper $controller_helper, language $language, request $request, template $template, user $user, $php_ext)
+	public function __construct(manager $manager, auth $auth, config $config, helper $controller_helper, language $language, request $request, template $template, user $user, $php_ext)
 	{
 		$this->manager = $manager;
+		$this->auth = $auth;
 		$this->config = $config;
 		$this->controller_helper = $controller_helper;
 		$this->language = $language;
@@ -108,14 +124,19 @@ class listener implements EventSubscriberInterface
 
 		foreach ($board_announcements_data as $data)
 		{
-			// Do not continue if announcements are only displayed on the board index, and the user is not currently viewing the board index
-			if ($data['announcement_indexonly'] && $this->user->page['page_name'] !== "index.$this->php_ext")
+			$locations = $this->manager->decode_json($data['announcement_locations']);
+
+			// Do not include announcement if user is in a location where it shouldn't be visible
+			if (!empty($locations) && ($this->location_not_in($locations) || $this->is_protected() || $this->no_permission()))
 			{
 				continue;
 			}
 
-			// Do not continue if announcement has been dismissed
-			if ($this->request->variable($this->config['cookie_name'] . '_ba_' . $data['announcement_id'], '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'])
+			$cookie_name = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
+			$announcement_dismissed = $this->request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'];
+
+			// Do not include announcement if it has been dismissed
+			if ($announcement_dismissed)
 			{
 				continue;
 			}
@@ -132,5 +153,61 @@ class listener implements EventSubscriberInterface
 				]),
 			]);
 		}
+	}
+
+	/**
+	 * Get the current location, board index or a forum_id
+	 *
+	 * @return int
+	 */
+	protected function get_current_location()
+	{
+		if (!isset($this->location))
+		{
+			$this->location = $this->user->page['page_name'] === "index.$this->php_ext" ? ext::INDEX_ONLY : $this->request->variable('f', 0);
+		}
+
+		return $this->location;
+	}
+
+	/**
+	 * Is the current location not in the announcement's array of allowed locations?
+	 *
+	 * @param array|string $locations An array of locations
+	 * @return bool
+	 */
+	protected function location_not_in($locations)
+	{
+		return !in_array($this->get_current_location(), $locations);
+	}
+
+	/**
+	 * Is the current page a password protected forum?
+	 *
+	 * @return bool
+	 */
+	protected function is_protected()
+	{
+		if (!isset($this->protected_forums))
+		{
+			$this->protected_forums = $this->user->get_passworded_forums();
+		}
+
+		return $this->get_current_location() > 0 && !empty($this->protected_forums) && in_array($this->get_current_location(), $this->protected_forums);
+	}
+
+	/**
+	 * Is the current page a forum not accessible to the current user?
+	 *
+	 * @return bool
+	 */
+	protected function no_permission()
+	{
+		if (!isset($this->permission))
+		{
+			$this->permission = $this->auth->acl_get('f_read', $this->get_current_location());
+		}
+
+		return $this->get_current_location() > 0 && !$this->permission;
 	}
 }

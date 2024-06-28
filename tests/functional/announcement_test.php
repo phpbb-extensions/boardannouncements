@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\tests\functional;
 
+use phpbb\boardannouncements\ext;
+
 /**
  * @group functional
  */
@@ -54,30 +56,25 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Test that our settings fields are found
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE', $crawler->text());
-		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_INDEX_ONLY', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_DISMISS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_USERS', $crawler->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_LOCATIONS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_DESC', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_EXPIRY', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_BGCOLOR', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_TEXT', $crawler->text());
 
-		// Set some form values
-		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
 		$values = [
 			'board_announcements_enabled'		=> true,
-			'board_announcements_index_only'	=> true,
 			'board_announcements_users'			=> 0,
 			'board_announcements_dismiss'		=> true,
+			'board_announcements_locations'		=> [ext::INDEX_ONLY],
 			'board_announcements_bgcolor'		=> 'ff0000',
 			'board_announcements_description'	=> 'Test announcement',
 			'board_announcements_text'			=> 'This is a board announcement test.',
 		];
-		$form->setValues($values);
 
-		// Submit form and test success
-		$crawler = self::submit($form);
-		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_UPDATED', $crawler->text());
+		$this->create_announcement($values);
 
 		// Confirm the log entry has been added correctly
 		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
@@ -185,6 +182,79 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
+	 * Test announcements only show at locations where they are assigned
+	 */
+	public function test_locations()
+	{
+		$this->login();
+		$this->admin_login();
+
+		// show everywhere
+		$everywhere_id = $this->create_announcement([
+			'board_announcements_locations'		=> [],
+			'board_announcements_description'	=> 'Everywhere announcement',
+			'board_announcements_text'			=> 'Everywhere announcement',
+		]);
+
+		// show index only
+		$index_id = $this->create_announcement([
+			'board_announcements_locations'		=> [ext::INDEX_ONLY],
+			'board_announcements_description'	=> 'Board index announcement',
+			'board_announcements_text'			=> 'Board index announcement',
+		]);
+
+		// show in forum 2 only
+		$forum_id = $this->create_announcement([
+			'board_announcements_locations'		=> [2],
+			'board_announcements_description'	=> 'Forum announcement',
+			'board_announcements_text'			=> 'Forum announcement',
+		]);
+
+		// show in forum 2 and index
+		$index_forum_id = $this->create_announcement([
+			'board_announcements_locations'		=> [ext::INDEX_ONLY, 2],
+			'board_announcements_description'	=> 'Forum and Index announcement',
+			'board_announcements_text'			=> 'Forum and Index announcement',
+		]);
+
+		// Test board index - see everywhere, index and index+forum
+		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $index_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
+		self::assertStringContainsString('Everywhere announcement', $crawler->filter('#phpbb_announcement_' . $everywhere_id)->text());
+		self::assertStringContainsString('Board index announcement', $crawler->filter('#phpbb_announcement_' . $index_id)->text());
+		self::assertStringContainsString('Forum and Index announcement', $crawler->filter('#phpbb_announcement_' . $index_forum_id)->text());
+
+		// Test forum 2 page - see everywhere, forum and index+forum
+		$crawler = self::request('GET', 'viewforum.php?f=2&amp;sid=' . $this->sid);
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
+		self::assertStringContainsString('Everywhere announcement', $crawler->filter('#phpbb_announcement_' . $everywhere_id)->text());
+		self::assertStringContainsString('Forum announcement', $crawler->filter('#phpbb_announcement_' . $forum_id)->text());
+		self::assertStringContainsString('Forum and Index announcement', $crawler->filter('#phpbb_announcement_' . $index_forum_id)->text());
+
+		// Test forum 1 page - see everywhere
+		$crawler = self::request('GET', 'viewforum.php?f=1&amp;sid=' . $this->sid);
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
+		self::assertStringContainsString('Everywhere announcement', $crawler->filter('#phpbb_announcement_' . $everywhere_id)->text());
+
+		// Test FAQ page - see everywhere
+		$crawler = self::request('GET', 'viewonline.php?sid=' . $this->sid);
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
+		self::assertStringContainsString('Everywhere announcement', $crawler->filter('#phpbb_announcement_' . $everywhere_id)->text());
+	}
+
+	/**
 	 * Get the board announcements ACP page link to crawl
 	 *
 	 * @param string $action
@@ -194,6 +264,40 @@ class announcement_test extends \phpbb_functional_test_case
 	protected function get_acp_page($action = '', $id = 0)
 	{
 		return 'adm/index.php?i=\phpbb\boardannouncements\acp\board_announcements_module&mode=settings' . ($action ? "&action=$action"  : '') . ($id ? "&id=$id" : '') . "&sid=$this->sid";
+	}
+
+	/**
+	 * Create an announcement
+	 *
+	 * @param array $data
+	 * @return int count of announcements created
+	 */
+	protected function create_announcement($data)
+	{
+		static $counter = 0;
+
+		// Load Add page
+		$crawler = self::request('GET', $this->get_acp_page('add'));
+
+		// Set some form values
+		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
+		$values = array_merge([
+			'board_announcements_enabled'		=> true,
+			'board_announcements_dismiss'		=> false,
+			'board_announcements_users'			=> 0,
+			'board_announcements_locations'		=> [],
+			'board_announcements_bgcolor'		=> 'ff0000',
+			'board_announcements_expiry'		=> '',
+			'board_announcements_description'	=> 'Test announcement',
+			'board_announcements_text'			=> 'This is a board announcement test.',
+		], $data);
+		$form->setValues($values);
+
+		// Submit form and test success
+		$crawler = self::submit($form);
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_UPDATED', $crawler->text());
+
+		return ++$counter;
 	}
 
 	/**

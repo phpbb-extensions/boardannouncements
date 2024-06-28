@@ -197,7 +197,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_enabled'		=> 1,
 				'announcement_timestamp'	=> 734284394,
 				'announcement_expiry'		=> 0,
-				'announcement_indexonly'	=> 0,
+				'announcement_locations'	=> '',
 				'announcement_users'		=> 0,
 			],
 			[
@@ -206,7 +206,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_enabled'		=> 1,
 				'announcement_timestamp'	=> 797442794,
 				'announcement_expiry'		=> 0,
-				'announcement_indexonly'	=> 0,
+				'announcement_locations'	=> '[-1,1]',
 				'announcement_users'		=> 0,
 			],
 			[
@@ -215,7 +215,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_enabled'		=> 1,
 				'announcement_timestamp'	=> 681493994,
 				'announcement_expiry'		=> 1644162794,
-				'announcement_indexonly'	=> 0,
+				'announcement_locations'	=> '[]',
 				'announcement_users'		=> 0,
 			],
 		];
@@ -261,7 +261,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_description'	=> 'Announcement 1',
 				'announcement_bgcolor'		=> '',
 				'announcement_enabled'		=> true,
-				'announcement_indexonly'	=> false,
+				'announcement_locations'	=> '',
 				'announcement_dismissable'	=> true,
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 				'announcement_timestamp'	=> '',
@@ -276,7 +276,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_description'	=> 'Announcement 2',
 				'announcement_bgcolor'		=> '',
 				'announcement_enabled'		=> true,
-				'announcement_indexonly'	=> false,
+				'announcement_locations'	=> '',
 				'announcement_dismissable'	=> true,
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 				'announcement_timestamp'	=> '',
@@ -320,7 +320,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_description'	=> '',
 				'announcement_bgcolor'		=> '',
 				'announcement_enabled'		=> true,
-				'announcement_indexonly'	=> false,
+				'announcement_locations'	=> '',
 				'announcement_dismissable'	=> true,
 				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
 				'announcement_timestamp'	=> 0,
@@ -349,15 +349,15 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_add_submit_data()
 	{
 		return [
-			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, false, true, '', false, false, false], false, true, true, false], // submit
-			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, false, true, '', false, false, false], false, true, true, false], // submit
-			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, false, true, '', false, false, false], false, true, false, true], // submit, bad form
-			[0, ['add', 0, '', 'Announcement Description 0', 'ffffff', true, 0, false, true, '', false, false, false], false, true, true, true], // submit, bad text
-			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, false, true, 'foo', false, false, false], false, true, true, true], // submit, bad expiry
-			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, false, true, '', false, false, false], true, false, true, null], // preview
-			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, false, true, '', false, false, false], true, false, false, null], // preview, bad form
-			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, false, true, '', false, false, false], true, false, true, null], // preview
-			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, false, true, '', false, false, false], true, false, false, null], // preview, bad form
+			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
+			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
+			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, false, true], // submit, bad form
+			[0, ['add', 0, '', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, bad text
+			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, 'foo', false, false, false], false, true, true, true], // submit, bad expiry
+			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, true, null], // preview
+			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, false, null], // preview, bad form
+			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, true, null], // preview
+			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, false, null], // preview, bad form
 		];
 	}
 
@@ -396,7 +396,7 @@ class acp_controller_test extends \phpbb_test_case
 				['board_announcements_bgcolor', ''],
 				['board_announcements_enabled', true],
 				['board_announcements_users', 0],
-				['board_announcements_index_only', false],
+				['board_announcements_locations', [0]],
 				['board_announcements_dismiss', true],
 				['board_announcements_expiry', ''],
 				['disable_bbcode', false],
@@ -410,6 +410,10 @@ class acp_controller_test extends \phpbb_test_case
 			->method('is_set_post')
 			->withConsecutive(['submit'], ['preview'])
 			->willReturnOnConsecutiveCalls($submit, $preview);
+
+		$this->manager->expects($submit && !$errors ? self::never() : self::once())
+			->method('decode_json')
+			->willReturn([]);
 
 		$this->manager->expects(self::once())
 			->method('announcement_columns')
@@ -670,5 +674,13 @@ function display_custom_bbcodes()
  * Note: use the same namespace as the acp_controller
  */
 function build_select()
+{
+}
+
+/**
+ * Mock make_forum_select()
+ * Note: use the same namespace as the acp_controller
+ */
+function make_forum_select()
 {
 }

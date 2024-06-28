@@ -26,6 +26,9 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \phpbb\boardannouncements\event\listener */
 	protected $listener;
 
+	/** @var \phpbb_mock_notifications_auth */
+	protected $auth;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -128,6 +131,7 @@ class listener_test extends \phpbb_database_test_case
 	{
 		$this->listener = new \phpbb\boardannouncements\event\listener(
 			$this->manager,
+			$this->auth,
 			$this->config,
 			$this->controller_helper,
 			$this->language,
@@ -249,6 +253,13 @@ class listener_test extends \phpbb_database_test_case
 		$this->template->expects($enabled ? self::atLeastOnce() : self::never())
 			->method('assign_block_vars')
 			->withConsecutive(...$expected);
+
+		$this->request->expects(self::atMost(10))
+			->method('variable')
+			->willReturnMap([
+				['f', 0, false, \phpbb\request\request_interface::REQUEST, 0],
+				['_ba_1', '', false, \phpbb\request\request_interface::COOKIE, ''],
+			]);
 
 		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.page_header_after', [$this->listener, 'display_board_announcements']);

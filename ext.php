@@ -15,6 +15,7 @@ namespace phpbb\boardannouncements;
  */
 class ext extends \phpbb\extension\base
 {
+	public const INDEX_ONLY = -1;
 	public const ALL = 0;
 	public const MEMBERS = 1;
 	public const GUESTS = 2;
