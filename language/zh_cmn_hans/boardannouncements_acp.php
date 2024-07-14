@@ -42,17 +42,18 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> '论坛公告设定',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> '在这里，您可以建立并管理论坛公告，它将会显示在论坛的每个页面。',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> '启用论坛公告',
 
-	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
+	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> '公告选项',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> '描述',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> '一个简短的公告描述。只显示在 ACP，用于标识此公告。',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '显示这条论坛公告',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> '只显示在论坛的首页',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '允许查看公告的用户',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允许用户关闭这条论坛公告',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '所有用户',
 
@@ -63,27 +64,29 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> '设置论坛公告自动过期失效的日期。留空将长期有效。',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> '到期日期无效或者已经过期。',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> '论坛公告没有内容',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> '论坛公告信息',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> '论坛公告 -  预览',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> '论坛公告已更新。',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> '描述',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> '显示位置',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> '显示给',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> '启用',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> '创建日期',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> '过期时间',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> '已过期',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> '任何地方',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> '没有论坛公告可显示T',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> '创建论坛公告',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> '此公告已成功删除',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> '此公告无法删除',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.

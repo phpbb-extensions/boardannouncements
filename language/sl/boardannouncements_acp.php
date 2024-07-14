@@ -5,7 +5,7 @@
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
-*
+* Slovenian Translation - Marko K.(max, max-ima,...)
 */
 
 /**
@@ -38,36 +38,36 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Налаштування дошки оголошень',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Тут ви можете керувати та створювати оголошення, які будуть відображатися на кожній сторінці вашого сайту.',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Nastavitve obvestil na forumu',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Tukaj lahko upravljate in ustvarite obvestilo na plošči, ki bo prikazana na vsaki strani vašega foruma.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
 
-	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
+	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Board announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Показувати цю дошку оголошень',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Хто може бачити дошку оголошень',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Дозволити користувачам вимикати це оголошення',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Prikaži to obvestilo na plošči',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kdo si lahko ogleda to obvestilo na forumu',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Dovoli uporabnikom, da opustijo to obvestilo na plošči',
 	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
 	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
 
-	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Все',
+	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Vsi',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Колір фону оголошення',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Ви можете змінити колір фону оголошення за допомогою шістнадцяткового коду (наприклад: FFFF80). Залишіть це поле порожнім, щоб використовувати колір фону за замовчуванням.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Barva ozadja za obvestilo na tabli',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Barvo ozadja obvestila lahko spremenite s šestnajstiško kodo (npr.: FFFF80). Pustite to polje prazno, če želite uporabiti privzeto barvo.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Термін дії оголошення',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Встановлення дати та часу, при настанні яких оголошення буде вимкнено. Залишіть поле порожнім, щоб зробити оголошення постійним.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Дата задано некоректно або вже пройшла.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Datum izteka obvestila na plošči',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Nastavite datum, ko bo obvestilo poteklo in postalo onemogočena. Pustite to polje prazno, če ne želite, da obvestilo poteče.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Datum poteka je bil neveljaven ali je že potekel.',
 
 	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
-	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Повідомлення дошки оголошень',
-	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Дошка оголошень - Перегляд',
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Sporočilo z obvestilom na plošči',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Obvestilo plošče - Predogled',
 
-	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Дошка оголошень була оновлена.',
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Obvestilo je bilo posodobljeno.',
 
 	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
 	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',

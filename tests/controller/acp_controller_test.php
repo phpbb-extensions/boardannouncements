@@ -11,7 +11,6 @@
 namespace phpbb\boardannouncements\controller;
 
 require_once __DIR__ . '/../../../../../includes/functions_acp.php';
-require_once __DIR__ . '/../../../../../includes/functions_display.php';
 
 class acp_controller_test extends \phpbb_test_case
 {
@@ -123,7 +122,7 @@ class acp_controller_test extends \phpbb_test_case
 			$this->request,
 			$this->template,
 			$this->user,
-			$this->phpbb_root_path,
+			$this->root_path,
 			$this->php_ext
 		);
 		$controller->set_page_url($this->u_action);
@@ -166,7 +165,7 @@ class acp_controller_test extends \phpbb_test_case
 				$this->request,
 				$this->template,
 				$this->user,
-				$this->phpbb_root_path,
+				$this->root_path,
 				$this->php_ext
 			])
 			->getMock();

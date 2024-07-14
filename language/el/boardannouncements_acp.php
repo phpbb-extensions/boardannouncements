@@ -42,17 +42,18 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Ρυθμίσεις ανακοινώσεων Δ. Συζήτησης',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Εδώ μπορείτε να διαχειριστείτε και να δημιουργήσετε την ανακοίνωση που θα εμφανίζεται σε κάθε σελίδα της Δ. Συζήτησή σας.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Ενεργοποίηση ανακοινώσεων Δ. Συζήτησης',
 
-	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
+	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Επιλογές ανακοινώσεων',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Περιγραφή',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Μια σύντομη περιγραφή της ανακοίνωσης. Αυτή θα είναι ορατή μόνο στο ACP για να αναγνωρίζετε την ανακοίνωση.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Εμφάνιση της ανακοίνωσης',
-	'BOARD_ANNOUNCEMENTS_INDEX_ONLY'		=> 'Εμφάνιση μόνο στην Αρχική Σελίδα',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Ποιος μπορεί να δει αυτή την ανακοίνωσης',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Επιτρέψτε στα μέλη να κλείνουν το πλαίσιο της ανακοίνωσης',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Καθένας',
 
@@ -63,31 +64,33 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Ορίστε την ημερομηνία λήξης της ανακοίνωσης. Αφήστε το πεδίο κενό αν η ανακοίνωση δεν θα έχει ημερομηνία λήξης.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Η ημερομηνία λήξης είναι άκυρη ή έχει ήδη παρέλθει.',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Η ανακοίνωση δεν περιέχει κανένα μήνυμα',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Μήνυμα ανακοίνωσης',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Προεπισκόπιση μηνύματος',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Η ανακοίνωση έχει ενημερωθεί.',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Περιγραφή',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Τοποθεσία',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Εμφανής στους',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Ενεργοποιημένη',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Ημερομηνία δημιουργίας',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Ημερομηνία λήξης',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Έληξε',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Παντού',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Δεν υπάρχουν ανακοινώσεις για εμφάνιση',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Δημιουργία ανακοίνωσης',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Η ανακοίνωση έχει διαγράφηκε',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Η ανακοίνωση δεν μπορεί να διαγραφεί',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Η ανακοίνωση απέτυχε να κλειδώσει τον πίνακα. Μια άλλη διεργασία μπορεί να έχει κλειδώσει τον πίνακα. Τα κλειδώματα αυτά απελευθερώνονται μετά από περίοδο 1 ώρας.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'Η ζητούμενη ανακοίνωση δεν υπάρχει.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'Η ζητούμενη ανακοίνωση δεν έχει γονέα.',
 ));
