@@ -2,7 +2,7 @@
 
 This is the repository for the development of the phpBB Board Announcements Extension.
 
-[![Build Status](https://github.com/phpbb-extensions/boardannouncements/workflows/Tests/badge.svg)](https://github.com/phpbb-extensions/boardannouncements/actions)
+[![Build Status](https://github.com/phpbb-extensions/boardannouncements/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbb-extensions/boardannouncements/actions)
 [![codecov](https://codecov.io/gh/phpbb-extensions/boardannouncements/branch/master/graph/badge.svg?token=9laLSqCOgN)](https://codecov.io/gh/phpbb-extensions/boardannouncements)
 
 ## Install
