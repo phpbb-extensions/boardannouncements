@@ -282,8 +282,8 @@ class announcement_test extends \phpbb_functional_test_case
 		// Set some form values
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
 		$values = array_merge([
-			'board_announcements_enabled'		=> true,
-			'board_announcements_dismiss'		=> false,
+			'board_announcements_enabled'		=> 1,
+			'board_announcements_dismiss'		=> 0,
 			'board_announcements_users'			=> 0,
 			'board_announcements_locations'		=> [],
 			'board_announcements_bgcolor'		=> 'ff0000',
