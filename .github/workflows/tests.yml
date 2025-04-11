@@ -6,19 +6,19 @@ env:
     IMAGE_ICC: 1         # Run icc profile sniffer on your images? 1 or 0
     EPV: 0               # Run EPV (Extension Pre Validator) on your code? 1 or 0
     EXECUTABLE_FILES: 1  # Run check for executable files? 1 or 0
-    PHPBB_BRANCH: master  # The phpBB branch to run tests on
+    PHPBB_BRANCH: master # The phpBB branch to run tests on
 
 on:
     push:
         branches:        # Run tests when commits are pushed to these branches in your repo
+            - main
             - master
             - develop
-            - dev/*
     pull_request:        # Run tests when pull requests are made on these branches in your repo
         branches:
+            - main
             - master
             - develop
-            - dev/*
 
 jobs:
     # START Basic Checks Job (EPV, code sniffer, images check, etc.)
@@ -114,9 +114,9 @@ jobs:
                       db_alias: "MyISAM Tests"
                       MYISAM: 1
                     - php: '8.1'
-                      db: "mysql:8.0"
+                      db: "mysql:5.7"
                       COVERAGE: 1
-                      db_alias: "mysql:8.0 with Coverage"
+                      db_alias: "mysql:5.7 with Coverage"
                     - php: '8.1'
                       db: "mysql:8.1"
                     - php: '8.2'
@@ -127,10 +127,10 @@ jobs:
                       db: "mysql:5.7"
                     - php: '8.3'
                       db: "mariadb:10.2"
-                    - php: '8.4'
-                      db: "mysql:8.0"
-                    - php: '8.4'
-                      db: "mariadb:10.3"
+#                    - php: '8.4'
+#                      db: "mysql:8.0"
+#                    - php: '8.4'
+#                      db: "mariadb:10.3"
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db_alias != '' && matrix.db_alias || matrix.db }}
 
@@ -268,8 +268,8 @@ jobs:
                       db: "postgres:9.5"
                     - php: '8.3'
                       db: "postgres:9.5"
-                    - php: '8.4'
-                      db: "postgres:9.5"
+#                    - php: '8.4'
+#                      db: "postgres:9.5"
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}
 

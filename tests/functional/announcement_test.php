@@ -263,7 +263,7 @@ class announcement_test extends \phpbb_functional_test_case
 	 */
 	protected function get_acp_page($action = '', $id = 0)
 	{
-		return 'adm/index.php?i=\phpbb\boardannouncements\acp\board_announcements_module&mode=settings' . ($action ? "&action=$action"  : '') . ($id ? "&id=$id" : '') . "&sid=$this->sid";
+		return 'adm/index.php?i=-phpbb-boardannouncements-acp-board_announcements_module&mode=settings' . ($action ? "&action=$action"  : '') . ($id ? "&id=$id" : '') . "&sid=$this->sid";
 	}
 
 	/**
