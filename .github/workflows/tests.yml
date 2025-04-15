@@ -357,7 +357,7 @@ jobs:
     # END PostgreSQL Job
 
     # START Other Tests Job (SQLite 3 and mssql)
-        other-tests:
+    other-tests:
         runs-on: ubuntu-22.04
         strategy:
             matrix:
