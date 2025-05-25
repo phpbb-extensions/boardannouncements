@@ -10,28 +10,47 @@
 
 namespace phpbb\boardannouncements\tests\controller;
 
-class controller_test extends \phpbb_database_test_case
+use phpbb\boardannouncements\controller\controller;
+use phpbb\boardannouncements\manager\manager;
+use phpbb\boardannouncements\manager\nestedset;
+use phpbb\config\config;
+use phpbb\db\driver\driver_interface;
+use phpbb\exception\http_exception;
+use phpbb\language\language;
+use phpbb\language\language_file_loader;
+use phpbb\lock\db;
+use phpbb_database_test_case;
+use phpbb_mock_event_dispatcher;
+use PHPUnit\DbUnit\DataSet\DefaultDataSet;
+use PHPUnit\DbUnit\DataSet\IDataSet;
+use PHPUnit\DbUnit\DataSet\XmlDataSet;
+use phpbb\path_helper;
+use phpbb\user;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use phpbb\datetime;
+use phpbb\request\request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+class controller_test extends phpbb_database_test_case
 {
 	/**
 	* Define the extensions to be tested
 	*
 	* @return array vendor/name of extension(s) to test
 	*/
-	protected static function setup_extensions()
+	protected static function setup_extensions(): array
 	{
 		return ['phpbb/boardannouncements'];
 	}
 
-	/** @var \phpbb\config\config */
-	protected $config;
-
-	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	protected config $config;
+	protected driver_interface $db;
 
 	/**
 	* Get data set fixtures
 	*/
-	public function getDataSet()
+	public function getDataSet(): IDataSet|XmlDataSet|DefaultDataSet
 	{
 		return $this->createXMLDataSet(__DIR__ . '/../fixtures/board_announcements.xml');
 	}
@@ -44,7 +63,7 @@ class controller_test extends \phpbb_database_test_case
 		parent::setUp();
 
 		$this->db = $this->new_dbal();
-		$this->config = new \phpbb\config\config([
+		$this->config = new config([
 			'boardannouncements.table_lock.board_announcements_table' => 0,
 			'board_announcements_enable' => 1,
 			'enable_mod_rewrite' => '0',
@@ -54,28 +73,35 @@ class controller_test extends \phpbb_database_test_case
 	/**
 	* Create our controller
 	*/
-	protected function get_controller($user_id, $is_registered, $mode, $ajax)
+	protected function get_controller($user_id, $is_registered, $mode, $ajax): controller
 	{
-		global $user, $phpbb_dispatcher, $phpbb_path_helper, $phpbb_root_path, $phpEx;
+		global $config, $user, $phpbb_dispatcher, $phpbb_path_helper, $phpbb_root_path, $phpEx;
 
-		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
-		$phpbb_path_helper = $this->getMockBuilder('\phpbb\path_helper')
+		$config = new config([]);
+
+		$phpbb_dispatcher = new phpbb_mock_event_dispatcher();
+		$phpbb_path_helper = $this->getMockBuilder(path_helper::class)
 			->disableOriginalConstructor()
 			->getMock();
 
-		/** @var $user \PHPUnit\Framework\MockObject\MockObject|\phpbb\user */
-		$user = $this->getMockBuilder('\phpbb\user')
+		$phpbb_path_helper->method('update_web_root_path')
+			->willReturnArgument(0);
+
+		/** @var $user MockObject|\phpbb\user */
+		$user = $this->getMockBuilder(user::class)
 			->setConstructorArgs([
-				new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
-				'\phpbb\datetime',
+				new language(new language_file_loader($phpbb_root_path, $phpEx)),
+				datetime::class,
 			])
 			->getMock();
 		$user->data['user_form_salt'] = '';
 		$user->data['user_id'] = $user_id;
 		$user->data['is_registered'] = $is_registered;
+		$user->data['session_page'] = "index.$phpEx";
+		$user->page['page_dir'] = '';
 
-		/** @var $request \PHPUnit\Framework\MockObject\MockObject|\phpbb\request\request */
-		$request = $this->getMockBuilder('\phpbb\request\request')
+		/** @var $request MockObject|request */
+		$request = $this->getMockBuilder(request::class)
 			->disableOriginalConstructor()
 			->getMock();
 		$request->expects(self::atMost(1))
@@ -83,21 +109,24 @@ class controller_test extends \phpbb_database_test_case
 			->willReturn($ajax
 		);
 		$request->method('variable')
-			->with(self::anything())
-			->willReturnMap([
-				['hash', '', false, \phpbb\request\request_interface::REQUEST, generate_link_hash($mode)]]
-		);
+			->willReturnCallback(function($name, $default = '') use($user, $mode) {
+				return match ($name) {
+					'redirect' => $user->data['session_page'],
+					'hash' => generate_link_hash($mode),
+					default => $default,
+				};
+			});
 
-		$manager = new \phpbb\boardannouncements\manager\manager(
-			new \phpbb\boardannouncements\manager\nestedset(
+		$manager = new manager(
+			new nestedset(
 				$this->db,
-				new \phpbb\lock\db('boardannouncements.table_lock.board_announcements_table', $this->config, $this->db),
+				new db('boardannouncements.table_lock.board_announcements_table', $this->config, $this->db),
 				'phpbb_board_announcements',
 				'phpbb_board_announcements_track'
 			)
 		);
 
-		return new \phpbb\boardannouncements\controller\controller(
+		return new controller(
 			$manager,
 			$request,
 			$user
@@ -109,7 +138,7 @@ class controller_test extends \phpbb_database_test_case
 	 *
 	 * @return array Test data
 	 */
-	public function controller_data()
+	public function controller_data(): array
 	{
 		return [
 			[
@@ -140,7 +169,7 @@ class controller_test extends \phpbb_database_test_case
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
-				false, // Status should return false due to user not existing
+				false, // Status should return false due to the user not existing
 			],
 			[
 				1, // Announcement ID
@@ -162,20 +191,17 @@ class controller_test extends \phpbb_database_test_case
 	 */
 	public function test_controller($id, $user_id, $is_registered, $mode, $ajax, $status_code, $content, $expected)
 	{
-		// If non-ajax redirect is encountered, in testing it will trigger error
+		// If a non-ajax redirect is encountered, in testing it will trigger_error/exception
 		if (!$ajax)
 		{
-			// Throws E_WARNING in PHP 8.0+ and E_USER_WARNING in earlier versions
-			$exceptionName = PHP_VERSION_ID < 80000 ? \PHPUnit\Framework\Error\Error::class : \PHPUnit\Framework\Error\Warning::class;
-			$errno = PHP_VERSION_ID < 80000 ? E_USER_WARNING : E_WARNING;
-			$this->expectException($exceptionName);
-			$this->expectExceptionCode($errno);
+			$this->expectException(Exception::class);
+			$this->expectExceptionMessage('INSECURE_REDIRECT');
 		}
 
 		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);
 
 		$response = $controller->close_announcement($id);
-		self::assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
+		self::assertInstanceOf(JsonResponse::class, $response);
 		self::assertEquals($status_code, $response->getStatusCode());
 		self::assertEquals($content, $response->getContent());
 		self::assertEquals($expected, $this->get_closed_announcements($id, $user_id));
@@ -186,7 +212,7 @@ class controller_test extends \phpbb_database_test_case
 	 *
 	 * @return array Test data
 	 */
-	public function controller_fails_data()
+	public function controller_fails_data(): array
 	{
 		return [
 			[	// test link hash fail
@@ -242,7 +268,7 @@ class controller_test extends \phpbb_database_test_case
 			$controller->close_announcement($id);
 			self::fail('The expected \phpbb\exception\http_exception was not thrown');
 		}
-		catch (\phpbb\exception\http_exception $exception)
+		catch (http_exception $exception)
 		{
 			self::assertEquals($status_code, $exception->getStatusCode());
 			self::assertEquals($content, $exception->getMessage());
@@ -256,7 +282,7 @@ class controller_test extends \phpbb_database_test_case
 	 * @param $user_id
 	 * @return bool
 	 */
-	protected function get_closed_announcements($id, $user_id)
+	protected function get_closed_announcements($id, $user_id): bool
 	{
 		$ids = [];
 		$sql = 'SELECT announcement_id FROM phpbb_board_announcements_track WHERE user_id = ' . (int) $user_id;
