@@ -250,9 +250,16 @@ class listener_test extends \phpbb_database_test_case
 
 		$this->set_listener();
 
+		$invocation = 0;
 		$this->template->expects($enabled ? self::atLeastOnce() : self::never())
 			->method('assign_block_vars')
-			->withConsecutive(...$expected);
+			->willReturnCallback(function($block, $vars) use (&$invocation, $expected) {
+				if (isset($expected[$invocation])) {
+					self::assertEquals($expected[$invocation][0], $block);
+					self::assertEquals($expected[$invocation][1], $vars);
+					$invocation++;
+				}
+			});
 
 		$this->request->expects(self::atMost(10))
 			->method('variable')

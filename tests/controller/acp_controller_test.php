@@ -155,7 +155,7 @@ class acp_controller_test extends \phpbb_test_case
 	public function test_mode_manage($action, $expected)
 	{
 		$controller = $this->getMockBuilder('\phpbb\boardannouncements\controller\acp_controller')
-			->setMethods(['action_add', 'action_delete', 'action_move', 'action_settings', 'list_announcements'])
+			->onlyMethods(['action_add', 'action_delete', 'action_move', 'action_settings', 'list_announcements'])
 			->setConstructorArgs([
 				$this->manager,
 				$this->config,
@@ -300,17 +300,32 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		$controller = $this->get_controller();
 
+		$variable_expectations = [
+			['action', '', 'add'],
+			['id', 0, $id]
+		];
 		$this->request
 			->expects(self::exactly(2))
 			->method('variable')
-			->withConsecutive(['action', ''], ['id', 0])
-			->willReturnOnConsecutiveCalls('add', $id);
+			->willReturnCallback(function($arg1, $arg2) use (&$variable_expectations) {
+				$expectation = array_shift($variable_expectations);
+				self::assertEquals($expectation[0], $arg1);
+				self::assertEquals($expectation[1], $arg2);
+				return $expectation[2];
+			});
 
+		$post_expectations = [
+			['submit', false],
+			['preview', false]
+		];
 		$this->request
 			->expects(self::exactly(2))
 			->method('is_set_post')
-			->withConsecutive(['submit'], ['preview'])
-			->willReturnOnConsecutiveCalls(false, false);
+			->willReturnCallback(function($arg) use (&$post_expectations) {
+				$expectation = array_shift($post_expectations);
+				self::assertEquals($expectation[0], $arg);
+				return $expectation[1];
+			});
 
 		$this->manager->expects(self::once())
 			->method('announcement_columns')
@@ -384,31 +399,34 @@ class acp_controller_test extends \phpbb_test_case
 			$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_UPDATED');
 		}
 
+		$variable_invocation = 0;
+		$expected_args = [
+			['action', ''], ['id', 0], ['board_announcements_text', ''], ['board_announcements_description', ''],
+			['board_announcements_bgcolor', ''], ['board_announcements_enabled', true], ['board_announcements_users', 0],
+			['board_announcements_locations', [0]], ['board_announcements_dismiss', true], ['board_announcements_expiry', ''],
+			['disable_bbcode', false], ['disable_magic_url', false], ['disable_smilies', false]
+		];
 		$this->request
 			->expects(self::exactly(13))
 			->method('variable')
-			->withConsecutive(
-				['action', ''],
-				['id', 0],
-				['board_announcements_text', ''],
-				['board_announcements_description', ''],
-				['board_announcements_bgcolor', ''],
-				['board_announcements_enabled', true],
-				['board_announcements_users', 0],
-				['board_announcements_locations', [0]],
-				['board_announcements_dismiss', true],
-				['board_announcements_expiry', ''],
-				['disable_bbcode', false],
-				['disable_magic_url', false],
-				['disable_smilies', false]
-			)
-			->willReturnOnConsecutiveCalls(...$form);
+			->willReturnCallback(function($arg1, $arg2) use (&$variable_invocation, $expected_args, $form) {
+				self::assertEquals($expected_args[$variable_invocation][0], $arg1);
+				self::assertEquals($expected_args[$variable_invocation][1], $arg2);
+				return $form[$variable_invocation++];
+			});
 
+		$post_expectations = [
+			['submit', $submit],
+			['preview', $preview]
+		];
 		$this->request
 			->expects(self::exactly(2))
 			->method('is_set_post')
-			->withConsecutive(['submit'], ['preview'])
-			->willReturnOnConsecutiveCalls($submit, $preview);
+			->willReturnCallback(function($arg) use (&$post_expectations) {
+				$expectation = array_shift($post_expectations);
+				self::assertEquals($expectation[0], $arg);
+				return $expectation[1];
+			});
 
 		$this->manager->expects($submit && !$errors ? self::never() : self::once())
 			->method('decode_json')
@@ -462,11 +480,18 @@ class acp_controller_test extends \phpbb_test_case
 
 		$controller = $this->get_controller();
 
+		$variable_invocation = 0;
+		$expected_calls = $confirm_action ? 2 : 4;
+		$expected_args = [['action', ''], ['id', 0], ['i', ''], ['mode', '']];
+		$expected_returns = ['delete', $id, '', ''];
 		$this->request
-			->expects(self::exactly($confirm_action ? 2 : 4))
+			->expects(self::exactly($expected_calls))
 			->method('variable')
-			->withConsecutive(['action', ''], ['id', 0], ['i', ''], ['mode', ''])
-			->willReturnOnConsecutiveCalls('delete', $id, '', '');
+			->willReturnCallback(function($arg1, $arg2) use (&$variable_invocation, $expected_args, $expected_returns) {
+				self::assertEquals($expected_args[$variable_invocation][0], $arg1);
+				self::assertEquals($expected_args[$variable_invocation][1], $arg2);
+				return $expected_returns[$variable_invocation++];
+			});
 
 		if (!$confirm_action)
 		{
@@ -553,10 +578,16 @@ class acp_controller_test extends \phpbb_test_case
 			$this->setExpectedTriggerError(E_WARNING);
 		}
 
+		$variable_invocation = 0;
+		$expected_args = [['action', ''], ['id', 0], ['dir', ''], ['hash', '']];
+		$expected_returns = ['move', $id, $dir, ($valid ? generate_link_hash($dir . $id) : '')];
 		$this->request->expects(self::exactly(4))
 			->method('variable')
-			->withConsecutive(['action', ''], ['id', 0], ['dir', ''], ['hash', ''])
-			->willReturnOnConsecutiveCalls('move', $id, $dir, ($valid ? generate_link_hash($dir . $id) : ''));
+			->willReturnCallback(function($arg1, $arg2) use (&$variable_invocation, $expected_args, $expected_returns) {
+				self::assertEquals($expected_args[$variable_invocation][0], $arg1);
+				self::assertEquals($expected_args[$variable_invocation][1], $arg2);
+				return $expected_returns[$variable_invocation++];
+			});
 
 		$this->request->expects($valid && !$error ? self::once() : self::never())
 			->method('is_ajax')
@@ -603,16 +634,25 @@ class acp_controller_test extends \phpbb_test_case
 			$this->setExpectedTriggerError(E_USER_WARNING, 'The submitted form was invalid. Try submitting again.');
 			$this->request->expects(self::once())
 				->method('variable')
-				->withConsecutive(['action', ''])
-				->willReturnOnConsecutiveCalls('settings');
+				->with('action', '')
+				->willReturn('settings');
 		}
 		else
 		{
 			$this->setExpectedTriggerError(E_USER_NOTICE, 'CONFIG_UPDATED');
-			$this->request->expects(self::exactly(2))
+			$variable_expectations = [
+				['action', '', 'settings'],
+				['board_announcements_enable_all', 0, $enable]
+			];
+			$this->request
+				->expects(self::exactly(2))
 				->method('variable')
-				->withConsecutive(['action', ''], ['board_announcements_enable_all', 0])
-				->willReturnOnConsecutiveCalls('settings', $enable);
+				->willReturnCallback(function($arg1, $arg2) use (&$variable_expectations) {
+					$expectation = array_shift($variable_expectations);
+					self::assertEquals($expectation[0], $arg1);
+					self::assertEquals($expectation[1], $arg2);
+					return $expectation[2];
+				});
 			$this->config->expects(self::once())
 				->method('set')
 				->with('board_announcements_enable', $enable);

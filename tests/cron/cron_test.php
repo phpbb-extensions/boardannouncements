@@ -60,14 +60,13 @@ class cron_test extends \phpbb_test_case
 			->with('announcement_id')
 			->willReturn($expired_set);
 
-		array_walk($expired_set, static function (&$value) {
-			$value = [$value];
-		});
-
 		// Check disable_announcement get called as expected
+		$invocation = 0;
 		$this->manager->expects(self::exactly(count($expired_set)))
 			->method('disable_announcement')
-			->withConsecutive(...$expired_set);
+			->willReturnCallback(function($arg) use (&$invocation, $expired_set) {
+				self::assertEquals($expired_set[$invocation++], $arg);
+			});
 
 		// Run the cron task
 		$this->cron_task->run();
