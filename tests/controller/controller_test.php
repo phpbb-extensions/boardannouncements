@@ -21,9 +21,6 @@ use phpbb\language\language_file_loader;
 use phpbb\lock\db;
 use phpbb_database_test_case;
 use phpbb_mock_event_dispatcher;
-use PHPUnit\DbUnit\DataSet\DefaultDataSet;
-use PHPUnit\DbUnit\DataSet\IDataSet;
-use PHPUnit\DbUnit\DataSet\XmlDataSet;
 use phpbb\path_helper;
 use phpbb\user;
 use PHPUnit\Framework\Exception;
@@ -50,7 +47,7 @@ class controller_test extends phpbb_database_test_case
 	/**
 	* Get data set fixtures
 	*/
-	public function getDataSet(): IDataSet|XmlDataSet|DefaultDataSet
+	public function getDataSet()
 	{
 		return $this->createXMLDataSet(__DIR__ . '/../fixtures/board_announcements.xml');
 	}
@@ -191,11 +188,10 @@ class controller_test extends phpbb_database_test_case
 	 */
 	public function test_controller($id, $user_id, $is_registered, $mode, $ajax, $status_code, $content, $expected)
 	{
-		// If a non-ajax redirect is encountered, in testing it will trigger_error/exception
+		// If a non-ajax redirect is encountered, in testing it will trigger_error
 		if (!$ajax)
 		{
-			$this->expectException(Exception::class);
-			$this->expectExceptionMessage('INSECURE_REDIRECT');
+			$this->setExpectedTriggerError(E_USER_DEPRECATED);
 		}
 
 		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);

@@ -59,7 +59,7 @@ class listener_test extends \phpbb_database_test_case
 	/**
 	 * Get data set fixtures
 	 *
-	 * @return \PHPUnit\DbUnit\DataSet\DefaultDataSet|\PHPUnit\DbUnit\DataSet\XmlDataSet
+	 * @return \PHPUnit\DbUnit\DataSet\XmlDataSet
 	 */
 	public function getDataSet()
 	{

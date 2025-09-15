@@ -575,7 +575,14 @@ class acp_controller_test extends \phpbb_test_case
 		if ($is_ajax)
 		{
 			// Handle trigger_error() output called from json_response
-			$this->setExpectedTriggerError(E_WARNING);
+			if (version_compare(\PHPUnit\Runner\Version::id(), '10.0.0', '>='))
+			{
+				$this->markTestSkipped('setExpectedTriggerError not available in PHPUnit 10+');
+			}
+			else
+			{
+				$this->setExpectedTriggerError(E_WARNING);
+			}
 		}
 
 		$variable_invocation = 0;
