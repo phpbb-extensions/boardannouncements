@@ -17,7 +17,7 @@ class manager_delete_tracking_test extends manager_base
 	 *
 	 * @return array
 	 */
-	public function data_delete_tracking()
+	public static function data_delete_tracking()
 	{
 		return [
 			[2, [2, 4], [4], true],

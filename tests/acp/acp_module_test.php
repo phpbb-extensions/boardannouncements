@@ -62,7 +62,7 @@ class acp_module_test extends \phpbb_test_case
 		], $this->module_manager->get_module_infos('acp', 'acp_board_announcements_module'));
 	}
 
-	public function module_auth_test_data()
+	public static function module_auth_test_data()
 	{
 		return [
 			// module_auth, expected result

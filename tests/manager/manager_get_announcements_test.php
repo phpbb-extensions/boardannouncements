@@ -17,7 +17,7 @@ class manager_get_announcements_test extends manager_base
 	 *
 	 * @return array
 	 */
-	public function data_get_announcements()
+	public static function data_get_announcements()
 	{
 		return [
 			[['ANNOUNCEMENT 1', 'ANNOUNCEMENT 2', 'ANNOUNCEMENT 3', 'ANNOUNCEMENT 4', 'ANNOUNCEMENT 5']],

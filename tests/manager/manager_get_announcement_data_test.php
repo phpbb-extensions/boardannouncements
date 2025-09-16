@@ -17,7 +17,7 @@ class manager_get_announcement_data_test extends manager_base
 	 *
 	 * @return array
 	 */
-	public function data_get_announcement_data()
+	public static function data_get_announcement_data()
 	{
 		return [
 			[1, 'announcement_text', 'Sample Announcement Test Text 1'],

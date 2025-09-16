@@ -135,7 +135,7 @@ class controller_test extends phpbb_database_test_case
 	 *
 	 * @return array Test data
 	 */
-	public function controller_data(): array
+	public static function controller_data(): array
 	{
 		return [
 			[
@@ -208,7 +208,7 @@ class controller_test extends phpbb_database_test_case
 	 *
 	 * @return array Test data
 	 */
-	public function controller_fails_data(): array
+	public static function controller_fails_data(): array
 	{
 		return [
 			[	// test link hash fail

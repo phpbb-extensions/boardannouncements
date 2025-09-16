@@ -17,7 +17,7 @@ class manager_get_expired_announcements_test extends manager_base
 	 *
 	 * @return array
 	 */
-	public function data_get_expired_announcements()
+	public static function data_get_expired_announcements()
 	{
 		return [
 			['foo', []],

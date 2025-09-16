@@ -17,7 +17,7 @@ class manager_update_announcement_test extends manager_base
 	 *
 	 * @return array
 	 */
-	public function data_update_announcement()
+	public static function data_update_announcement()
 	{
 		return [
 			[1, [

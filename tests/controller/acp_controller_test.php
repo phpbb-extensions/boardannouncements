@@ -45,7 +45,7 @@ class acp_controller_test extends \phpbb_test_case
 	protected $user;
 
 	/** @var string root_path */
-	protected $phpbb_root_path;
+	protected $root_path;
 
 	/** @var string php_ext */
 	protected $php_ext;
@@ -135,7 +135,7 @@ class acp_controller_test extends \phpbb_test_case
 	 *
 	 * @return array Array of test data
 	 */
-	public function data_mode_manage()
+	public static function data_mode_manage()
 	{
 		return [
 			['add', 'action_add'],
@@ -251,7 +251,7 @@ class acp_controller_test extends \phpbb_test_case
 	 *
 	 * @return array
 	 */
-	public function action_add_data()
+	public static function action_add_data()
 	{
 		return [
 			[1, [
@@ -360,7 +360,7 @@ class acp_controller_test extends \phpbb_test_case
 	 *
 	 * @return array
 	 */
-	public function action_add_submit_data()
+	public static function action_add_submit_data()
 	{
 		return [
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
@@ -460,7 +460,7 @@ class acp_controller_test extends \phpbb_test_case
 	 *
 	 * @return array Array of test data
 	 */
-	public function action_delete_data()
+	public static function action_delete_data()
 	{
 		return [
 			[1, true, true], // successfully delete an ad
@@ -531,7 +531,7 @@ class acp_controller_test extends \phpbb_test_case
 	 *
 	 * @return array
 	 */
-	public function action_move_data()
+	public static function action_move_data()
 	{
 		return [
 			[0, 'up', true, true, false], // move will error
@@ -612,7 +612,7 @@ class acp_controller_test extends \phpbb_test_case
 	 *
 	 * @return array
 	 */
-	public function action_settings_data()
+	public static function action_settings_data()
 	{
 		return [
 			[1, true],

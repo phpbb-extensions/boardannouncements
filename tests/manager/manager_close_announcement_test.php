@@ -17,7 +17,7 @@ class manager_close_announcement_test extends manager_base
 	 *
 	 * @return array
 	 */
-	public function data_close_announcement()
+	public static function data_close_announcement()
 	{
 		return [
 			[1, 2, [2, 4], [1, 2, 4]],

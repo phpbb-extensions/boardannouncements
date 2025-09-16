@@ -17,7 +17,7 @@ class manager_get_visible_test extends manager_base
 	 *
 	 * @return array
 	 */
-	public function data_get_visible_announcements()
+	public static function data_get_visible_announcements()
 	{
 		return [
 			[1, ['ANNOUNCEMENT 1', 'ANNOUNCEMENT 3']], // guest

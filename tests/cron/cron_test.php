@@ -33,7 +33,7 @@ class cron_test extends \phpbb_test_case
 		$this->cron_task = new \phpbb\boardannouncements\cron\disable_expired($this->config, $this->manager);
 	}
 
-	public function run_data()
+	public static function run_data()
 	{
 		return [
 			[[]],
@@ -80,7 +80,7 @@ class cron_test extends \phpbb_test_case
 	 *
 	 * @return array Array of test data
 	 */
-	public function should_run_data()
+	public static function should_run_data()
 	{
 		return [
 			[time(), false],

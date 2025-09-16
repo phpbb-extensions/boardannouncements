@@ -17,7 +17,7 @@ class manager_move_announcement_test extends manager_base
 	 *
 	 * @return array
 	 */
-	public function data_move_announcement()
+	public static function data_move_announcement()
 	{
 		return [
 			[

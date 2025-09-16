@@ -29,6 +29,9 @@ class listener_test extends \phpbb_database_test_case
 	/** @var \phpbb_mock_notifications_auth */
 	protected $auth;
 
+	/** @var \phpbb_mock_cache */
+	protected $cache;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -164,7 +167,7 @@ class listener_test extends \phpbb_database_test_case
 	/**
 	 * @return array
 	 */
-	public function display_board_announcements_data()
+	public static function display_board_announcements_data()
 	{
 		global $user;
 		$user = new \phpbb_mock_user();
