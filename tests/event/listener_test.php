@@ -59,11 +59,6 @@ class listener_test extends \phpbb_database_test_case
 	/** @var string */
 	protected $php_ext;
 
-	/**
-	 * Get data set fixtures
-	 *
-	 * @return \PHPUnit\DbUnit\DataSet\XmlDataSet
-	 */
 	public function getDataSet()
 	{
 		return $this->createXMLDataSet(__DIR__ . '/../fixtures/board_announcements.xml');
