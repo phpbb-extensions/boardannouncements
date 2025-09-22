@@ -575,6 +575,7 @@ class acp_controller_test extends \phpbb_test_case
 		if ($is_ajax)
 		{
 			$this->expectOutputString('{"success":true}');
+			$this->expectException(\RuntimeException::class);
 		}
 
 		$variable_invocation = 0;
