@@ -124,17 +124,17 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 
 		// Wrong ID
-		$crawler = self::request('GET', 'app.php/boardannouncements/close/0?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid, [], false);
+		$crawler = self::request('GET', 'index.php/boardannouncements/close/0?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// Wrong hash
-		$crawler = self::request('GET', 'app.php/boardannouncements/close/1?hash=wrong&sid=' . $this->sid, [], false);
+		$crawler = self::request('GET', 'index.php/boardannouncements/close/1?hash=wrong&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// No hash
-		$crawler = self::request('GET', 'app.php/boardannouncements/close/1?sid=' . $this->sid, [], false);
+		$crawler = self::request('GET', 'index.php/boardannouncements/close/1?sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 	}
@@ -146,7 +146,7 @@ class announcement_test extends \phpbb_functional_test_case
 	{
 		$this->login();
 
-		self::request('GET', 'app.php/boardannouncements/close/1?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid);
+		self::request('GET', 'index.php/boardannouncements/close/1?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid);
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
 	}
