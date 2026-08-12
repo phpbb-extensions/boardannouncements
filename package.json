@@ -2,6 +2,7 @@
 	"name": "phpbb-boardannouncements",
 	"author": "phpBB Limited",
 	"license": "GPL-2.0",
+	"private": true,
 	"scripts": {
 		"copy-colpick": "copyfiles --flat node_modules/jquery-colpick/css/colpick.css node_modules/jquery-colpick/js/colpick.js adm/style/colpick",
 		"copy-datetimepicker": "copyfiles --flat node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.js node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js node_modules/jquery-datetimepicker/build/jquery.datetimepicker.css node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css adm/style/datetimepicker"
