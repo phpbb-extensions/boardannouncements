@@ -218,7 +218,7 @@ class acp_controller
 			// Special handling for the expiration date, convert from date string to timestamp
 			if ($data['announcement_expiry'] !== '')
 			{
-				$data['announcement_expiry'] = $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $data['announcement_expiry']);
+				$data['announcement_expiry'] = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $data['announcement_expiry']);
 				if ($data['announcement_expiry'] < time())
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
