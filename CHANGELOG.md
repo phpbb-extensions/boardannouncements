@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.3.1 - 2026-09-03
+
+- Fixed the announcement close button appearing above other page elements, such as menus and overlays.
+- Fixed expiration dates being saved incorrectly.
+- Updated the ACP audience setting to work correctly with phpBB 3 and phpBB 4.
+- Improved database compatibility when upgrading and when saving descriptions containing emoji or other special characters.
+- Added validation for descriptions that are too long and invalid background colors.
+- Fixed ACP errors and incorrect success messages when two administrators edit or delete the same announcement.
+- Fixed location settings when Everywhere was selected with specific forums.
+- Fixed forum-specific announcements appearing on unrelated pages.
+- Fixed repeated dismissals creating duplicate records and prevented users from dismissing announcements they could not see.
+- Fixed errors that could occur when loading visible announcements.
+- Prevented conflicts with other scheduled tasks.
+- Updated all bundled language packs.
+
 ## 1.3.0 - 2024-06-28
 
 - Feature: Announcements can now be assigned to one or more specific forums, in addition to the usual options of Board Index only or Everywhere.
