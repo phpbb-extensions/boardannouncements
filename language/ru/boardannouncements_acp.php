@@ -51,8 +51,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Показывать это объявление',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Кто может видеть это объявление',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Разрешить пользователям скрывать это объявление',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Ограничить место, где должно отображаться это объявление',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Выберите одно или несколько мест для отображения объявления. Чтобы отображать его везде, оставьте выбор пустым. Используйте команду «Command» (Mac) или «Control» (Windows), чтобы выбрать несколько мест.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Все',
 
@@ -78,8 +78,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Завершено',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Везде',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Индекс Совета',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Избранные форумы',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Нет объявлений для отображения',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Создать объявление',
@@ -89,7 +89,7 @@ $lang = array_merge($lang, array(
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Объявления на форуме не смогли получить блокировку таблицы. Другой процесс может удерживать блокировку. Блокировки принудительно снимаются по истечении таймаута в 1 час.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'Запрошенное объявление не существует.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'Запрошенное объявление не имеет родительского элемента.',
 ));

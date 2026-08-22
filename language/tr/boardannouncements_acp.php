@@ -51,8 +51,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Bu site duyurusunu göster',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Bu site duyurusunu kimler görebilir',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Kullanıcıların bu site duyurusunu savmalarına izin ver',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Bu duyurunun görüntüleneceği yeri sınırlayın',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Duyuruyu görüntülemek için bir veya daha fazla konum seçin. Her yerde görüntülemek için seçimi boş bırakın. Birden fazla konum seçmek için Komut (Mac) veya Kontrol (Windows) tıklamasını kullanın.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Herkes',
 
@@ -78,8 +78,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Süresi bitmiş',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Her yer',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Yönetim Kurulu İndeksi',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Seçilen Forumlar',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Gösterilecek site duyurusu yok',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Duyuru Oluştur',

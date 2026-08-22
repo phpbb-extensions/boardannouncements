@@ -6,7 +6,7 @@
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
-*
+* Polskie tłumaczenie: Tomasz Hetman - ToTemat YT
 */
 
 /**
@@ -39,58 +39,57 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Ustawienia ogłoszeń',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Tutaj możesz zarządzać i stworzyć ogłoszenie, które będzie wyświetlane na każdej stronie forum.',
+	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Ustawienia ogłoszeń witryny',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Tutaj możesz tworzyć i zarządzać ogłoszeniami na swojej witrynie.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Włącz ogłoszenia witryny',
 
-	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
+	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Opcje ogłoszeń witryny',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Opis',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Krótki opis ogłoszenia. Będzie on widoczny tylko tutaj, w Panelu Administracyjnym, aby ułatwić identyfikację ogłoszenia.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Wyświetl ogłoszenie',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kto może zobaczyć to ogłoszenie',
-	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Zezwalaj użytkownikom na zamknięcie ogłoszenia',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Wyświetlaj to ogłoszenie',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Kto może widzieć to ogłoszenie',
+	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Pozwól użytkownikom na ukrycie tego ogłoszenia',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Ogranicz miejsca wyświetlania tego ogłoszenia',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Wybierz jedną lub więcej lokalizacji, w których ma być wyświetlane ogłoszenie. Aby wyświetlać je wszędzie, pozostaw pole puste. Użyj klawisza Command (Mac) lub Control (Windows), aby wybrać wiele lokalizacji.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Wszyscy',
 
-	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Kolor tła ogłoszenia',
-	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Możesz zmienić kolor tła ogłoszenia używając kodu hex (szesnastkowego) np.: FFFF80. Pozostaw pole puste, aby użyć domyślnego koloru.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Kolor tła',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Możesz zmienić kolor tła ogłoszenia, używając kodu hex (np. FFFF80). Pozostaw to pole puste, aby użyć domyślnego koloru.',
 
-	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data ważności ogłoszenia forum',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Ustaw datę kiedy ogłoszenie wygaśnie i stanie się niedostępne. Pozostaw puste pole, jeśli nie chcesz, aby ogłoszenie przestało obowiązywać.',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Data ważności była nieprawidłowa lub już wygasła.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data wygaśnięcia',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Ustaw datę, po której ogłoszenie wygaśnie i zostanie wyłączone. Pozostaw puste, jeśli ogłoszenie ma nie wygasać.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Data wygaśnięcia jest nieprawidłowa lub już minęła.',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
-	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Treść ogłoszenia',
-	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Ogłoszenie - Podgląd',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Ogłoszenie witryny nie zawiera treści',
+	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Treść ogłoszenia witryny',
+	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Podgląd ogłoszenia witryny',
 
-	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Ogłoszenie zostało zaktualizowane.',
+	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Ogłoszenie witryny zostało zaktualizowane.',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Opis',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Lokalizacja',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Widoczne dla',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Włączone',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Data utworzenia',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Data wygaśnięcia',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Wygasło',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Wszędzie',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Strona główna forum',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Wybrane fora',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Brak ogłoszeń do wyświetlenia',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Utwórz ogłoszenie',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Ogłoszenie witryny zostało usunięte',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Nie udało się usunąć ogłoszenia witryny',
 
-	// Nested set exception messages (only appears in PHP error logging)
-	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	// Komunikaty wyjątków Nested Set (pojawiają się tylko w logach błędów PHP)
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Ogłoszenia witryny nie mogły uzyskać blokady tabeli. Inny proces może trzymać blokadę. Blokady są wymuszane po upływie godziny.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'Żądane ogłoszenie nie istnieje.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'Żądane ogłoszenie nie posiada nadrzędnego elementu.',
 ));

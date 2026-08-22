@@ -41,10 +41,10 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	// ACP Module
 	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Oznámenia fóra',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Nastavenia oznámenia',
+	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Nastavenie oznámenia',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>A board announcement was created</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>A board announcement was updated</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>A board announcement was deleted</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>Oznámenie fóra bolo vytvorené</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Oznámenie fóra bolo aktualizované</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>Oznámenie fóra bolo vymazané</strong><br>» %s',
 ));

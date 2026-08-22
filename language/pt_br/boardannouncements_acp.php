@@ -52,8 +52,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Exibir este anúncio',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Quem pode ver este anúncio',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permitir que os usuários fechem este anúncio',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limite onde este anúncio deve ser exibido',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Selecione um ou mais locais para exibir o anúncio. Para exibi-lo em qualquer lugar, deixe a seleção vazia. Use Command (Mac) ou Control (Windows) e clique para selecionar vários locais.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos',
 
@@ -79,8 +79,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expirado',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Todos os lugares',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Índice do Conselho',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Fóruns selecionados',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Não há nenhum anúncio para exibir',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Criar Anúncio',

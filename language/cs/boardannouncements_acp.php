@@ -42,18 +42,18 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Nastavení Board oznámení',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Zde můžete spravovat a vytvořit oznámení, které se bude zobrazovat na každé stránce vašeho fóra.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Povolit oznámení na nástěnce',
 
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Popis',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Krátký popis tohoto oznámení. Toto bude viditelné pouze zde v AKT, aby bylo možné toto oznámení identifikovat.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Zobrazí toto oznámení',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Komu nechat zobrazit toto oznámení',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Povolit uživatelům odmítnout toto oznámení',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Omezte, kde se má toto oznámení zobrazovat',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Vyberte jedno nebo více umístění pro zobrazení oznámení. Chcete-li jej zobrazit všude, ponechte výběr prázdný. Pomocí Command (Mac) nebo Control (Windows) kliknutím vyberte více umístění.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Každý',
 
@@ -64,33 +64,33 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Nastavte datum vypršení platnosti oznámení a jeho zrušení. Nechte toto pole prázdné, pokud nechcete, aby oznámení vypršela.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Datum vypršení platnosti bylo neplatné nebo již vypršela.',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Oznámení rady neobsahuje žádnou zprávu',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Board oznámení zpráva',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Board oznámení - náhled',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Board oznámení bylo aktualizováno.',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Popis',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Umístění',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Viditelné pro',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Povoleno',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Datum vytvoření',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Datum spotřeby',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Platnost vypršela',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Všude',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Index desky',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Vybraná fóra',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Nejsou zde žádná oznámení na fóru k zobrazení',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Vytvořit oznámení',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Oznámení rady bylo smazáno',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Oznámení fóra se nepodařilo smazat',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Oznámení rady se nepodařilo získat zámek stolu. Dalším procesem může být držení zámku. Zámky jsou násilně uvolněny po uplynutí 1 hodiny.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'Požadované oznámení neexistuje.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'Požadované oznámení nemá rodiče.',
 ));

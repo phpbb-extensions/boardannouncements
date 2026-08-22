@@ -52,8 +52,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Mostrar este Anuncio del Foro',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '¿Quién puede ver los anuncios del foro?',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permitir a los usuarios descartar este Anuncio del Foro',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Límite donde se debe mostrar este anuncio',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Seleccione una o más ubicaciones para mostrar el anuncio. Para mostrarlo en todas partes, deje la selección vacía. Utilice Comando (Mac) o Control (Windows), haga clic para seleccionar varias ubicaciones.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos los usarios',
 
@@ -79,8 +79,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expirado',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'En todos lados',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Índice del tablero',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Foros seleccionados',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'No hay anuncios del foro para mostrar',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Crear anuncio',

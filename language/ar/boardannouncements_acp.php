@@ -42,18 +42,18 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'إعدادات لوحة الإعلانات',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'هنا يمكنك إدارة وإنشاء لوحات إعلانية تظهر في جميع صفحات منتداك.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'تمكين إعلانات المجلس',
 
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'وصف',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'وصف موجز لهذا الإعلان. سيكون هذا مرئيًا هنا فقط في ACP للمساعدة في تحديد هذا الإعلان.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'عرض لوحة الإعلانات هذه',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'من يستطيع مشاهدة لوحة الإعلانات هذه',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'السماح للمستخدمين برفض لوحة الإعلانات هذه',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'تحديد المكان الذي يجب أن يتم عرض هذا الإعلان فيه',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'حدد موقعًا واحدًا أو أكثر لعرض الإعلان. لعرضه في كل مكان، اترك التحديد فارغًا. استخدم زر الأوامر (Mac) أو التحكم (Windows) لتحديد مواقع متعددة.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'كل واحد',
 
@@ -64,33 +64,33 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'ضع تاريخ لإخفاء لوحة الإعلانات أوتوماتيكيا. اتركها فارغة لجعل لوحة الإعلانات دائمة وغير محددة بتاريخ.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'تاريخ الانتهاء غير صالح أو أنه مضى.',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'إعلان المنتدى لا يحتوي على رسالة',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'رسالة لوحة الاعلانات',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'معاينة - لوحة الاعلانات',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'تم تحديث لوحة الاعلانات.',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'وصف',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'موقع',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'مرئي ل',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'ممكّن',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'تاريخ الإنشاء',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'تاريخ انتهاء الصلاحية',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'منتهي الصلاحية',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'في كل مكان',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'مؤشر المجلس',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'المنتديات المختارة',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'لا توجد إعلانات لوحة لعرضها',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'إنشاء إعلان',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'تم حذف إعلان المجلس',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'لا يمكن حذف إعلان المجلس',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'فشلت إعلانات اللوحة في الحصول على قفل الجدول. قد تكون عملية أخرى هي الضغط على القفل. يتم تحرير الأقفال قسراً بعد مهلة قدرها ساعة واحدة.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'الإعلان المطلوب غير موجود.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'الإعلان المطلوب ليس له أصل.',
 ));
