@@ -35,7 +35,7 @@ class m13_locations_data extends \phpbb\db\migration\container_aware_migration
 	{
 		$sql = 'SELECT announcement_id
 			FROM ' . $this->table_prefix . "board_announcements
-			WHERE announcement_locations != ''";
+			WHERE announcement_locations <> ''";
 		$result = $this->db->sql_query_limit($sql, 1);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);

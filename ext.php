@@ -27,7 +27,7 @@ class ext extends \phpbb\extension\base
 	 * Requires >= phpBB 3.3.0 and < 4.0.0-dev
 	 *
 	 * @return bool
-	 * @aceess public
+	 * @access public
 	 */
 	public function is_enableable()
 	{

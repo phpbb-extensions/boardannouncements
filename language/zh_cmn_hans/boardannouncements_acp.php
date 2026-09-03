@@ -47,17 +47,19 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> '公告选项',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> '描述',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> '描述过长。某些特殊字符需要额外的存储空间。',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> '一个简短的公告描述。只显示在 ACP，用于标识此公告。',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '显示这条论坛公告',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '允许查看公告的用户',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允许用户关闭这条论坛公告',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> '限制此公告显示位置',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> '选择一个或者多个位置来显示公告。留空则不限制。使用 Command 键（Mac） 或者 Control 键 （Windows）来选择多个位置。',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '所有用户',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '论坛公告背景颜色',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> '背景颜色必须是六位十六进制颜色代码。',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六进制代码改变论坛公告北京颜色（比如：FFFF80）。留空则使用默认的背景颜色。',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> '论坛公告到期日期',
@@ -79,8 +81,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> '已过期',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> '任何地方',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> '论坛首页',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> '选择板块',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> '没有论坛公告可显示T',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> '创建论坛公告',
@@ -90,7 +92,7 @@ $lang = array_merge($lang, array(
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> '董事会公告未能获取表锁。另一个进程可能正在持有锁。超时1小时后强制释放锁。',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> '所请求的公告不存在。',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> '所请求的公告没有父级。',
 ));

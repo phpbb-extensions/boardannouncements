@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Options d‘annonce',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'La description est trop longue. Certains caractères spéciaux nécessitent un espace de stockage supplémentaire.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Une brève description de cette annonce. Cela ne sera visible qu‘ici dans le PCA pour aider à identifier cette annonce.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Afficher l’annonce du forum',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Tous les utilisateurs',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Couleur d’arrière-plan de l’annonce du forum',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'La couleur d’arrière-plan doit être un code couleur hexadécimal à six caractères.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Vous pouvez modifier la couleur d’arrière-plan de l’annonce en utilisant un code hexadécimal (ex.: FFFF80). Laissez ce champ vide pour utiliser la couleur par défaut.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Date d’expiration de l’annonce du forum',

@@ -55,10 +55,10 @@ class nestedset extends \phpbb\tree\nestedset
 	 */
 	public function where_visible($user_id)
 	{
-		$this->sql_where = '%s' . $this->column_item_id . ' NOT IN(SELECT ' . $this->column_item_id . '
+		$this->sql_where = '%1$s' . $this->column_item_id . ' NOT IN(SELECT ' . $this->column_item_id . '
 			FROM ' . $this->tracking_table_name . ' WHERE user_id = ' . (int) $user_id . ')
-			AND announcement_enabled = 1
-			AND (announcement_expiry = 0 OR announcement_expiry > ' . time() . ')';
+			AND %1$sannouncement_enabled = 1
+			AND (%1$sannouncement_expiry = 0 OR %1$sannouncement_expiry > ' . time() . ')';
 
 		return $this;
 	}
@@ -91,6 +91,7 @@ class nestedset extends \phpbb\tree\nestedset
 	 *
 	 * @param int $item_id The item identifier
 	 * @return int|false Number of rows affected, or false
+	 * @throws \OutOfBoundsException
 	 */
 	public function delete_tracked_items($item_id)
 	{
@@ -123,6 +124,19 @@ class nestedset extends \phpbb\tree\nestedset
 		}
 
 		unset($item);
+
+		$sql = 'SELECT 1 AS tracked
+			FROM ' . $this->tracking_table_name . '
+			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id . '
+				AND user_id = ' . (int) $data['user_id'];
+		$result = $this->db->sql_query_limit($sql, 1);
+		$tracked = (bool) $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		if ($tracked)
+		{
+			return 1;
+		}
 
 		$sql = 'INSERT INTO ' . $this->tracking_table_name . ' ' .
 			$this->db->sql_build_array('INSERT', array_merge($data, [$this->column_item_id => (int) $item_id]));

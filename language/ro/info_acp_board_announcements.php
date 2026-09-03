@@ -39,11 +39,11 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Anunţuri forum',
-	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Setări anunţuri',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Anunturi de bord',
+	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Setări',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>A board announcement was created</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>A board announcement was updated</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>A board announcement was deleted</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>Un anunț de forum a fost creat</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Un anunț de forum a fost actualizat</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>Un anunț de forum a fost șters</strong><br>» %s',
 ));

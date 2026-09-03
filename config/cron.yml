@@ -6,6 +6,6 @@ services:
             - '@config'
             - '@phpbb.boardannouncements.manager'
         calls:
-            - [set_name, [cron.task.disable_expired]]
+            - [set_name, [cron.task.boardannouncements.disable_expired]]
         tags:
             - { name: cron.task }

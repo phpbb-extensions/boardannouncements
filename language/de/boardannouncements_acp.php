@@ -47,17 +47,19 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Ankündigungsoptionen',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Beschreibung',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Die Beschreibung ist zu lang. Einige Sonderzeichen benötigen zusätzlichen Speicherplatz.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Eine kurze Beschreibung für diese Ankündigung. Dies wird lediglich im ACP angezeigt, um bei der Identifizierung dieser Ankündigung zu helfen.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Diese Board-Ankündigung anzeigen',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Wer kann diese Board-Ankündigung sehen',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Mitgliedern erlauben, die Board-Ankündigung zu schließen',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Begrenzen Sie, wo diese Ankündigung angezeigt werden soll',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Wählen Sie einen oder mehrere Orte aus, an denen die Ankündigung angezeigt werden soll. Um es überall anzuzeigen, lassen Sie die Auswahl leer. Klicken Sie mit der Befehlstaste (Mac) oder der Strg-Taste (Windows), um mehrere Speicherorte auszuwählen.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alle',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Hintergrundfarbe der Board-Ankündigung',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Die Hintergrundfarbe muss ein sechsstelliger hexadezimaler Farbcode sein.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kannst die Hintergrundfarbe der Ankündigung mittels HEX-Code ändern (Beispiel: #FFFF80). Lasse den Wert frei, um die Standardfarbe zu nutzen.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Ablaufdatum der Board-Ankündigung einstellen',
@@ -79,8 +81,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Abgelaufen',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Überall',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board-Index',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Ausgewählte Foren',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Da sind keine Board-Ankündigungen zur Anzeige',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Erstelle Ankündigung',

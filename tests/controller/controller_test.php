@@ -116,7 +116,7 @@ class controller_test extends \phpbb_database_test_case
 				1, // Announcement ID
 				1, // Guest
 				false, // Guest is not a registered user
-				'close_boardannouncement',
+				'close_boardannouncement1',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -126,7 +126,7 @@ class controller_test extends \phpbb_database_test_case
 				1, // Announcement ID
 				2, // Member
 				true, // Member is a registered user
-				'close_boardannouncement',
+				'close_boardannouncement1',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie and status were set
@@ -136,7 +136,7 @@ class controller_test extends \phpbb_database_test_case
 				1, // Announcement ID
 				0, // Invalid member
 				false, // Set is_registered to false with invalid user_id
-				'close_boardannouncement',
+				'close_boardannouncement1',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -146,7 +146,7 @@ class controller_test extends \phpbb_database_test_case
 				1, // Announcement ID
 				1, // Guest
 				false, // Guest is not a registered user
-				'close_boardannouncement',
+				'close_boardannouncement1',
 				false,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -211,7 +211,7 @@ class controller_test extends \phpbb_database_test_case
 				9,
 				2,
 				true, // Guest is a registered user
-				'close_boardannouncement',
+				'close_boardannouncement9',
 				true,
 				403,
 				'NO_AUTH_OPERATION',
@@ -220,7 +220,16 @@ class controller_test extends \phpbb_database_test_case
 				4,
 				2,
 				true, // Guest is a registered user
-				'close_boardannouncement',
+				'close_boardannouncement4',
+				true,
+				403,
+				'NO_AUTH_OPERATION',
+			],
+			[	// test hash bound to a different announcement
+				1,
+				2,
+				true,
+				'close_boardannouncement2',
 				true,
 				403,
 				'NO_AUTH_OPERATION',

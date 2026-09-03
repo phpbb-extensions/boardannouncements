@@ -39,4 +39,14 @@ class manager_get_visible_test extends manager_base
 
 		self::assertEquals($expected, array_column($result, 'announcement_description'));
 	}
+
+	/**
+	 * Visibility restrictions qualify every column in aliased nested-set queries
+	 */
+	public function test_visibility_restrictions_with_aliased_query()
+	{
+		$this->manager->get_visible_announcements(3);
+
+		self::assertSame('ANNOUNCEMENT 1', $this->manager->get_announcement(1)['announcement_description']);
+	}
 }

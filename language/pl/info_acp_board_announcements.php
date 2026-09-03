@@ -6,7 +6,7 @@
 *
 * @copyright (c) 2014 phpBB Limited <https://www.phpbb.com>
 * @license GNU General Public License, version 2 (GPL-2.0)
-*
+* Polskie tłumaczenie: Tomasz Hetman - ToTemat YT
 */
 
 /**
@@ -40,11 +40,11 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Ogłoszenia',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Ogłoszenia witryny',
 	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Ustawienia ogłoszeń',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>A board announcement was created</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>A board announcement was updated</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>A board announcement was deleted</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>Utworzono ogłoszenie witryny</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Zaktualizowano ogłoszenie witryny</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>Usunięto ogłoszenie witryny</strong><br>» %s',
 ));
