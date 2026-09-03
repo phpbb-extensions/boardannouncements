@@ -106,10 +106,11 @@ class listener implements EventSubscriberInterface
 	/**
 	 * Display board announcements
 	 *
+	 * @param \phpbb\event\data $event Event data
 	 * @return void
 	 * @access public
 	 */
-	public function display_board_announcements()
+	public function display_board_announcements($event)
 	{
 		// Do not continue if board announcements are disabled
 		if (!$this->config['board_announcements_enable'])
@@ -119,6 +120,10 @@ class listener implements EventSubscriberInterface
 
 		// Add board announcements language file
 		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
+
+		$this->location = $this->user->page['page_name'] === "index.$this->php_ext"
+			? ext::INDEX_ONLY
+			: ($event['item'] === 'forum' ? (int) $event['item_id'] : 0);
 
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
@@ -162,11 +167,6 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function get_current_location()
 	{
-		if (!isset($this->location))
-		{
-			$this->location = $this->user->page['page_name'] === "index.$this->php_ext" ? ext::INDEX_ONLY : $this->request->variable('f', 0);
-		}
-
 		return $this->location;
 	}
 

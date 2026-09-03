@@ -263,6 +263,34 @@ class listener_test extends \phpbb_database_test_case
 
 		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.page_header_after', [$this->listener, 'display_board_announcements']);
-		$dispatcher->trigger_event('core.page_header_after');
+		$dispatcher->trigger_event('core.page_header_after', [
+			'item' => 'forum',
+			'item_id' => $page === 'viewforum' ? 2 : 0,
+		]);
+	}
+
+	public function test_query_forum_id_does_not_scope_unrelated_page()
+	{
+		$this->db->sql_query("UPDATE phpbb_board_announcements
+			SET announcement_locations = '[2]'
+			WHERE announcement_id = 1");
+
+		$this->user->data['user_id'] = 2;
+		$this->user->page['page_name'] = "memberlist.$this->php_ext";
+		$this->config['board_announcements_enable'] = true;
+
+		$this->set_listener();
+
+		$this->template->expects(self::never())
+			->method('assign_block_vars');
+		$this->request->expects(self::never())
+			->method('variable');
+
+		$dispatcher = new \phpbb\event\dispatcher();
+		$dispatcher->addListener('core.page_header_after', [$this->listener, 'display_board_announcements']);
+		$dispatcher->trigger_event('core.page_header_after', [
+			'item' => 'forum',
+			'item_id' => 0,
+		]);
 	}
 }

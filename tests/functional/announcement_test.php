@@ -252,6 +252,13 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $forum_id));
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
 		self::assertStringContainsString('Everywhere announcement', $crawler->filter('#phpbb_announcement_' . $everywhere_id)->text());
+
+		// Test unrelated page with spoofed forum id - see everywhere
+		$crawler = self::request('GET', 'memberlist.php?f=2&amp;sid=' . $this->sid);
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
 	}
 
 	/**
