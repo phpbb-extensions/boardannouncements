@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
 	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> '公告設定',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>A board announcement was created</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>A board announcement was updated</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>A board announcement was deleted</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>討論區公告已建立</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>討論區公告已更新</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>討論區公告已刪除</strong><br>» %s',
 ));

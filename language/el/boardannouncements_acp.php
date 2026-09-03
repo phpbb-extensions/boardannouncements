@@ -47,17 +47,19 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Επιλογές ανακοινώσεων',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Περιγραφή',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Η περιγραφή είναι πολύ μεγάλη. Ορισμένοι ειδικοί χαρακτήρες απαιτούν επιπλέον χώρο αποθήκευσης.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Μια σύντομη περιγραφή της ανακοίνωσης. Αυτή θα είναι ορατή μόνο στο ACP για να αναγνωρίζετε την ανακοίνωση.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Εμφάνιση της ανακοίνωσης',
-	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Ποιος μπορεί να δει αυτή την ανακοίνωσης',
+	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Ποιος μπορεί να δει αυτή την ανακοίνωση',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Επιτρέψτε στα μέλη να κλείνουν το πλαίσιο της ανακοίνωσης',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Περιορίστε το που θα εμφανίζεται αυτή η ανακοίνωση',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Επιλέξτε μια ή περισσότερες τοποθεσίες που θα εμφανίζεται η ανακοίνωση. Για να εμφανίζεται παντού, αφήστε αυτή την επιλογή κενή. Χρησιμοποιήστε το Command (Mac) ή το Control (Windows) και κλικ για πολλαπλή επιλογή.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Καθένας',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Χρώμα φόντου ανακοίνωσης',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Το χρώμα φόντου πρέπει να είναι ένας εξαψήφιος δεκαεξαδικός κωδικός χρώματος.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Μπορείτε να αλλάξετε το χρώμα του φόντου της ανακοίνωσης χρησιμοποιώντας δεκαεξαδικό κωδικό χρώματος (π.χ: FFFF80). Αφήστε αυτό το πεδίο κενό για να χρησιμοποιήσετε το προεπιλεγμένο χρώμα.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Ημερομηνία λήξης ανακοίνωσης',
@@ -79,8 +81,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Έληξε',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Παντού',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Ευρετήριο πινάκων',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Επιλεγμένα φόρουμ',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Δεν υπάρχουν ανακοινώσεις για εμφάνιση',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Δημιουργία ανακοίνωσης',

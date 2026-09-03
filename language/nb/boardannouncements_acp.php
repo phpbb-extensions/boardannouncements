@@ -42,55 +42,57 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Instillinger for forummeldinger',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Her kan du behandle og opprette en forummelding som vil bli vist på hver side i forumet ditt.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Aktiver tavlekunngjøringer',
 
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Beskrivelse',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Beskrivelsen er for lang. Noen spesialtegn krever ekstra lagringsplass.',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'En kort beskrivelse av denne kunngjøringen. Dette vil bare være synlig her i ACP for å hjelpe med å identifisere denne kunngjøringen.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Vis denne forummeldingen',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Hvem kan se denne forummeldingen',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'La brukere lukke denne forummeldingen',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Begrens hvor denne kunngjøringen skal vises',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Velg ett eller flere steder for å vise kunngjøringen. For å vise den overalt, la utvalget stå tomt. Bruk Kommando (Mac) eller Kontroll (Windows) klikk for å velge flere plasseringer.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alle',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Bakgrunnsfarge for forummeldingen',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Bakgrunnsfargen må være en sekssifret heksadesimal fargekode.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan endre bakgrunnsfarge for forummeldingen ved å angi en hex-kode (f.eks.: FFFF80). La dette feltet stå tomt for å bruke standardfargen.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Utløpsdato for forummeldingen',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Still inn datoen da kunngjøringen vil utløpe og bli deaktivert. La feltet være tomt hvis du ikke vil at kunngjøringen skal utløpe.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Utløpsdatoen var ugyldig eller er allerede utløpt.',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Styrekunngjøring inneholder ingen melding',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Forummelding',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Forummelding - forhåndsvisning',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Forummeldingen har blitt oppdatert.',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Beskrivelse',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Sted',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Synlig for',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Aktivert',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Opprettelsesdato',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Utløpsdato',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Utløpt',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Overalt',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Styreindeks',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Utvalgte fora',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Det er ingen tavlekunngjøringer å vise',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Lag kunngjøring',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Styrekunngjøringen ble slettet',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Styrekunngjøringen kunne ikke slettes',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Styrekunngjøringer klarte ikke å skaffe bordlåsen. En annen prosess kan være å holde låsen. Låser tvangsutløses etter en timeout på 1 time.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'Den forespurte kunngjøringen eksisterer ikke.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'Den forespurte kunngjøringen har ingen forelder.',
 ));

@@ -47,17 +47,19 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Opciones del anuncio',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Descripción',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'La descripción es demasiado larga. Algunos caracteres especiales requieren espacio de almacenamiento adicional.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Una breve descripción de este anuncio. Esto solo será visible aquí en el PCA para ayudar a identificar este anuncio.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Mostrar este Anuncio del Foro',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '¿Quién puede ver los anuncios del foro?',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Permitir a los usuarios descartar este Anuncio del Foro',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Límite donde se debe mostrar este anuncio',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Seleccione una o más ubicaciones para mostrar el anuncio. Para mostrarlo en todas partes, deje la selección vacía. Utilice Comando (Mac) o Control (Windows), haga clic para seleccionar varias ubicaciones.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos los usarios',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Color del fondo del anuncio del foro',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'El color de fondo debe ser un código de color hexadecimal de seis caracteres.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puede cambiar el color del fondo del anuncio usando código hexadecimal (por ejemplo: FFFF80). Deje este campo en blanco para usar el color por defecto.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Fecha de caducidad del anuncio del foro',
@@ -79,8 +81,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expirado',
 
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'En todos lados',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Índice del tablero',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Foros seleccionados',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'No hay anuncios del foro para mostrar',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Crear anuncio',

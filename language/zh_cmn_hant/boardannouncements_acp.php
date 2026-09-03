@@ -40,57 +40,59 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> '討論區公告設定',
-	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> '在這裡，您可以管理與建立討論區公告，它將顯示在討論區的每一頁。',
+	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> '在這裡，可以建立與管理您的討論區公告。',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> '啟用討論區公告',
 
-	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
+	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> '討論區公告選項',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> '描述',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> '描述過長。某些特殊字元需要額外的儲存空間。',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> '此公告的簡短說明。這僅在 ACP 中可見，以幫助識別此公告。',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '顯示這則討論區公告設定',
+	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '顯示此公告',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> '誰可以查看此討論區公告',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> '允許使用者關閉這則討論區公告',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> '限制此公告的顯示位置',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> '選擇一個或多個位置來顯示公告。要在各處顯示它，請將選擇留空。使用 Command (Mac) 或 Control (Windows) 點選來選擇多個位置。',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '每個人',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '討論區公告背景顏色',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> '背景顏色必須是六位十六進位顏色代碼。',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六進制代碼改變討論區公告背景顏色（例如：FFFF80）。欄位留白，則使用預設的顏色。',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> '討論區公告截止日期',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> '設定公告將到期的日期並變為停用。如果您不希望公告過期，請將此欄位留白。',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> '截止日期無效或已過期。',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> '討論區公告不包含任何訊息',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> '討論區公告訊息',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> '討論區公告 - 預覽',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> '討論區公告已更新。',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> '描述',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> '位置',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> '可見',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> '啟用',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> '建立日期',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> '截止日期',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> '已過期',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> '每個地方',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> '討論區首頁',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> '選擇的版面',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> '沒有可顯示的討論區公告',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> '建立公告',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> '討論區公告已刪除',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> '討論區公告無法刪除',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> '公告未取得表格鎖定。另一個進程可能正在持有鎖定。超時1小時後強制釋放鎖定。',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> '要求的公告不存在。',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> '要求的公告沒有上層公告。',
 ));

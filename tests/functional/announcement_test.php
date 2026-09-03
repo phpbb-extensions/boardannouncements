@@ -124,12 +124,17 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 
 		// Wrong ID
-		$crawler = self::request('GET', 'index.php/boardannouncements/close/0?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid, [], false);
+		$crawler = self::request('GET', 'index.php/boardannouncements/close/0?hash=' . $this->mock_link_hash('close_boardannouncement0') . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// Wrong hash
 		$crawler = self::request('GET', 'index.php/boardannouncements/close/1?hash=wrong&sid=' . $this->sid, [], false);
+		self::assert_response_status_code(403);
+		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
+
+		// Hash for a different announcement
+		$crawler = self::request('GET', 'index.php/boardannouncements/close/2?hash=' . $this->mock_link_hash('close_boardannouncement1') . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
@@ -146,7 +151,7 @@ class announcement_test extends \phpbb_functional_test_case
 	{
 		$this->login();
 
-		self::request('GET', 'index.php/boardannouncements/close/1?hash=' . $this->mock_link_hash('close_boardannouncement') . '&sid=' . $this->sid);
+		self::request('GET', 'index.php/boardannouncements/close/1?hash=' . $this->mock_link_hash('close_boardannouncement1') . '&sid=' . $this->sid);
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
 	}
@@ -252,6 +257,43 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $forum_id));
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
 		self::assertStringContainsString('Everywhere announcement', $crawler->filter('#phpbb_announcement_' . $everywhere_id)->text());
+
+		// Test unrelated page with spoofed forum id - see everywhere
+		$crawler = self::request('GET', 'memberlist.php?f=2&amp;sid=' . $this->sid);
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
+	}
+
+	/**
+	 * Test encoded Unicode descriptions are decoded when rendered in the ACP
+	 */
+	public function test_unicode_description_rendering()
+	{
+		$this->login();
+		$this->admin_login();
+
+		$description = 'Emoji 😀 & "quoted" <text>';
+		$id = $this->create_announcement([
+			'board_announcements_description' => $description,
+		]);
+
+		$this->get_db();
+		$sql = 'SELECT announcement_description
+			FROM phpbb_board_announcements
+			WHERE announcement_id = ' . (int) $id;
+		$result = $this->db->sql_query($sql);
+		$stored_description = $this->db->sql_fetchfield('announcement_description');
+		$this->db->sql_freeresult($result);
+
+		self::assertStringContainsString('&#128512;', $stored_description);
+
+		$crawler = self::request('GET', $this->get_acp_page());
+		self::assertStringContainsString($description, $crawler->filter('table > tbody')->text());
+
+		$crawler = self::request('GET', $this->get_acp_page('add', $id));
+		self::assertSame($description, $crawler->filter('#board_announcements_description')->attr('value'));
 	}
 
 	/**

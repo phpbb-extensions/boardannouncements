@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
 	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Cấu hình bảng thông báo',
 
 	// ACP Logs
-	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>A board announcement was created</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>A board announcement was updated</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>A board announcement was deleted</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>Thông báo trên bảng đã được tạo</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Thông báo của hội đồng đã được cập nhật</strong><br>» %s',
+	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>Thông báo trên bảng đã bị xóa</strong><br>» %s',
 ));

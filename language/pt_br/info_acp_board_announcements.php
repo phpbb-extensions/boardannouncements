@@ -40,7 +40,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// ACP Module
-	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Board Announcements',
+	'ACP_BOARD_ANNOUNCEMENTS'				=> 'Anúncios do Conselho',
 	'ACP_BOARD_ANNOUNCEMENTS_SETTINGS'		=> 'Opções de anúncio',
 
 	// ACP Logs

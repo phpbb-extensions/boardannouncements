@@ -264,7 +264,7 @@ class manager
 			'announcement_expiry'		=> 0,
 			'announcement_uid'			=> '',
 			'announcement_bitfield'		=> '',
-			'announcement_flags'			=> OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS,
+			'announcement_flags'		=> OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS,
 		];
 	}
 }

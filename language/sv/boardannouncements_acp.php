@@ -42,55 +42,57 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Inställningar för forummeddelanden',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Här kan du hantera och skapa ett forummeddelande som kommer att visas på varje sida i ditt forum.',
 
-	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Enable board announcements',
+	'BOARD_ANNOUNCEMENTS_ENABLE_ALL'		=> 'Aktivera styrelsemeddelanden',
 
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
-	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
-	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Beskrivning',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Beskrivningen är för lång. Vissa specialtecken kräver ytterligare lagringsutrymme.',
+	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'En kort beskrivning av detta tillkännagivande. Detta kommer bara att vara synligt här i ACP för att hjälpa till att identifiera detta tillkännagivande.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Visa detta forummeddelande',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Vem kan se detta forummeddelande',
 	'BOARD_ANNOUNCEMENTS_DISMISS'			=> 'Tillåt användare att stänga detta forummeddelande',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Limit where this announcement should be displayed',
-	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Select one or more locations to display the announcement. To display it everywhere, leave the selection empty. Use Command (Mac) or Control (Windows) click to select multiple locations.',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS'			=> 'Begränsa var detta meddelande ska visas',
+	'BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN'	=> 'Välj en eller flera platser för att visa meddelandet. För att visa den överallt, lämna markeringen tom. Använd Kommando (Mac) eller Kontroll (Windows) klicka för att välja flera platser.',
 
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alla',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forummeddelandets bakgrundsfärg',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Bakgrundsfärgen måste vara en hexadecimal färgkod med sex tecken.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ändra forummeddelandets bakgrundsfärg genom att ange en hex-kod (t.ex.: FFFF80). Lämna fältet tomt om du vill använda standardfärgen.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Forummeddelandets utgångsdatum',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Ange datum då meddelandet upphör och bli inaktiverat. Lämna det här fältet tomt om du inte vill att meddelandet upphör att gälla.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'Utgångsdatumet var ogiltigt eller har redan gått ut.',
 
-	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
+	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Styrelsens meddelande innehåller inget meddelande',
 	'BOARD_ANNOUNCEMENTS_TEXT'				=> 'Forummeddelande',
 	'BOARD_ANNOUNCEMENTS_PREVIEW'			=> 'Forummeddelande - förhandsgranskning',
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Forummeddelandet har uppdaterats.',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
-	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
-	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',
-	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Creation Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Expiration Date',
-	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Expired',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Beskrivning',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Plats',
+	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Synlig för',
+	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Aktiverad',
+	'BOARD_ANNOUNCEMENTS_TH_CREATED_DATE'	=> 'Skapandedatum',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE'	=> 'Utgångsdatum',
+	'BOARD_ANNOUNCEMENTS_TH_EXPIRED'		=> 'Utgått',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
-	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Selected Forums',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Överallt',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Styrelseindex',
+	'BOARD_ANNOUNCEMENTS_FORUMS'			=> 'Utvalda forum',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
-	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create Announcement',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'Det finns inga styrelsemeddelanden att visa',
+	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Skapa meddelande',
 
-	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
-	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
+	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Styrelsens kungörelse raderades',
+	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Styrelsens meddelande kunde inte raderas',
 
 	// Nested set exception messages (only appears in PHP error logging)
 	// Translating these strings is optional.
-	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Board announcements failed to acquire the table lock. Another process may be holding the lock. Locks are forcibly released after a timeout of 1 hour.',
-	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'The requested announcement does not exist.',
-	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'The requested announcement has no parent.',
+	'BOARD_ANNOUNCEMENTS_LOCK_FAILED_ACQUIRE'	=> 'Styrelsens meddelanden lyckades inte få bordslåset. En annan process kan vara att hålla låset. Lås tvångslöses efter en timeout på 1 timme.',
+	'BOARD_ANNOUNCEMENTS_INVALID_ITEM'			=> 'Det begärda tillkännagivandet finns inte.',
+	'BOARD_ANNOUNCEMENTS_INVALID_PARENT'		=> 'Det begärda meddelandet har ingen förälder.',
 ));
