@@ -55,4 +55,20 @@ class manager_save_announcement_test extends manager_base
 			self::assertEquals($expected, $this->manager->get_announcement_data($id, $key));
 		}
 	}
+
+	/**
+	 * Test direct manager writes encode Unicode descriptions for every DBMS
+	 */
+	public function test_save_announcement_encodes_unicode_description()
+	{
+		$data = $this->data_save_announcement()[0][1];
+		$data['announcement_description'] = 'Unicode 😀 中文 Кириллица announcement';
+
+		$this->manager->save_announcement($data);
+
+		self::assertSame(
+			'Unicode &#128512; &#20013;&#25991; &#1050;&#1080;&#1088;&#1080;&#1083;&#1083;&#1080;&#1094;&#1072; announcement',
+			$this->manager->get_announcement_data(6, 'announcement_description')
+		);
+	}
 }
