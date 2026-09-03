@@ -55,10 +55,10 @@ class nestedset extends \phpbb\tree\nestedset
 	 */
 	public function where_visible($user_id)
 	{
-		$this->sql_where = '%s' . $this->column_item_id . ' NOT IN(SELECT ' . $this->column_item_id . '
+		$this->sql_where = '%1$s' . $this->column_item_id . ' NOT IN(SELECT ' . $this->column_item_id . '
 			FROM ' . $this->tracking_table_name . ' WHERE user_id = ' . (int) $user_id . ')
-			AND announcement_enabled = 1
-			AND (announcement_expiry = 0 OR announcement_expiry > ' . time() . ')';
+			AND %1$sannouncement_enabled = 1
+			AND (%1$sannouncement_expiry = 0 OR %1$sannouncement_expiry > ' . time() . ')';
 
 		return $this;
 	}
