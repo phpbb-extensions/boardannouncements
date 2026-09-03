@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Description is too long. Some special characters require additional storage.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Display this announcement',
 	'BOARD_ANNOUNCEMENTS_USERS'				=> 'Who can view this announcement',

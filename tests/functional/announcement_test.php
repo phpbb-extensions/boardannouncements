@@ -255,6 +255,36 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
+	 * Test encoded Unicode descriptions are decoded when rendered in the ACP
+	 */
+	public function test_unicode_description_rendering()
+	{
+		$this->login();
+		$this->admin_login();
+
+		$description = 'Emoji 😀 & "quoted" <text>';
+		$id = $this->create_announcement([
+			'board_announcements_description' => $description,
+		]);
+
+		$this->get_db();
+		$sql = 'SELECT announcement_description
+			FROM phpbb_board_announcements
+			WHERE announcement_id = ' . (int) $id;
+		$result = $this->db->sql_query($sql);
+		$stored_description = $this->db->sql_fetchfield('announcement_description');
+		$this->db->sql_freeresult($result);
+
+		self::assertStringContainsString('&#128512;', $stored_description);
+
+		$crawler = self::request('GET', $this->get_acp_page());
+		self::assertStringContainsString($description, $crawler->filter('table > tbody')->text());
+
+		$crawler = self::request('GET', $this->get_acp_page('add', $id));
+		self::assertSame($description, $crawler->filter('#board_announcements_description')->attr('value'));
+	}
+
+	/**
 	 * Get the board announcements ACP page link to crawl
 	 *
 	 * @param string $action
