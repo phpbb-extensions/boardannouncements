@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Descrição',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'A descrição é demasiado longa. Alguns caracteres especiais requerem espaço de armazenamento adicional.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Uma breve descrição deste anúncio. Isto só estará visível aqui no ACP para ajudar a identificar este anúncio.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Ativar o comunicado',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos os usuários',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Cor do fundo do comunicado',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'A cor de fundo deve ser um código de cor hexadecimal de seis caracteres.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pode mudar a cor do fundo do comunicado usando um código hexadecimal (exemplo: FFFF80). Deixe este campo em branco para usar a cor padrão.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data de expiração do anúncio',

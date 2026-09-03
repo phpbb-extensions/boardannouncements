@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Beschrijving',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'De beschrijving is te lang. Sommige speciale tekens vereisen extra opslagruimte.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Een korte beschrijving van deze aankondiging. Dit zal alleen hier in de ACS zichtbaar zijn om deze aankondiging te helpen identificeren.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Laat deze forum aankondiging zien',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Iedereen',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forum aankondiging achtergrondkleur',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'De achtergrondkleur moet een hexadecimale kleurcode van zes tekens zijn.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Je kan de achtergrondkleur van de aankondiging veranderen door gebruik te maken van een hex-code (bijv.: FFFF80). Laat dit veld leeg om de standaard kleur te gebruiken.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Vervaldatum forum aankondiging',

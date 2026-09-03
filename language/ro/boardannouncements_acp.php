@@ -46,6 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Opțiuni',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Descriere',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Descrierea este prea lungă. Unele caractere speciale necesită spațiu de stocare suplimentar.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'O scurtă descriere pentru acest anunț. Acest lucru va fi vizibil doar aici în ACP pentru a ajuta la identificarea acestui anunț.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Afişează acest anunţ',
@@ -57,6 +58,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Toată lumea',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Culoarea background-ului',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Culoarea de fundal trebuie să fie un cod de culoare hexazecimal format din șase caractere.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puteţi schimba culoarea de fundal a anunţului folosind un cod hex (Ex: FFFF80). Lasă acest câmp necompletat pentru a utiliza culoarea prestabilită.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data de expirare a anunțului',

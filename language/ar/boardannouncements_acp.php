@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'وصف',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'الوصف طويل جدًا. تتطلب بعض الأحرف الخاصة مساحة تخزين إضافية.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'وصف موجز لهذا الإعلان. سيكون هذا مرئيًا هنا فقط في ACP للمساعدة في تحديد هذا الإعلان.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'عرض لوحة الإعلانات هذه',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'كل واحد',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'لون خلفية لوحة الإعلانات',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'يجب أن يكون لون الخلفية رمز لون سداسي عشري مكونًا من ستة أحرف.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'يمكنك تغيير لون خلفية لوحة الاعلانات باستعمال كود hex (مثل: FFFF80). اترك هذا الحقل فارغا لاستعمال اللون الافتراضي.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'تاريخ نهاية لوحة الإعلانات',

@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> '公告选项',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> '描述',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> '描述过长。某些特殊字符需要额外的存储空间。',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> '一个简短的公告描述。只显示在 ACP，用于标识此公告。',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '显示这条论坛公告',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '所有用户',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '论坛公告背景颜色',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> '背景颜色必须是六位十六进制颜色代码。',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六进制代码改变论坛公告北京颜色（比如：FFFF80）。留空则使用默认的背景颜色。',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> '论坛公告到期日期',

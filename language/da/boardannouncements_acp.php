@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Beskrivelse',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Beskrivelsen er for lang. Nogle specialtegn kræver ekstra lagerplads.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'En kort beskrivelse af denne meddelelse. Dette vil kun være synligt her i ACP for at hjælpe med at identificere denne meddelelse.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Vis boardbekendtgørelsen',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alle',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Baggrundsfarve for boardbekendtgørelse',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Baggrundsfarven skal være en sekscifret hexadecimal farvekode.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ændre bekendtgørelsens baggrundsfarve med en hex-kode (f.eks.: FFFF80). Lad feltet være tomt, for at anvende standardfarven.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Udløbsdato for boardbekendtgørelse',

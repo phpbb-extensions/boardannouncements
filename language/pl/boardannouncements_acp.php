@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Opcje ogłoszeń witryny',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Opis',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Opis jest zbyt długi. Niektóre znaki specjalne wymagają dodatkowego miejsca.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Krótki opis ogłoszenia. Będzie on widoczny tylko tutaj, w Panelu Administracyjnym, aby ułatwić identyfikację ogłoszenia.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Wyświetlaj to ogłoszenie',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Wszyscy',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Kolor tła',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Kolor tła musi być sześciocyfrowym szesnastkowym kodem koloru.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Możesz zmienić kolor tła ogłoszenia, używając kodu hex (np. FFFF80). Pozostaw to pole puste, aby użyć domyślnego koloru.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data wygaśnięcia',

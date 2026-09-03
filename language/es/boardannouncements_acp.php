@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Opciones del anuncio',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Descripción',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'La descripción es demasiado larga. Algunos caracteres especiales requieren espacio de almacenamiento adicional.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Una breve descripción de este anuncio. Esto solo será visible aquí en el PCA para ayudar a identificar este anuncio.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Mostrar este Anuncio del Foro',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos los usarios',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Color del fondo del anuncio del foro',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'El color de fondo debe ser un código de color hexadecimal de seis caracteres.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Puede cambiar el color del fondo del anuncio usando código hexadecimal (por ejemplo: FFFF80). Deje este campo en blanco para usar el color por defecto.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Fecha de caducidad del anuncio del foro',

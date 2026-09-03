@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Sự miêu tả',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Mô tả quá dài. Một số ký tự đặc biệt cần thêm dung lượng lưu trữ.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Một mô tả ngắn cho thông báo này. Điều này sẽ chỉ hiển thị ở đây trong ACP để giúp xác định thông báo này.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Hiển thị thông báo',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Mọi người',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Màu nền của khung thông báo',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Màu nền phải là mã màu thập lục phân gồm sáu ký tự.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Bạn có thể thay đổi màu nền của thông báo bằng mã hex (ví dụ: FFFF80). Để trống trường này để sử dụng màu mặc định.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Ngày hết hạn',

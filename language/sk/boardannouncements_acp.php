@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Možnosti oznámenia',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Popis',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Popis je príliš dlhý. Niektoré špeciálne znaky vyžadujú ďalší úložný priestor.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Krátky popis tohto oznámenia. Toto bude viditeľné iba tu v administrátorskom paneli, aby to pomohlo identifikovať toto oznámenie.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Zobraziť tento oznam',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Každý',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Farba pozadia tohto oznamu',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Farba pozadia musí byť šesťmiestny hexadecimálny kód farby.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Môžete zmeniť farbu pozadia tohto oznamu použitím hex kódu (napr: FFFF80). Pre predvolenú farbu nechajte toto pole prázdne.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Dátum platnosti oznamu',

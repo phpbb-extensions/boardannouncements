@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Kirjeldus',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Kirjeldus on liiga pikk. Mõned erimärgid vajavad täiendavat salvestusruumi.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Selle teadaande lühikirjeldus. See on nähtav ainult siin AKV-s, et aidata seda teadaannet tuvastada.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Kuva see Foorumi Teadaanne',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Igaüks',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Foorumi Teadaannete tausta värv',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Taustavärv peab olema kuuekohaline kuueteistkümnendsüsteemis värvikood.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Te saate muuta teate taustavärvi hex-koodi abil (näiteks: FFFF80). Vaikimisi värvi kasutamiseks jätke see väli tühjaks.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Foorumi Teadaande aegumise kuupäev',

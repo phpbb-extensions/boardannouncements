@@ -46,6 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Duyuru seçenekleri',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Tanım',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Açıklama çok uzun. Bazı özel karakterler ek depolama alanı gerektirir.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Bu duyuru için kısa bir tanım. Bu, yalnızca bu duyurunun tanımlanmasına yardımcı olmak için YKP’de görünür olacaktır.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Bu site duyurusunu göster',
@@ -57,6 +58,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Herkes',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Site duyurusu arkaplan rengi',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Arka plan rengi altı karakterli onaltılık bir renk kodu olmalıdır.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Site duyurusu arkaplan rengini hex kodu kullanarak değiştirebilirsin (ör: FFFF80). Varsayılan rengi kullanmak için boş bırak.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Site duyurusu son kullanma tarihi',

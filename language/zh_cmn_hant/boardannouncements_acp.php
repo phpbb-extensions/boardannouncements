@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> '討論區公告選項',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> '描述',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> '描述過長。某些特殊字元需要額外的儲存空間。',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> '此公告的簡短說明。這僅在 ACP 中可見，以幫助識別此公告。',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> '顯示此公告',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> '每個人',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> '討論區公告背景顏色',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> '背景顏色必須是六位十六進位顏色代碼。',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> '您可以使用十六進制代碼改變討論區公告背景顏色（例如：FFFF80）。欄位留白，則使用預設的顏色。',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> '討論區公告截止日期',

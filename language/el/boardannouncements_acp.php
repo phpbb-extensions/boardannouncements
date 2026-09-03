@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Επιλογές ανακοινώσεων',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Περιγραφή',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Η περιγραφή είναι πολύ μεγάλη. Ορισμένοι ειδικοί χαρακτήρες απαιτούν επιπλέον χώρο αποθήκευσης.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Μια σύντομη περιγραφή της ανακοίνωσης. Αυτή θα είναι ορατή μόνο στο ACP για να αναγνωρίζετε την ανακοίνωση.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Εμφάνιση της ανακοίνωσης',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Καθένας',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Χρώμα φόντου ανακοίνωσης',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Το χρώμα φόντου πρέπει να είναι ένας εξαψήφιος δεκαεξαδικός κωδικός χρώματος.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Μπορείτε να αλλάξετε το χρώμα του φόντου της ανακοίνωσης χρησιμοποιώντας δεκαεξαδικό κωδικό χρώματος (π.χ: FFFF80). Αφήστε αυτό το πεδίο κενό για να χρησιμοποιήσετε το προεπιλεγμένο χρώμα.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Ημερομηνία λήξης ανακοίνωσης',

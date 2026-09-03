@@ -46,6 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Možnosti objave na plošči',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Opis',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Opis je predolg. Nekateri posebni znaki zahtevajo dodaten prostor za shranjevanje.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Kratek opis za to objavo. To bo vidno samo tukaj v ACP, da bo lažje prepoznati to objavo.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Prikaži to obvestilo na plošči',
@@ -57,6 +58,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Vsi',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Barva ozadja za obvestilo na tabli',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Barva ozadja mora biti šestmestna šestnajstiška barvna koda.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Barvo ozadja obvestila lahko spremenite s šestnajstiško kodo (npr.: FFFF80). Pustite to polje prazno, če želite uporabiti privzeto barvo.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Datum izteka obvestila na plošči',

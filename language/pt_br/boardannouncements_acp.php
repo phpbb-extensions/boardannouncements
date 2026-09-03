@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Opções de anúncio',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Descrição',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'A descrição é muito longa. Alguns caracteres especiais requerem espaço de armazenamento adicional.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Uma breve descrição para este anúncio. Isso só será visível aqui no ACP para ajudar a identificar este anúncio.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Exibir este anúncio',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Todos',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Cor de fundo do anúncio',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'A cor de fundo deve ser um código de cor hexadecimal de seis caracteres.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Você pode alterar a cor de fundo do anúncio usando um código hexadecimal (por exemplo: FFFF80). Deixe este campo em branco para usar a cor padrão.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Data de validade do anúncio',

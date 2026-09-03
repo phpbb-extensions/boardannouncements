@@ -46,6 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'תֵאוּר',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'התיאור ארוך מדי. תווים מיוחדים מסוימים דורשים שטח אחסון נוסף.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'תיאור קצר להודעה זו. זה יהיה גלוי רק כאן ב-ACP כדי לסייע בזיהוי ההודעה הזו.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'הצג את הכרזת המערכת',
@@ -57,6 +58,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'כל אחד',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'צבע רקע של הכרזת המערכת',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'צבע הרקע חייב להיות קוד צבע הקסדצימלי בן שישה תווים.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'אתה יכול לשנות את צבע הרקע של ההכרזה באמצעות שימוש בקוד HEX (לדוגמה:FFF80).אל תכתוב דבר אם ברצונך להשתמש בצבע ברירת מחדל.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'מועד הפסקת פרסום של הכרזת פורום',

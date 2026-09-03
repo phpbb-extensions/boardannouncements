@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Opis',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Opis je predugačak. Neki posebni znakovi zahtijevaju dodatni prostor za pohranu.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Kratak opis ove objave. Ovo će biti vidljivo samo ovdje u ACP-u radi lakšeg prepoznavanja ove objave.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Prikaži ovu forumsku obavijest',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Svi/e',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Pozadinska boja forumske obavijesti',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Pozadinska boja mora biti šesteroznamenkasti heksadecimalni kod boje.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Pozadinsku boju forumske obavijesti možeš mijenjati korištenjem hex kodova (npr.: FFFF80).<br>Za korištenje zadane boje, ostavi ovo polje praznim.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Datum isteka forumske obavijesti',

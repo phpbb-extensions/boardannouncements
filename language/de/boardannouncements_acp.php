@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Ankündigungsoptionen',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Beschreibung',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Die Beschreibung ist zu lang. Einige Sonderzeichen benötigen zusätzlichen Speicherplatz.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Eine kurze Beschreibung für diese Ankündigung. Dies wird lediglich im ACP angezeigt, um bei der Identifizierung dieser Ankündigung zu helfen.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Diese Board-Ankündigung anzeigen',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alle',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Hintergrundfarbe der Board-Ankündigung',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Die Hintergrundfarbe muss ein sechsstelliger hexadezimaler Farbcode sein.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kannst die Hintergrundfarbe der Ankündigung mittels HEX-Code ändern (Beispiel: #FFFF80). Lasse den Wert frei, um die Standardfarbe zu nutzen.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Ablaufdatum der Board-Ankündigung einstellen',

@@ -46,6 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Параметры объявления',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Описание',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Описание слишком длинное. Некоторые специальные символы требуют дополнительного места для хранения.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Краткое описание, которое будет видно только в ACP и поможет идентифицировать данное объявление.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Показывать это объявление',
@@ -57,6 +58,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Все',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Цвет фона',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Цвет фона должен быть шестизначным шестнадцатеричным кодом цвета.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Вы можете изменить цвет фона объявления, используя шестнадцатеричный код (например: FFFF80). Оставьте это поле пустым, чтобы использовать цвет фона по умолчанию.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Срок действия',

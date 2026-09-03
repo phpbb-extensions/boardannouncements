@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Beskrivning',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Beskrivningen är för lång. Vissa specialtecken kräver ytterligare lagringsutrymme.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'En kort beskrivning av detta tillkännagivande. Detta kommer bara att vara synligt här i ACP för att hjälpa till att identifiera detta tillkännagivande.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Visa detta forummeddelande',
@@ -58,6 +59,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Alla',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Forummeddelandets bakgrundsfärg',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Bakgrundsfärgen måste vara en hexadecimal färgkod med sex tecken.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Du kan ändra forummeddelandets bakgrundsfärg genom att ange en hex-kod (t.ex.: FFFF80). Lämna fältet tomt om du vill använda standardfärgen.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Forummeddelandets utgångsdatum',

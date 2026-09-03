@@ -46,6 +46,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_OPTIONS'			=> 'Announcement options',
 
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'опис',
+	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Опис задовгий. Деякі спеціальні символи потребують додаткового місця для зберігання.',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'Короткий опис цього оголошення. Це буде видно лише тут, у ACP, щоб допомогти ідентифікувати це оголошення.',
 
 	'BOARD_ANNOUNCEMENTS_ENABLE'			=> 'Показувати цю дошку оголошень',
@@ -57,6 +58,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYONE'			=> 'Все',
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Колір фону оголошення',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Колір фону має бути шестизначним шістнадцятковим кодом кольору.',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'Ви можете змінити колір фону оголошення за допомогою шістнадцяткового коду (наприклад: FFFF80). Залишіть це поле порожнім, щоб використовувати колір фону за замовчуванням.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Термін дії оголошення',
