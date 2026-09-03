@@ -91,6 +91,7 @@ class nestedset extends \phpbb\tree\nestedset
 	 *
 	 * @param int $item_id The item identifier
 	 * @return int|false Number of rows affected, or false
+	 * @throws \OutOfBoundsException
 	 */
 	public function delete_tracked_items($item_id)
 	{
