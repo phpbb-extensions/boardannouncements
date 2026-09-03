@@ -121,9 +121,7 @@ class listener implements EventSubscriberInterface
 		// Add board announcements language file
 		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
 
-		$this->location = $this->user->page['page_name'] === "index.$this->php_ext"
-			? ext::INDEX_ONLY
-			: ($event['item'] === 'forum' ? (int) $event['item_id'] : 0);
+		$this->get_current_location($event);
 
 		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
 
@@ -163,11 +161,19 @@ class listener implements EventSubscriberInterface
 	/**
 	 * Get the current location, board index or a forum_id
 	 *
+	 * @param \phpbb\event\data|null $event Event data
 	 * @return int
 	 */
-	protected function get_current_location()
+	protected function get_current_location($event = null)
 	{
-		return $this->location;
+		if ($event !== null)
+		{
+			$this->location = $this->user->page['page_name'] === "index.$this->php_ext"
+				? ext::INDEX_ONLY
+				: ($event['item'] === 'forum' ? (int) $event['item_id'] : 0);
+		}
+
+		return $this->location ?? 0;
 	}
 
 	/**
