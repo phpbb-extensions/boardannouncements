@@ -53,6 +53,16 @@ class manager_close_announcement_test extends manager_base
 		$this->manager->close_announcement(123, 5);
 	}
 
+	/**
+	 * Closing an announcement more than once remains successful without duplicate tracking rows
+	 */
+	public function test_close_announcement_is_idempotent()
+	{
+		self::assertTrue($this->manager->close_announcement(1, 3));
+		self::assertTrue($this->manager->close_announcement(1, 3));
+		self::assertEquals([1], $this->get_closed_announcements(3));
+	}
+
 	protected function get_closed_announcements($user_id)
 	{
 		$ids = [];

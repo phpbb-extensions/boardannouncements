@@ -55,7 +55,7 @@ class controller
 		$announcement = $this->manager->get_announcement($id);
 
 		// Check for unauthorized attacks
-		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement'))
+		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id']))
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}

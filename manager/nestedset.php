@@ -125,6 +125,19 @@ class nestedset extends \phpbb\tree\nestedset
 
 		unset($item);
 
+		$sql = 'SELECT 1 AS tracked
+			FROM ' . $this->tracking_table_name . '
+			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id . '
+				AND user_id = ' . (int) $data['user_id'];
+		$result = $this->db->sql_query_limit($sql, 1);
+		$tracked = (bool) $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		if ($tracked)
+		{
+			return 1;
+		}
+
 		$sql = 'INSERT INTO ' . $this->tracking_table_name . ' ' .
 			$this->db->sql_build_array('INSERT', array_merge($data, [$this->column_item_id => (int) $item_id]));
 		$this->db->sql_query($sql);

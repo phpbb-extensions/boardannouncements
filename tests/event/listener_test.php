@@ -178,14 +178,14 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
 					]],
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => '3',
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 3',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '000000',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3, 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3, 'hash' => generate_link_hash('close_boardannouncement3')]),
 					]],
 				]
 			],
@@ -196,7 +196,7 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
 					]],
 				]
 			],
@@ -207,14 +207,14 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
 					]],
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => 2,
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 2',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => 'ffffff',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement2')]),
 					]],
 				]
 			],
@@ -225,7 +225,7 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 2',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => 'ffffff',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement2')]),
 					]],
 				]
 			],
