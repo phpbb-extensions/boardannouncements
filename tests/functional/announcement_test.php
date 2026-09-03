@@ -274,7 +274,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 		$this->admin_login();
 
-		$description = 'Emoji 😀 & "quoted" <text>';
+		$description = 'Unicode 😀 中文 Кириллица announcement';
 		$id = $this->create_announcement([
 			'board_announcements_description' => $description,
 		]);
@@ -287,13 +287,16 @@ class announcement_test extends \phpbb_functional_test_case
 		$stored_description = $this->db->sql_fetchfield('announcement_description');
 		$this->db->sql_freeresult($result);
 
-		self::assertStringContainsString('&#128512;', $stored_description);
+		self::assertSame('Unicode &#128512; &#20013;&#25991; &#1050;&#1080;&#1088;&#1080;&#1083;&#1083;&#1080;&#1094;&#1072; announcement', $stored_description);
 
 		$crawler = self::request('GET', $this->get_acp_page());
 		self::assertStringContainsString($description, $crawler->filter('table > tbody')->text());
 
 		$crawler = self::request('GET', $this->get_acp_page('add', $id));
 		self::assertSame($description, $crawler->filter('#board_announcements_description')->attr('value'));
+
+		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
+		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_CREATED_LOG', $description)), $crawler->text());
 	}
 
 	/**
