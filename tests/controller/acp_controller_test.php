@@ -270,6 +270,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_bitfield'		=> '',
 				'announcement_flags'			=> 7,
 			]],
+			[2, []],
 			[0, [
 				'announcement_id'			=> 2,
 				'announcement_text'			=> 'Announcement sample text 2',
@@ -300,6 +301,14 @@ class acp_controller_test extends \phpbb_test_case
 	public function test_action_add($id, $data)
 	{
 		$controller = $this->get_controller();
+		$missing_announcement = $id && !$data;
+
+		if ($missing_announcement)
+		{
+			$this->setExpectedTriggerError(E_USER_WARNING, 'BOARD_ANNOUNCEMENTS_INVALID_ITEM');
+			$this->log->expects(self::never())
+				->method('add');
+		}
 
 		$this->request
 			->expects(self::exactly(2))
@@ -308,7 +317,7 @@ class acp_controller_test extends \phpbb_test_case
 			->willReturnOnConsecutiveCalls('add', $id);
 
 		$this->request
-			->expects(self::exactly(2))
+			->expects($missing_announcement ? self::never() : self::exactly(2))
 			->method('is_set_post')
 			->withConsecutive(['submit'], ['preview'])
 			->willReturnOnConsecutiveCalls(false, false);
@@ -335,7 +344,7 @@ class acp_controller_test extends \phpbb_test_case
 			->method('get_announcement')
 			->willReturn($data);
 
-		$this->template->expects(self::once())
+		$this->template->expects($missing_announcement ? self::never() : self::once())
 			->method('assign_vars');
 
 		$controller->mode_manage();
@@ -349,13 +358,17 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_add_submit_data()
 	{
 		return [
-			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
+			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
+			[0, ['add', 0, 'Announcement Text 0', 'Selected locations', 'ffffff', true, 0, [0, -1, 2], true, '', false, false, false], false, true, true, false], // submit, discard location sentinel
 			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, emoji encoded for storage
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
+			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, false], // submit, announcement deleted before update
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, false, true], // submit, bad form
 			[0, ['add', 0, '', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, bad text
 			[0, ['add', 0, 'Announcement Text 0', str_repeat('a', 201), 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, description too long
 			[0, ['add', 0, 'Announcement Text 0', str_repeat('a', 186) . str_repeat('&amp;', 14), 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, escaped description exceeds stored length
+			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'fffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, background color too short
+			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'gggggg', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, background color is not hexadecimal
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, 'foo', false, false, false], false, true, true, true], // submit, bad expiry
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, true, null], // preview
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, false, null], // preview, bad form
@@ -375,15 +388,27 @@ class acp_controller_test extends \phpbb_test_case
 	 * @param $submit
 	 * @param $valid_form
 	 * @param $errors
+	 * @param bool $update_success
 	 * @return void
 	 */
-	public function test_action_add_submit($id, $form, $preview, $submit, $valid_form, $errors)
+	public function test_action_add_submit($id, $form, $preview, $submit, $valid_form, $errors, $update_success = true)
 	{
 		$controller = $this->get_controller();
+		$failed_update = $submit && !$errors && $id && !$update_success;
+		$successful_submit = $submit && !$errors && !$failed_update;
+		$expected_locations = json_encode(array_values(array_filter($form[7])));
+		$has_expected_locations = static function ($data) use ($expected_locations)
+		{
+			return $data['announcement_locations'] === $expected_locations;
+		};
 
 		self::$valid_form = $valid_form;
 
-		if ($submit && !$errors)
+		if ($failed_update)
+		{
+			$this->setExpectedTriggerError(E_USER_WARNING, 'BOARD_ANNOUNCEMENTS_INVALID_ITEM');
+		}
+		else if ($successful_submit)
 		{
 			$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_UPDATED');
 		}
@@ -424,15 +449,28 @@ class acp_controller_test extends \phpbb_test_case
 
 		$this->manager->expects($id ? self::once() : self::never())
 			->method('get_announcement')
-			->willReturn([]);
+			->willReturn([
+				'announcement_uid'		=> '',
+				'announcement_bitfield'	=> '',
+				'announcement_flags'		=> 7,
+			]);
 
-		$this->manager->expects($submit && $id && !$errors ? self::once() : self::never())
-			->method('update_announcement');
+		$update = $this->manager->expects($submit && $id && !$errors ? self::once() : self::never())
+			->method('update_announcement')
+			->willReturn($update_success);
+		if ($submit && $id && !$errors)
+		{
+			$update->with($id, self::callback($has_expected_locations));
+		}
 
-		$this->manager->expects($submit && !$id && !$errors ? self::once() : self::never())
+		$save = $this->manager->expects($submit && !$id && !$errors ? self::once() : self::never())
 			->method('save_announcement');
+		if ($submit && !$id && !$errors)
+		{
+			$save->with(self::callback($has_expected_locations));
+		}
 
-		$this->log->expects($submit && !$errors ? self::once() : self::never())
+		$this->log->expects($successful_submit ? self::once() : self::never())
 			->method('add');
 
 		$this->template->expects(($submit && $errors) || $preview ? self::once() : self::never())
@@ -449,9 +487,10 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_delete_data()
 	{
 		return [
-			[1, true, true], // successfully delete an ad
-			[2, true, false], // unsuccessfully delete an ad
-			[3, false, null], // do not confirm delete an ad
+			[1, true, true, false], // successfully delete an announcement
+			[2, true, false, false], // unsuccessfully delete an announcement
+			[3, false, null, false], // do not confirm deletion
+			[4, true, false, true], // announcement deleted before confirmation
 		];
 	}
 
@@ -459,8 +498,12 @@ class acp_controller_test extends \phpbb_test_case
 	 * Test action_delete() method
 	 *
 	 * @dataProvider action_delete_data
+	 * @param int $id
+	 * @param bool $confirm_action
+	 * @param bool|null $success
+	 * @param bool $throws
 	 */
-	public function test_action_delete($id, $confirm_action, $success)
+	public function test_action_delete($id, $confirm_action, $success, $throws)
 	{
 		self::$confirm = $confirm_action;
 
@@ -492,14 +535,24 @@ class acp_controller_test extends \phpbb_test_case
 			else
 			{
 				$this->setExpectedTriggerError(E_USER_WARNING, 'BOARD_ANNOUNCEMENTS_DELETE_ERROR');
+				$this->log->expects(self::never())
+					->method('add');
 			}
 			$this->manager->expects(self::once())
 				->method('get_announcement_data')
 				->with($id, 'announcement_description');
-			$this->manager->expects(self::once())
+			$delete = $this->manager->expects(self::once())
 				->method('delete_announcement')
-				->with($id)
-				->willReturn($success);
+				->with($id);
+
+			if ($throws)
+			{
+				$delete->willThrowException(new \OutOfBoundsException('BOARD_ANNOUNCEMENTS_INVALID_ITEM'));
+			}
+			else
+			{
+				$delete->willReturn($success);
+			}
 		}
 
 		$controller->mode_manage();

@@ -83,7 +83,7 @@ class acp_controller
 		$this->php_ext = $php_ext;
 
 		$this->language->add_lang('posting');
-		$this->language->add_lang( 'boardannouncements_acp', 'phpbb/boardannouncements');
+		$this->language->add_lang('boardannouncements_acp', 'phpbb/boardannouncements');
 	}
 
 	/**
@@ -186,6 +186,11 @@ class acp_controller
 		if ($id)
 		{
 			$data = $this->manager->get_announcement($id);
+
+			if (!$data)
+			{
+				$this->error('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
+			}
 		}
 
 		// If form is submitted or previewed
@@ -216,6 +221,11 @@ class acp_controller
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_DESC_TOO_LONG');
 			}
 
+			if ($data['announcement_bgcolor'] !== '' && !preg_match('/\A[0-9a-f]{6}\z/i', $data['announcement_bgcolor']))
+			{
+				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID');
+			}
+
 			if ($data['announcement_text'] === '')
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TEXT_INVALID');
@@ -236,7 +246,7 @@ class acp_controller
 			}
 
 			// Locations array should be json encoded for storage in the DB
-			$data['announcement_locations'] = json_encode($data['announcement_locations']);
+			$data['announcement_locations'] = json_encode(array_values(array_filter($data['announcement_locations'])));
 
 			// Prepare announcement text for storage
 			generate_text_for_storage(
@@ -254,7 +264,11 @@ class acp_controller
 			{
 				if ($id)
 				{
-					$this->manager->update_announcement($id, $data);
+					if (!$this->manager->update_announcement($id, $data))
+					{
+						$this->error('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
+					}
+
 					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $data['announcement_description']);
 				}
 				else
@@ -332,7 +346,14 @@ class acp_controller
 			$description = $this->manager->get_announcement_data($id, 'announcement_description');
 
 			// Delete announcement
-			$success = $this->manager->delete_announcement($id);
+			try
+			{
+				$success = $this->manager->delete_announcement($id);
+			}
+			catch (\OutOfBoundsException $e)
+			{
+				$success = false;
+			}
 
 			// Only notify user on error or if not ajax
 			if (!$success)
@@ -358,7 +379,7 @@ class acp_controller
 				'action' => 'delete',
 			]));
 
-			// When you don't confirm deleting action
+			// Return to list when confirmation is canceled or invalid
 			$this->list_announcements();
 		}
 	}
