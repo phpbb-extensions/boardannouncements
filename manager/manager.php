@@ -154,16 +154,13 @@ class manager
 	}
 
 	/**
-	 * Get expired announcements
+	 * Set all expired announcements to disabled state
 	 *
-	 * @param string $column Get only a single column of announcement data
-	 * @return array An array of expired announcements or announcement column data, or empty if none
+	 * @return int|false Number of rows affected, or false
 	 */
-	public function get_expired_announcements($column)
+	public function disable_expired_announcements()
 	{
-		$data = array_filter($this->get_announcements(), [$this, 'filter_expired']);
-
-		return $column ? array_column($data, $column) : $data;
+		return $this->nestedset->disable_expired_items();
 	}
 
 	/**
@@ -221,17 +218,6 @@ class manager
 	protected function filter_guests(array $row)
 	{
 		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\ext::GUESTS;
-	}
-
-	/**
-	 * Filter enabled expired announcements
-	 *
-	 * @param array $row
-	 * @return bool
-	 */
-	protected function filter_expired(array $row)
-	{
-		return $row['announcement_enabled'] && $row['announcement_expiry'] && (int) $row['announcement_expiry'] < time();
 	}
 
 	/**
