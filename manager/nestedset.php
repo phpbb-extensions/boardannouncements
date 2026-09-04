@@ -87,6 +87,23 @@ class nestedset extends \phpbb\tree\nestedset
 	}
 
 	/**
+	 * Disable all expired items
+	 *
+	 * @return int|false Number of rows affected, or false
+	 */
+	public function disable_expired_items()
+	{
+		$sql = 'UPDATE ' . $this->table_name . '
+			SET announcement_enabled = 0
+			WHERE announcement_enabled = 1
+				AND announcement_expiry > 0
+				AND announcement_expiry < ' . time();
+		$this->db->sql_query($sql);
+
+		return $this->db->sql_affectedrows();
+	}
+
+	/**
 	 * Delete items from the tracking table with the given item_id
 	 *
 	 * @param int $item_id The item identifier

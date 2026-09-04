@@ -42,7 +42,7 @@
 			validateOnBlur: false,
 			minDate: 0
 		});
-		$.datetimepicker.setLocale('{{ S_USER_LANG }}')
+		$.datetimepicker.setLocale('{{ S_USER_LANG|e('js') }}')
 	});
 	</script>
 

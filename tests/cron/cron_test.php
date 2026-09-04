@@ -33,41 +33,17 @@ class cron_test extends \phpbb_test_case
 		$this->cron_task = new \phpbb\boardannouncements\cron\disable_expired($this->config, $this->manager);
 	}
 
-	public function run_data()
-	{
-		return [
-			[[]],
-			[[1]],
-			[[2, 3]],
-			[[1, 2, 3, 4, 5]],
-		];
-	}
-
 	/**
 	 * Test the cron task runs correctly
-	 *
-	 * @dataProvider run_data
-	 * @param array $expired_set
 	 */
-	public function test_run($expired_set)
+	public function test_run()
 	{
 		// Get last run time stored for cron
 		$cron_last_run = $this->config['board_announcements_cron_last_run'];
 
-		// Check get_expired_announcements get called as expected
+		// Check disable_expired_announcements gets called as expected
 		$this->manager->expects(self::once())
-			->method('get_expired_announcements')
-			->with('announcement_id')
-			->willReturn($expired_set);
-
-		array_walk($expired_set, static function (&$value) {
-			$value = [$value];
-		});
-
-		// Check disable_announcement get called as expected
-		$this->manager->expects(self::exactly(count($expired_set)))
-			->method('disable_announcement')
-			->withConsecutive(...$expired_set);
+			->method('disable_expired_announcements');
 
 		// Run the cron task
 		$this->cron_task->run();

@@ -29,4 +29,14 @@ class manager_disable_announcement_test extends manager_base
 		$this->expectExceptionMessage('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
 		$this->manager->disable_announcement(0);
 	}
+
+	/**
+	 * Test disable_expired_announcements() disables only enabled expired announcements
+	 */
+	public function test_disable_expired_announcements()
+	{
+		self::assertSame(1, $this->manager->disable_expired_announcements());
+		self::assertEquals(0, $this->manager->get_announcement_data(4, 'announcement_enabled'));
+		self::assertEquals(1, $this->manager->get_announcement_data(1, 'announcement_enabled'));
+	}
 }
