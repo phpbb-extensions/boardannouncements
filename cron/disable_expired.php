@@ -40,10 +40,7 @@ class disable_expired extends \phpbb\cron\task\base
 	 */
 	public function run()
 	{
-		foreach ($this->manager->get_expired_announcements('announcement_id') as $id)
-		{
-			$this->manager->disable_announcement($id);
-		}
+		$this->manager->disable_expired_announcements();
 
 		$this->config->set('board_announcements_cron_last_run', time(), false);
 	}
