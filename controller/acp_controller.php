@@ -206,7 +206,11 @@ class acp_controller
 			}
 
 			// Get new announcement values from the form
-			$data['announcement_timestamp']	= time();
+			// Preserve the original creation date when editing an announcement.
+			if (!$id)
+			{
+				$data['announcement_timestamp'] = time();
+			}
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
 			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
