@@ -314,7 +314,10 @@ class announcement_test extends \phpbb_functional_test_case
 		$stored_description = $this->db->sql_fetchfield('announcement_description');
 		$this->db->sql_freeresult($result);
 
-		self::assertSame('Unicode &#128512; 中文 Кириллица announcement', $stored_description);
+		$expected_description = strpos($this->db->get_sql_layer(), 'mssql') === 0
+			? utf8_encode_ncr($description)
+			: utf8_encode_ucr($description);
+		self::assertSame($expected_description, $stored_description);
 
 		$crawler = self::request('GET', $this->get_acp_page());
 		self::assertStringContainsString($description, $crawler->filter('table > tbody')->text());

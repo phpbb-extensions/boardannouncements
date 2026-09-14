@@ -23,6 +23,12 @@ class acp_controller_test extends \phpbb_test_case
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\boardannouncements\manager\manager */
 	protected $manager;
 
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/** @var string */
+	protected $sql_layer = 'mysqli';
+
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\config\config */
 	protected $config;
 
@@ -105,6 +111,11 @@ class acp_controller_test extends \phpbb_test_case
 		$this->manager = $this->getMockBuilder('\phpbb\boardannouncements\manager\manager')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->db = $this->createMock('\phpbb\db\driver\driver_interface');
+		$this->db->method('get_sql_layer')
+			->willReturnCallback(function () {
+				return $this->sql_layer;
+			});
 	}
 
 	/**
@@ -116,6 +127,7 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		$controller = new \phpbb\boardannouncements\controller\acp_controller(
 			$this->manager,
+			$this->db,
 			$this->config,
 			$this->controller_helper,
 			$this->language,
@@ -159,6 +171,7 @@ class acp_controller_test extends \phpbb_test_case
 			->setMethods(['action_add', 'action_delete', 'action_move', 'action_settings', 'list_announcements'])
 			->setConstructorArgs([
 				$this->manager,
+				$this->db,
 				$this->config,
 				$this->controller_helper,
 				$this->language,
@@ -376,6 +389,7 @@ class acp_controller_test extends \phpbb_test_case
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
 			[0, ['add', 0, 'Announcement Text 0', 'Selected locations', 'ffffff', true, 0, [0, -1, 2], true, '', false, false, false], false, true, true, false], // submit, discard location sentinel
 			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, emoji encoded for storage
+			[0, ['add', 0, 'Announcement Text 0', 'Unicode 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, true, 'mssqlnative'], // submit, all Unicode encoded for MSSQL
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, false], // submit, announcement deleted before update
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, false, true], // submit, bad form
@@ -404,15 +418,17 @@ class acp_controller_test extends \phpbb_test_case
 	 * @param $valid_form
 	 * @param $errors
 	 * @param bool $update_success
+	 * @param string $sql_layer
 	 * @return void
 	 */
-	public function test_action_add_submit($id, $form, $preview, $submit, $valid_form, $errors, $update_success = true)
+	public function test_action_add_submit($id, $form, $preview, $submit, $valid_form, $errors, $update_success = true, $sql_layer = 'mysqli')
 	{
+		$this->sql_layer = $sql_layer;
 		$controller = $this->get_controller();
 		$failed_update = $submit && !$errors && $id && !$update_success;
 		$successful_submit = $submit && !$errors && !$failed_update;
 		$expected_locations = json_encode(array_values(array_filter($form[7])));
-		$expected_description = utf8_encode_ucr($form[3]);
+		$expected_description = strpos($sql_layer, 'mssql') === 0 ? utf8_encode_ncr($form[3]) : utf8_encode_ucr($form[3]);
 		$creation_timestamp = 1234567890;
 		$has_expected_data = static function ($data) use ($id, $expected_locations, $expected_description, $creation_timestamp)
 		{

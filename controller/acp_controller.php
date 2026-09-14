@@ -14,6 +14,7 @@ use phpbb\boardannouncements\ext;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
+use phpbb\db\driver\driver_interface;
 use phpbb\json_response;
 use phpbb\language\language;
 use phpbb\log\log;
@@ -25,6 +26,9 @@ class acp_controller
 {
 	/** @var manager */
 	protected $manager;
+
+	/** @var driver_interface */
+	protected $db;
 
 	/** @var config */
 	protected $config;
@@ -60,6 +64,7 @@ class acp_controller
 	 * Constructor
 	 *
 	 * @param manager $manager
+	 * @param driver_interface $db
 	 * @param config $config
 	 * @param helper $controller_helper
 	 * @param language $language
@@ -70,9 +75,10 @@ class acp_controller
 	 * @param $phpbb_root_path
 	 * @param $php_ext
 	 */
-	public function __construct(manager $manager, config $config, helper $controller_helper, language $language, log $log, request $request, template $template, user $user, $phpbb_root_path, $php_ext)
+	public function __construct(manager $manager, driver_interface $db, config $config, helper $controller_helper, language $language, log $log, request $request, template $template, user $user, $phpbb_root_path, $php_ext)
 	{
 		$this->manager = $manager;
+		$this->db = $db;
 		$this->config = $config;
 		$this->controller_helper = $controller_helper;
 		$this->language = $language;
@@ -220,8 +226,10 @@ class acp_controller
 			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', true);
 			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
 
-			// Store four-byte Unicode as character references for portability across DBMS.
-			$data['announcement_description'] = utf8_encode_ucr($data['announcement_description']);
+			// MSSQL requires all Unicode to be encoded; other DBMS only require four-byte Unicode.
+			$data['announcement_description'] = strpos($this->db->get_sql_layer(), 'mssql') === 0
+				? utf8_encode_ncr($data['announcement_description'])
+				: utf8_encode_ucr($data['announcement_description']);
 			if (utf8_strlen($data['announcement_description']) > 255)
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_DESC_TOO_LONG');
