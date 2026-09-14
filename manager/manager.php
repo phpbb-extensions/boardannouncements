@@ -228,13 +228,7 @@ class manager
 	 */
 	protected function intersect_data($data)
 	{
-		$data = array_intersect_key($data, $this->announcement_columns());
-		if (isset($data['announcement_description']))
-		{
-			$data['announcement_description'] = utf8_encode_ncr($data['announcement_description']);
-		}
-
-		return $data;
+		return array_intersect_key($data, $this->announcement_columns());
 	}
 
 	/**

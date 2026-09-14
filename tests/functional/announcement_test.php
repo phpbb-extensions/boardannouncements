@@ -287,7 +287,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$stored_description = $this->db->sql_fetchfield('announcement_description');
 		$this->db->sql_freeresult($result);
 
-		self::assertSame('Unicode &#128512; &#20013;&#25991; &#1050;&#1080;&#1088;&#1080;&#1083;&#1083;&#1080;&#1094;&#1072; announcement', $stored_description);
+		self::assertSame('Unicode &#128512; 中文 Кириллица announcement', $stored_description);
 
 		$crawler = self::request('GET', $this->get_acp_page());
 		self::assertStringContainsString($description, $crawler->filter('table > tbody')->text());

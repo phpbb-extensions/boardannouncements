@@ -397,9 +397,11 @@ class acp_controller_test extends \phpbb_test_case
 		$failed_update = $submit && !$errors && $id && !$update_success;
 		$successful_submit = $submit && !$errors && !$failed_update;
 		$expected_locations = json_encode(array_values(array_filter($form[7])));
-		$has_expected_locations = static function ($data) use ($expected_locations)
+		$expected_description = utf8_encode_ucr($form[3]);
+		$has_expected_data = static function ($data) use ($expected_locations, $expected_description)
 		{
-			return $data['announcement_locations'] === $expected_locations;
+			return $data['announcement_locations'] === $expected_locations
+				&& $data['announcement_description'] === $expected_description;
 		};
 
 		self::$valid_form = $valid_form;
@@ -460,14 +462,14 @@ class acp_controller_test extends \phpbb_test_case
 			->willReturn($update_success);
 		if ($submit && $id && !$errors)
 		{
-			$update->with($id, self::callback($has_expected_locations));
+			$update->with($id, self::callback($has_expected_data));
 		}
 
 		$save = $this->manager->expects($submit && !$id && !$errors ? self::once() : self::never())
 			->method('save_announcement');
 		if ($submit && !$id && !$errors)
 		{
-			$save->with(self::callback($has_expected_locations));
+			$save->with(self::callback($has_expected_data));
 		}
 
 		$this->log->expects($successful_submit ? self::once() : self::never())
