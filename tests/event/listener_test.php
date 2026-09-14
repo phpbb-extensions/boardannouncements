@@ -269,7 +269,39 @@ class listener_test extends \phpbb_database_test_case
 		]);
 	}
 
-	public function test_query_forum_id_does_not_scope_unrelated_page()
+	public function test_query_forum_id_fallback()
+	{
+		$this->db->sql_query("UPDATE phpbb_board_announcements
+			SET announcement_locations = '[2]'
+			WHERE announcement_id = 1");
+
+		$this->user->data['user_id'] = 2;
+		$this->user->page['page_name'] = "viewforum.$this->php_ext";
+		$this->config['board_announcements_enable'] = true;
+
+		$this->set_listener();
+
+		$this->template->expects(self::once())
+			->method('assign_block_vars')
+			->with('board_announcements', self::callback(static function ($data) {
+				return (int) $data['BOARD_ANNOUNCEMENT_ID'] === 1;
+			}));
+		$this->request->expects(self::exactly(2))
+			->method('variable')
+			->willReturnMap([
+				['f', 0, false, \phpbb\request\request_interface::REQUEST, 2],
+				['_ba_1', '', true, \phpbb\request\request_interface::COOKIE, ''],
+			]);
+
+		$dispatcher = new \phpbb\event\dispatcher();
+		$dispatcher->addListener('core.page_header_after', [$this->listener, 'display_board_announcements']);
+		$dispatcher->trigger_event('core.page_header_after', [
+			'item' => 'forum',
+			'item_id' => 0,
+		]);
+	}
+
+	public function test_query_forum_id_does_not_scope_non_forum_event()
 	{
 		$this->db->sql_query("UPDATE phpbb_board_announcements
 			SET announcement_locations = '[2]'
@@ -289,7 +321,7 @@ class listener_test extends \phpbb_database_test_case
 		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.page_header_after', [$this->listener, 'display_board_announcements']);
 		$dispatcher->trigger_event('core.page_header_after', [
-			'item' => 'forum',
+			'item' => 'user',
 			'item_id' => 0,
 		]);
 	}

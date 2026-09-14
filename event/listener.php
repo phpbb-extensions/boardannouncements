@@ -166,14 +166,28 @@ class listener implements EventSubscriberInterface
 	 */
 	protected function get_current_location($event = null)
 	{
-		if ($event !== null)
+		if ($event === null)
 		{
-			$this->location = $this->user->page['page_name'] === "index.$this->php_ext"
-				? ext::INDEX_ONLY
-				: ($event['item'] === 'forum' ? (int) $event['item_id'] : 0);
+			return $this->location ?? 0;
 		}
 
-		return $this->location ?? 0;
+		if ($this->user->page['page_name'] === "index.$this->php_ext")
+		{
+			return $this->location = ext::INDEX_ONLY;
+		}
+
+		if ($event['item'] !== 'forum')
+		{
+			return $this->location = 0;
+		}
+
+		$this->location = (int) $event['item_id'];
+		if (!$this->location)
+		{
+			$this->location = $this->request->variable('f', 0);
+		}
+
+		return $this->location;
 	}
 
 	/**
