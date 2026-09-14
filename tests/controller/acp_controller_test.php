@@ -489,10 +489,11 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_delete_data()
 	{
 		return [
-			[1, true, true, false], // successfully delete an announcement
-			[2, true, false, false], // unsuccessfully delete an announcement
-			[3, false, null, false], // do not confirm deletion
-			[4, true, false, true], // announcement deleted before confirmation
+			[1, true, true, false, false], // successfully delete an announcement
+			[2, true, false, false, false], // unsuccessfully delete an announcement
+			[3, false, null, false, false], // do not confirm deletion
+			[4, true, false, true, false], // announcement deleted before confirmation
+			[5, true, true, false, true], // successfully delete via ajax
 		];
 	}
 
@@ -504,8 +505,9 @@ class acp_controller_test extends \phpbb_test_case
 	 * @param bool $confirm_action
 	 * @param bool|null $success
 	 * @param bool $throws
+	 * @param bool $is_ajax
 	 */
-	public function test_action_delete($id, $confirm_action, $success, $throws)
+	public function test_action_delete($id, $confirm_action, $success, $throws, $is_ajax)
 	{
 		self::$confirm = $confirm_action;
 
@@ -530,7 +532,14 @@ class acp_controller_test extends \phpbb_test_case
 		{
 			if ($success)
 			{
-				$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS');
+				if ($is_ajax)
+				{
+					$this->setExpectedTriggerError(E_WARNING);
+				}
+				else
+				{
+					$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS');
+				}
 				$this->log->expects(self::once())
 					->method('add');
 			}
@@ -556,6 +565,10 @@ class acp_controller_test extends \phpbb_test_case
 				$delete->willReturn($success);
 			}
 		}
+
+		$this->request->expects($success ? self::once() : self::never())
+			->method('is_ajax')
+			->willReturn($is_ajax);
 
 		$controller->mode_manage();
 	}

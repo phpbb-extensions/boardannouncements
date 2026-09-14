@@ -357,7 +357,7 @@ class acp_controller
 				$success = false;
 			}
 
-			// Only notify user on error or if not ajax
+			// Report the deletion result to the caller
 			if (!$success)
 			{
 				$this->error('BOARD_ANNOUNCEMENTS_DELETE_ERROR');
@@ -366,7 +366,12 @@ class acp_controller
 			{
 				$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $description);
 
-				if (!$this->request->is_ajax())
+				if ($this->request->is_ajax())
+				{
+					$json_response = new json_response;
+					$json_response->send(['success' => true]);
+				}
+				else
 				{
 					$this->success('BOARD_ANNOUNCEMENTS_DELETE_SUCCESS');
 				}
