@@ -123,7 +123,10 @@ class listener implements EventSubscriberInterface
 
 		$this->get_current_location($event);
 
-		$board_announcements_data = $this->manager->get_visible_announcements($this->user->data['user_id']);
+		$board_announcements_data = $this->manager->get_visible_announcements(
+			$this->user->data['user_id'],
+			$this->user->data['is_registered']
+		);
 
 		foreach ($board_announcements_data as $data)
 		{

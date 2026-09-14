@@ -267,6 +267,33 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
+	 * Test bots receive guest announcements, not registered-user announcements
+	 */
+	public function test_bot_audience()
+	{
+		$this->login();
+		$this->admin_login();
+
+		$members_id = $this->create_announcement([
+			'board_announcements_users' => ext::MEMBERS,
+			'board_announcements_description' => 'Members announcement',
+		]);
+		$guests_id = $this->create_announcement([
+			'board_announcements_users' => ext::GUESTS,
+			'board_announcements_description' => 'Guests announcement',
+		]);
+
+		self::$client->restart();
+		self::$client->setHeader('User-Agent', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+		$crawler = self::request('GET', 'index.php');
+
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $members_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $guests_id));
+
+		self::$client->restart();
+	}
+
+	/**
 	 * Test encoded Unicode descriptions are decoded when rendered in the ACP
 	 */
 	public function test_unicode_description_rendering()

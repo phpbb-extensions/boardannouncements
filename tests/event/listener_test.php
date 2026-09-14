@@ -171,7 +171,7 @@ class listener_test extends \phpbb_database_test_case
 		$user->data['user_form_salt'] = '';
 
 		return [
-			[ANONYMOUS, 'index', true,
+			[ANONYMOUS, false, 'index', true,
 				[
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => 1,
@@ -189,7 +189,7 @@ class listener_test extends \phpbb_database_test_case
 					]],
 				]
 			],
-			[2, 'index', true,
+			[2, true, 'index', true,
 				[
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => 1,
@@ -200,7 +200,7 @@ class listener_test extends \phpbb_database_test_case
 					]],
 				]
 			],
-			[3, 'index', true,
+			[3, true, 'index', true,
 				[
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => 1,
@@ -218,7 +218,25 @@ class listener_test extends \phpbb_database_test_case
 					]],
 				]
 			],
-			[4, 'viewforum', true,
+			[3, false, 'index', true,
+				[
+					['board_announcements', [
+						'BOARD_ANNOUNCEMENT_ID' => 1,
+						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
+						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
+						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
+					]],
+					['board_announcements', [
+						'BOARD_ANNOUNCEMENT_ID' => '3',
+						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
+						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 3',
+						'BOARD_ANNOUNCEMENT_BGCOLOR' => '000000',
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3, 'hash' => generate_link_hash('close_boardannouncement3')]),
+					]],
+				]
+			],
+			[4, true, 'viewforum', true,
 				[
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => 2,
@@ -229,7 +247,7 @@ class listener_test extends \phpbb_database_test_case
 					]],
 				]
 			],
-			[5, 'viewforum', false, []],
+			[5, true, 'viewforum', false, []],
 		];
 	}
 
@@ -238,13 +256,15 @@ class listener_test extends \phpbb_database_test_case
 	 *
 	 * @dataProvider display_board_announcements_data
 	 * @param $user_id
+	 * @param $is_registered
 	 * @param $page
 	 * @param $enabled
 	 * @param $expected
 	 */
-	public function test_display_board_announcements($user_id, $page, $enabled, $expected)
+	public function test_display_board_announcements($user_id, $is_registered, $page, $enabled, $expected)
 	{
 		$this->user->data['user_id'] = $user_id;
+		$this->user->data['is_registered'] = $is_registered;
 		$this->user->page['page_name'] = "$page.$this->php_ext";
 		$this->config['board_announcements_enable'] = $enabled;
 
@@ -276,6 +296,7 @@ class listener_test extends \phpbb_database_test_case
 			WHERE announcement_id = 1");
 
 		$this->user->data['user_id'] = 2;
+		$this->user->data['is_registered'] = true;
 		$this->user->page['page_name'] = "viewforum.$this->php_ext";
 		$this->config['board_announcements_enable'] = true;
 
@@ -308,6 +329,7 @@ class listener_test extends \phpbb_database_test_case
 			WHERE announcement_id = 1");
 
 		$this->user->data['user_id'] = 2;
+		$this->user->data['is_registered'] = true;
 		$this->user->page['page_name'] = "memberlist.$this->php_ext";
 		$this->config['board_announcements_enable'] = true;
 
