@@ -139,8 +139,8 @@ class acp_controller
 			$this->template->assign_block_vars('announcements' , [
 				'DESCRIPTION'  => $row['announcement_description'],
 				'USERS'        => $row['announcement_users'],
-				'CREATED_DATE' => $row['announcement_timestamp'],
-				'EXPIRY_DATE'  => $row['announcement_expiry'],
+				'CREATED_DATE' => $row['announcement_timestamp'] ? $this->user->format_date($row['announcement_timestamp'], ext::DATE_FORMAT) : '',
+				'EXPIRY_DATE'  => $row['announcement_expiry'] ? $this->user->format_date($row['announcement_expiry'], ext::DATE_FORMAT) : '',
 				'S_EXPIRED'    => $expired,
 				'S_ENABLED'    => $enabled,
 				'LOCATIONS'    => $this->manager->decode_json($row['announcement_locations']),

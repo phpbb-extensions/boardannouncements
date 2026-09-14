@@ -189,6 +189,7 @@ class acp_controller_test extends \phpbb_test_case
 	public function test_list_announcements()
 	{
 		$controller = $this->get_controller();
+		$this->user->data['user_timezone'] = 'Asia/Tokyo';
 
 		$rows = [
 			[
@@ -229,7 +230,21 @@ class acp_controller_test extends \phpbb_test_case
 			->with(3);
 
 		$this->template->expects(self::exactly(3))
-			->method('assign_block_vars');
+			->method('assign_block_vars')
+			->withConsecutive(
+				['announcements', self::callback(function ($data) use ($rows) {
+					return $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& $data['EXPIRY_DATE'] === '';
+				})],
+				['announcements', self::callback(function ($data) use ($rows) {
+					return $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& $data['EXPIRY_DATE'] === '';
+				})],
+				['announcements', self::callback(function ($data) use ($rows) {
+					return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], \phpbb\boardannouncements\ext::DATE_FORMAT);
+				})]
+			);
 
 		$this->template->expects(self::once())
 			->method('assign_vars')
@@ -398,10 +413,12 @@ class acp_controller_test extends \phpbb_test_case
 		$successful_submit = $submit && !$errors && !$failed_update;
 		$expected_locations = json_encode(array_values(array_filter($form[7])));
 		$expected_description = utf8_encode_ucr($form[3]);
-		$has_expected_data = static function ($data) use ($expected_locations, $expected_description)
+		$creation_timestamp = 1234567890;
+		$has_expected_data = static function ($data) use ($id, $expected_locations, $expected_description, $creation_timestamp)
 		{
 			return $data['announcement_locations'] === $expected_locations
-				&& $data['announcement_description'] === $expected_description;
+				&& $data['announcement_description'] === $expected_description
+				&& ($id ? $data['announcement_timestamp'] === $creation_timestamp : $data['announcement_timestamp'] > 0);
 		};
 
 		self::$valid_form = $valid_form;
@@ -455,6 +472,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_uid'		=> '',
 				'announcement_bitfield'	=> '',
 				'announcement_flags'		=> 7,
+				'announcement_timestamp'	=> $creation_timestamp,
 			]);
 
 		$update = $this->manager->expects($submit && $id && !$errors ? self::once() : self::never())
