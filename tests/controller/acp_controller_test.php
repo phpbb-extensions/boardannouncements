@@ -365,7 +365,7 @@ class acp_controller_test extends \phpbb_test_case
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, false], // submit, announcement deleted before update
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, false, true], // submit, bad form
 			[0, ['add', 0, '', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, bad text
-			[0, ['add', 0, 'Announcement Text 0', str_repeat('a', 201), 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, description too long
+			[0, ['add', 0, 'Announcement Text 0', str_repeat('a', 256), 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, description too long
 			[0, ['add', 0, 'Announcement Text 0', str_repeat('a', 186) . str_repeat('&amp;', 14), 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, escaped description exceeds stored length
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'fffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, background color too short
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'gggggg', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, background color is not hexadecimal
