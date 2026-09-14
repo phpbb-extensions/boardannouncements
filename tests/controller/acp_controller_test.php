@@ -625,6 +625,10 @@ class acp_controller_test extends \phpbb_test_case
 			->method('move_announcement')
 			->with($id, $dir);
 
+		$this->manager->expects($valid && !$error && !$is_ajax ? self::once() : self::never())
+			->method('get_announcements')
+			->willReturn([]);
+
 		$controller->mode_manage();
 	}
 

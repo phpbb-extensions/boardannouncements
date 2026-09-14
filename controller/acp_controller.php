@@ -14,6 +14,7 @@ use phpbb\boardannouncements\ext;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
+use phpbb\json_response;
 use phpbb\language\language;
 use phpbb\log\log;
 use phpbb\request\request;
@@ -411,9 +412,11 @@ class acp_controller
 
 		if ($this->request->is_ajax())
 		{
-			$json_response = new \phpbb\json_response;
+			$json_response = new json_response;
 			$json_response->send(['success' => true]);
 		}
+
+		$this->list_announcements();
 	}
 
 	/**
