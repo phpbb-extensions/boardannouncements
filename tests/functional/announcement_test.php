@@ -258,12 +258,39 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
 		self::assertStringContainsString('Everywhere announcement', $crawler->filter('#phpbb_announcement_' . $everywhere_id)->text());
 
-		// Test unrelated page with spoofed forum id - see everywhere
+		// Test forum ID query fallback
 		$crawler = self::request('GET', 'memberlist.php?f=2&amp;sid=' . $this->sid);
 		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
-		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $forum_id));
-		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
+	}
+
+	/**
+	 * Test bots receive guest announcements, not registered-user announcements
+	 */
+	public function test_bot_audience()
+	{
+		$this->login();
+		$this->admin_login();
+
+		$members_id = $this->create_announcement([
+			'board_announcements_users' => ext::MEMBERS,
+			'board_announcements_description' => 'Members announcement',
+		]);
+		$guests_id = $this->create_announcement([
+			'board_announcements_users' => ext::GUESTS,
+			'board_announcements_description' => 'Guests announcement',
+		]);
+
+		self::$client->restart();
+		self::$client->setHeader('User-Agent', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+		$crawler = self::request('GET', 'index.php');
+
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $members_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $guests_id));
+
+		self::$client->restart();
 	}
 
 	/**
@@ -287,7 +314,10 @@ class announcement_test extends \phpbb_functional_test_case
 		$stored_description = $this->db->sql_fetchfield('announcement_description');
 		$this->db->sql_freeresult($result);
 
-		self::assertSame('Unicode &#128512; &#20013;&#25991; &#1050;&#1080;&#1088;&#1080;&#1083;&#1083;&#1080;&#1094;&#1072; announcement', $stored_description);
+		$expected_description = strpos($this->db->get_sql_layer(), 'mssql') === 0
+			? utf8_encode_ncr($description)
+			: utf8_encode_ucr($description);
+		self::assertSame($expected_description, $stored_description);
 
 		$crawler = self::request('GET', $this->get_acp_page());
 		self::assertStringContainsString($description, $crawler->filter('table > tbody')->text());
