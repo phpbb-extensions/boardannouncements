@@ -52,13 +52,14 @@ class manager
 	 * Get all board announcements that can be seen by the user
 	 *
 	 * @param int $user_id A user identifier
+	 * @param bool $is_registered Whether the user is registered
 	 * @return array Array of announcements data, or empty array
 	 */
-	public function get_visible_announcements($user_id)
+	public function get_visible_announcements($user_id, $is_registered)
 	{
 		$data = $this->nestedset->where_visible($user_id)->get_all_tree_data();
 
-		if ((int) $user_id === ANONYMOUS)
+		if (!$is_registered)
 		{
 			return array_filter($data, [$this, 'filter_members']);
 		}
@@ -228,13 +229,7 @@ class manager
 	 */
 	protected function intersect_data($data)
 	{
-		$data = array_intersect_key($data, $this->announcement_columns());
-		if (isset($data['announcement_description']))
-		{
-			$data['announcement_description'] = utf8_encode_ncr($data['announcement_description']);
-		}
-
-		return $data;
+		return array_intersect_key($data, $this->announcement_columns());
 	}
 
 	/**

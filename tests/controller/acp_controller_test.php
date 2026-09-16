@@ -23,6 +23,12 @@ class acp_controller_test extends \phpbb_test_case
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\boardannouncements\manager\manager */
 	protected $manager;
 
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/** @var string */
+	protected $sql_layer = 'mysqli';
+
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\config\config */
 	protected $config;
 
@@ -105,6 +111,11 @@ class acp_controller_test extends \phpbb_test_case
 		$this->manager = $this->getMockBuilder('\phpbb\boardannouncements\manager\manager')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->db = $this->createMock('\phpbb\db\driver\driver_interface');
+		$this->db->method('get_sql_layer')
+			->willReturnCallback(function () {
+				return $this->sql_layer;
+			});
 	}
 
 	/**
@@ -116,6 +127,7 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		$controller = new \phpbb\boardannouncements\controller\acp_controller(
 			$this->manager,
+			$this->db,
 			$this->config,
 			$this->controller_helper,
 			$this->language,
@@ -159,6 +171,7 @@ class acp_controller_test extends \phpbb_test_case
 			->setMethods(['action_add', 'action_delete', 'action_move', 'action_settings', 'list_announcements'])
 			->setConstructorArgs([
 				$this->manager,
+				$this->db,
 				$this->config,
 				$this->controller_helper,
 				$this->language,
@@ -189,6 +202,7 @@ class acp_controller_test extends \phpbb_test_case
 	public function test_list_announcements()
 	{
 		$controller = $this->get_controller();
+		$this->user->data['user_timezone'] = 'Asia/Tokyo';
 
 		$rows = [
 			[
@@ -229,7 +243,21 @@ class acp_controller_test extends \phpbb_test_case
 			->with(3);
 
 		$this->template->expects(self::exactly(3))
-			->method('assign_block_vars');
+			->method('assign_block_vars')
+			->withConsecutive(
+				['announcements', self::callback(function ($data) use ($rows) {
+					return $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& $data['EXPIRY_DATE'] === '';
+				})],
+				['announcements', self::callback(function ($data) use ($rows) {
+					return $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& $data['EXPIRY_DATE'] === '';
+				})],
+				['announcements', self::callback(function ($data) use ($rows) {
+					return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], \phpbb\boardannouncements\ext::DATE_FORMAT);
+				})]
+			);
 
 		$this->template->expects(self::once())
 			->method('assign_vars')
@@ -361,11 +389,12 @@ class acp_controller_test extends \phpbb_test_case
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
 			[0, ['add', 0, 'Announcement Text 0', 'Selected locations', 'ffffff', true, 0, [0, -1, 2], true, '', false, false, false], false, true, true, false], // submit, discard location sentinel
 			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, emoji encoded for storage
+			[0, ['add', 0, 'Announcement Text 0', 'Unicode 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, true, 'mssqlnative'], // submit, all Unicode encoded for MSSQL
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, false], // submit, announcement deleted before update
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, false, true], // submit, bad form
 			[0, ['add', 0, '', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, bad text
-			[0, ['add', 0, 'Announcement Text 0', str_repeat('a', 201), 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, description too long
+			[0, ['add', 0, 'Announcement Text 0', str_repeat('a', 256), 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, description too long
 			[0, ['add', 0, 'Announcement Text 0', str_repeat('a', 186) . str_repeat('&amp;', 14), 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, escaped description exceeds stored length
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'fffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, background color too short
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'gggggg', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, background color is not hexadecimal
@@ -389,17 +418,23 @@ class acp_controller_test extends \phpbb_test_case
 	 * @param $valid_form
 	 * @param $errors
 	 * @param bool $update_success
+	 * @param string $sql_layer
 	 * @return void
 	 */
-	public function test_action_add_submit($id, $form, $preview, $submit, $valid_form, $errors, $update_success = true)
+	public function test_action_add_submit($id, $form, $preview, $submit, $valid_form, $errors, $update_success = true, $sql_layer = 'mysqli')
 	{
+		$this->sql_layer = $sql_layer;
 		$controller = $this->get_controller();
 		$failed_update = $submit && !$errors && $id && !$update_success;
 		$successful_submit = $submit && !$errors && !$failed_update;
 		$expected_locations = json_encode(array_values(array_filter($form[7])));
-		$has_expected_locations = static function ($data) use ($expected_locations)
+		$expected_description = strpos($sql_layer, 'mssql') === 0 ? utf8_encode_ncr($form[3]) : utf8_encode_ucr($form[3]);
+		$creation_timestamp = 1234567890;
+		$has_expected_data = static function ($data) use ($id, $expected_locations, $expected_description, $creation_timestamp)
 		{
-			return $data['announcement_locations'] === $expected_locations;
+			return $data['announcement_locations'] === $expected_locations
+				&& $data['announcement_description'] === $expected_description
+				&& ($id ? $data['announcement_timestamp'] === $creation_timestamp : $data['announcement_timestamp'] > 0);
 		};
 
 		self::$valid_form = $valid_form;
@@ -453,6 +488,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_uid'		=> '',
 				'announcement_bitfield'	=> '',
 				'announcement_flags'		=> 7,
+				'announcement_timestamp'	=> $creation_timestamp,
 			]);
 
 		$update = $this->manager->expects($submit && $id && !$errors ? self::once() : self::never())
@@ -460,14 +496,14 @@ class acp_controller_test extends \phpbb_test_case
 			->willReturn($update_success);
 		if ($submit && $id && !$errors)
 		{
-			$update->with($id, self::callback($has_expected_locations));
+			$update->with($id, self::callback($has_expected_data));
 		}
 
 		$save = $this->manager->expects($submit && !$id && !$errors ? self::once() : self::never())
 			->method('save_announcement');
 		if ($submit && !$id && !$errors)
 		{
-			$save->with(self::callback($has_expected_locations));
+			$save->with(self::callback($has_expected_data));
 		}
 
 		$this->log->expects($successful_submit ? self::once() : self::never())
@@ -487,10 +523,11 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_delete_data()
 	{
 		return [
-			[1, true, true, false], // successfully delete an announcement
-			[2, true, false, false], // unsuccessfully delete an announcement
-			[3, false, null, false], // do not confirm deletion
-			[4, true, false, true], // announcement deleted before confirmation
+			[1, true, true, false, false], // successfully delete an announcement
+			[2, true, false, false, false], // unsuccessfully delete an announcement
+			[3, false, null, false, false], // do not confirm deletion
+			[4, true, false, true, false], // announcement deleted before confirmation
+			[5, true, true, false, true], // successfully delete via ajax
 		];
 	}
 
@@ -502,8 +539,9 @@ class acp_controller_test extends \phpbb_test_case
 	 * @param bool $confirm_action
 	 * @param bool|null $success
 	 * @param bool $throws
+	 * @param bool $is_ajax
 	 */
-	public function test_action_delete($id, $confirm_action, $success, $throws)
+	public function test_action_delete($id, $confirm_action, $success, $throws, $is_ajax)
 	{
 		self::$confirm = $confirm_action;
 
@@ -528,7 +566,14 @@ class acp_controller_test extends \phpbb_test_case
 		{
 			if ($success)
 			{
-				$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS');
+				if ($is_ajax)
+				{
+					$this->setExpectedTriggerError(E_WARNING);
+				}
+				else
+				{
+					$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS');
+				}
 				$this->log->expects(self::once())
 					->method('add');
 			}
@@ -554,6 +599,10 @@ class acp_controller_test extends \phpbb_test_case
 				$delete->willReturn($success);
 			}
 		}
+
+		$this->request->expects($success ? self::once() : self::never())
+			->method('is_ajax')
+			->willReturn($is_ajax);
 
 		$controller->mode_manage();
 	}
@@ -622,6 +671,10 @@ class acp_controller_test extends \phpbb_test_case
 		$this->manager->expects($valid ? self::once() : self::never())
 			->method('move_announcement')
 			->with($id, $dir);
+
+		$this->manager->expects($valid && !$error && !$is_ajax ? self::once() : self::never())
+			->method('get_announcements')
+			->willReturn([]);
 
 		$controller->mode_manage();
 	}
