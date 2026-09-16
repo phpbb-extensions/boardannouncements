@@ -241,22 +241,23 @@ class acp_controller_test extends \phpbb_test_case
 			->method('disable_announcement')
 			->with(3);
 
+		$block_index = 0;
 		$this->template->expects(self::exactly(3))
 			->method('assign_block_vars')
-			->withConsecutive(
-				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === '';
-				})],
-				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === '';
-				})],
-				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], \phpbb\boardannouncements\ext::DATE_FORMAT);
-				})]
-			);
+			->willReturnCallback(function ($block_name, $data) use ($rows, &$block_index) {
+				self::assertSame('announcements', $block_name);
+				self::assertSame(
+					$this->user->format_date($rows[$block_index]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT),
+					$data['CREATED_DATE']
+				);
+				self::assertSame(
+					$rows[$block_index]['announcement_expiry']
+						? $this->user->format_date($rows[$block_index]['announcement_expiry'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						: '',
+					$data['EXPIRY_DATE']
+				);
+				$block_index++;
+			});
 
 		$this->template->expects(self::once())
 			->method('assign_vars')
@@ -592,7 +593,9 @@ class acp_controller_test extends \phpbb_test_case
 			{
 				if ($is_ajax)
 				{
-					$this->setExpectedTriggerError(E_WARNING);
+					$this->expectOutputString('{"success":true}');
+					$this->expectException(\RuntimeException::class);
+					$this->expectExceptionMessage('Exit handler called');
 				}
 				else
 				{

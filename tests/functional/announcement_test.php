@@ -284,8 +284,9 @@ class announcement_test extends \phpbb_functional_test_case
 		]);
 
 		self::$client->restart();
-		self::$client->setHeader('User-Agent', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+		self::$client->setServerParameter('HTTP_USER_AGENT', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
 		$crawler = self::request('GET', 'index.php');
+		self::$client->setServerParameters([]);
 
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $members_id));
 		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $guests_id));
