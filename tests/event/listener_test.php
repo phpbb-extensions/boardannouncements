@@ -289,6 +289,24 @@ class listener_test extends \phpbb_database_test_case
 		]);
 	}
 
+	public function test_display_board_announcements_without_registered_state()
+	{
+		$this->user->data['user_id'] = ANONYMOUS;
+		unset($this->user->data['is_registered']);
+		$this->user->page['page_name'] = "index.$this->php_ext";
+		$this->config['board_announcements_enable'] = true;
+
+		$this->set_listener();
+
+		$this->template->expects(self::exactly(2))
+			->method('assign_block_vars');
+
+		$this->listener->display_board_announcements(new \phpbb\event\data([
+			'item' => 'forum',
+			'item_id' => 0,
+		]));
+	}
+
 	public function test_query_forum_id_fallback()
 	{
 		$this->db->sql_query("UPDATE phpbb_board_announcements
