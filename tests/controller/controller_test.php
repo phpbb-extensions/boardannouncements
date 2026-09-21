@@ -70,7 +70,7 @@ class controller_test extends phpbb_database_test_case
 	/**
 	* Create our controller
 	*/
-	protected function get_controller($user_id, $is_registered, $mode, $ajax): controller
+	protected function get_controller($user_id, $is_registered, $mode, $ajax, $php_ext = null): controller
 	{
 		global $config, $user, $phpbb_dispatcher, $phpbb_path_helper, $phpbb_root_path, $phpEx;
 
@@ -126,7 +126,8 @@ class controller_test extends phpbb_database_test_case
 		return new controller(
 			$manager,
 			$request,
-			$user
+			$user,
+			$php_ext ?? $phpEx
 		);
 	}
 
@@ -201,6 +202,37 @@ class controller_test extends phpbb_database_test_case
 		self::assertEquals($status_code, $response->getStatusCode());
 		self::assertEquals($content, $response->getContent());
 		self::assertEquals($expected, $this->get_closed_announcements($id, $user_id));
+	}
+
+	/**
+	 * Test non-AJAX redirect destinations
+	 *
+	 * @dataProvider get_redirect_data
+	 */
+	public function test_get_redirect($redirect, $expected, $php_ext = null)
+	{
+		$controller = $this->get_controller(1, false, 'close_boardannouncement1', false, $php_ext);
+		$method = new \ReflectionMethod($controller, 'get_redirect');
+		$method->setAccessible(true);
+
+		self::assertSame($expected, $method->invoke($controller, $redirect));
+	}
+
+	/**
+	 * Data for test_get_redirect
+	 *
+	 * @return array
+	 */
+	public function get_redirect_data()
+	{
+		return [
+			['viewtopic.php?t=1', 'viewtopic.php?t=1'],
+			['app.php/boardannouncements/close/1?hash=valid', 'index.php'],
+			['https://example.com/forum/app.php/boardannouncements/close/1?hash=valid', 'index.php'],
+			['/boardannouncements/close/2/', 'index.php'],
+			['app.php/boardannouncements/close/1', 'index.phtml', 'phtml'],
+			['viewtopic.php?redirect=app.php/boardannouncements/close/1', 'viewtopic.php?redirect=app.php/boardannouncements/close/1'],
+		];
 	}
 
 	/**

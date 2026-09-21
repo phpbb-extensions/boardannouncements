@@ -27,19 +27,24 @@ class controller
 	/** @var user */
 	protected $user;
 
+	/** @var string */
+	protected $php_ext;
+
 	/**
 	 * Constructor
 	 *
 	 * @param manager $manager
 	 * @param request $request Request object
 	 * @param user $user User object
+	 * @param string $php_ext PHP file extension
 	 * @access public
 	 */
-	public function __construct(manager $manager, request $request, user $user)
+	public function __construct(manager $manager, request $request, user $user, $php_ext)
 	{
 		$this->manager = $manager;
 		$this->request = $request;
 		$this->user = $user;
+		$this->php_ext = $php_ext;
 	}
 
 	/**
@@ -81,10 +86,24 @@ class controller
 
 		// Redirect the user back to their last viewed page (non-AJAX requests)
 		$redirect = $this->request->variable('redirect', $this->user->data['session_page']);
+		$redirect = $this->get_redirect($redirect);
 		$redirect = reapply_sid($redirect);
 		redirect($redirect);
 
-		// We shouldn't get here, but throw a http exception just in case
+		// We shouldn't get here, but throw an http exception just in case
 		throw new http_exception(500, 'GENERAL_ERROR');
+	}
+
+	/**
+	 * Return a safe destination for non-AJAX requests
+	 *
+	 * @param string $redirect Redirect URL
+	 * @return string Redirect URL
+	 */
+	protected function get_redirect($redirect)
+	{
+		$redirect_path = parse_url(html_entity_decode($redirect, ENT_COMPAT), PHP_URL_PATH);
+
+		return is_string($redirect_path) && preg_match('#(?:^|/)boardannouncements/close/\d+/?$#', $redirect_path) ? 'index.' . $this->php_ext : $redirect;
 	}
 }

@@ -24,6 +24,7 @@ services:
             - '@phpbb.boardannouncements.manager'
             - '@request'
             - '@user'
+            - '%core.php_ext%'
 
     phpbb.boardannouncements.manager:
         class: phpbb\boardannouncements\manager\manager
