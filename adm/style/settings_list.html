@@ -61,7 +61,13 @@
 				{% endif %}
 			</td>
 			<td>{{ ba.CREATED_DATE }}</td>
-			<td>{{ ba.S_ENABLED ? Icon('font', 'check', lang('YES'), true, 'fas acp-icon acp-icon-settings') : Icon('font', 'xmark', lang('NO'), true, 'fas acp-icon acp-icon-delete') }}</td>
+			<td>
+				{% if constant('PHPBB_VERSION') starts with '4' %}
+					{{ include('@phpbb_boardannouncements/settings_list_icon_phpbb4.html') }}
+				{% else %}
+					{{ ba.S_ENABLED ? _self.baIcon('check', 'settings', 'YES') : _self.baIcon('times', 'delete', 'NO') }}
+				{% endif %}
+			</td>
 			<td>{{ ba.EXPIRY_DATE }}</td>
 			<td>{{ ba.S_EXPIRED ? lang('YES') : lang('NO') }}</td>
 			<td class="actions">
