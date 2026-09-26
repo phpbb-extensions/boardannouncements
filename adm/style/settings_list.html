@@ -65,7 +65,7 @@
 				{% if constant('PHPBB_VERSION') starts with '4' %}
 					{{ include('@phpbb_boardannouncements/settings_list_icon_phpbb4.html') }}
 				{% else %}
-					{{ ba.S_ENABLED ? _self.baIcon('check', 'settings', 'YES') : _self.baIcon('times', 'delete', 'NO') }}
+					<i class="icon acp-icon acp-icon-{{ ba.S_ENABLED ? 'settings' : 'delete' }} fa-{{ ba.S_ENABLED ? 'check' : 'times' }} fa-fw" title="{{ lang(ba.S_ENABLED ? 'YES' : 'NO') }}"></i>
 				{% endif %}
 			</td>
 			<td>{{ ba.EXPIRY_DATE }}</td>
