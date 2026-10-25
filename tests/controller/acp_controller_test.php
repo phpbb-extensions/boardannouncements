@@ -35,6 +35,9 @@ class acp_controller_test extends \phpbb_test_case
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\controller\helper */
 	protected $controller_helper;
 
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\group\helper */
+	protected $group_helper;
+
 	/** @var \phpbb\language\language */
 	protected $language;
 
@@ -79,6 +82,9 @@ class acp_controller_test extends \phpbb_test_case
 			->disableOriginalConstructor()
 			->getMock();
 		$this->controller_helper = $this->getMockBuilder('\phpbb\controller\helper')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->group_helper = $this->getMockBuilder('\phpbb\group\helper')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
@@ -129,6 +135,7 @@ class acp_controller_test extends \phpbb_test_case
 			$this->manager,
 			$this->db,
 			$this->config,
+			$this->group_helper,
 			$this->controller_helper,
 			$this->language,
 			$this->log,
@@ -173,6 +180,7 @@ class acp_controller_test extends \phpbb_test_case
 				$this->manager,
 				$this->db,
 				$this->config,
+				$this->group_helper,
 				$this->controller_helper,
 				$this->language,
 				$this->log,
@@ -238,41 +246,115 @@ class acp_controller_test extends \phpbb_test_case
 			->method('get_announcements')
 			->willReturn($rows);
 
-		$this->manager->expects(self::once())
-			->method('disable_announcement')
-			->with(3);
-
 		$this->template->expects(self::exactly(3))
 			->method('assign_block_vars')
 			->withConsecutive(
 				['announcements', self::callback(function ($data) use ($rows) {
 					return $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === '';
+						&& $data['EXPIRY_DATE'] === ''
+						&& $data['S_MOVE_UP_DISABLED']
+						&& !$data['S_MOVE_DOWN_DISABLED'];
 				})],
 				['announcements', self::callback(function ($data) use ($rows) {
 					return $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === '';
+						&& $data['EXPIRY_DATE'] === ''
+						&& !$data['S_MOVE_UP_DISABLED']
+						&& !$data['S_MOVE_DOWN_DISABLED'];
 				})],
 				['announcements', self::callback(function ($data) use ($rows) {
 					return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], \phpbb\boardannouncements\ext::DATE_FORMAT);
+						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& !$data['S_MOVE_UP_DISABLED']
+						&& $data['S_MOVE_DOWN_DISABLED'];
 				})]
 			);
 
 		$this->template->expects(self::once())
 			->method('assign_vars')
-			->with([
-				'U_ACTION'							=> $this->u_action,
-				'U_ACTION_ADD'						=> $this->u_action . '&amp;action=add',
-				'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config['board_announcements_enable'],
+			->with(self::callback(function ($data) {
+				return $data['U_ACTION'] === $this->u_action
+					&& $data['S_STATUS_FILTER'] === 'all'
+					&& $data['S_SEARCH_QUERY'] === ''
+					&& !$data['S_FILTERS_ACTIVE'];
+			}));
+
+		$this->request->expects(self::exactly(3))
+			->method('variable')
+			->willReturnMap([
+				['action', '', false, \phpbb\request\request_interface::REQUEST, ''],
+				['status', 'all', false, \phpbb\request\request_interface::REQUEST, 'all'],
+				['q', '', true, \phpbb\request\request_interface::REQUEST, ''],
 			]);
 
-		$this->request->expects(self::once())
-			->method('variable')
-			->with('action', '')
-			->willReturn('');
+		$controller->mode_manage();
+	}
+
+	/**
+	 * Search and status filters work together and lock ordering in a partial list.
+	 */
+	public function test_list_announcements_filters_message_text()
+	{
+		$controller = $this->get_controller();
+		$rows = [
+			['announcement_id' => 1, 'announcement_description' => 'First', 'announcement_text' => 'Nothing here'],
+			['announcement_id' => 2, 'announcement_description' => 'Second', 'announcement_text' => 'Hidden Needle in message'],
+			['announcement_id' => 3, 'announcement_description' => 'Third', 'announcement_text' => 'Needle', 'announcement_state' => \phpbb\boardannouncements\ext::STATE_DRAFT],
+		];
+
+		$this->request->method('variable')
+			->willReturnCallback(static function ($name, $default = null) {
+				return [
+					'action' => '',
+					'status' => 'active',
+					'q' => 'Needle',
+				][$name] ?? $default;
+			});
+		$this->manager->expects(self::once())
+			->method('get_announcements')
+			->willReturn($rows);
+		$this->template->expects(self::once())
+			->method('assign_block_vars')
+			->with('announcements', self::callback(static function ($data) {
+				return $data['ID'] === 2
+					&& $data['S_MOVE_UP_DISABLED']
+					&& $data['S_MOVE_DOWN_DISABLED'];
+			}));
+		$this->template->expects(self::once())
+			->method('assign_vars')
+			->with(self::callback(static function ($data) {
+				return $data['S_STATUS_FILTER'] === 'active'
+					&& $data['S_SEARCH_QUERY'] === 'Needle'
+					&& $data['S_FILTERS_ACTIVE'];
+			}));
 
 		$controller->mode_manage();
+	}
+
+	/**
+	 * Stored special-group identifiers are resolved through phpBB's group API.
+	 */
+	public function test_get_group_options_uses_group_helper()
+	{
+		$controller = $this->get_controller();
+		$result = new \stdClass();
+		$this->db->expects(self::once())->method('sql_query')->willReturn($result);
+		$this->db->expects(self::exactly(2))->method('sql_fetchrow')->with($result)->willReturnOnConsecutiveCalls([
+			'group_id' => 5,
+			'group_name' => 'REGISTERED',
+		], false);
+		$this->db->expects(self::once())->method('sql_freeresult')->with($result);
+		$this->group_helper->expects(self::once())
+			->method('get_name')
+			->with('REGISTERED')
+			->willReturn('Registered users');
+
+		$method = new \ReflectionMethod($controller, 'get_group_options');
+		$method->setAccessible(true);
+		self::assertSame([[
+			'ID' => 5,
+			'NAME' => 'Registered users',
+			'S_SELECTED' => true,
+		]], $method->invoke($controller, [5]));
 	}
 
 	/**
@@ -448,25 +530,30 @@ class acp_controller_test extends \phpbb_test_case
 			$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_UPDATED');
 		}
 
-		$this->request
-			->expects(self::exactly(13))
-			->method('variable')
-			->withConsecutive(
-				['action', ''],
-				['id', 0],
-				['board_announcements_text', ''],
-				['board_announcements_description', ''],
-				['board_announcements_bgcolor', ''],
-				['board_announcements_enabled', true],
-				['board_announcements_users', 0],
-				['board_announcements_locations', [0]],
-				['board_announcements_dismiss', true],
-				['board_announcements_expiry', ''],
-				['disable_bbcode', false],
-				['disable_magic_url', false],
-				['disable_smilies', false]
-			)
-			->willReturnOnConsecutiveCalls(...$form);
+		$values = [
+			'action' => $form[0],
+			'id' => $form[1],
+			'board_announcements_text' => $form[2],
+			'board_announcements_description' => $form[3],
+			'board_announcements_title' => '',
+			'board_announcements_bgcolor' => $form[4],
+			'board_announcements_state' => $form[5] ? \phpbb\boardannouncements\ext::STATE_PUBLISHED : \phpbb\boardannouncements\ext::STATE_DRAFT,
+			'board_announcements_tone' => 'info',
+			'board_announcements_users' => $form[6],
+			'board_announcements_groups' => [10],
+			'board_announcements_locations' => $form[7],
+			'board_announcements_include_children' => false,
+			'board_announcements_dismiss' => $form[8],
+			'board_announcements_start' => '',
+			'board_announcements_expiry' => $form[9],
+			'disable_bbcode' => $form[10],
+			'disable_magic_url' => $form[11],
+			'disable_smilies' => $form[12],
+		];
+		$this->request->method('variable')
+			->willReturnCallback(static function ($name, $default = null) use ($values) {
+				return array_key_exists($name, $values) ? $values[$name] : $default;
+			});
 
 		$this->request
 			->expects(self::exactly(2))
@@ -504,6 +591,13 @@ class acp_controller_test extends \phpbb_test_case
 		if ($submit && !$id && !$errors)
 		{
 			$save->with(self::callback($has_expected_data));
+		}
+
+		$groups = $this->manager->expects($successful_submit ? self::once() : self::never())
+			->method('set_announcement_groups');
+		if ($successful_submit)
+		{
+			$groups->with(self::anything(), []);
 		}
 
 		$this->log->expects($successful_submit ? self::once() : self::never())
@@ -547,11 +641,10 @@ class acp_controller_test extends \phpbb_test_case
 
 		$controller = $this->get_controller();
 
-		$this->request
-			->expects(self::exactly($confirm_action ? 2 : 4))
-			->method('variable')
-			->withConsecutive(['action', ''], ['id', 0], ['i', ''], ['mode', ''])
-			->willReturnOnConsecutiveCalls('delete', $id, '', '');
+		$this->request->method('variable')
+			->willReturnCallback(static function ($name, $default = null) use ($id) {
+				return ['action' => 'delete', 'id' => $id, 'status' => 'all', 'q' => ''][$name] ?? $default;
+			});
 
 		if (!$confirm_action)
 		{
@@ -659,10 +752,17 @@ class acp_controller_test extends \phpbb_test_case
 			$this->setExpectedTriggerError(E_WARNING);
 		}
 
-		$this->request->expects(self::exactly(4))
-			->method('variable')
-			->withConsecutive(['action', ''], ['id', 0], ['dir', ''], ['hash', ''])
-			->willReturnOnConsecutiveCalls('move', $id, $dir, ($valid ? generate_link_hash($dir . $id) : ''));
+		$this->request->method('variable')
+			->willReturnCallback(static function ($name, $default = null) use ($id, $dir, $valid) {
+				return [
+					'action' => 'move',
+					'id' => $id,
+					'dir' => $dir,
+					'hash' => $valid ? generate_link_hash($dir . $id) : '',
+					'status' => 'all',
+					'q' => '',
+				][$name] ?? $default;
+			});
 
 		$this->request->expects($valid && !$error ? self::once() : self::never())
 			->method('is_ajax')

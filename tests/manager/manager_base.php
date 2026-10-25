@@ -51,7 +51,9 @@ class manager_base extends \phpbb_database_test_case
 				$this->db,
 				$lock,
 				'phpbb_board_announcements',
-				'phpbb_board_announcements_track'
+				'phpbb_board_announcement_groups',
+				'phpbb_user_group',
+				'phpbb_forums'
 			)
 		);
 	}

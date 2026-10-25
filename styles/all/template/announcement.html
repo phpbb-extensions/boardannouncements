@@ -1,0 +1,23 @@
+<section id="phpbb_announcement_{{ announcement.BOARD_ANNOUNCEMENT_ID }}"
+	class="phpbb-announcement phpbb-announcement--{{ announcement.BOARD_ANNOUNCEMENT_TONE }}"
+	{% if announcement.BOARD_ANNOUNCEMENT_TITLE %}aria-labelledby="phpbb_announcement_title_{{ announcement.BOARD_ANNOUNCEMENT_ID }}"{% else %}aria-label="{{ lang('BOARD_ANNOUNCEMENT') }}"{% endif %}
+	{% if announcement.BOARD_ANNOUNCEMENT_BGCOLOR %}style="--ba-background:#{{ announcement.BOARD_ANNOUNCEMENT_BGCOLOR }};--ba-foreground:#{{ announcement.BOARD_ANNOUNCEMENT_TEXTCOLOR }};--ba-accent:#{{ announcement.BOARD_ANNOUNCEMENT_TEXTCOLOR }}"{% endif %}>
+	<div class="phpbb-announcement__body">
+		{% if announcement.BOARD_ANNOUNCEMENT_TITLE %}
+			<h2 id="phpbb_announcement_title_{{ announcement.BOARD_ANNOUNCEMENT_ID }}" class="phpbb-announcement__title">{{ announcement.BOARD_ANNOUNCEMENT_TITLE }}</h2>
+		{% endif %}
+		<div class="phpbb-announcement__message">{{ announcement.BOARD_ANNOUNCEMENT }}</div>
+	</div>
+	{% if announcement.S_BOARD_ANNOUNCEMENT_DISMISS %}
+		<form method="post" action="{{ announcement.U_BOARD_ANNOUNCEMENT_CLOSE }}" data-ajax="close_announcement" class="phpbb-announcement__dismiss-form">
+			<input type="hidden" name="redirect" value="{{ U_CURRENT_PAGE }}">
+			<button type="submit" class="phpbb-announcement__dismiss" title="{{ lang('BOARD_ANNOUNCEMENT_CLOSE') }}">
+				{% if constant('PHPBB_VERSION') starts with '4' %}
+					{{ include('@phpbb_boardannouncements/close_icon_phpbb4.html') }}
+				{% else %}
+					<i class="icon fa-fw fa-times" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENT_CLOSE') }}</span>
+				{% endif %}
+			</button>
+		</form>
+	{% endif %}
+</section>

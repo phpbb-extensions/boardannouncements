@@ -11,6 +11,7 @@
 namespace phpbb\boardannouncements\controller;
 
 use phpbb\boardannouncements\manager\manager;
+use phpbb\boardannouncements\service\visibility;
 use phpbb\exception\http_exception;
 use phpbb\request\request;
 use phpbb\user;
@@ -29,6 +30,7 @@ class controller
 
 	/** @var string */
 	protected $php_ext;
+	protected $visibility;
 
 	/**
 	 * Constructor
@@ -37,14 +39,16 @@ class controller
 	 * @param request $request Request object
 	 * @param user $user User object
 	 * @param string $php_ext PHP file extension
+	 * @param visibility $visibility Visibility policy
 	 * @access public
 	 */
-	public function __construct(manager $manager, request $request, user $user, $php_ext)
+	public function __construct(manager $manager, request $request, user $user, $php_ext, visibility $visibility)
 	{
 		$this->manager = $manager;
 		$this->request = $request;
 		$this->user = $user;
 		$this->php_ext = $php_ext;
+		$this->visibility = $visibility;
 	}
 
 	/**
@@ -59,27 +63,20 @@ class controller
 		// Get the announcements data
 		$announcement = $this->manager->get_announcement($id);
 
-		// Only accept intentional, authorized dismissal requests
-		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id']))
+		$location = $this->request->variable('location', 0);
+		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id']) || !$this->visibility->is_visible($announcement, $location, false))
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
-		// Set a cookie
-		$this->user->set_cookie('ba_' . $announcement['announcement_id'], $announcement['announcement_timestamp'], strtotime('+1 year'));
-		$response = true;
-
-		// Close the announcement for registered users
-		if ($this->user->data['is_registered'])
-		{
-			$response = $this->manager->close_announcement($announcement['announcement_id'], $this->user->data['user_id']);
-		}
+		$revision = (int) ($announcement['announcement_revision'] ?? 1);
+		$this->user->set_cookie('ba_' . $announcement['announcement_id'], $revision, strtotime('+1 year'));
 
 		// Send a JSON response if an AJAX request was used
 		if ($this->request->is_ajax())
 		{
 			return new JsonResponse([
-				'success' 	=> $response,
+				'success' 	=> true,
 				'id'		=> (int) $announcement['announcement_id']
 			]);
 		}

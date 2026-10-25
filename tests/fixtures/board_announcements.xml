@@ -114,16 +114,54 @@
 			<value></value>
 		</row>
 	</table>
-	<table name="phpbb_board_announcements_track">
-		<column>announcement_id</column>
+	<table name="phpbb_user_group">
+		<column>group_id</column>
 		<column>user_id</column>
+		<column>group_leader</column>
+		<column>user_pending</column>
 		<row>
-			<value>2</value>
-			<value>2</value>
+			<value>10</value>
+			<value>100</value>
+			<value>0</value>
+			<value>0</value>
 		</row>
 		<row>
-			<value>4</value>
+			<value>10</value>
+			<value>101</value>
+			<value>0</value>
+			<value>1</value>
+		</row>
+	</table>
+	<table name="phpbb_forums">
+		<column>forum_id</column>
+		<column>left_id</column>
+		<column>right_id</column>
+		<column>forum_parents</column>
+		<column>forum_desc</column>
+		<column>forum_rules</column>
+		<row>
+			<value>10</value>
+			<value>1</value>
+			<value>6</value>
+			<value></value>
+			<value></value>
+			<value></value>
+		</row>
+		<row>
+			<value>11</value>
 			<value>2</value>
+			<value>3</value>
+			<value></value>
+			<value></value>
+			<value></value>
+		</row>
+		<row>
+			<value>12</value>
+			<value>7</value>
+			<value>8</value>
+			<value></value>
+			<value></value>
+			<value></value>
 		</row>
 	</table>
 </dataset>

@@ -1,71 +1,64 @@
-/* style the announcement banner */
-.phpbb_announcement {
-	font-size: 0.85rem;
-	background-color: #ecd5d8; /* default color */
-	border-radius: 7px;
-	position: relative;
-	z-index: 0;
-	margin: 10px 0;
-	padding: 10px;
-}
-
-/* zero out any text margins and scroll any overflow */
-.phpbb_announcement div {
-	font-size: 0.75rem;
-	line-height: 1.25rem;
-	overflow: auto hidden;
-	margin: 0;
-}
-
-/* make posted images responsive */
-.phpbb_announcement .postimage {
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
+.phpbb-announcement {
+	--ba-background: #e8f1fa;
+	--ba-foreground: #16324f;
+	--ba-accent: #2f6fab;
 	box-sizing: border-box;
-	max-width: 100%;
+	position: relative;
+	margin: 12px 0;
+	padding: 14px 52px 14px 16px;
+	border: 1px solid var(--ba-accent);
+	border-color: color-mix(in srgb, var(--ba-accent) 45%, transparent);
+	border-inline-start: 4px solid var(--ba-accent);
+	border-radius: 8px;
+	background: var(--ba-background);
+	color: var(--ba-foreground);
+	font-size: 1.2em;
+	line-height: 1.5;
 }
 
-/* style the close button */
-.phpbb_announcement .close {
-	background: transparent;
+.phpbb-announcement--neutral { --ba-background: #f1f2f3; --ba-foreground: #25282b; --ba-accent: #687078; }
+.phpbb-announcement--success { --ba-background: #e6f5eb; --ba-foreground: #163d23; --ba-accent: #298247; }
+.phpbb-announcement--warning { --ba-background: #fff4d6; --ba-foreground: #4c3500; --ba-accent: #b47700; }
+.phpbb-announcement--critical { --ba-background: #fae7e7; --ba-foreground: #511b1b; --ba-accent: #bd3434; }
+.phpbb-announcement--custom { background: var(--ba-background); color: var(--ba-foreground); }
+.phpbb-announcement__title { margin: 0 0 4px; color: inherit; font-size: 1.15em; line-height: 1.35; }
+.phpbb-announcement__message { overflow-wrap: anywhere; }
+.phpbb-announcement__message > :first-child { margin-top: 0; }
+.phpbb-announcement__message > :last-child { margin-bottom: 0; }
+.phpbb-announcement__message .postimage { box-sizing: border-box; max-width: 100%; height: auto; }
+.phpbb-announcement__message ul,
+.phpbb-announcement__message ol { margin-inline-start: 1.5em; }
+.phpbb-announcement__dismiss-form { position: absolute; inset-block-start: 4px; inset-inline-end: 4px; }
+.phpbb-announcement__dismiss {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
 	border: 0;
+	border-radius: 6px;
+	background: transparent;
 	color: inherit;
 	cursor: pointer;
-	font: inherit;
-	opacity: 0.6;
-	padding: 0;
-	position: absolute;
-	z-index: 1;
-	top: 4px;
-	right: 4px;
-	left: auto;
+	opacity: .72;
+}
+.phpbb-announcement__dismiss:hover { opacity: 1; background: rgb(0 0 0 / 8%); }
+.phpbb-announcement__dismiss:focus-visible { opacity: 1; outline: 3px solid var(--ba-accent); outline-offset: 1px; }
+
+@media (prefers-color-scheme: dark) {
+	.phpbb-announcement { --ba-background: #193148; --ba-foreground: #f1f6fa; --ba-accent: #77b7ec; }
+	.phpbb-announcement--neutral { --ba-background: #292d31; --ba-foreground: #f2f2f2; --ba-accent: #a9b0b7; }
+	.phpbb-announcement--success { --ba-background: #183826; --ba-foreground: #eaf8ef; --ba-accent: #6ccb8a; }
+	.phpbb-announcement--warning { --ba-background: #463610; --ba-foreground: #fff6de; --ba-accent: #e7b94d; }
+	.phpbb-announcement--critical { --ba-background: #482020; --ba-foreground: #fff0f0; --ba-accent: #ee7d7d; }
 }
 
-/* reposition close button for right-to-left languages */
-.rtl .phpbb_announcement .close {
-	right: auto;
-	left: 4px;
+@media (max-width: 500px) {
+	.phpbb-announcement { margin-block: 8px; padding: 12px 48px 12px 12px; }
 }
 
-/* hide close button on desktops by default */
-.notouch .phpbb_announcement .close {
-	opacity: 0;
-	transition: opacity 0.5s;
-}
-
-/* display the close button on mouse-over of the banner */
-.notouch .phpbb_announcement:hover .close {
-	opacity: 0.6;
-}
-
-/* fix for lists, force them to display inside containing div */
-.phpbb_announcement ul,
-.phpbb_announcement ol {
-	margin-left: 20px;
-}
-
-.rtl .phpbb_announcement ul,
-.rtl .phpbb_announcement ol {
-	margin-right: 20px;
-	margin-left: 0;
+@media (forced-colors: active) {
+	.phpbb-announcement { border: 2px solid CanvasText; }
+	.phpbb-announcement__dismiss:focus-visible { outline-color: Highlight; }
 }

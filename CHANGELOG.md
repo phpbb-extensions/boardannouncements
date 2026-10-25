@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.0.0 - Unreleased
+
+- Added draft, scheduled, active, expired, and archived lifecycle states with start and end dates.
+- Added public headings, semantic tones, and custom accessible colors.
+- Added group targeting and forum descendant targeting alongside guest, member, and site-wide audiences.
+- Added a simple administrator action to show an announcement again to everyone.
+- Added ACP search, status filters, operational status, duplication, archive, ordering controls, and bulk actions.
+- Redesigned the ACP management and editing screens with responsive controls, accessible action icons, and improved filtering.
+- Added a dedicated administrator permission.
+- Replaced dismissal links with POST requests protected by phpBB form tokens.
+- Added centralized visibility checks and `phpbb.boardannouncements.visibility` extension event.
+- Removed expiry mutation during page rendering and obsolete expiry cron task; current status is derived from schedule.
+- Preserved existing announcements, ordering, and targeting during upgrade; dismissals now use browser cookies without user tracking.
+- Fixed special group names displaying as untranslated storage keys and reduced announcement text to match phpBB typography.
+
 ## 1.3.1 - 2026-09-03
 
 - Fixed the announcement close button appearing above other page elements, such as menus and overlays.

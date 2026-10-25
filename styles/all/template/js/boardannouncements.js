@@ -1,7 +1,14 @@
-// Add an AJAX callback function
-phpbb.addAjaxCallback('close_announcement', function(res) {
+(function() {
 	'use strict';
-	if (res.success) {
-		phpbb.toggleDisplay('phpbb_announcement_' + res.id, -1);
-	}
-});
+
+	phpbb.addAjaxCallback('close_announcement', function(res) {
+		if (!res.success) {
+			return;
+		}
+		var announcement = document.getElementById('phpbb_announcement_' + res.id);
+		if (!announcement) {
+			return;
+		}
+		announcement.remove();
+	});
+}());

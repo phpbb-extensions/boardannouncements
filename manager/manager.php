@@ -49,25 +49,6 @@ class manager
 	}
 
 	/**
-	 * Get all board announcements that can be seen by the user
-	 *
-	 * @param int $user_id A user identifier
-	 * @param bool $is_registered Whether the user is registered
-	 * @return array Array of announcements data, or empty array
-	 */
-	public function get_visible_announcements($user_id, $is_registered)
-	{
-		$data = $this->nestedset->where_visible($user_id)->get_all_tree_data();
-
-		if (!$is_registered)
-		{
-			return array_filter($data, [$this, 'filter_members']);
-		}
-
-		return array_filter($data, [$this, 'filter_guests']);
-	}
-
-	/**
 	 * Get one column of announcement data
 	 *
 	 * @param int $id An announcement identifier
@@ -88,7 +69,7 @@ class manager
 	 */
 	public function save_announcement($data)
 	{
-		$this->nestedset->insert($this->intersect_data($data));
+		return $this->nestedset->insert($this->intersect_data($data));
 	}
 
 	/**
@@ -100,14 +81,7 @@ class manager
 	 */
 	public function update_announcement($id, $data)
 	{
-		$updated = (bool) $this->nestedset->update_item($id, $this->intersect_data($data));
-
-		if ($updated)
-		{
-			$this->delete_announcement_tracking($id);
-		}
-
-		return $updated;
+		return (bool) $this->nestedset->update_item($id, $this->intersect_data($data));
 	}
 
 	/**
@@ -118,14 +92,8 @@ class manager
 	 */
 	public function delete_announcement($id)
 	{
-		$deleted = (bool) $this->nestedset->delete($id);
-
-		if ($deleted)
-		{
-			$this->delete_announcement_tracking($id);
-		}
-
-		return $deleted;
+		$this->set_announcement_groups($id, []);
+		return (bool) $this->nestedset->delete($id);
 	}
 
 	/**
@@ -139,52 +107,40 @@ class manager
 	public function move_announcement($id, $direction = 'up', $amount = 1)
 	{
 		$amount = (int) $amount;
-
 		$this->nestedset->move($id, ($direction !== 'up' ? -$amount : $amount));
 	}
 
-	/**
-	 * Set an announcement to disabled state
-	 *
-	 * @param int $id An announcement identifier
-	 * @return bool Return enabled state of announcement, true if still enabled, false if successfully disabled
-	 */
-	public function disable_announcement($id)
+	public function show_announcement_again($id)
 	{
-		return $this->nestedset->update_item($id, ['announcement_enabled' => 0]) === false;
+		$announcement = $this->get_announcement($id);
+		if (!$announcement)
+		{
+			return false;
+		}
+
+		return (bool) $this->nestedset->update_item($id, [
+			'announcement_revision' => (int) $announcement['announcement_revision'] + 1,
+		]);
 	}
 
-	/**
-	 * Set all expired announcements to disabled state
-	 *
-	 * @return int|false Number of rows affected, or false
-	 */
-	public function disable_expired_announcements()
+	public function get_announcement_groups($id)
 	{
-		return $this->nestedset->disable_expired_items();
+		return $this->nestedset->get_announcement_groups($id);
 	}
 
-	/**
-	 * Delete user tracking for a board announcement
-	 *
-	 * @param int $id An announcement identifier
-	 * @return bool
-	 */
-	public function delete_announcement_tracking($id)
+	public function set_announcement_groups($id, array $group_ids)
 	{
-		return (bool) $this->nestedset->delete_tracked_items($id);
+		$this->nestedset->set_announcement_groups($id, $group_ids);
 	}
 
-	/**
-	 * Closing an announcement, store the user and announcement ids for tracking purposes
-	 *
-	 * @param int $id An announcement identifier
-	 * @param int $user_id An user identifier
-	 * @return bool
-	 */
-	public function close_announcement($id, $user_id)
+	public function user_matches_groups($id, $user_id)
 	{
-		return (bool) $this->nestedset->insert_tracked_item($id, ['user_id' => (int) $user_id]);
+		return $this->nestedset->user_matches_groups($id, $user_id);
+	}
+
+	public function location_matches_descendant($location, array $selected)
+	{
+		return $this->nestedset->location_matches_descendant($location, $selected);
 	}
 
 	/**
@@ -197,28 +153,6 @@ class manager
 	{
 		$result = json_decode($data, true);
 		return json_last_error() === JSON_ERROR_NONE ? $result : $data;
-	}
-
-	/**
-	 * Filter members only announcements
-	 *
-	 * @param array $row
-	 * @return bool
-	 */
-	protected function filter_members(array $row)
-	{
-		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\ext::MEMBERS;
-	}
-
-	/**
-	 * Filter guests only announcements
-	 *
-	 * @param array $row
-	 * @return bool
-	 */
-	protected function filter_guests(array $row)
-	{
-		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\ext::GUESTS;
 	}
 
 	/**
@@ -242,11 +176,20 @@ class manager
 		return [
 			'announcement_text'			=> '',
 			'announcement_description'	=> '',
+			'announcement_title'		=> '',
 			'announcement_bgcolor'		=> '',
 			'announcement_enabled'		=> true,
+			'announcement_tone'			=> 'info',
+			'announcement_state'		=> 'published',
+			'announcement_start'		=> 0,
+			'announcement_include_children' => false,
 			'announcement_locations'	=> '',
 			'announcement_dismissable'	=> true,
 			'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+			'announcement_revision'		=> 1,
+			'announcement_created_by'	=> 0,
+			'announcement_updated_at'	=> 0,
+			'announcement_updated_by'	=> 0,
 			'announcement_timestamp'	=> 0,
 			'announcement_expiry'		=> 0,
 			'announcement_uid'			=> '',

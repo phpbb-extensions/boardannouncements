@@ -15,6 +15,7 @@ use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\db\driver\driver_interface;
+use phpbb\group\helper as group_helper;
 use phpbb\json_response;
 use phpbb\language\language;
 use phpbb\log\log;
@@ -32,6 +33,9 @@ class acp_controller
 
 	/** @var config */
 	protected $config;
+
+	/** @var group_helper */
+	protected $group_helper;
 
 	/** @var helper */
 	protected $controller_helper;
@@ -66,6 +70,7 @@ class acp_controller
 	 * @param manager $manager
 	 * @param driver_interface $db
 	 * @param config $config
+	 * @param group_helper $group_helper
 	 * @param helper $controller_helper
 	 * @param language $language
 	 * @param log $log
@@ -75,11 +80,12 @@ class acp_controller
 	 * @param $phpbb_root_path
 	 * @param $php_ext
 	 */
-	public function __construct(manager $manager, driver_interface $db, config $config, helper $controller_helper, language $language, log $log, request $request, template $template, user $user, $phpbb_root_path, $php_ext)
+	public function __construct(manager $manager, driver_interface $db, config $config, group_helper $group_helper, helper $controller_helper, language $language, log $log, request $request, template $template, user $user, $phpbb_root_path, $php_ext)
 	{
 		$this->manager = $manager;
 		$this->db = $db;
 		$this->config = $config;
+		$this->group_helper = $group_helper;
 		$this->controller_helper = $controller_helper;
 		$this->language = $language;
 		$this->log = $log;
@@ -113,7 +119,7 @@ class acp_controller
 	{
 		// Trigger specific action
 		$action = $this->request->variable('action', '');
-		if (in_array($action, ['add', 'delete', 'move', 'settings']))
+		if (in_array($action, ['add', 'delete', 'move', 'settings', 'archive', 'reset', 'duplicate', 'bulk']))
 		{
 			$this->{'action_' . $action}();
 		}
@@ -131,27 +137,57 @@ class acp_controller
 	 */
 	protected function list_announcements()
 	{
-		foreach ($this->manager->get_announcements() as $row)
+		$status_filter = $this->request->variable('status', 'all');
+		$query = trim($this->request->variable('q', '', true));
+		$normalized_query = utf8_strtolower($query);
+		$valid_statuses = ['all', 'active', 'scheduled', 'draft', 'expired', 'archived'];
+		if (!in_array($status_filter, $valid_statuses, true))
 		{
-			$enabled = (int) $row['announcement_enabled'];
-			$expired = (int) $row['announcement_expiry'] > 0 && (int) $row['announcement_expiry'] < time();
+			$status_filter = 'all';
+		}
 
-			// if an enabled ad has expired, let's disable it now
-			if ($expired && $enabled)
+		$announcements = array_values((array) $this->manager->get_announcements());
+		$last_index = count($announcements) - 1;
+		$filters_active = $status_filter !== 'all' || $query !== '';
+		foreach ($announcements as $index => $row)
+		{
+			$row = array_replace($this->announcement_defaults(), $row);
+			$status = $this->get_status($row);
+			if ($status_filter !== 'all' && $status !== $status_filter)
 			{
-				$enabled = $this->manager->disable_announcement($row['announcement_id']);
+				continue;
+			}
+			$search_text = utf8_strtolower(utf8_decode_ncr(implode(' ', [
+				$row['announcement_description'],
+				$row['announcement_title'],
+				$row['announcement_text'],
+			])));
+			if ($normalized_query !== '' && strpos($search_text, $normalized_query) === false)
+			{
+				continue;
 			}
 
 			$this->template->assign_block_vars('announcements' , [
+				'ID'           => $row['announcement_id'],
 				'DESCRIPTION'  => $row['announcement_description'],
+				'TITLE'        => $row['announcement_title'],
+				'STATUS'       => $status,
+				'TONE'         => $row['announcement_tone'],
 				'USERS'        => $row['announcement_users'],
 				'CREATED_DATE' => $row['announcement_timestamp'] ? $this->user->format_date($row['announcement_timestamp'], ext::DATE_FORMAT) : '',
+				'START_DATE'   => $row['announcement_start'] ? $this->user->format_date($row['announcement_start'], ext::DATE_FORMAT) : '',
 				'EXPIRY_DATE'  => $row['announcement_expiry'] ? $this->user->format_date($row['announcement_expiry'], ext::DATE_FORMAT) : '',
-				'S_EXPIRED'    => $expired,
-				'S_ENABLED'    => $enabled,
+				'S_EXPIRED'    => $status === 'expired',
+				'S_ENABLED'    => $status === 'active' || $status === 'scheduled',
+				'DISMISSABLE'  => (bool) $row['announcement_dismissable'],
 				'LOCATIONS'    => $this->manager->decode_json($row['announcement_locations']),
+				'S_MOVE_UP_DISABLED' => $filters_active || $index === 0,
+				'S_MOVE_DOWN_DISABLED' => $filters_active || $index === $last_index,
 				'U_EDIT'       => $this->u_action . '&amp;action=add&amp;id=' . $row['announcement_id'],
 				'U_DELETE'     => $this->u_action . '&amp;action=delete&amp;id=' . $row['announcement_id'],
+				'U_ARCHIVE'    => $this->u_action . '&amp;action=archive&amp;id=' . $row['announcement_id'] . '&amp;hash=' . generate_link_hash('archive' . $row['announcement_id']),
+				'U_RESET'      => $this->u_action . '&amp;action=reset&amp;id=' . $row['announcement_id'] . '&amp;hash=' . generate_link_hash('reset' . $row['announcement_id']),
+				'U_DUPLICATE'  => $this->u_action . '&amp;action=duplicate&amp;id=' . $row['announcement_id'] . '&amp;hash=' . generate_link_hash('duplicate' . $row['announcement_id']),
 				'U_MOVE_UP'    => $this->u_action . '&amp;action=move&amp;id=' . $row['announcement_id'] . '&amp;dir=up&amp;hash=' . generate_link_hash('up' . $row['announcement_id']),
 				'U_MOVE_DOWN'  => $this->u_action . '&amp;action=move&amp;id=' . $row['announcement_id'] . '&amp;dir=down&amp;hash=' . generate_link_hash('down' . $row['announcement_id']),
 			]);
@@ -162,6 +198,9 @@ class acp_controller
 			'U_ACTION'							=> $this->u_action,
 			'U_ACTION_ADD'						=> $this->u_action . '&amp;action=add',
 			'BOARD_ANNOUNCEMENTS_ENABLED_ALL'	=> $this->config['board_announcements_enable'],
+			'S_STATUS_FILTER' => $status_filter,
+			'S_SEARCH_QUERY' => $query,
+			'S_FILTERS_ACTIVE' => $filters_active,
 		]);
 
 		add_form_key('board_announcement_settings');
@@ -188,17 +227,23 @@ class acp_controller
 		}
 
 		// Get board announcement data from the database if it already exists
-		$data = $this->manager->announcement_columns();
+		$data = array_replace($this->announcement_defaults(), (array) $this->manager->announcement_columns());
 		$id = $this->request->variable('id', 0);
 		if ($id)
 		{
-			$data = $this->manager->get_announcement($id);
+			$stored_data = $this->manager->get_announcement($id);
 
-			if (!$data)
+			if (!$stored_data)
 			{
 				$this->error('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
 			}
+			$data = array_replace($data, $stored_data);
 		}
+		if ($data['announcement_bgcolor'] !== '')
+		{
+			$data['announcement_tone'] = 'custom';
+		}
+		$selected_groups = $id ? (array) $this->manager->get_announcement_groups($id) : [];
 
 		// If form is submitted or previewed
 		$submit  = $this->request->is_set_post('submit');
@@ -216,12 +261,28 @@ class acp_controller
 			$data['announcement_timestamp'] = max(time(), (int) ($data['announcement_timestamp'] ?? 0) + 1);
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
 			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);
+			$data['announcement_title'] = $this->request->variable('board_announcements_title', '', true);
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
-			$data['announcement_enabled'] = $this->request->variable('board_announcements_enabled', true);
+			$data['announcement_state'] = $this->request->variable('board_announcements_state', ext::STATE_PUBLISHED);
+			$data['announcement_enabled'] = $data['announcement_state'] === ext::STATE_PUBLISHED;
+			$data['announcement_tone'] = $this->request->variable('board_announcements_tone', 'info');
 			$data['announcement_users'] = $this->request->variable('board_announcements_users', ext::ALL);
+			$selected_groups = $this->request->variable('board_announcements_groups', [0]);
+			if ((int) $data['announcement_users'] !== ext::GROUPS)
+			{
+				$selected_groups = [];
+			}
 			$data['announcement_locations'] = $this->request->variable('board_announcements_locations', [0]);
+			$data['announcement_include_children'] = $this->request->variable('board_announcements_include_children', false);
 			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', true);
+			$data['announcement_start'] = $this->request->variable('board_announcements_start', '');
 			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
+			$data['announcement_updated_at'] = time();
+			$data['announcement_updated_by'] = (int) $this->user->data['user_id'];
+			if (!$id)
+			{
+				$data['announcement_created_by'] = (int) $this->user->data['user_id'];
+			}
 
 			// MSSQL requires all Unicode to be encoded; other DBMS only require four-byte Unicode.
 			$data['announcement_description'] = strpos($this->db->get_sql_layer(), 'mssql') === 0
@@ -231,11 +292,29 @@ class acp_controller
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_DESC_TOO_LONG');
 			}
+			if (utf8_strlen($data['announcement_title']) > 255)
+			{
+				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TITLE_TOO_LONG');
+			}
 
 			if ($data['announcement_bgcolor'] !== '' && !preg_match('/\A[0-9a-f]{6}\z/i', $data['announcement_bgcolor']))
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID');
 			}
+			if (!in_array($data['announcement_tone'], ext::TONES, true))
+			{
+				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TONE_INVALID');
+			}
+			if (!in_array($data['announcement_state'], [ext::STATE_DRAFT, ext::STATE_PUBLISHED, ext::STATE_ARCHIVED], true))
+			{
+				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_STATE_INVALID');
+			}
+			if ((int) $data['announcement_users'] === ext::GROUPS && !array_filter($selected_groups))
+			{
+				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_GROUPS_REQUIRED');
+			}
+
+			$data['announcement_start'] = $this->parse_date($data['announcement_start'], $errors, 'BOARD_ANNOUNCEMENTS_START_INVALID');
 
 			if ($data['announcement_text'] === '')
 			{
@@ -246,7 +325,7 @@ class acp_controller
 			if ($data['announcement_expiry'] !== '')
 			{
 				$data['announcement_expiry'] = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $data['announcement_expiry']);
-				if ($data['announcement_expiry'] < time())
+				if (!$data['announcement_expiry'] || ($data['announcement_state'] === ext::STATE_PUBLISHED && $data['announcement_expiry'] < time()) || ($data['announcement_start'] && $data['announcement_expiry'] <= $data['announcement_start']))
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
 				}
@@ -281,10 +360,13 @@ class acp_controller
 					}
 
 					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $data['announcement_description']);
+					$this->manager->set_announcement_groups($id, $selected_groups);
 				}
 				else
 				{
-					$this->manager->save_announcement($data);
+					$result = $this->manager->save_announcement($data);
+					$new_id = is_array($result) ? (int) ($result['announcement_id'] ?? 0) : (int) $result;
+					$this->manager->set_announcement_groups($new_id, $selected_groups);
 					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $data['announcement_description']);
 				}
 
@@ -305,18 +387,27 @@ class acp_controller
 			'BOARD_ANNOUNCEMENTS_ENABLED'	=> $data['announcement_enabled'],
 			'BOARD_ANNOUNCEMENTS_DISMISS'	=> $data['announcement_dismissable'],
 			'BOARD_ANNOUNCEMENTS_DESC'		=> $data['announcement_description'],
+			'BOARD_ANNOUNCEMENTS_TITLE'		=> $data['announcement_title'],
 			'BOARD_ANNOUNCEMENTS_TEXT'		=> $announcement_text_edit['text'],
 			'BOARD_ANNOUNCEMENTS_PREVIEW'	=> $announcement_text_preview,
 			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $data['announcement_expiry'] ? $this->user->format_date($data['announcement_expiry'], ext::DATE_FORMAT) : '',
+			'BOARD_ANNOUNCEMENTS_START'		=> $data['announcement_start'] ? $this->user->format_date($data['announcement_start'], ext::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
+			'BOARD_ANNOUNCEMENTS_TEXTCOLOR' => $this->contrast_color($data['announcement_bgcolor']),
+			'BOARD_ANNOUNCEMENTS_TONE'		=> $data['announcement_tone'],
+			'BOARD_ANNOUNCEMENTS_STATE'		=> $data['announcement_state'],
+			'BOARD_ANNOUNCEMENTS_GROUPS'	=> $this->get_group_options($selected_groups),
 
 			'BOARD_ANNOUNCEMENTS_LOCATIONS'	=> $this->get_location_options($data['announcement_locations']),
+			'BOARD_ANNOUNCEMENTS_INCLUDE_CHILDREN' => $data['announcement_include_children'],
 
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select([
 				ext::ALL		=> 'BOARD_ANNOUNCEMENTS_EVERYONE',
 				ext::MEMBERS	=> 'G_REGISTERED',
 				ext::GUESTS		=> 'G_GUESTS',
+				ext::GROUPS		=> 'BOARD_ANNOUNCEMENTS_SELECTED_GROUPS',
 			], $data['announcement_users']),
+			'S_BOARD_ANNOUNCEMENTS_GROUPS'	=> (int) $data['announcement_users'] === ext::GROUPS,
 
 			'S_BBCODE_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_bbcode'],
 			'S_SMILIES_DISABLE_CHECKED'		=> !$announcement_text_edit['allow_smilies'],
@@ -332,6 +423,7 @@ class acp_controller
 			'S_BBCODE_IMG'			=> true,
 			'S_LINKS_ALLOWED'		=> true,
 			'S_ADD_ANNOUNCEMENT'	=> true,
+			'S_EDIT_ANNOUNCEMENT'	=> (bool) $id,
 
 			'PICKER_DATE_FORMAT'	=> ext::DATE_FORMAT,
 
@@ -341,6 +433,99 @@ class acp_controller
 
 		// Build custom bbcodes array
 		display_custom_bbcodes();
+	}
+
+	protected function action_archive()
+	{
+		$id = $this->request->variable('id', 0);
+		if (!$this->check_hash('archive' . $id) || !$this->manager->update_announcement($id, [
+			'announcement_state' => ext::STATE_ARCHIVED,
+			'announcement_enabled' => 0,
+			'announcement_updated_at' => time(),
+			'announcement_updated_by' => (int) $this->user->data['user_id'],
+		]))
+		{
+			$this->error('FORM_INVALID');
+		}
+		$this->success('BOARD_ANNOUNCEMENTS_ARCHIVED');
+	}
+
+	protected function action_reset()
+	{
+		$id = $this->request->variable('id', 0);
+		if (!$this->check_hash('reset' . $id) || !$this->manager->show_announcement_again($id))
+		{
+			$this->error('FORM_INVALID');
+		}
+		$this->success('BOARD_ANNOUNCEMENTS_SHOWN_AGAIN');
+	}
+
+	protected function action_duplicate()
+	{
+		$id = $this->request->variable('id', 0);
+		$data = $this->manager->get_announcement($id);
+		if (!$this->check_hash('duplicate' . $id) || !$data)
+		{
+			$this->error('FORM_INVALID');
+		}
+		unset($data['announcement_id']);
+		$data['announcement_description'] = $this->language->lang('BOARD_ANNOUNCEMENTS_COPY_OF', $data['announcement_description']);
+		$data['announcement_state'] = ext::STATE_DRAFT;
+		$data['announcement_enabled'] = 0;
+		$data['announcement_revision'] = 1;
+		$data['announcement_timestamp'] = time();
+		$data['announcement_updated_at'] = time();
+		$data['announcement_created_by'] = (int) $this->user->data['user_id'];
+		$data['announcement_updated_by'] = (int) $this->user->data['user_id'];
+		$result = $this->manager->save_announcement($data);
+		$new_id = is_array($result) ? (int) ($result['announcement_id'] ?? 0) : (int) $result;
+		$this->manager->set_announcement_groups($new_id, $this->manager->get_announcement_groups($id));
+		$this->success('BOARD_ANNOUNCEMENTS_DUPLICATED');
+	}
+
+	protected function action_bulk()
+	{
+		if (!check_form_key('board_announcement_settings'))
+		{
+			$this->error('FORM_INVALID');
+		}
+		$ids = array_unique(array_filter(array_map('intval', $this->request->variable('announcement_ids', [0]))));
+		$bulk_action = $this->request->variable('bulk_action', '');
+		if (!$ids || !in_array($bulk_action, ['publish', 'draft', 'archive', 'delete'], true))
+		{
+			$this->error('FORM_INVALID');
+		}
+		if ($bulk_action === 'delete' && !confirm_box(true))
+		{
+			confirm_box(false, $this->language->lang('CONFIRM_OPERATION'), build_hidden_fields([
+				'action' => 'bulk',
+				'bulk_action' => 'delete',
+				'announcement_ids' => $ids,
+				'creation_time' => $this->request->variable('creation_time', 0),
+				'form_token' => $this->request->variable('form_token', ''),
+			]));
+			return;
+		}
+		foreach ($ids as $id)
+		{
+			if ($bulk_action === 'delete')
+			{
+				$description = $this->manager->get_announcement_data($id, 'announcement_description');
+				if ($this->manager->delete_announcement($id))
+				{
+					$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $description);
+				}
+				continue;
+			}
+			$state = $bulk_action === 'publish' ? ext::STATE_PUBLISHED : ($bulk_action === 'archive' ? ext::STATE_ARCHIVED : ext::STATE_DRAFT);
+			$this->manager->update_announcement($id, [
+				'announcement_state' => $state,
+				'announcement_enabled' => $state === ext::STATE_PUBLISHED,
+				'announcement_updated_at' => time(),
+				'announcement_updated_by' => (int) $this->user->data['user_id'],
+			]);
+		}
+		$this->success('BOARD_ANNOUNCEMENTS_BULK_UPDATED');
 	}
 
 	/**
@@ -503,11 +688,17 @@ class acp_controller
 	{
 		$selected = !empty($locations) ? $this->manager->decode_json($locations) : [];
 
-		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
+		$forum_list = (array) make_forum_select($selected, false, false, false, false, false, true);
+		foreach ($forum_list as &$forum)
+		{
+			$forum['depth'] = substr_count($forum['padding'], '&nbsp; &nbsp;');
+		}
+		unset($forum);
 
 		// Add the index page to the list
 		$forum_list[ext::INDEX_ONLY] = [
 			'padding'    => '',
+			'depth'      => 0,
 			'selected'   => in_array(ext::INDEX_ONLY, $selected),
 			'forum_id'   => ext::INDEX_ONLY,
 			'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')
@@ -516,5 +707,103 @@ class acp_controller
 		ksort($forum_list);
 
 		return $forum_list;
+	}
+
+	protected function get_status(array $row)
+	{
+		if (($row['announcement_state'] ?? '') === ext::STATE_ARCHIVED)
+		{
+			return 'archived';
+		}
+		if (empty($row['announcement_enabled']) || ($row['announcement_state'] ?? '') === ext::STATE_DRAFT)
+		{
+			return 'draft';
+		}
+		if (!empty($row['announcement_start']) && $row['announcement_start'] > time())
+		{
+			return 'scheduled';
+		}
+		if (!empty($row['announcement_expiry']) && $row['announcement_expiry'] <= time())
+		{
+			return 'expired';
+		}
+		return 'active';
+	}
+
+	protected function parse_date($value, array &$errors, $error_key)
+	{
+		if ($value === '')
+		{
+			return 0;
+		}
+		$timestamp = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $value);
+		if (!$timestamp)
+		{
+			$errors[] = $this->language->lang($error_key);
+		}
+		return $timestamp;
+	}
+
+	protected function contrast_color($hex)
+	{
+		if (!preg_match('/\A[0-9a-f]{6}\z/i', $hex))
+		{
+			return '';
+		}
+		$channels = [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
+		foreach ($channels as &$channel)
+		{
+			$channel /= 255;
+			$channel = $channel <= 0.04045 ? $channel / 12.92 : pow(($channel + 0.055) / 1.055, 2.4);
+		}
+		$luminance = 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
+		return $luminance > 0.179 ? '111111' : 'ffffff';
+	}
+
+	protected function get_group_options(array $selected)
+	{
+		$options = [];
+		$sql = 'SELECT group_id, group_name
+			FROM ' . GROUPS_TABLE . '
+			ORDER BY group_type DESC, group_name ASC';
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$options[] = [
+				'ID' => (int) $row['group_id'],
+				'NAME' => $this->group_helper->get_name($row['group_name']),
+				'S_SELECTED' => in_array((int) $row['group_id'], array_map('intval', $selected), true),
+			];
+		}
+		$this->db->sql_freeresult($result);
+		return $options;
+	}
+
+	/**
+	 * Defaults keep ACP rendering compatible with announcements created before 2.0.
+	 */
+	protected function announcement_defaults()
+	{
+		return [
+			'announcement_id' => 0,
+			'announcement_text' => '',
+			'announcement_description' => '',
+			'announcement_title' => '',
+			'announcement_bgcolor' => '',
+			'announcement_enabled' => true,
+			'announcement_tone' => 'info',
+			'announcement_state' => ext::STATE_PUBLISHED,
+			'announcement_start' => 0,
+			'announcement_include_children' => false,
+			'announcement_locations' => '',
+			'announcement_dismissable' => true,
+			'announcement_users' => ext::ALL,
+			'announcement_revision' => 1,
+			'announcement_timestamp' => 0,
+			'announcement_expiry' => 0,
+			'announcement_uid' => '',
+			'announcement_bitfield' => '',
+			'announcement_flags' => OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS,
+		];
 	}
 }
