@@ -60,7 +60,7 @@ class controller
 		$announcement = $this->manager->get_announcement($id);
 
 		// Only accept intentional, authorized dismissal requests
-		if (empty($announcement) || !$announcement['announcement_dismissable'] || !$this->request->is_set_post('dismiss') || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id']))
+		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id']))
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}

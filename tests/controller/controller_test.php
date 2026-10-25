@@ -83,10 +83,6 @@ class controller_test extends \phpbb_database_test_case
 		$request->expects(self::atMost(1))
 			->method('is_ajax')
 			->willReturn($ajax);
-		$request->method('is_set_post')
-			->willReturnCallback(static function ($name) use ($mode) {
-				return $name === 'dismiss' && $mode !== 'not_post';
-			});
 		$request->method('variable')
 			->willReturnCallback(static function ($name, $default) use ($hash) {
 				return $name === 'hash' ? $hash : $default;
@@ -207,8 +203,8 @@ class controller_test extends \phpbb_database_test_case
 	{
 		return [
 			['viewtopic.php?t=1', 'viewtopic.php?t=1'],
-			['app.php/boardannouncements/close/1?foo=bar', 'index.php'],
-			['https://example.com/forum/app.php/boardannouncements/close/1?foo=bar', 'index.php'],
+			['app.php/boardannouncements/close/1?hash=valid', 'index.php'],
+			['https://example.com/forum/app.php/boardannouncements/close/1?hash=valid', 'index.php'],
 			['/boardannouncements/close/2/', 'index.php'],
 			['app.php/boardannouncements/close/1', 'index.phtml', 'phtml'],
 			['viewtopic.php?redirect=app.php/boardannouncements/close/1', 'viewtopic.php?redirect=app.php/boardannouncements/close/1'],
@@ -228,15 +224,6 @@ class controller_test extends \phpbb_database_test_case
 				2,
 				true, // Guest is a registered user
 				'invalid',
-				true,
-				403,
-				'NO_AUTH_OPERATION',
-			],
-			[	// test missing POST action
-				1,
-				2,
-				true, // Guest is a registered user
-				'not_post',
 				true,
 				403,
 				'NO_AUTH_OPERATION',

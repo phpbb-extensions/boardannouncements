@@ -430,7 +430,7 @@ class acp_controller_test extends \phpbb_test_case
 		$expected_locations = json_encode(array_values(array_filter($form[7])));
 		$expected_description = strpos($sql_layer, 'mssql') === 0 ? utf8_encode_ncr($form[3]) : utf8_encode_ucr($form[3]);
 		$creation_timestamp = 1234567890;
-		$has_expected_data = static function ($data) use ($id, $expected_locations, $expected_description, $creation_timestamp)
+		$has_expected_data = static function ($data) use ($expected_locations, $expected_description, $creation_timestamp)
 		{
 			return $data['announcement_locations'] === $expected_locations
 				&& $data['announcement_description'] === $expected_description
