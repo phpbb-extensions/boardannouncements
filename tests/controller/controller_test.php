@@ -82,11 +82,10 @@ class controller_test extends \phpbb_database_test_case
 			->method('is_ajax')
 			->willReturn($ajax
 		);
-		$request->method('variable')
-			->with(self::anything())
-			->willReturnMap([
-				['hash', '', false, \phpbb\request\request_interface::REQUEST, generate_link_hash($mode)]]
-		);
+		$request->method('is_set_post')
+			->willReturnCallback(static function ($name) use ($mode) {
+				return $name === 'dismiss' && $mode !== 'not_post';
+			});
 
 		$manager = new \phpbb\boardannouncements\manager\manager(
 			new \phpbb\boardannouncements\manager\nestedset(
@@ -97,12 +96,26 @@ class controller_test extends \phpbb_database_test_case
 			)
 		);
 
-		return new \phpbb\boardannouncements\controller\controller(
+		return new class(
 			$manager,
 			$request,
 			$user,
-			$php_ext ?? $phpEx
-		);
+			$php_ext ?? $phpEx,
+			$mode === 'valid'
+		) extends \phpbb\boardannouncements\controller\controller {
+			protected $valid_form_key;
+
+			public function __construct($manager, $request, $user, $php_ext, $valid_form_key)
+			{
+				parent::__construct($manager, $request, $user, $php_ext);
+				$this->valid_form_key = $valid_form_key;
+			}
+
+			protected function valid_form_key()
+			{
+				return $this->valid_form_key;
+			}
+		};
 	}
 
 	/**
@@ -117,7 +130,7 @@ class controller_test extends \phpbb_database_test_case
 				1, // Announcement ID
 				1, // Guest
 				false, // Guest is not a registered user
-				'close_boardannouncement1',
+				'valid',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -127,7 +140,7 @@ class controller_test extends \phpbb_database_test_case
 				1, // Announcement ID
 				2, // Member
 				true, // Member is a registered user
-				'close_boardannouncement1',
+				'valid',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie and status were set
@@ -137,7 +150,7 @@ class controller_test extends \phpbb_database_test_case
 				1, // Announcement ID
 				0, // Invalid member
 				false, // Set is_registered to false with invalid user_id
-				'close_boardannouncement1',
+				'valid',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -147,7 +160,7 @@ class controller_test extends \phpbb_database_test_case
 				1, // Announcement ID
 				1, // Guest
 				false, // Guest is not a registered user
-				'close_boardannouncement1',
+				'valid',
 				false,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -167,10 +180,8 @@ class controller_test extends \phpbb_database_test_case
 		if (!$ajax)
 		{
 			// Throws E_WARNING in PHP 8.0+ and E_USER_WARNING in earlier versions
-			$exceptionName = PHP_VERSION_ID < 80000 ? \PHPUnit\Framework\Error\Error::class : \PHPUnit\Framework\Error\Warning::class;
 			$errno = PHP_VERSION_ID < 80000 ? E_USER_WARNING : E_WARNING;
-			$this->expectException($exceptionName);
-			$this->expectExceptionCode($errno);
+			$this->setExpectedTriggerError($errno);
 		}
 
 		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);
@@ -189,7 +200,7 @@ class controller_test extends \phpbb_database_test_case
 	 */
 	public function test_get_redirect($redirect, $expected, $php_ext = null)
 	{
-		$controller = $this->get_controller(1, false, 'close_boardannouncement1', false, $php_ext);
+		$controller = $this->get_controller(1, false, 'valid', false, $php_ext);
 		$method = new \ReflectionMethod($controller, 'get_redirect');
 		$method->setAccessible(true);
 
@@ -205,8 +216,8 @@ class controller_test extends \phpbb_database_test_case
 	{
 		return [
 			['viewtopic.php?t=1', 'viewtopic.php?t=1'],
-			['app.php/boardannouncements/close/1?hash=valid', 'index.php'],
-			['https://example.com/forum/app.php/boardannouncements/close/1?hash=valid', 'index.php'],
+			['app.php/boardannouncements/close/1?foo=bar', 'index.php'],
+			['https://example.com/forum/app.php/boardannouncements/close/1?foo=bar', 'index.php'],
 			['/boardannouncements/close/2/', 'index.php'],
 			['app.php/boardannouncements/close/1', 'index.phtml', 'phtml'],
 			['viewtopic.php?redirect=app.php/boardannouncements/close/1', 'viewtopic.php?redirect=app.php/boardannouncements/close/1'],
@@ -221,20 +232,20 @@ class controller_test extends \phpbb_database_test_case
 	public function controller_fails_data()
 	{
 		return [
-			[	// test link hash fail
+			[	// test form key fail
 				1,
 				2,
 				true, // Guest is a registered user
-				'foobar', // Invalid hash
+				'invalid',
 				true,
 				403,
 				'NO_AUTH_OPERATION',
 			],
-			[	// test link hash fail
+			[	// test missing POST action
 				1,
 				2,
 				true, // Guest is a registered user
-				'', // Empty hash
+				'not_post',
 				true,
 				403,
 				'NO_AUTH_OPERATION',
@@ -243,7 +254,7 @@ class controller_test extends \phpbb_database_test_case
 				9,
 				2,
 				true, // Guest is a registered user
-				'close_boardannouncement9',
+				'valid',
 				true,
 				403,
 				'NO_AUTH_OPERATION',
@@ -252,16 +263,7 @@ class controller_test extends \phpbb_database_test_case
 				4,
 				2,
 				true, // Guest is a registered user
-				'close_boardannouncement4',
-				true,
-				403,
-				'NO_AUTH_OPERATION',
-			],
-			[	// test hash bound to a different announcement
-				1,
-				2,
-				true,
-				'close_boardannouncement2',
+				'valid',
 				true,
 				403,
 				'NO_AUTH_OPERATION',

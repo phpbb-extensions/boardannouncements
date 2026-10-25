@@ -122,26 +122,30 @@ class announcement_test extends \phpbb_functional_test_case
 	public function test_close_announcement_fail()
 	{
 		$this->login();
+		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+		$form = $crawler->filter('#phpbb_announcement_1 form[data-ajax="close_announcement"]')->form();
+		$post = $form->getPhpValues();
 
 		// Wrong ID
-		$crawler = self::request('GET', 'app.php/boardannouncements/close/0?hash=' . $this->mock_link_hash('close_boardannouncement0') . '&sid=' . $this->sid, [], false);
+		$crawler = self::request('POST', 'app.php/boardannouncements/close/0?sid=' . $this->sid, $post, false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
-		// Wrong hash
-		$crawler = self::request('GET', 'app.php/boardannouncements/close/1?hash=wrong&sid=' . $this->sid, [], false);
+		// Wrong form token
+		$invalid_post = $post;
+		$invalid_post['form_token'] = 'wrong';
+		$crawler = self::request('POST', 'app.php/boardannouncements/close/1?sid=' . $this->sid, $invalid_post, false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
-		// Hash for a different announcement
-		$crawler = self::request('GET', 'app.php/boardannouncements/close/2?hash=' . $this->mock_link_hash('close_boardannouncement1') . '&sid=' . $this->sid, [], false);
+		// Non-dismissible announcement
+		$crawler = self::request('POST', 'app.php/boardannouncements/close/4?sid=' . $this->sid, $post, false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
-		// No hash
+		// GET requests cannot mutate dismissal state
 		$crawler = self::request('GET', 'app.php/boardannouncements/close/1?sid=' . $this->sid, [], false);
-		self::assert_response_status_code(403);
-		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
+		self::assert_response_status_code(405);
 	}
 
 	/**
@@ -151,7 +155,9 @@ class announcement_test extends \phpbb_functional_test_case
 	{
 		$this->login();
 
-		self::request('GET', 'app.php/boardannouncements/close/1?hash=' . $this->mock_link_hash('close_boardannouncement1') . '&sid=' . $this->sid);
+		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+		$form = $crawler->filter('#phpbb_announcement_1 form[data-ajax="close_announcement"]')->form();
+		self::submit($form);
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
 	}

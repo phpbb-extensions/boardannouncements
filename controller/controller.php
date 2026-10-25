@@ -59,8 +59,8 @@ class controller
 		// Get the announcements data
 		$announcement = $this->manager->get_announcement($id);
 
-		// Check for unauthorized attacks
-		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id']))
+		// Only accept intentional, authorized dismissal requests
+		if (!$this->request->is_set_post('dismiss') || !$this->valid_form_key() || empty($announcement) || !$announcement['announcement_dismissable'])
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
@@ -105,5 +105,15 @@ class controller
 		$redirect_path = parse_url(html_entity_decode($redirect, ENT_COMPAT), PHP_URL_PATH);
 
 		return is_string($redirect_path) && preg_match('#(?:^|/)boardannouncements/close/\d+/?$#', $redirect_path) ? 'index.' . $this->php_ext : $redirect;
+	}
+
+	/**
+	 * Validate dismissal form token
+	 *
+	 * @return bool
+	 */
+	protected function valid_form_key()
+	{
+		return check_form_key('boardannouncement_dismiss');
 	}
 }

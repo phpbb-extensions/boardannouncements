@@ -120,6 +120,7 @@ class listener implements EventSubscriberInterface
 
 		// Add board announcements language file
 		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
+		add_form_key('boardannouncement_dismiss');
 
 		$this->get_current_location($event);
 
@@ -139,7 +140,7 @@ class listener implements EventSubscriberInterface
 			}
 
 			$cookie_name = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
-			$announcement_dismissed = $this->request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'];
+			$announcement_dismissed = $this->request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE) === (string) $data['announcement_timestamp'];
 
 			// Do not include announcement if it has been dismissed
 			if ($announcement_dismissed)
@@ -155,7 +156,6 @@ class listener implements EventSubscriberInterface
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $data['announcement_bgcolor'],
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
 					'id'	=> (int) $data['announcement_id'],
-					'hash'	=> generate_link_hash('close_boardannouncement' . $data['announcement_id'])
 				]),
 			]);
 		}

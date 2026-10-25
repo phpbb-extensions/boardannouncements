@@ -73,7 +73,7 @@ class listener_test extends \phpbb_database_test_case
 	{
 		parent::setUp();
 
-		global $auth, $cache, $config, $user, $phpbb_dispatcher, $phpbb_root_path, $phpEx;
+		global $auth, $cache, $config, $template, $user, $phpbb_dispatcher, $phpbb_root_path, $phpEx;
 
 		// Load the database class
 		$this->db = $this->new_dbal();
@@ -103,6 +103,9 @@ class listener_test extends \phpbb_database_test_case
 				'\phpbb\datetime'
 			])
 			->getMock();
+		$template = $this->template;
+		$user = $this->user;
+		$this->user->data['user_form_salt'] = '';
 
 		$this->user->data['board_announcements_status'] = 1;
 
@@ -178,14 +181,14 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1]),
 					]],
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => '3',
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 3',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '000000',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3, 'hash' => generate_link_hash('close_boardannouncement3')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3]),
 					]],
 				]
 			],
@@ -196,7 +199,7 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1]),
 					]],
 				]
 			],
@@ -207,14 +210,14 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1]),
 					]],
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => 2,
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 2',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => 'ffffff',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement2')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2]),
 					]],
 				]
 			],
@@ -225,14 +228,14 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1]),
 					]],
 					['board_announcements', [
 						'BOARD_ANNOUNCEMENT_ID' => '3',
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 3',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => '000000',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3, 'hash' => generate_link_hash('close_boardannouncement3')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3]),
 					]],
 				]
 			],
@@ -243,7 +246,7 @@ class listener_test extends \phpbb_database_test_case
 						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
 						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 2',
 						'BOARD_ANNOUNCEMENT_BGCOLOR' => 'ffffff',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement2')]),
+						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2]),
 					]],
 				]
 			],
@@ -305,6 +308,47 @@ class listener_test extends \phpbb_database_test_case
 			'item' => 'forum',
 			'item_id' => 0,
 		]));
+	}
+
+	/**
+	 * @dataProvider dismissal_cookie_data
+	 */
+	public function test_dismissal_cookie_uses_strict_timestamp_comparison($cookie, array $expected_ids)
+	{
+		$this->user->data['user_id'] = ANONYMOUS;
+		$this->user->data['is_registered'] = false;
+		$this->user->page['page_name'] = "index.$this->php_ext";
+		$this->config['board_announcements_enable'] = true;
+
+		$this->request->method('variable')
+			->willReturnMap([
+				['_ba_1', '', true, \phpbb\request\request_interface::COOKIE, $cookie],
+				['_ba_3', '', true, \phpbb\request\request_interface::COOKIE, ''],
+			]);
+
+		$actual_ids = [];
+		$this->template->expects(self::exactly(count($expected_ids)))
+			->method('assign_block_vars')
+			->willReturnCallback(static function ($block, $data) use (&$actual_ids) {
+				self::assertSame('board_announcements', $block);
+				$actual_ids[] = (int) $data['BOARD_ANNOUNCEMENT_ID'];
+			});
+
+		$this->set_listener();
+		$this->listener->display_board_announcements(new \phpbb\event\data([
+			'item' => 'forum',
+			'item_id' => 0,
+		]));
+
+		self::assertSame($expected_ids, $actual_ids);
+	}
+
+	public function dismissal_cookie_data()
+	{
+		return [
+			['1586466410', [3]],
+			['1586466410invalid', [1, 3]],
+		];
 	}
 
 	public function test_query_forum_id_fallback()
