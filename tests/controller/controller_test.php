@@ -73,18 +73,23 @@ class controller_test extends \phpbb_database_test_case
 		$user->data['user_form_salt'] = '';
 		$user->data['user_id'] = $user_id;
 		$user->data['is_registered'] = $is_registered;
+		$user->data['session_page'] = 'index.php';
 
 		/** @var $request \PHPUnit\Framework\MockObject\MockObject|\phpbb\request\request */
 		$request = $this->getMockBuilder('\phpbb\request\request')
 			->disableOriginalConstructor()
 			->getMock();
+		$hash = $mode === 'invalid' ? 'wrong' : ($mode === 'missing_hash' ? '' : generate_link_hash($mode === 'wrong_announcement' ? 'close_boardannouncement2' : 'close_boardannouncement1'));
 		$request->expects(self::atMost(1))
 			->method('is_ajax')
-			->willReturn($ajax
-		);
+			->willReturn($ajax);
 		$request->method('is_set_post')
 			->willReturnCallback(static function ($name) use ($mode) {
 				return $name === 'dismiss' && $mode !== 'not_post';
+			});
+		$request->method('variable')
+			->willReturnCallback(static function ($name, $default) use ($hash) {
+				return $name === 'hash' ? $hash : $default;
 			});
 
 		$manager = new \phpbb\boardannouncements\manager\manager(
@@ -96,26 +101,12 @@ class controller_test extends \phpbb_database_test_case
 			)
 		);
 
-		return new class(
+		return new \phpbb\boardannouncements\controller\controller(
 			$manager,
 			$request,
 			$user,
-			$php_ext ?? $phpEx,
-			$mode === 'valid'
-		) extends \phpbb\boardannouncements\controller\controller {
-			protected $valid_form_key;
-
-			public function __construct($manager, $request, $user, $php_ext, $valid_form_key)
-			{
-				parent::__construct($manager, $request, $user, $php_ext);
-				$this->valid_form_key = $valid_form_key;
-			}
-
-			protected function valid_form_key()
-			{
-				return $this->valid_form_key;
-			}
-		};
+			$php_ext ?? $phpEx
+		);
 	}
 
 	/**
@@ -232,7 +223,7 @@ class controller_test extends \phpbb_database_test_case
 	public function controller_fails_data()
 	{
 		return [
-			[	// test form key fail
+			[	// test link hash fail
 				1,
 				2,
 				true, // Guest is a registered user
@@ -246,6 +237,24 @@ class controller_test extends \phpbb_database_test_case
 				2,
 				true, // Guest is a registered user
 				'not_post',
+				true,
+				403,
+				'NO_AUTH_OPERATION',
+			],
+			[	// test missing link hash
+				1,
+				2,
+				true,
+				'missing_hash',
+				true,
+				403,
+				'NO_AUTH_OPERATION',
+			],
+			[	// test hash bound to a different announcement
+				1,
+				2,
+				true,
+				'wrong_announcement',
 				true,
 				403,
 				'NO_AUTH_OPERATION',

@@ -131,10 +131,22 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
-		// Wrong form token
+		// Wrong link hash
 		$invalid_post = $post;
-		$invalid_post['form_token'] = 'wrong';
+		$invalid_post['hash'] = 'wrong';
 		$crawler = self::request('POST', 'app.php/boardannouncements/close/1?sid=' . $this->sid, $invalid_post, false);
+		self::assert_response_status_code(403);
+		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
+
+		// Missing link hash
+		$invalid_post = $post;
+		unset($invalid_post['hash']);
+		$crawler = self::request('POST', 'app.php/boardannouncements/close/1?sid=' . $this->sid, $invalid_post, false);
+		self::assert_response_status_code(403);
+		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
+
+		// Hash bound to a different announcement
+		$crawler = self::request('POST', 'app.php/boardannouncements/close/3?sid=' . $this->sid, $post, false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
@@ -157,7 +169,10 @@ class announcement_test extends \phpbb_functional_test_case
 
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		$form = $crawler->filter('#phpbb_announcement_1 form[data-ajax="close_announcement"]')->form();
-		self::submit($form);
+		$post = $form->getPhpValues();
+		self::assertSame('1', $post['dismiss']);
+		self::assertSame($this->mock_link_hash('close_boardannouncement1'), $post['hash']);
+		self::request('POST', 'app.php/boardannouncements/close/1?sid=' . $this->sid, $post);
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
 	}

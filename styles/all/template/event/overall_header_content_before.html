@@ -8,7 +8,7 @@
 			<form method="post" action="{{ announcement.U_BOARD_ANNOUNCEMENT_CLOSE }}" data-ajax="close_announcement" data-overlay="false">
 				<input type="hidden" name="redirect" value="{{ U_CURRENT_PAGE }}">
 				<input type="hidden" name="dismiss" value="1">
-				{{ S_FORM_TOKEN }}
+				<input type="hidden" name="hash" value="{{ announcement.BOARD_ANNOUNCEMENT_TOKEN }}">
 				<button type="submit" class="close"{% if not (constant('PHPBB_VERSION') starts with '4') %} title="{{ lang('BOARD_ANNOUNCEMENT_CLOSE') }}"{% endif %}>
 					{% if constant('PHPBB_VERSION') starts with '4' %}
 						{{ include('@phpbb_boardannouncements/close_icon_phpbb4.html') }}

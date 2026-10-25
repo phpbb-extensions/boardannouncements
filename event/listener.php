@@ -120,7 +120,6 @@ class listener implements EventSubscriberInterface
 
 		// Add board announcements language file
 		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
-		add_form_key('boardannouncement_dismiss');
 
 		$this->get_current_location($event);
 
@@ -154,6 +153,7 @@ class listener implements EventSubscriberInterface
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $data['announcement_dismissable'],
 				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_flags']),
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $data['announcement_bgcolor'],
+				'BOARD_ANNOUNCEMENT_TOKEN'		=> generate_link_hash('close_boardannouncement' . $data['announcement_id']),
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
 					'id'	=> (int) $data['announcement_id'],
 				]),
