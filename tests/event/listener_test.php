@@ -161,6 +161,7 @@ class listener_test extends \phpbb_database_test_case
 	{
 		self::assertEquals([
 			'core.page_header_after',
+			'core.posting_modify_row_data',
 		], array_keys(\phpbb\boardannouncements\event\listener::getSubscribedEvents()));
 	}
 
@@ -390,6 +391,41 @@ class listener_test extends \phpbb_database_test_case
 			'item' => 'forum',
 			'item_id' => 0,
 		]);
+	}
+
+	/**
+	 * @dataProvider posting_location_data
+	 */
+	public function test_posting_location_fallback_and_precedence($item_id, $query_forum_id, $expected)
+	{
+		$this->user->page['page_name'] = "posting.$this->php_ext";
+		$this->request->method('variable')
+			->willReturnMap([
+				['f', 0, false, \phpbb\request\request_interface::REQUEST, $query_forum_id],
+			]);
+
+		$this->set_listener();
+		$this->listener->set_posting_location(new \phpbb\event\data([
+			'forum_id' => 1,
+		]));
+
+		$method = new \ReflectionMethod($this->listener, 'get_current_location');
+		$method->setAccessible(true);
+		$location = $method->invoke($this->listener, new \phpbb\event\data([
+			'item' => 'forum',
+			'item_id' => $item_id,
+		]));
+
+		self::assertSame($expected, $location);
+	}
+
+	public function posting_location_data()
+	{
+		return [
+			'posting forum fallback' => [0, 0, 1],
+			'query forum takes precedence' => [0, 2, 2],
+			'header forum takes precedence' => [3, 2, 3],
+		];
 	}
 
 	public function test_query_forum_id_does_not_scope_non_forum_event()

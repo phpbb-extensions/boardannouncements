@@ -100,6 +100,7 @@ class listener implements EventSubscriberInterface
 	{
 		return [
 			'core.page_header_after' => 'display_board_announcements',
+			'core.posting_modify_row_data' => 'set_posting_location',
 		];
 	}
 
@@ -162,6 +163,18 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
+	 * Store the forum resolved by posting.php
+	 *
+	 * @param \phpbb\event\data $event Event data
+	 * @return void
+	 * @access public
+	 */
+	public function set_posting_location($event)
+	{
+		$this->location = (int) $event['forum_id'];
+	}
+
+	/**
 	 * Get the current location, board index or a forum_id
 	 *
 	 * @param \phpbb\event\data|null $event Event data
@@ -184,13 +197,18 @@ class listener implements EventSubscriberInterface
 			return $this->location = 0;
 		}
 
-		$this->location = (int) $event['item_id'];
-		if (!$this->location)
+		$location = (int) $event['item_id'];
+		if (!$location)
 		{
-			$this->location = $this->request->variable('f', 0);
+			$location = $this->request->variable('f', 0);
 		}
 
-		return $this->location;
+		if ($location)
+		{
+			$this->location = $location;
+		}
+
+		return $this->location ?? 0;
 	}
 
 	/**
