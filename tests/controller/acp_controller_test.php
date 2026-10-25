@@ -434,7 +434,7 @@ class acp_controller_test extends \phpbb_test_case
 		{
 			return $data['announcement_locations'] === $expected_locations
 				&& $data['announcement_description'] === $expected_description
-				&& ($id ? $data['announcement_timestamp'] === $creation_timestamp : $data['announcement_timestamp'] > 0);
+				&& $data['announcement_timestamp'] > $creation_timestamp;
 		};
 
 		self::$valid_form = $valid_form;

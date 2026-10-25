@@ -346,8 +346,9 @@ class listener_test extends \phpbb_database_test_case
 	public function dismissal_cookie_data()
 	{
 		return [
-			['1586466410', [3]],
-			['1586466410invalid', [1, 3]],
+			'current timestamp hides announcement' => ['1586466410', [3]],
+			'previous timestamp shows announcement' => ['1586466409', [1, 3]],
+			'malformed timestamp shows announcement' => ['1586466410invalid', [1, 3]],
 		];
 	}
 
