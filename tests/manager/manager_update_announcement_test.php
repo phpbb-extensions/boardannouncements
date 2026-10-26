@@ -54,11 +54,24 @@ class manager_update_announcement_test extends manager_base
 		}
 		else
 		{
+			$this->db->sql_query('INSERT INTO phpbb_board_announcements_track ' . $this->db->sql_build_array('INSERT', [
+				'announcement_id' => $id,
+				'user_id' => 3,
+			]));
+
 			self::assertTrue($this->manager->update_announcement($id, $data));
 			foreach ($data as $key => $expected)
 			{
 				self::assertEquals($expected, $this->manager->get_announcement_data($id, $key));
 			}
+
+			$sql = 'SELECT COUNT(*) AS tracked
+				FROM phpbb_board_announcements_track
+				WHERE announcement_id = ' . (int) $id . '
+					AND user_id = 3';
+			$result = $this->db->sql_query($sql);
+			self::assertSame(0, (int) $this->db->sql_fetchfield('tracked'));
+			$this->db->sql_freeresult($result);
 		}
 	}
 

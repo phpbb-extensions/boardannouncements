@@ -212,11 +212,8 @@ class acp_controller
 			}
 
 			// Get new announcement values from the form
-			// Preserve the original creation date when editing an announcement.
-			if (!$id)
-			{
-				$data['announcement_timestamp'] = time();
-			}
+			// Refresh the timestamp so edits invalidate guest dismissal cookies.
+			$data['announcement_timestamp'] = max(time(), (int) ($data['announcement_timestamp'] ?? 0) + 1);
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
 			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);
 			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);

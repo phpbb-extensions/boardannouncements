@@ -101,17 +101,13 @@ class controller_test extends phpbb_database_test_case
 		$request = $this->getMockBuilder(request::class)
 			->disableOriginalConstructor()
 			->getMock();
+		$hash = $mode === 'invalid' ? 'wrong' : ($mode === 'missing_hash' ? '' : generate_link_hash($mode === 'wrong_announcement' ? 'close_boardannouncement2' : 'close_boardannouncement1'));
 		$request->expects(self::atMost(1))
 			->method('is_ajax')
-			->willReturn($ajax
-		);
+			->willReturn($ajax);
 		$request->method('variable')
-			->willReturnCallback(function($name, $default = '') use($user, $mode) {
-				return match ($name) {
-					'redirect' => $user->data['session_page'],
-					'hash' => generate_link_hash($mode),
-					default => $default,
-				};
+			->willReturnCallback(static function ($name, $default) use ($hash) {
+				return $name === 'hash' ? $hash : $default;
 			});
 
 		$manager = new manager(
@@ -143,7 +139,7 @@ class controller_test extends phpbb_database_test_case
 				1, // Announcement ID
 				1, // Guest
 				false, // Guest is not a registered user
-				'close_boardannouncement1',
+				'valid',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -153,7 +149,7 @@ class controller_test extends phpbb_database_test_case
 				1, // Announcement ID
 				2, // Member
 				true, // Member is a registered user
-				'close_boardannouncement1',
+				'valid',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie and status were set
@@ -163,7 +159,7 @@ class controller_test extends phpbb_database_test_case
 				1, // Announcement ID
 				0, // Invalid member
 				false, // Set is_registered to false with invalid user_id
-				'close_boardannouncement1',
+				'valid',
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -173,7 +169,7 @@ class controller_test extends phpbb_database_test_case
 				1, // Announcement ID
 				1, // Guest
 				false, // Guest is not a registered user
-				'close_boardannouncement1',
+				'valid',
 				false,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
@@ -211,7 +207,7 @@ class controller_test extends phpbb_database_test_case
 	 */
 	public function test_get_redirect($redirect, $expected, $php_ext = null)
 	{
-		$controller = $this->get_controller(1, false, 'close_boardannouncement1', false, $php_ext);
+		$controller = $this->get_controller(1, false, 'valid', false, $php_ext);
 		$method = new \ReflectionMethod($controller, 'get_redirect');
 		$method->setAccessible(true);
 
@@ -247,34 +243,16 @@ class controller_test extends phpbb_database_test_case
 				1,
 				2,
 				true, // Guest is a registered user
-				'foobar', // Invalid hash
+				'invalid',
 				true,
 				403,
 				'NO_AUTH_OPERATION',
 			],
-			[	// test link hash fail
+			[	// test missing link hash
 				1,
 				2,
-				true, // Guest is a registered user
-				'', // Empty hash
 				true,
-				403,
-				'NO_AUTH_OPERATION',
-			],
-			[	// test non-existent announcement
-				9,
-				2,
-				true, // Guest is a registered user
-				'close_boardannouncement9',
-				true,
-				403,
-				'NO_AUTH_OPERATION',
-			],
-			[	// test non-dismissible announcement
-				4,
-				2,
-				true, // Guest is a registered user
-				'close_boardannouncement4',
+				'missing_hash',
 				true,
 				403,
 				'NO_AUTH_OPERATION',
@@ -283,7 +261,25 @@ class controller_test extends phpbb_database_test_case
 				1,
 				2,
 				true,
-				'close_boardannouncement2',
+				'wrong_announcement',
+				true,
+				403,
+				'NO_AUTH_OPERATION',
+			],
+			[	// test non-existent announcement
+				9,
+				2,
+				true, // Guest is a registered user
+				'valid',
+				true,
+				403,
+				'NO_AUTH_OPERATION',
+			],
+			[	// test non-dismissible announcement
+				4,
+				2,
+				true, // Guest is a registered user
+				'valid',
 				true,
 				403,
 				'NO_AUTH_OPERATION',

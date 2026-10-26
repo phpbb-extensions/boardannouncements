@@ -122,26 +122,36 @@ class announcement_test extends \phpbb_functional_test_case
 	public function test_close_announcement_fail()
 	{
 		$this->login();
+		$hash = $this->mock_link_hash('close_boardannouncement1');
 
 		// Wrong ID
-		$crawler = self::request('GET', 'index.php/boardannouncements/close/0?hash=' . $this->mock_link_hash('close_boardannouncement0') . '&sid=' . $this->sid, [], false);
+		$crawler = self::request('POST', 'index.php/boardannouncements/close/0?hash=' . $hash . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
-		// Wrong hash
-		$crawler = self::request('GET', 'index.php/boardannouncements/close/1?hash=wrong&sid=' . $this->sid, [], false);
+		// Wrong link hash
+		$crawler = self::request('POST', 'index.php/boardannouncements/close/1?hash=wrong&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
-		// Hash for a different announcement
-		$crawler = self::request('GET', 'index.php/boardannouncements/close/2?hash=' . $this->mock_link_hash('close_boardannouncement1') . '&sid=' . $this->sid, [], false);
+		// Missing link hash
+		$crawler = self::request('POST', 'index.php/boardannouncements/close/1?sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
-		// No hash
-		$crawler = self::request('GET', 'index.php/boardannouncements/close/1?sid=' . $this->sid, [], false);
+		// Hash bound to a different announcement
+		$crawler = self::request('POST', 'index.php/boardannouncements/close/3?hash=' . $hash . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
+
+		// Non-dismissible announcement
+		$crawler = self::request('POST', 'index.php/boardannouncements/close/4?hash=' . $this->mock_link_hash('close_boardannouncement4') . '&sid=' . $this->sid, [], false);
+		self::assert_response_status_code(403);
+		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
+
+		// GET requests cannot mutate dismissal state
+		$crawler = self::request('GET', 'index.php/boardannouncements/close/1?hash=' . $hash . '&sid=' . $this->sid, [], false);
+		self::assert_response_status_code(405);
 	}
 
 	/**
@@ -151,7 +161,12 @@ class announcement_test extends \phpbb_functional_test_case
 	{
 		$this->login();
 
-		self::request('GET', 'index.php/boardannouncements/close/1?hash=' . $this->mock_link_hash('close_boardannouncement1') . '&sid=' . $this->sid);
+		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+		$form = $crawler->filter('#phpbb_announcement_1 form[data-ajax="close_announcement"]')->form();
+		self::assertSame('POST', $form->getMethod());
+
+		$hash = $this->mock_link_hash('close_boardannouncement1');
+		self::request('POST', 'index.php/boardannouncements/close/1?hash=' . $hash . '&sid=' . $this->sid);
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
 	}
@@ -241,6 +256,20 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertStringContainsString('Everywhere announcement', $crawler->filter('#phpbb_announcement_' . $everywhere_id)->text());
 		self::assertStringContainsString('Forum announcement', $crawler->filter('#phpbb_announcement_' . $forum_id)->text());
 		self::assertStringContainsString('Forum and Index announcement', $crawler->filter('#phpbb_announcement_' . $index_forum_id)->text());
+
+		// Test new-topic page - see everywhere, forum and index+forum
+		$crawler = self::request('GET', 'posting.php?mode=post&f=2&sid=' . $this->sid);
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
+
+		// Test reply page without a forum ID - see everywhere, forum and index+forum
+		$crawler = self::request('GET', 'posting.php?mode=reply&t=1&sid=' . $this->sid);
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $forum_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
 
 		// Test forum 1 page - see everywhere
 		$crawler = self::request('GET', 'viewforum.php?f=1&amp;sid=' . $this->sid);

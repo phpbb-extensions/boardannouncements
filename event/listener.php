@@ -100,6 +100,7 @@ class listener implements EventSubscriberInterface
 	{
 		return [
 			'core.page_header_after' => 'display_board_announcements',
+			'core.posting_modify_row_data' => 'set_posting_location',
 		];
 	}
 
@@ -139,7 +140,7 @@ class listener implements EventSubscriberInterface
 			}
 
 			$cookie_name = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
-			$announcement_dismissed = $this->request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE) == $data['announcement_timestamp'];
+			$announcement_dismissed = $this->request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE) === (string) $data['announcement_timestamp'];
 
 			// Do not include announcement if it has been dismissed
 			if ($announcement_dismissed)
@@ -155,10 +156,22 @@ class listener implements EventSubscriberInterface
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $data['announcement_bgcolor'],
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
 					'id'	=> (int) $data['announcement_id'],
-					'hash'	=> generate_link_hash('close_boardannouncement' . $data['announcement_id'])
+					'hash'	=> generate_link_hash('close_boardannouncement' . $data['announcement_id']),
 				]),
 			]);
 		}
+	}
+
+	/**
+	 * Store the forum resolved by posting.php
+	 *
+	 * @param \phpbb\event\data $event Event data
+	 * @return void
+	 * @access public
+	 */
+	public function set_posting_location($event)
+	{
+		$this->location = (int) $event['forum_id'];
 	}
 
 	/**
@@ -184,13 +197,9 @@ class listener implements EventSubscriberInterface
 			return $this->location = 0;
 		}
 
-		$this->location = (int) $event['item_id'];
-		if (!$this->location)
-		{
-			$this->location = $this->request->variable('f', 0);
-		}
+		$location = (int) $event['item_id'] ?: $this->request->variable('f', 0);
 
-		return $this->location;
+		return $location ? ($this->location = $location) : ($this->location ?? 0);
 	}
 
 	/**
