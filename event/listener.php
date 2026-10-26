@@ -197,18 +197,9 @@ class listener implements EventSubscriberInterface
 			return $this->location = 0;
 		}
 
-		$location = (int) $event['item_id'];
-		if (!$location)
-		{
-			$location = $this->request->variable('f', 0);
-		}
+		$location = (int) $event['item_id'] ?: $this->request->variable('f', 0);
 
-		if ($location)
-		{
-			$this->location = $location;
-		}
-
-		return $this->location ?? 0;
+		return $location ? ($this->location = $location) : ($this->location ?? 0);
 	}
 
 	/**
