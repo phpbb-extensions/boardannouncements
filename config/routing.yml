@@ -1,5 +1,6 @@
 phpbb_boardannouncements_controller:
     path: /boardannouncements/close/{id}
+    methods: [POST]
     defaults: { _controller: phpbb.boardannouncements.controller:close_announcement }
     requirements:
         id: \d+

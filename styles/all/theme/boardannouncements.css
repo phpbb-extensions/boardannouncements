@@ -27,7 +27,13 @@
 
 /* style the close button */
 .phpbb_announcement .close {
+	background: transparent;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
 	opacity: 0.6;
+	padding: 0;
 	position: absolute;
 	z-index: 1;
 	top: 4px;
