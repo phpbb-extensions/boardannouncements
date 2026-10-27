@@ -80,6 +80,7 @@ class controller_test extends phpbb_database_test_case
 		$phpbb_path_helper = $this->getMockBuilder(path_helper::class)
 			->disableOriginalConstructor()
 			->getMock();
+		$phpbb_path_helper->method('update_web_root_path')->willReturn('https://example.com/');
 
 		$phpbb_path_helper->method('update_web_root_path')
 			->willReturnArgument(0);
@@ -96,6 +97,7 @@ class controller_test extends phpbb_database_test_case
 		$user->data['is_registered'] = $is_registered;
 		$user->data['session_page'] = "index.$phpEx";
 		$user->page['page_dir'] = '';
+		$user->method('is_setup')->willReturn(true);
 
 		/** @var $request MockObject|request */
 		$request = $this->getMockBuilder(request::class)
@@ -188,7 +190,7 @@ class controller_test extends phpbb_database_test_case
 		// If a non-ajax redirect is encountered, in testing it will trigger_error
 		if (!$ajax)
 		{
-			$this->setExpectedTriggerError(E_USER_DEPRECATED);
+			$this->setExpectedTriggerError(E_USER_WARNING, 'INSECURE_REDIRECT');
 		}
 
 		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);
