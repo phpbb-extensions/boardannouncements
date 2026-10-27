@@ -296,8 +296,8 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		$controller = $this->get_controller();
 		$rows = [
-			['announcement_id' => 1, 'announcement_description' => 'First', 'announcement_text' => 'Nothing here'],
-			['announcement_id' => 2, 'announcement_description' => 'Second', 'announcement_text' => 'Hidden Needle in message'],
+			['announcement_id' => 1, 'announcement_description' => 'First', 'announcement_text' => 'Nothing here', 'announcement_enabled' => true, 'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED],
+			['announcement_id' => 2, 'announcement_description' => 'Second', 'announcement_text' => 'Hidden Needle in message', 'announcement_enabled' => true, 'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED],
 			['announcement_id' => 3, 'announcement_description' => 'Third', 'announcement_text' => 'Needle', 'announcement_state' => \phpbb\boardannouncements\ext::STATE_DRAFT],
 		];
 
@@ -355,6 +355,17 @@ class acp_controller_test extends \phpbb_test_case
 			'NAME' => 'Registered users',
 			'S_SELECTED' => true,
 		]], $method->invoke($controller, [5]));
+	}
+
+	public function test_new_announcement_defaults_to_draft()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'announcement_defaults');
+		$method->setAccessible(true);
+		$defaults = $method->invoke($controller);
+
+		self::assertSame(\phpbb\boardannouncements\ext::STATE_DRAFT, $defaults['announcement_state']);
+		self::assertFalse($defaults['announcement_enabled']);
 	}
 
 	/**
@@ -469,6 +480,7 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		return [
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
+			[0, ['add', 0, 'Announcement Text 0', 'Hash-prefixed color', '#ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, normalize hash-prefixed color
 			[0, ['add', 0, 'Announcement Text 0', 'Selected locations', 'ffffff', true, 0, [0, -1, 2], true, '', false, false, false], false, true, true, false], // submit, discard location sentinel
 			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, emoji encoded for storage
 			[0, ['add', 0, 'Announcement Text 0', 'Unicode 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, true, 'mssqlnative'], // submit, all Unicode encoded for MSSQL
@@ -512,10 +524,12 @@ class acp_controller_test extends \phpbb_test_case
 		$expected_locations = json_encode(array_values(array_filter($form[7])));
 		$expected_description = strpos($sql_layer, 'mssql') === 0 ? utf8_encode_ncr($form[3]) : utf8_encode_ucr($form[3]);
 		$creation_timestamp = 1234567890;
-		$has_expected_data = static function ($data) use ($expected_locations, $expected_description, $creation_timestamp)
+		$expected_bgcolor = ltrim($form[4], '#');
+		$has_expected_data = static function ($data) use ($expected_locations, $expected_description, $expected_bgcolor, $creation_timestamp)
 		{
 			return $data['announcement_locations'] === $expected_locations
 				&& $data['announcement_description'] === $expected_description
+				&& $data['announcement_bgcolor'] === $expected_bgcolor
 				&& $data['announcement_timestamp'] > $creation_timestamp;
 		};
 
@@ -538,7 +552,7 @@ class acp_controller_test extends \phpbb_test_case
 			'board_announcements_title' => '',
 			'board_announcements_bgcolor' => $form[4],
 			'board_announcements_state' => $form[5] ? \phpbb\boardannouncements\ext::STATE_PUBLISHED : \phpbb\boardannouncements\ext::STATE_DRAFT,
-			'board_announcements_tone' => 'info',
+			'board_announcements_tone' => $form[4] === '' ? 'info' : 'custom',
 			'board_announcements_users' => $form[6],
 			'board_announcements_groups' => [10],
 			'board_announcements_locations' => $form[7],

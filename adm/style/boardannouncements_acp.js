@@ -39,29 +39,6 @@
 
 		if (window.jQuery) {
 			var $ = window.jQuery;
-			var color = editor.getAttribute('data-bgcolor') || '';
-			var $colorInput = $('#board_announcements_bgcolor');
-			if ($colorInput.length && typeof $colorInput.colpick === 'function') {
-				$colorInput.colpick({
-					layout: 'hex',
-					submit: 0,
-					onBeforeShow: function () {
-						if (color !== '') {
-							$(this).colpickSetColor(color);
-							color = '';
-						}
-					},
-					onChange: function (hsb, hex, rgb, element, bySetColor) {
-						$(element).css('border-inline-end', '20px solid #' + hex);
-						if (!bySetColor) {
-							$(element).val(hex);
-						}
-					}
-				}).on('keyup', function () {
-					$(this).colpickSetColor(this.value || 'ffffff');
-				});
-			}
-
 			var $dates = $('#board_announcements_start, #board_announcements_expiry');
 			if ($dates.length && typeof $dates.datetimepicker === 'function') {
 				$.datetimepicker.setLocale(editor.getAttribute('data-user-lang'));
@@ -154,11 +131,37 @@
 		var tone = document.getElementById('board_announcements_tone');
 		var customColor = editor.querySelector('[data-ba-custom-color]');
 		var colorInput = document.getElementById('board_announcements_bgcolor');
-		if (tone && customColor && colorInput) {
+		var colorPicker = document.getElementById('board_announcements_bgcolor_picker');
+		if (colorInput && colorPicker) {
+			var normalizeColor = function (value) {
+				return String(value || '').replace(/^#/, '').trim().toUpperCase();
+			};
+			var updatePicker = function () {
+				var color = normalizeColor(colorInput.value);
+				if (/^[0-9A-F]{6}$/.test(color)) {
+					colorPicker.value = '#' + color;
+				}
+			};
+			colorPicker.addEventListener('input', function () {
+				colorInput.value = normalizeColor(colorPicker.value);
+			});
+			colorInput.addEventListener('input', updatePicker);
+			colorInput.addEventListener('blur', function () {
+				colorInput.value = normalizeColor(colorInput.value);
+			});
+			updatePicker();
+		}
+
+		if (tone && customColor && colorInput && colorPicker) {
 			var updateCustomColor = function () {
 				var custom = tone.value === 'custom';
-				customColor.hidden = !custom;
+				customColor.classList.toggle('is-disabled', !custom);
+				customColor.setAttribute('aria-disabled', custom ? 'false' : 'true');
 				colorInput.disabled = !custom;
+				colorPicker.disabled = !custom;
+				if (custom && !/^[0-9A-F]{6}$/i.test(colorInput.value)) {
+					colorInput.value = normalizeColor(colorPicker.value);
+				}
 			};
 			tone.addEventListener('change', updateCustomColor);
 			updateCustomColor();

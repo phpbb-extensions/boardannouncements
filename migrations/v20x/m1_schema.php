@@ -23,7 +23,7 @@ class m1_schema extends \phpbb\db\migration\migration
 				$this->table_prefix . 'board_announcements' => [
 					'announcement_title' => ['VCHAR_UNI:255', ''],
 					'announcement_tone' => ['VCHAR:16', 'info'],
-					'announcement_state' => ['VCHAR:16', 'published'],
+					'announcement_state' => ['VCHAR:16', 'draft'],
 					'announcement_start' => ['TIMESTAMP', 0],
 					'announcement_include_children' => ['BOOL', 0],
 					'announcement_revision' => ['UINT', 1],

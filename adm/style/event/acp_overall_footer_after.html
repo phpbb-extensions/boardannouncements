@@ -1,11 +1,5 @@
 {% if S_ADD_ANNOUNCEMENT %}
 
-	{% if not definition.INCLUDED_COLPICKJS %}
-		{% INCLUDEJS '@phpbb_boardannouncements/colpick/colpick.js' %}
-		{% INCLUDECSS '@phpbb_boardannouncements/colpick/colpick.css' %}
-		{% DEFINE INCLUDED_COLPICKJS = true %}
-	{% endif %}
-
 	{% if not definition.INCLUDED_DATETIMEPICKERJS %}
 		{% INCLUDEJS '@phpbb_boardannouncements/datetimepicker/jquery.datetimepicker.full.min.js' %}
 		{% INCLUDECSS '@phpbb_boardannouncements/datetimepicker/jquery.datetimepicker.min.css' %}

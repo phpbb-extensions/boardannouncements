@@ -12,7 +12,7 @@
 
 	{% if ERRORS %}<div class="ba-notice ba-notice-error" role="alert"><i class="icon fa-exclamation-circle" aria-hidden="true"></i><div><strong>{{ lang('WARNING') }}</strong><p>{{ ERRORS }}</p></div></div>{% endif %}
 
-	<form id="add_board_announcements" method="post" action="{{ U_ACTION }}" data-ba-editor data-groups-value="{{ constant('\\phpbb\\boardannouncements\\ext::GROUPS') }}" data-date-format="{{ PICKER_DATE_FORMAT }}" data-user-lang="{{ S_USER_LANG }}" data-bgcolor="{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}">
+	<form id="add_board_announcements" method="post" action="{{ U_ACTION }}" data-ba-editor data-groups-value="{{ constant('\\phpbb\\boardannouncements\\ext::GROUPS') }}" data-date-format="{{ PICKER_DATE_FORMAT }}" data-user-lang="{{ S_USER_LANG }}">
 		<div class="ba-editor-grid">
 			<main class="ba-editor-main">
 				{% if BOARD_ANNOUNCEMENTS_PREVIEW %}
@@ -55,10 +55,13 @@
 								{% for tone in ['neutral','info','success','warning','critical','custom'] %}<option value="{{ tone }}"{% if BOARD_ANNOUNCEMENTS_TONE == tone %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_TONE_' ~ tone|upper) }}</option>{% endfor %}
 							</select>
 						</div>
-						<div class="ba-field" data-ba-custom-color>
-							<label for="board_announcements_bgcolor">{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR') }}</label>
+						<div class="ba-field{% if BOARD_ANNOUNCEMENTS_TONE != 'custom' %} is-disabled{% endif %}" data-ba-custom-color aria-disabled="{{ BOARD_ANNOUNCEMENTS_TONE != 'custom' ? 'true' : 'false' }}">
+							<label for="board_announcements_bgcolor_picker">{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR') }}</label>
 							<span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN') }}</span>
-							<div class="ba-color-field"><span>#</span><input name="board_announcements_bgcolor" id="board_announcements_bgcolor" value="{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}" size="6" maxlength="6" inputmode="text" autocomplete="off"></div>
+							<div class="ba-color-control">
+								<input type="color" class="ba-color-picker" id="board_announcements_bgcolor_picker" value="{{ BOARD_ANNOUNCEMENTS_COLOR_PICKER }}" aria-label="{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_PICKER') }}"{% if BOARD_ANNOUNCEMENTS_TONE != 'custom' %} disabled{% endif %}>
+								<div class="ba-color-field"><span>#</span><input name="board_announcements_bgcolor" id="board_announcements_bgcolor" value="{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}" size="6" maxlength="6" inputmode="text" autocomplete="off" spellcheck="false" aria-label="{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_HEX') }}"{% if BOARD_ANNOUNCEMENTS_TONE != 'custom' %} disabled{% endif %}></div>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -72,8 +75,8 @@
 						<label for="board_announcements_state">{{ lang('BOARD_ANNOUNCEMENTS_STATUS') }}</label>
 						<select id="board_announcements_state" name="board_announcements_state"><option value="draft"{% if BOARD_ANNOUNCEMENTS_STATE == 'draft' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_STATUS_DRAFT') }}</option><option value="published"{% if BOARD_ANNOUNCEMENTS_STATE == 'published' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_PUBLISH') }}</option>{% if S_EDIT_ANNOUNCEMENT %}<option value="archived"{% if BOARD_ANNOUNCEMENTS_STATE == 'archived' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_STATUS_ARCHIVED') }}</option>{% endif %}</select>
 					</div>
-					<div class="ba-field"><label for="board_announcements_start">{{ lang('BOARD_ANNOUNCEMENTS_START') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_START_EXPLAIN') }}</span><div class="ba-input-icon"><i class="icon fa-calendar-o" aria-hidden="true"></i><input name="board_announcements_start" id="board_announcements_start" value="{{ BOARD_ANNOUNCEMENTS_START }}" placeholder="{{ 'now'|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) }}" autocomplete="off"></div></div>
-					<div class="ba-field"><label for="board_announcements_expiry">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN') }}</span><div class="ba-input-icon"><i class="icon fa-calendar-o" aria-hidden="true"></i><input name="board_announcements_expiry" id="board_announcements_expiry" value="{{ BOARD_ANNOUNCEMENTS_EXPIRY }}" autocomplete="off"></div></div>
+					<div class="ba-field"><label for="board_announcements_start">{{ lang('BOARD_ANNOUNCEMENTS_START') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_START_EXPLAIN') }}</span><div class="ba-input-icon"><i class="icon fa-calendar-o" aria-hidden="true"></i><input name="board_announcements_start" id="board_announcements_start" value="{{ BOARD_ANNOUNCEMENTS_START }}" placeholder="{{ START_DATE_PLACEHOLDER }}" autocomplete="off"></div></div>
+					<div class="ba-field"><label for="board_announcements_expiry">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN') }}</span><div class="ba-input-icon"><i class="icon fa-calendar-o" aria-hidden="true"></i><input name="board_announcements_expiry" id="board_announcements_expiry" value="{{ BOARD_ANNOUNCEMENTS_EXPIRY }}" placeholder="{{ EXPIRY_DATE_PLACEHOLDER }}" autocomplete="off"></div></div>
 					<div class="ba-toggle-field"><div><strong>{{ lang('BOARD_ANNOUNCEMENTS_DISMISS') }}</strong><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_DISMISS_EXPLAIN') }}</span></div><div class="ba-segmented-control"><label><input type="radio" name="board_announcements_dismiss" value="1"{% if BOARD_ANNOUNCEMENTS_DISMISS %} checked{% endif %}><span>{{ lang('YES') }}</span></label><label><input type="radio" name="board_announcements_dismiss" value="0"{% if not BOARD_ANNOUNCEMENTS_DISMISS %} checked{% endif %}><span>{{ lang('NO') }}</span></label></div></div>
 				</section>
 

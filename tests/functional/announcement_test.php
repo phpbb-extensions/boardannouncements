@@ -69,9 +69,21 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertGreaterThan(0, $crawler->filter('#board_announcements_locations input[type="checkbox"][name="board_announcements_locations[]"]')->count());
 		self::assertCount(0, $crawler->filter('select[name="board_announcements_locations[]"]'));
 		self::assertCount(0, $crawler->filter('[name="board_announcements_placement"], [name="board_announcements_cta_label"], [name="board_announcements_cta_url"]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_state option[value="draft"]:selected'));
+		self::assertNotSame('', $crawler->filter('#board_announcements_start')->attr('placeholder'));
+		self::assertNotSame('', $crawler->filter('#board_announcements_expiry')->attr('placeholder'));
+		self::assertNotSame($crawler->filter('#board_announcements_start')->attr('placeholder'), $crawler->filter('#board_announcements_expiry')->attr('placeholder'));
+		self::assertCount(1, $crawler->filter('[data-ba-custom-color]:not([hidden])'));
+		self::assertSame('color', $crawler->filter('#board_announcements_bgcolor_picker')->attr('type'));
+		self::assertSame('#e8f1fa', $crawler->filter('#board_announcements_bgcolor_picker')->attr('value'));
+		self::assertNull($crawler->filter('#board_announcements_bgcolor')->attr('pattern'));
+		self::assertCount(1, $crawler->filter('[data-ba-custom-color].is-disabled[aria-disabled="true"]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_bgcolor_picker[disabled]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_bgcolor[disabled]'));
 
 		$values = [
 			'board_announcements_state'			=> ext::STATE_PUBLISHED,
+			'board_announcements_tone'			=> 'custom',
 			'board_announcements_users'			=> 0,
 			'board_announcements_dismiss'		=> true,
 			'board_announcements_locations'		=> [ext::INDEX_ONLY],
@@ -242,6 +254,9 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(1, $crawler->filter('.ba-editor-main > .ba-preview-card + [aria-labelledby="ba-content-title"]'));
 		self::assertCount(1, $crawler->filter('#ba-preview[data-theme="light"]'));
 		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="-1"]:checked'));
+		self::assertSame('#ff0000', $crawler->filter('#board_announcements_bgcolor_picker')->attr('value'));
+		self::assertCount(1, $crawler->filter('[data-ba-custom-color]:not(.is-disabled)[aria-disabled="false"]'));
+		self::assertCount(0, $crawler->filter('#board_announcements_bgcolor_picker[disabled], #board_announcements_bgcolor[disabled]'));
 
 		// Test deleting the announcement works
 		$crawler = self::request('GET', $this->get_acp_page('delete', 1));
@@ -451,18 +466,23 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_dismiss'		=> false,
 			'board_announcements_users'			=> 0,
 			'board_announcements_locations'		=> [],
-			'board_announcements_bgcolor'		=> 'ff0000',
+			'board_announcements_bgcolor'		=> '',
 			'board_announcements_expiry'		=> '',
 			'board_announcements_description'	=> 'Test announcement',
 			'board_announcements_text'			=> 'This is a board announcement test.',
 		], $data);
 		$locations = $values['board_announcements_locations'];
-		unset($values['board_announcements_locations']);
+		$bgcolor = $values['board_announcements_bgcolor'];
+		unset($values['board_announcements_locations'], $values['board_announcements_bgcolor']);
 		$form->setValues($values);
 
 		// DomCrawler does not combine checkbox fields sharing an array name.
 		$post = $form->getPhpValues();
 		$post['board_announcements_locations'] = $locations;
+		if ($values['board_announcements_tone'] === 'custom')
+		{
+			$post['board_announcements_bgcolor'] = $bgcolor;
+		}
 		$post['submit'] = $this->lang('SUBMIT');
 		$crawler = self::request('POST', $this->get_acp_page('add'), $post);
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_UPDATED', $crawler->text());

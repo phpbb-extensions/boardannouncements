@@ -59,6 +59,8 @@ $lang = array_merge($lang, array(
 
 	'BOARD_ANNOUNCEMENTS_BGCOLOR'			=> 'Background color',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN'	=> 'You can change the background color of the announcement using a hex code (e.g: FFFF80). Leave this field blank to use the default color.',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_PICKER'	=> 'Background color picker',
+	'BOARD_ANNOUNCEMENTS_BGCOLOR_HEX'		=> 'Background color hexadecimal code',
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Background color must be a six-character hexadecimal color code.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Expiration date',

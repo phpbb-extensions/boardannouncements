@@ -167,6 +167,27 @@
 .ba-message-editor { display: grid; grid-template-columns: auto minmax(0, 1fr); }
 .ba-message-editor textarea { border-radius: 0 0 5px 5px; }
 .ba-message-editor #color_palette_placeholder { padding-inline-end: 7px; }
+.ba-color-control { align-items: center; display: flex; gap: 8px; }
+.ba-color-control .ba-color-field { flex: 1; }
+.ba-color-picker,
+.ba-color-picker:hover,
+.ba-color-picker:focus {
+	appearance: auto;
+	background: #fff;
+	border: 1px solid #b9c5d0;
+	border-radius: 5px;
+	cursor: pointer;
+	flex: 0 0 52px;
+	height: 34px;
+	margin: 0;
+	padding: 3px;
+	width: 52px;
+}
+.ba-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+.ba-color-picker::-webkit-color-swatch,
+.ba-color-picker::-moz-color-swatch { border: 0; border-radius: 3px; }
+.ba-field[data-ba-custom-color].is-disabled .ba-color-control { opacity: .55; }
+.ba-color-control :disabled { cursor: not-allowed; }
 .ba-color-field { align-items: center; display: flex; }
 .ba-color-field > span { align-items: center; align-self: stretch; background: #f0f3f6; border: 1px solid #b9c5d0; border-inline-end: 0; border-radius: 5px 0 0 5px; color: #65788a; display: flex; padding: 0 8px; }
 .ba-color-field input { border-radius: 0 5px 5px 0 !important; flex: 1; }

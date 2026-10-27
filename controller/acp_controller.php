@@ -262,10 +262,12 @@ class acp_controller
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
 			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);
 			$data['announcement_title'] = $this->request->variable('board_announcements_title', '', true);
-			$data['announcement_bgcolor'] = $this->request->variable('board_announcements_bgcolor', '', true);
-			$data['announcement_state'] = $this->request->variable('board_announcements_state', ext::STATE_PUBLISHED);
-			$data['announcement_enabled'] = $data['announcement_state'] === ext::STATE_PUBLISHED;
 			$data['announcement_tone'] = $this->request->variable('board_announcements_tone', 'info');
+			$data['announcement_bgcolor'] = $data['announcement_tone'] === 'custom'
+				? ltrim(trim($this->request->variable('board_announcements_bgcolor', '', true)), '#')
+				: '';
+			$data['announcement_state'] = $this->request->variable('board_announcements_state', ext::STATE_DRAFT);
+			$data['announcement_enabled'] = $data['announcement_state'] === ext::STATE_PUBLISHED;
 			$data['announcement_users'] = $this->request->variable('board_announcements_users', ext::ALL);
 			$selected_groups = $this->request->variable('board_announcements_groups', [0]);
 			if ((int) $data['announcement_users'] !== ext::GROUPS)
@@ -393,6 +395,7 @@ class acp_controller
 			'BOARD_ANNOUNCEMENTS_EXPIRY'	=> $data['announcement_expiry'] ? $this->user->format_date($data['announcement_expiry'], ext::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_START'		=> $data['announcement_start'] ? $this->user->format_date($data['announcement_start'], ext::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
+			'BOARD_ANNOUNCEMENTS_COLOR_PICKER' => '#' . ($data['announcement_bgcolor'] ?: 'e8f1fa'),
 			'BOARD_ANNOUNCEMENTS_TEXTCOLOR' => $this->contrast_color($data['announcement_bgcolor']),
 			'BOARD_ANNOUNCEMENTS_TONE'		=> $data['announcement_tone'],
 			'BOARD_ANNOUNCEMENTS_STATE'		=> $data['announcement_state'],
@@ -426,6 +429,8 @@ class acp_controller
 			'S_EDIT_ANNOUNCEMENT'	=> (bool) $id,
 
 			'PICKER_DATE_FORMAT'	=> ext::DATE_FORMAT,
+			'START_DATE_PLACEHOLDER' => $this->user->format_date(time(), ext::DATE_FORMAT),
+			'EXPIRY_DATE_PLACEHOLDER' => $this->user->format_date(time() + 7 * 86400, ext::DATE_FORMAT),
 
 			'U_BACK'				=> $this->u_action,
 			'U_ACTION'				=> $this->u_action . '&amp;action=add' . ($id ? '&amp;id=' . (int) $id : ''),
@@ -790,9 +795,9 @@ class acp_controller
 			'announcement_description' => '',
 			'announcement_title' => '',
 			'announcement_bgcolor' => '',
-			'announcement_enabled' => true,
+			'announcement_enabled' => false,
 			'announcement_tone' => 'info',
-			'announcement_state' => ext::STATE_PUBLISHED,
+			'announcement_state' => ext::STATE_DRAFT,
 			'announcement_start' => 0,
 			'announcement_include_children' => false,
 			'announcement_locations' => '',
