@@ -149,7 +149,6 @@
 .ba-editor-sidebar { position: sticky; top: 10px; }
 .ba-form-card { padding: 18px; }
 .ba-card-header { align-items: flex-start; border-bottom: 1px solid #e5eaef; display: flex; gap: 11px; margin-bottom: 17px; padding-bottom: 13px; }
-.ba-card-header p { font-size: 11px; margin-top: 3px; }
 .ba-section-icon { align-items: center; background: #e9f2fa; border-radius: 6px; color: var(--ba-admin-accent); display: inline-flex; flex: 0 0 30px; height: 30px; justify-content: center; }
 .ba-field-grid { display: grid; gap: 15px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .ba-field { display: flex; flex-direction: column; margin-bottom: 15px; min-width: 0; }

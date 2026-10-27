@@ -23,7 +23,7 @@
 				{% endif %}
 
 				<section class="ba-card ba-form-card" aria-labelledby="ba-content-title">
-					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-align-left" aria-hidden="true"></i></span><div><h2 id="ba-content-title">{{ lang('BOARD_ANNOUNCEMENTS_CONTENT') }}</h2><p>{{ lang('BOARD_ANNOUNCEMENTS_CONTENT_EXPLAIN') }}</p></div></div>
+					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-align-left" aria-hidden="true"></i></span><div><h2 id="ba-content-title">{{ lang('BOARD_ANNOUNCEMENTS_CONTENT') }}</h2></div></div>
 					<div class="ba-field-grid">
 						<div class="ba-field">
 							<label for="board_announcements_description">{{ lang('BOARD_ANNOUNCEMENTS_DESC') }}</label>
@@ -47,10 +47,11 @@
 				</section>
 
 				<section class="ba-card ba-form-card" aria-labelledby="ba-appearance-title">
-					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-paint-brush" aria-hidden="true"></i></span><div><h2 id="ba-appearance-title">{{ lang('BOARD_ANNOUNCEMENTS_APPEARANCE') }}</h2><p>{{ lang('BOARD_ANNOUNCEMENTS_APPEARANCE_EXPLAIN') }}</p></div></div>
+					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-paint-brush" aria-hidden="true"></i></span><div><h2 id="ba-appearance-title">{{ lang('BOARD_ANNOUNCEMENTS_APPEARANCE') }}</h2></div></div>
 					<div class="ba-field-grid">
 						<div class="ba-field">
 							<label for="board_announcements_tone">{{ lang('BOARD_ANNOUNCEMENTS_TONE') }}</label>
+							<span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_TONE_EXPLAIN') }}</span>
 							<select id="board_announcements_tone" name="board_announcements_tone">
 								{% for tone in ['neutral','info','success','warning','critical','custom'] %}<option value="{{ tone }}"{% if BOARD_ANNOUNCEMENTS_TONE == tone %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_TONE_' ~ tone|upper) }}</option>{% endfor %}
 							</select>
