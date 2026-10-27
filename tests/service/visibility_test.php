@@ -74,6 +74,19 @@ class visibility_test extends \phpbb_test_case
 		self::assertFalse($this->visibility->is_dismissed($row));
 	}
 
+	public function test_visibility_event_can_override_result()
+	{
+		$dispatcher = new \phpbb\event\dispatcher();
+		$dispatcher->addListener('phpbb.boardannouncements.visibility', static function ($event) {
+			$event['visible'] = true;
+		});
+		$visibility = new visibility($this->auth, $this->config, $this->request, $this->user, $this->manager, $dispatcher);
+		$row = $this->announcement();
+		$row['announcement_enabled'] = 0;
+
+		self::assertTrue($visibility->is_visible($row, 0, false));
+	}
+
 	protected function announcement()
 	{
 		return [

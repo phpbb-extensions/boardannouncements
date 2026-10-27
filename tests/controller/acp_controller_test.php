@@ -20,6 +20,9 @@ class acp_controller_test extends \phpbb_test_case
 	/** @var bool A return value for check_form_key() */
 	public static $valid_form = false;
 
+	/** @var array A return value for make_forum_select() */
+	public static $forum_options = [];
+
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\boardannouncements\manager\manager */
 	protected $manager;
 
@@ -68,6 +71,9 @@ class acp_controller_test extends \phpbb_test_case
 	protected function setUp(): void
 	{
 		parent::setUp();
+		self::$confirm = true;
+		self::$valid_form = false;
+		self::$forum_options = [];
 
 		global $cache, $phpbb_container, $phpbb_dispatcher, $user, $phpbb_root_path, $phpEx;
 
@@ -330,6 +336,20 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
+	public function test_list_announcements_rejects_unknown_status_filter()
+	{
+		$controller = $this->get_controller();
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => '', 'status' => 'unknown', 'q' => ''][$name] ?? $default;
+		});
+		$this->manager->expects(self::once())->method('get_announcements')->willReturn([]);
+		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(static function ($data) {
+			return $data['S_STATUS_FILTER'] === 'all' && !$data['S_FILTERS_ACTIVE'];
+		}));
+
+		$controller->mode_manage();
+	}
+
 	/**
 	 * Stored special-group identifiers are resolved through phpBB's group API.
 	 */
@@ -381,6 +401,82 @@ class acp_controller_test extends \phpbb_test_case
 		$method->setAccessible(true);
 
 		self::assertSame($expected, $method->invoke($controller, $locations));
+	}
+
+	public function test_get_location_options_preserves_hierarchy_and_selection()
+	{
+		self::$forum_options = [
+			1 => ['padding' => '', 'selected' => false, 'forum_id' => 1, 'forum_name' => 'Parent'],
+			2 => ['padding' => '&nbsp; &nbsp;', 'selected' => true, 'forum_id' => 2, 'forum_name' => 'Child'],
+		];
+		$this->manager->method('decode_json')->with('[2]')->willReturn([2]);
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_location_options');
+		$method->setAccessible(true);
+
+		$options = $method->invoke($controller, '[2]');
+
+		self::assertSame(0, $options[1]['depth']);
+		self::assertSame(1, $options[2]['depth']);
+		self::assertTrue($options[2]['selected']);
+		self::assertSame(\phpbb\boardannouncements\ext::INDEX_ONLY, $options[-1]['forum_id']);
+		self::$forum_options = [];
+	}
+
+	/**
+	 * @dataProvider status_data
+	 */
+	public function test_status_is_derived_from_lifecycle(array $row, $expected)
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_status');
+		$method->setAccessible(true);
+
+		self::assertSame($expected, $method->invoke($controller, $row));
+	}
+
+	public function status_data()
+	{
+		return [
+			'archived' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_ARCHIVED, 'announcement_enabled' => 0], 'archived'],
+			'draft state' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_DRAFT, 'announcement_enabled' => 1], 'draft'],
+			'disabled' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED, 'announcement_enabled' => 0], 'draft'],
+			'scheduled' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED, 'announcement_enabled' => 1, 'announcement_start' => time() + 3600], 'scheduled'],
+			'expired' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED, 'announcement_enabled' => 1, 'announcement_expiry' => time() - 3600], 'expired'],
+			'active' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED, 'announcement_enabled' => 1], 'active'],
+		];
+	}
+
+	/**
+	 * @dataProvider contrast_color_data
+	 */
+	public function test_contrast_color($color, $expected)
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'contrast_color');
+		$method->setAccessible(true);
+
+		self::assertSame($expected, $method->invoke($controller, $color));
+	}
+
+	public function contrast_color_data()
+	{
+		return [
+			'invalid' => ['fff', ''],
+			'black' => ['000000', 'ffffff'],
+			'white' => ['ffffff', '111111'],
+		];
+	}
+
+	public function test_parse_date_reports_invalid_input()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'parse_date');
+		$method->setAccessible(true);
+		$errors = [];
+
+		self::assertSame(0, $method->invokeArgs($controller, ['invalid', &$errors, 'BOARD_ANNOUNCEMENTS_START_INVALID']));
+		self::assertSame([$this->language->lang('BOARD_ANNOUNCEMENTS_START_INVALID')], $errors);
 	}
 
 	public function location_mode_data()
@@ -492,6 +588,69 @@ class acp_controller_test extends \phpbb_test_case
 
 		$this->template->expects($missing_announcement ? self::never() : self::once())
 			->method('assign_vars');
+
+		$controller->mode_manage();
+	}
+
+	public function test_edit_form_recognizes_legacy_custom_color()
+	{
+		$controller = $this->get_controller();
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => 'add', 'id' => 1][$name] ?? $default;
+		});
+		$this->request->method('is_set_post')->willReturn(false);
+		$this->manager->method('announcement_columns')->willReturn([]);
+		$this->manager->expects(self::once())->method('get_announcement')->with(1)->willReturn([
+			'announcement_id' => 1,
+			'announcement_bgcolor' => 'abcdef',
+		]);
+		$this->manager->expects(self::once())->method('get_announcement_groups')->with(1)->willReturn([]);
+		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(static function ($data) {
+			return $data['BOARD_ANNOUNCEMENTS_TONE'] === 'custom'
+				&& $data['BOARD_ANNOUNCEMENTS_BGCOLOR'] === 'abcdef'
+				&& $data['BOARD_ANNOUNCEMENTS_COLOR_PICKER'] === '#abcdef';
+		}));
+
+		$controller->mode_manage();
+	}
+
+	public function test_action_add_reports_invalid_v2_fields()
+	{
+		self::$valid_form = true;
+		$controller = $this->get_controller();
+		$values = [
+			'action' => 'add',
+			'id' => 0,
+			'board_announcements_text' => 'Message',
+			'board_announcements_description' => 'Description',
+			'board_announcements_title' => str_repeat('x', 256),
+			'board_announcements_tone' => 'invalid',
+			'board_announcements_bgcolor' => 'abcdef',
+			'board_announcements_state' => 'invalid',
+			'board_announcements_users' => \phpbb\boardannouncements\ext::GROUPS,
+			'board_announcements_groups' => [0],
+			'board_announcements_location_mode' => 'everywhere',
+			'board_announcements_locations' => [],
+			'board_announcements_dismiss' => true,
+			'board_announcements_start' => '',
+			'board_announcements_expiry' => '',
+		];
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($values) {
+			return array_key_exists($name, $values) ? $values[$name] : $default;
+		});
+		$this->request->method('is_set_post')->willReturnCallback(static function ($name) {
+			return $name === 'submit';
+		});
+		$this->manager->method('announcement_columns')->willReturn([]);
+		$this->manager->method('decode_json')->willReturn([]);
+		$this->manager->expects(self::never())->method('save_announcement');
+		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(function ($data) {
+			return strpos($data['ERRORS'], $this->language->lang('BOARD_ANNOUNCEMENTS_TITLE_TOO_LONG')) !== false
+				&& strpos($data['ERRORS'], $this->language->lang('BOARD_ANNOUNCEMENTS_TONE_INVALID')) !== false
+				&& strpos($data['ERRORS'], $this->language->lang('BOARD_ANNOUNCEMENTS_STATE_INVALID')) !== false
+				&& strpos($data['ERRORS'], $this->language->lang('BOARD_ANNOUNCEMENTS_GROUPS_REQUIRED')) !== false
+				&& $data['BOARD_ANNOUNCEMENTS_BGCOLOR'] === '';
+		}));
 
 		$controller->mode_manage();
 	}
@@ -652,6 +811,226 @@ class acp_controller_test extends \phpbb_test_case
 			->method('assign_vars');
 
 		$controller->mode_manage();
+	}
+
+	/**
+	 * @dataProvider archive_action_data
+	 */
+	public function test_archive_action($valid_hash, $updated)
+	{
+		$controller = $this->get_controller();
+		$this->setExpectedTriggerError($valid_hash && $updated ? E_USER_NOTICE : E_USER_WARNING, $valid_hash && $updated ? 'BOARD_ANNOUNCEMENTS_ARCHIVED' : 'The submitted form was invalid. Try submitting again.');
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($valid_hash) {
+			return [
+				'action' => 'archive',
+				'id' => 7,
+				'hash' => $valid_hash ? generate_link_hash('archive7') : '',
+			][$name] ?? $default;
+		});
+		$update = $this->manager->expects($valid_hash ? self::once() : self::never())
+			->method('update_announcement')
+			->willReturn($updated);
+		if ($valid_hash)
+		{
+			$update->with(7, self::callback(static function ($data) {
+				return $data['announcement_state'] === \phpbb\boardannouncements\ext::STATE_ARCHIVED
+					&& $data['announcement_enabled'] === 0
+					&& $data['announcement_updated_by'] === 2
+					&& $data['announcement_updated_at'] > 0;
+			}));
+		}
+
+		$controller->mode_manage();
+	}
+
+	public function archive_action_data()
+	{
+		return [
+			'success' => [true, true],
+			'unknown announcement' => [true, false],
+			'invalid hash' => [false, false],
+		];
+	}
+
+	/**
+	 * @dataProvider reset_action_data
+	 */
+	public function test_reset_action($valid_hash, $reset)
+	{
+		$controller = $this->get_controller();
+		$this->setExpectedTriggerError($valid_hash && $reset ? E_USER_NOTICE : E_USER_WARNING, $valid_hash && $reset ? 'BOARD_ANNOUNCEMENTS_SHOWN_AGAIN' : 'The submitted form was invalid. Try submitting again.');
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($valid_hash) {
+			return [
+				'action' => 'reset',
+				'id' => 7,
+				'hash' => $valid_hash ? generate_link_hash('reset7') : '',
+			][$name] ?? $default;
+		});
+		$this->manager->expects($valid_hash ? self::once() : self::never())
+			->method('show_announcement_again')
+			->with(7)
+			->willReturn($reset);
+
+		$controller->mode_manage();
+	}
+
+	public function reset_action_data()
+	{
+		return [
+			'success' => [true, true],
+			'unknown announcement' => [true, false],
+			'invalid hash' => [false, false],
+		];
+	}
+
+	public function test_duplicate_action_creates_draft_with_same_groups()
+	{
+		$controller = $this->get_controller();
+		$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_DUPLICATED');
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return [
+				'action' => 'duplicate',
+				'id' => 7,
+				'hash' => generate_link_hash('duplicate7'),
+			][$name] ?? $default;
+		});
+		$this->manager->expects(self::once())->method('get_announcement')->with(7)->willReturn([
+			'announcement_id' => 7,
+			'announcement_description' => 'Maintenance',
+			'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
+			'announcement_enabled' => 1,
+			'announcement_revision' => 9,
+		]);
+		$this->manager->expects(self::once())->method('save_announcement')
+			->with(self::callback(static function ($data) {
+				return !isset($data['announcement_id'])
+					&& $data['announcement_description'] === 'BOARD_ANNOUNCEMENTS_COPY_OF'
+					&& $data['announcement_state'] === \phpbb\boardannouncements\ext::STATE_DRAFT
+					&& $data['announcement_enabled'] === 0
+					&& $data['announcement_revision'] === 1
+					&& $data['announcement_created_by'] === 2
+					&& $data['announcement_updated_by'] === 2;
+			}))
+			->willReturn(['announcement_id' => 12]);
+		$this->manager->expects(self::once())->method('get_announcement_groups')->with(7)->willReturn([4, 8]);
+		$this->manager->expects(self::once())->method('set_announcement_groups')->with(12, [4, 8]);
+
+		$controller->mode_manage();
+	}
+
+	public function test_duplicate_action_rejects_unknown_announcement()
+	{
+		$controller = $this->get_controller();
+		$this->setExpectedTriggerError(E_USER_WARNING, 'The submitted form was invalid. Try submitting again.');
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return [
+				'action' => 'duplicate',
+				'id' => 99,
+				'hash' => generate_link_hash('duplicate99'),
+			][$name] ?? $default;
+		});
+		$this->manager->expects(self::once())->method('get_announcement')->with(99)->willReturn([]);
+		$this->manager->expects(self::never())->method('save_announcement');
+
+		$controller->mode_manage();
+	}
+
+	/**
+	 * @dataProvider bulk_state_action_data
+	 */
+	public function test_bulk_state_action($action, $expected_state, $expected_enabled)
+	{
+		self::$valid_form = true;
+		$controller = $this->get_controller();
+		$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_BULK_UPDATED');
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($action) {
+			return [
+				'action' => 'bulk',
+				'announcement_ids' => [3, 3, 0, 5],
+				'bulk_action' => $action,
+			][$name] ?? $default;
+		});
+		$this->manager->expects(self::exactly(2))->method('update_announcement')
+			->withConsecutive(
+				[3, self::callback(static function ($data) use ($expected_state, $expected_enabled) {
+					return $data['announcement_state'] === $expected_state && $data['announcement_enabled'] === $expected_enabled && $data['announcement_updated_by'] === 2;
+				})],
+				[5, self::callback(static function ($data) use ($expected_state, $expected_enabled) {
+					return $data['announcement_state'] === $expected_state && $data['announcement_enabled'] === $expected_enabled && $data['announcement_updated_by'] === 2;
+				})]
+			);
+
+		$controller->mode_manage();
+	}
+
+	public function bulk_state_action_data()
+	{
+		return [
+			'publish' => ['publish', \phpbb\boardannouncements\ext::STATE_PUBLISHED, true],
+			'draft' => ['draft', \phpbb\boardannouncements\ext::STATE_DRAFT, false],
+			'archive' => ['archive', \phpbb\boardannouncements\ext::STATE_ARCHIVED, false],
+		];
+	}
+
+	public function test_bulk_delete_logs_only_successful_deletions()
+	{
+		self::$valid_form = true;
+		self::$confirm = true;
+		$controller = $this->get_controller();
+		$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_BULK_UPDATED');
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => 'bulk', 'announcement_ids' => [3, 5], 'bulk_action' => 'delete'][$name] ?? $default;
+		});
+		$this->manager->expects(self::exactly(2))->method('get_announcement_data')
+			->withConsecutive([3, 'announcement_description'], [5, 'announcement_description'])
+			->willReturnOnConsecutiveCalls('First', 'Second');
+		$this->manager->expects(self::exactly(2))->method('delete_announcement')
+			->withConsecutive([3], [5])
+			->willReturnOnConsecutiveCalls(true, false);
+		$this->log->expects(self::once())->method('add')->with(
+			'admin', 2, self::anything(), 'BOARD_ANNOUNCEMENTS_DELETED_LOG', self::anything(), ['First']
+		);
+
+		$controller->mode_manage();
+	}
+
+	public function test_bulk_delete_waits_for_confirmation()
+	{
+		self::$valid_form = true;
+		self::$confirm = false;
+		$controller = $this->get_controller();
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => 'bulk', 'announcement_ids' => [3], 'bulk_action' => 'delete'][$name] ?? $default;
+		});
+		$this->manager->expects(self::never())->method('delete_announcement');
+
+		$controller->mode_manage();
+	}
+
+	/**
+	 * @dataProvider invalid_bulk_action_data
+	 */
+	public function test_bulk_action_rejects_invalid_request($valid_form, array $ids, $action)
+	{
+		self::$valid_form = $valid_form;
+		$controller = $this->get_controller();
+		$this->setExpectedTriggerError(E_USER_WARNING, 'The submitted form was invalid. Try submitting again.');
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($ids, $action) {
+			return ['action' => 'bulk', 'announcement_ids' => $ids, 'bulk_action' => $action][$name] ?? $default;
+		});
+		$this->manager->expects(self::never())->method('update_announcement');
+		$this->manager->expects(self::never())->method('delete_announcement');
+
+		$controller->mode_manage();
+	}
+
+	public function invalid_bulk_action_data()
+	{
+		return [
+			'invalid form' => [false, [1], 'publish'],
+			'empty selection' => [true, [0], 'publish'],
+			'unknown action' => [true, [1], 'unknown'],
+		];
 	}
 
 	/**
@@ -937,4 +1316,5 @@ function build_select()
  */
 function make_forum_select()
 {
+	return \phpbb\boardannouncements\controller\acp_controller_test::$forum_options;
 }

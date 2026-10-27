@@ -340,4 +340,15 @@ class listener_test extends \phpbb_database_test_case
 			'item_id' => 0,
 		]);
 	}
+
+	public function test_current_location_returns_cached_posting_forum()
+	{
+		$this->set_listener();
+		$this->listener->set_posting_location(new \phpbb\event\data(['forum_id' => 12]));
+
+		$method = new \ReflectionMethod($this->listener, 'get_current_location');
+		$method->setAccessible(true);
+
+		self::assertSame(12, $method->invoke($this->listener));
+	}
 }

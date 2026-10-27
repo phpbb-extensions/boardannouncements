@@ -15,4 +15,9 @@ class manager_show_announcement_again_test extends manager_base
 		self::assertTrue($this->manager->show_announcement_again(1));
 		self::assertSame(2, (int) $this->manager->get_announcement(1)['announcement_revision']);
 	}
+
+	public function test_show_again_rejects_unknown_announcement()
+	{
+		self::assertFalse($this->manager->show_announcement_again(999));
+	}
 }
