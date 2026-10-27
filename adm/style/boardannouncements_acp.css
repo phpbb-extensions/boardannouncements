@@ -144,7 +144,7 @@
 .ba-segmented-control input:checked + span { background: #fff; box-shadow: 0 1px 3px rgb(30 50 70 / 16%); color: #24435e; }
 .ba-segmented-control input:focus-visible + span { outline: 3px solid rgb(37 99 166 / 28%); }
 
-.ba-editor-grid { align-items: start; display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr) minmax(280px, 340px); }
+.ba-editor-grid { align-items: start; display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); }
 .ba-editor-main, .ba-editor-sidebar { min-width: 0; }
 .ba-editor-sidebar { position: sticky; top: 10px; }
 .ba-form-card { padding: 18px; }
@@ -218,19 +218,7 @@
 .ba-checkbox span { font-size: 11px; font-weight: 400; }
 .ba-preview-header { align-items: center; justify-content: space-between; }
 .ba-preview-tools { display: flex; gap: 4px; }
-.ba-preview { background: #fff; border: 1px solid #dce2e7; border-radius: 5px; font-size: 10px; margin: 0 auto; padding: 14px; transition: max-width .2s ease; }
-.ba-preview[data-theme="light"] { background: #fff; color: var(--ba-admin-text); }
-.ba-preview[data-theme="light"] .phpbb-announcement { --ba-background: #e8f1fa; --ba-foreground: #16324f; --ba-accent: #2f6fab; }
-.ba-preview[data-theme="light"] .phpbb-announcement--neutral { --ba-background: #f1f2f3; --ba-foreground: #25282b; --ba-accent: #687078; }
-.ba-preview[data-theme="light"] .phpbb-announcement--success { --ba-background: #e6f5eb; --ba-foreground: #163d23; --ba-accent: #298247; }
-.ba-preview[data-theme="light"] .phpbb-announcement--warning { --ba-background: #fff4d6; --ba-foreground: #4c3500; --ba-accent: #b47700; }
-.ba-preview[data-theme="light"] .phpbb-announcement--critical { --ba-background: #fae7e7; --ba-foreground: #511b1b; --ba-accent: #bd3434; }
-.ba-preview[data-theme="dark"] { background: #15191d; color: #eee; }
-.ba-preview[data-theme="dark"] .phpbb-announcement { --ba-background: #193148; --ba-foreground: #f1f6fa; --ba-accent: #77b7ec; }
-.ba-preview[data-theme="dark"] .phpbb-announcement--neutral { --ba-background: #292d31; --ba-foreground: #f2f2f2; --ba-accent: #a9b0b7; }
-.ba-preview[data-theme="dark"] .phpbb-announcement--success { --ba-background: #183826; --ba-foreground: #eaf8ef; --ba-accent: #6ccb8a; }
-.ba-preview[data-theme="dark"] .phpbb-announcement--warning { --ba-background: #463610; --ba-foreground: #fff6de; --ba-accent: #e7b94d; }
-.ba-preview[data-theme="dark"] .phpbb-announcement--critical { --ba-background: #482020; --ba-foreground: #fff0f0; --ba-accent: #ee7d7d; }
+.ba-preview { background: #fff; border: 1px solid #dce2e7; border-radius: 5px; color: var(--ba-admin-text); font-size: 10px; margin: 0 auto; padding: 14px; transition: max-width .2s ease; }
 .ba-preview[data-mobile] { max-width: 390px; }
 .ba-editor-actions { align-items: center; background: rgb(255 255 255 / 96%); border: 1px solid var(--ba-admin-border); border-radius: 8px; bottom: 8px; box-shadow: 0 4px 16px rgb(24 43 61 / 12%); display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; padding: 10px; position: sticky; z-index: 5; }
 

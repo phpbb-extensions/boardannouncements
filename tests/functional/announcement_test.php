@@ -252,7 +252,9 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->assertStringContainsString('This is a board announcement test.', $crawler->text());
 		self::assertCount(1, $crawler->filter('#board_announcements_tone option[value="custom"]:selected'));
 		self::assertCount(1, $crawler->filter('.ba-editor-main > .ba-preview-card + [aria-labelledby="ba-content-title"]'));
-		self::assertCount(1, $crawler->filter('#ba-preview[data-theme="light"]'));
+		self::assertCount(1, $crawler->filter('#ba-preview'));
+		self::assertCount(0, $crawler->filter('#ba-preview[data-theme], [data-ba-preview-theme]'));
+		self::assertCount(1, $crawler->filter('[data-ba-preview-mobile]'));
 		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="-1"]:checked'));
 		self::assertSame('#ff0000', $crawler->filter('#board_announcements_bgcolor_picker')->attr('value'));
 		self::assertCount(1, $crawler->filter('[data-ba-custom-color]:not(.is-disabled)[aria-disabled="false"]'));

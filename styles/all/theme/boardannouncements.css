@@ -46,14 +46,6 @@
 .phpbb-announcement__dismiss:hover { opacity: 1; background: rgb(0 0 0 / 8%); }
 .phpbb-announcement__dismiss:focus-visible { opacity: 1; outline: 3px solid var(--ba-accent); outline-offset: 1px; }
 
-@media (prefers-color-scheme: dark) {
-	.phpbb-announcement { --ba-background: #193148; --ba-foreground: #f1f6fa; --ba-accent: #77b7ec; }
-	.phpbb-announcement--neutral { --ba-background: #292d31; --ba-foreground: #f2f2f2; --ba-accent: #a9b0b7; }
-	.phpbb-announcement--success { --ba-background: #183826; --ba-foreground: #eaf8ef; --ba-accent: #6ccb8a; }
-	.phpbb-announcement--warning { --ba-background: #463610; --ba-foreground: #fff6de; --ba-accent: #e7b94d; }
-	.phpbb-announcement--critical { --ba-background: #482020; --ba-foreground: #fff0f0; --ba-accent: #ee7d7d; }
-}
-
 @media (max-width: 500px) {
 	.phpbb-announcement { margin-block: 8px; padding: 12px 48px 12px 12px; }
 }

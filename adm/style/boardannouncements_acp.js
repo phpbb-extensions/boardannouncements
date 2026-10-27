@@ -169,12 +169,6 @@
 
 		var preview = document.getElementById('ba-preview');
 		if (preview) {
-			document.querySelectorAll('[data-ba-preview-theme]').forEach(function (button) {
-				button.addEventListener('click', function () {
-					preview.setAttribute('data-theme', button.getAttribute('data-ba-preview-theme'));
-				});
-			});
-
 			var mobileButton = document.querySelector('[data-ba-preview-mobile]');
 			if (mobileButton) {
 				mobileButton.addEventListener('click', function () {

@@ -146,8 +146,6 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_ACTION'	=> 'Bulk action',
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'	=> 'Selected announcements were updated.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Delete permanently',
-	'BOARD_ANNOUNCEMENTS_PREVIEW_LIGHT' => 'Light',
-	'BOARD_ANNOUNCEMENTS_PREVIEW_DARK' => 'Dark',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE' => 'Mobile width',
 
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
