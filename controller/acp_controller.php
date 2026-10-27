@@ -243,6 +243,7 @@ class acp_controller
 		{
 			$data['announcement_tone'] = 'custom';
 		}
+		$location_mode = $this->get_location_mode($data['announcement_locations']);
 		$selected_groups = $id ? (array) $this->manager->get_announcement_groups($id) : [];
 
 		// If form is submitted or previewed
@@ -274,8 +275,34 @@ class acp_controller
 			{
 				$selected_groups = [];
 			}
-			$data['announcement_locations'] = $this->request->variable('board_announcements_locations', [0]);
-			$data['announcement_include_children'] = $this->request->variable('board_announcements_include_children', false);
+			$location_mode = $this->request->variable('board_announcements_location_mode', 'everywhere');
+			$selected_locations = array_values(array_filter(array_map('intval', $this->request->variable('board_announcements_locations', [0]))));
+			switch ($location_mode)
+			{
+				case 'everywhere':
+					$data['announcement_locations'] = [];
+					$data['announcement_include_children'] = false;
+				break;
+
+				case 'index':
+					$data['announcement_locations'] = [ext::INDEX_ONLY];
+					$data['announcement_include_children'] = false;
+				break;
+
+				case 'selected':
+					$data['announcement_locations'] = $selected_locations;
+					$data['announcement_include_children'] = $this->request->variable('board_announcements_include_children', false);
+					if (!$selected_locations)
+					{
+						$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_LOCATIONS_REQUIRED');
+					}
+				break;
+
+				default:
+					$data['announcement_locations'] = [];
+					$data['announcement_include_children'] = false;
+					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_LOCATION_MODE_INVALID');
+			}
 			$data['announcement_dismissable'] = $this->request->variable('board_announcements_dismiss', true);
 			$data['announcement_start'] = $this->request->variable('board_announcements_start', '');
 			$data['announcement_expiry'] = $this->request->variable('board_announcements_expiry', '');
@@ -402,6 +429,7 @@ class acp_controller
 			'BOARD_ANNOUNCEMENTS_GROUPS'	=> $this->get_group_options($selected_groups),
 
 			'BOARD_ANNOUNCEMENTS_LOCATIONS'	=> $this->get_location_options($data['announcement_locations']),
+			'BOARD_ANNOUNCEMENTS_LOCATION_MODE' => $location_mode,
 			'BOARD_ANNOUNCEMENTS_INCLUDE_CHILDREN' => $data['announcement_include_children'],
 
 			'S_BOARD_ANNOUNCEMENTS_USERS'	=> build_select([
@@ -712,6 +740,25 @@ class acp_controller
 		ksort($forum_list);
 
 		return $forum_list;
+	}
+
+	/**
+	 * Derive the ACP location mode from stored location identifiers.
+	 *
+	 * @param string|array $locations
+	 * @return string
+	 */
+	protected function get_location_mode($locations)
+	{
+		$selected = is_array($locations) ? $locations : (!empty($locations) ? $this->manager->decode_json($locations) : []);
+		$selected = array_values(array_filter(array_map('intval', (array) $selected)));
+
+		if (!$selected)
+		{
+			return 'everywhere';
+		}
+
+		return count($selected) === 1 && $selected[0] === ext::INDEX_ONLY ? 'index' : 'selected';
 	}
 
 	protected function get_status(array $row)

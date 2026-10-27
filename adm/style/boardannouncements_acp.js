@@ -89,15 +89,25 @@
 			});
 		}
 
+		var locationMode = document.getElementById('board_announcements_location_mode');
+		var locationPanel = editor.querySelector('[data-ba-locations]');
+		if (locationMode && locationPanel) {
+			var updateLocations = function () {
+				var active = locationMode.value === 'selected';
+				locationPanel.hidden = !active;
+				locationMode.setAttribute('aria-expanded', active ? 'true' : 'false');
+				locationPanel.querySelectorAll('input, select, button').forEach(function (control) {
+					control.disabled = !active;
+				});
+			};
+			locationMode.addEventListener('change', updateLocations);
+			updateLocations();
+		}
+
 		var locationSearch = document.getElementById('board_announcements_location_search');
 		if (locationSearch) {
 			var locations = document.querySelectorAll('[data-ba-location-name]');
-			var locationCheckboxes = document.querySelectorAll('input[name="board_announcements_locations[]"]');
-			var locationCount = document.querySelector('[data-ba-location-count]');
 			var locationEmpty = document.querySelector('[data-ba-location-empty]');
-			var updateLocationCount = function () {
-				locationCount.textContent = document.querySelectorAll('input[name="board_announcements_locations[]"]:checked').length;
-			};
 			var updateLocationFilter = function () {
 				filterItems(locationSearch, locations, 'data-ba-location-name');
 				locationEmpty.hidden = Array.prototype.some.call(locations, function (location) {
@@ -107,25 +117,6 @@
 			locationSearch.addEventListener('input', function () {
 				updateLocationFilter();
 			});
-			document.querySelector('[data-ba-select-visible]').addEventListener('click', function () {
-				locations.forEach(function (location) {
-					var checkbox = location.querySelector('input[type="checkbox"]');
-					if (!location.hidden && checkbox) {
-						checkbox.checked = true;
-					}
-				});
-				updateLocationCount();
-			});
-			document.querySelector('[data-ba-clear-locations]').addEventListener('click', function () {
-				locationCheckboxes.forEach(function (checkbox) {
-					checkbox.checked = false;
-				});
-				updateLocationCount();
-			});
-			locationCheckboxes.forEach(function (checkbox) {
-				checkbox.addEventListener('change', updateLocationCount);
-			});
-			updateLocationCount();
 		}
 
 		var tone = document.getElementById('board_announcements_tone');

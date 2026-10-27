@@ -198,10 +198,6 @@
 .ba-input-icon input { padding-inline-start: 32px !important; width: 100%; }
 .ba-picker-search { margin-bottom: 7px; max-width: none; }
 .ba-dependent-panel { background: var(--ba-admin-surface-alt); border: 1px solid var(--ba-admin-border); border-radius: 6px; margin-top: -5px; padding: 12px; }
-.ba-picker-tools { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 7px; }
-.ba-picker-tools .ba-picker-search { flex: 1 0 100%; margin-bottom: 0; }
-.ba-picker-tools .ba-button { padding-inline: 10px; }
-.ba-selection-count { color: var(--ba-admin-muted); display: block; font-size: 10px; margin: 0 2px 5px; text-align: end; }
 .ba-checklist { border: 1px solid #c5ced7; border-radius: 5px; max-height: 190px; overflow: auto; padding: 5px; }
 .ba-checklist label { align-items: center; border-radius: 3px; cursor: pointer; display: flex; gap: 7px; margin: 0; padding: 6px 7px; }
 .ba-checklist label:hover { background: #edf4f9; }
@@ -246,8 +242,6 @@
 	.ba-action-group { justify-content: flex-start; }
 	.ba-bulk-bar { flex-wrap: wrap; }
 	.ba-switch-card form { flex-wrap: wrap; }
-	.ba-picker-tools { align-items: stretch; flex-wrap: wrap; }
-	.ba-picker-tools .ba-picker-search { flex-basis: 100%; }
 	.ba-editor-sidebar { display: block; }
 	.ba-editor-sidebar .ba-card { margin-bottom: 18px; }
 }

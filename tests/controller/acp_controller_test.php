@@ -369,6 +369,31 @@ class acp_controller_test extends \phpbb_test_case
 	}
 
 	/**
+	 * @dataProvider location_mode_data
+	 */
+	public function test_get_location_mode($locations, $expected)
+	{
+		$this->manager->method('decode_json')->willReturnCallback(static function ($value) {
+			return json_decode($value, true);
+		});
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_location_mode');
+		$method->setAccessible(true);
+
+		self::assertSame($expected, $method->invoke($controller, $locations));
+	}
+
+	public function location_mode_data()
+	{
+		return [
+			'everywhere' => ['', 'everywhere'],
+			'board index' => ['[-1]', 'index'],
+			'forum' => ['[2]', 'selected'],
+			'board index and forum' => ['[-1,2]', 'selected'],
+		];
+	}
+
+	/**
 	 * Test data for test_action_add
 	 *
 	 * @return array
@@ -482,6 +507,9 @@ class acp_controller_test extends \phpbb_test_case
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
 			[0, ['add', 0, 'Announcement Text 0', 'Hash-prefixed color', '#ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, normalize hash-prefixed color
 			[0, ['add', 0, 'Announcement Text 0', 'Selected locations', 'ffffff', true, 0, [0, -1, 2], true, '', false, false, false], false, true, true, false], // submit, discard location sentinel
+			[0, ['add', 0, 'Announcement Text 0', 'Board index', 'ffffff', true, 0, [-1], true, '', false, false, false], false, true, true, false], // submit, board index mode
+			[0, ['add', 0, 'Announcement Text 0', 'No selected location', 'ffffff', true, 0, [], true, '', false, false, false, 'selected'], false, true, true, true], // submit, selected mode requires a location
+			[0, ['add', 0, 'Announcement Text 0', 'Invalid location mode', 'ffffff', true, 0, [], true, '', false, false, false, 'invalid'], false, true, true, true], // submit, invalid location mode
 			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, emoji encoded for storage
 			[0, ['add', 0, 'Announcement Text 0', 'Unicode 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, true, 'mssqlnative'], // submit, all Unicode encoded for MSSQL
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
@@ -521,7 +549,9 @@ class acp_controller_test extends \phpbb_test_case
 		$controller = $this->get_controller();
 		$failed_update = $submit && !$errors && $id && !$update_success;
 		$successful_submit = $submit && !$errors && !$failed_update;
-		$expected_locations = json_encode(array_values(array_filter($form[7])));
+		$selected_locations = array_values(array_filter(array_map('intval', $form[7])));
+		$location_mode = $form[13] ?? (!$selected_locations ? 'everywhere' : (count($selected_locations) === 1 && $selected_locations[0] === \phpbb\boardannouncements\ext::INDEX_ONLY ? 'index' : 'selected'));
+		$expected_locations = json_encode($location_mode === 'index' ? [\phpbb\boardannouncements\ext::INDEX_ONLY] : ($location_mode === 'selected' ? $selected_locations : []));
 		$expected_description = strpos($sql_layer, 'mssql') === 0 ? utf8_encode_ncr($form[3]) : utf8_encode_ucr($form[3]);
 		$creation_timestamp = 1234567890;
 		$expected_bgcolor = ltrim($form[4], '#');
@@ -556,6 +586,7 @@ class acp_controller_test extends \phpbb_test_case
 			'board_announcements_users' => $form[6],
 			'board_announcements_groups' => [10],
 			'board_announcements_locations' => $form[7],
+			'board_announcements_location_mode' => $location_mode,
 			'board_announcements_include_children' => false,
 			'board_announcements_dismiss' => $form[8],
 			'board_announcements_start' => '',

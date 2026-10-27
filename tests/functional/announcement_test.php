@@ -68,6 +68,11 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertSame('false', $crawler->filter('#board_announcements_users')->attr('aria-expanded'));
 		self::assertGreaterThan(0, $crawler->filter('#board_announcements_locations input[type="checkbox"][name="board_announcements_locations[]"]')->count());
 		self::assertCount(0, $crawler->filter('select[name="board_announcements_locations[]"]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_location_mode option[value="everywhere"]:selected'));
+		self::assertSame('false', $crawler->filter('#board_announcements_location_mode')->attr('aria-expanded'));
+		self::assertCount(1, $crawler->filter('[data-ba-locations][hidden]'));
+		self::assertGreaterThan(0, $crawler->filter('[data-ba-locations] input[name="board_announcements_locations[]"][disabled]')->count());
+		self::assertCount(0, $crawler->filter('[data-ba-select-visible], [data-ba-clear-locations], [data-ba-location-count]'));
 		self::assertCount(0, $crawler->filter('[name="board_announcements_placement"], [name="board_announcements_cta_label"], [name="board_announcements_cta_url"]'));
 		self::assertCount(1, $crawler->filter('#board_announcements_state option[value="draft"]:selected'));
 		self::assertNotSame('', $crawler->filter('#board_announcements_start')->attr('placeholder'));
@@ -256,6 +261,8 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(0, $crawler->filter('#ba-preview[data-theme], [data-ba-preview-theme]'));
 		self::assertCount(1, $crawler->filter('[data-ba-preview-mobile]'));
 		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="-1"]:checked'));
+		self::assertCount(1, $crawler->filter('#board_announcements_location_mode option[value="index"]:selected'));
+		self::assertCount(1, $crawler->filter('[data-ba-locations][hidden]'));
 		self::assertSame('#ff0000', $crawler->filter('#board_announcements_bgcolor_picker')->attr('value'));
 		self::assertCount(1, $crawler->filter('[data-ba-custom-color]:not(.is-disabled)[aria-disabled="false"]'));
 		self::assertCount(0, $crawler->filter('#board_announcements_bgcolor_picker[disabled], #board_announcements_bgcolor[disabled]'));
@@ -312,6 +319,15 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_description'	=> 'Forum and Index announcement',
 			'board_announcements_text'			=> 'Forum and Index announcement',
 		]);
+
+		// Selected locations exposes the filterable checkbox panel and preserves mixed targeting.
+		$crawler = self::request('GET', $this->get_acp_page('add', $index_forum_id));
+		self::assertCount(1, $crawler->filter('#board_announcements_location_mode option[value="selected"]:selected'));
+		self::assertSame('true', $crawler->filter('#board_announcements_location_mode')->attr('aria-expanded'));
+		self::assertCount(1, $crawler->filter('[data-ba-locations]:not([hidden])'));
+		self::assertCount(1, $crawler->filter('#board_announcements_location_search:not([disabled])'));
+		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="-1"]:checked:not([disabled])'));
+		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="2"]:checked:not([disabled])'));
 
 		// Test board index - see everywhere, index and index+forum
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
@@ -474,6 +490,10 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_text'			=> 'This is a board announcement test.',
 		], $data);
 		$locations = $values['board_announcements_locations'];
+		$selected_locations = array_values(array_filter(array_map('intval', $locations)));
+		$values['board_announcements_location_mode'] = !$selected_locations
+			? 'everywhere'
+			: (count($selected_locations) === 1 && $selected_locations[0] === ext::INDEX_ONLY ? 'index' : 'selected');
 		$bgcolor = $values['board_announcements_bgcolor'];
 		unset($values['board_announcements_locations'], $values['board_announcements_bgcolor']);
 		$form->setValues($values);

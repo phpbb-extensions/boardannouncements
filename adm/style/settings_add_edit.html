@@ -89,21 +89,23 @@
 						<div class="ba-checklist" role="group" aria-labelledby="ba-groups-label">{% for group in BOARD_ANNOUNCEMENTS_GROUPS %}<label data-ba-group-name="{{ group.NAME|lower }}"><input type="checkbox" name="board_announcements_groups[]" value="{{ group.ID }}"{% if group.S_SELECTED %} checked{% endif %}><span>{{ group.NAME }}</span></label>{% endfor %}</div>
 					</div>
 					<div class="ba-field">
-						<label id="ba-locations-label">{{ lang('BOARD_ANNOUNCEMENTS_LOCATIONS') }}</label>
-						<span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN_V2') }}</span>
-						<div class="ba-picker-tools">
-							<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span><i class="icon fa-search" aria-hidden="true"></i><input type="search" id="board_announcements_location_search" placeholder="{{ lang('SEARCH') }}" autocomplete="off"></label>
-							<button type="button" class="ba-button ba-button-secondary" data-ba-select-visible>{{ lang('BOARD_ANNOUNCEMENTS_SELECT_VISIBLE') }}</button>
-							<button type="button" class="ba-button ba-button-quiet" data-ba-clear-locations>{{ lang('BOARD_ANNOUNCEMENTS_CLEAR_SELECTION') }}</button>
-						</div>
-						<strong class="ba-selection-count" aria-live="polite"><span data-ba-location-count>0</span> {{ lang('BOARD_ANNOUNCEMENTS_SELECTED') }}</strong>
+						<label for="board_announcements_location_mode">{{ lang('BOARD_ANNOUNCEMENTS_LOCATIONS') }}</label>
+						<select name="board_announcements_location_mode" id="board_announcements_location_mode" aria-controls="board_announcements_location_picker" aria-expanded="{{ BOARD_ANNOUNCEMENTS_LOCATION_MODE == 'selected' ? 'true' : 'false' }}">
+							<option value="everywhere"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE == 'everywhere' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_EVERYWHERE') }}</option>
+							<option value="index"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE == 'index' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE') }}</option>
+							<option value="selected"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE == 'selected' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_LOCATIONS') }}</option>
+						</select>
+					</div>
+					<div id="board_announcements_location_picker" class="ba-field ba-dependent-panel" data-ba-locations{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} hidden{% endif %}>
+						<label id="ba-locations-label">{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_LOCATIONS') }}</label>
+						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span><i class="icon fa-search" aria-hidden="true"></i><input type="search" id="board_announcements_location_search" placeholder="{{ lang('SEARCH') }}" autocomplete="off"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}></label>
 						<div id="board_announcements_locations" class="ba-location-picker" role="group" aria-labelledby="ba-locations-label">
 							{% for location in BOARD_ANNOUNCEMENTS_LOCATIONS %}
-								<label class="ba-location-row" style="--ba-forum-depth:{{ location.depth }}" data-ba-location-name="{{ location.forum_name|lower }}"><input type="checkbox" name="board_announcements_locations[]" value="{{ location.forum_id }}"{% if location.selected %} checked{% endif %}><span>{{ location.forum_name }}</span></label>
+								<label class="ba-location-row" style="--ba-forum-depth:{{ location.depth }}" data-ba-location-name="{{ location.forum_name|lower }}"><input type="checkbox" name="board_announcements_locations[]" value="{{ location.forum_id }}"{% if location.selected %} checked{% endif %}{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}><span>{{ location.forum_name }}</span></label>
 							{% endfor %}
 							<p class="ba-picker-empty" data-ba-location-empty hidden>{{ lang('BOARD_ANNOUNCEMENTS_LOCATION_EMPTY') }}</p>
 						</div>
-						<label class="ba-checkbox"><input type="checkbox" name="board_announcements_include_children" value="1"{% if BOARD_ANNOUNCEMENTS_INCLUDE_CHILDREN %} checked{% endif %}><span>{{ lang('BOARD_ANNOUNCEMENTS_INCLUDE_CHILDREN') }}</span></label>
+						<label class="ba-checkbox"><input type="checkbox" name="board_announcements_include_children" value="1"{% if BOARD_ANNOUNCEMENTS_INCLUDE_CHILDREN %} checked{% endif %}{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}><span>{{ lang('BOARD_ANNOUNCEMENTS_INCLUDE_CHILDREN') }}</span></label>
 					</div>
 				</section>
 			</aside>
