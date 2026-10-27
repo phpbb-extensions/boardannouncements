@@ -62,6 +62,7 @@ class controller_test extends \phpbb_database_test_case
 		$phpbb_path_helper = $this->getMockBuilder('\phpbb\path_helper')
 			->disableOriginalConstructor()
 			->getMock();
+		$phpbb_path_helper->method('update_web_root_path')->willReturn('https://example.com/');
 
 		/** @var $user \PHPUnit\Framework\MockObject\MockObject|\phpbb\user */
 		$user = $this->getMockBuilder('\phpbb\user')
@@ -74,6 +75,8 @@ class controller_test extends \phpbb_database_test_case
 		$user->data['user_id'] = $user_id;
 		$user->data['is_registered'] = $is_registered;
 		$user->data['session_page'] = 'index.php';
+		$user->page['page_dir'] = '';
+		$user->method('is_setup')->willReturn(true);
 
 		/** @var $request \PHPUnit\Framework\MockObject\MockObject|\phpbb\request\request */
 		$request = $this->getMockBuilder('\phpbb\request\request')
@@ -166,9 +169,7 @@ class controller_test extends \phpbb_database_test_case
 		// If non-ajax redirect is encountered, in testing it will trigger error
 		if (!$ajax)
 		{
-			// Throws E_WARNING in PHP 8.0+ and E_USER_WARNING in earlier versions
-			$errno = PHP_VERSION_ID < 80000 ? E_USER_WARNING : E_WARNING;
-			$this->setExpectedTriggerError($errno);
+			$this->setExpectedTriggerError(E_USER_WARNING, 'INSECURE_REDIRECT');
 		}
 
 		$controller = $this->get_controller($user_id, $is_registered, $mode, $ajax);
