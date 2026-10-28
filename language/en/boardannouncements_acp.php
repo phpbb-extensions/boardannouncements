@@ -73,7 +73,7 @@ $lang = array_merge($lang, array(
 
 	'BOARD_ANNOUNCEMENTS_UPDATED'			=> 'Board announcement has been updated.',
 
-	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Description',
+	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Announcement',
 	'BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE'		=> 'Location',
 	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
 	'BOARD_ANNOUNCEMENTS_TH_ENABLED'		=> 'Enabled',

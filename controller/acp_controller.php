@@ -169,8 +169,7 @@ class acp_controller
 
 			$this->template->assign_block_vars('announcements' , [
 				'ID'           => $row['announcement_id'],
-				'DESCRIPTION'  => $row['announcement_description'],
-				'TITLE'        => $row['announcement_title'],
+				'DESCRIPTION'  => $this->get_list_label($row),
 				'STATUS'       => $status,
 				'TONE'         => $row['announcement_tone'],
 				'USERS'        => $row['announcement_users'],
@@ -780,6 +779,31 @@ class acp_controller
 			return 'expired';
 		}
 		return 'active';
+	}
+
+	protected function get_list_label(array $row)
+	{
+		if ($row['announcement_description'] !== '')
+		{
+			return $row['announcement_description'];
+		}
+		if ($row['announcement_title'] !== '')
+		{
+			return $row['announcement_title'];
+		}
+
+		$description = $row['announcement_text'];
+		strip_bbcode($description, $row['announcement_uid']);
+		$description = trim(preg_replace('/\s+/u', ' ', utf8_decode_ncr($description)));
+		if ($description === '')
+		{
+			return $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
+		}
+
+		$truncated = utf8_strlen(html_entity_decode($description, ENT_COMPAT)) > 20;
+		$description = truncate_string($description, 20, 255, false);
+
+		return $description . ($truncated ? $this->language->lang('ELLIPSIS') : '');
 	}
 
 	protected function parse_date($value, array &$errors, $error_key)

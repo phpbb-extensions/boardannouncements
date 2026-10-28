@@ -256,7 +256,8 @@ class acp_controller_test extends \phpbb_test_case
 			->method('assign_block_vars')
 			->withConsecutive(
 				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+					return $data['DESCRIPTION'] === 'BOARD_ANNOUNCEMENTS_UNTITLED'
+						&& $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
 						&& $data['EXPIRY_DATE'] === ''
 						&& $data['S_MOVE_UP_DISABLED']
 						&& !$data['S_MOVE_DOWN_DISABLED'];
@@ -322,6 +323,7 @@ class acp_controller_test extends \phpbb_test_case
 			->method('assign_block_vars')
 			->with('announcements', self::callback(static function ($data) {
 				return $data['ID'] === 2
+					&& $data['DESCRIPTION'] === 'Second'
 					&& $data['S_MOVE_UP_DISABLED']
 					&& $data['S_MOVE_DOWN_DISABLED'];
 			}));
@@ -334,6 +336,79 @@ class acp_controller_test extends \phpbb_test_case
 			}));
 
 		$controller->mode_manage();
+	}
+
+	public function test_list_announcements_does_not_search_generated_untitled_label()
+	{
+		$controller = $this->get_controller();
+		$rows = [
+			[
+				'announcement_id' => 1,
+				'announcement_description' => '',
+				'announcement_title' => '',
+				'announcement_text' => 'Migrated announcement text',
+				'announcement_enabled' => true,
+				'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
+			],
+			[
+				'announcement_id' => 2,
+				'announcement_description' => 'Named announcement',
+				'announcement_title' => '',
+				'announcement_text' => 'Other text',
+				'announcement_enabled' => true,
+				'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
+			],
+		];
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => '', 'status' => 'all', 'q' => 'untitled'][$name] ?? $default;
+		});
+		$this->manager->expects(self::once())->method('get_announcements')->willReturn($rows);
+		$this->template->expects(self::never())->method('assign_block_vars');
+
+		$controller->mode_manage();
+	}
+
+	/**
+	 * @dataProvider list_label_data
+	 */
+	public function test_list_label(array $row, $expected)
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_list_label');
+		$method->setAccessible(true);
+
+		self::assertSame($expected, $method->invoke($controller, array_replace([
+			'announcement_description' => '',
+			'announcement_title' => '',
+			'announcement_text' => '',
+			'announcement_uid' => '',
+		], $row)));
+	}
+
+	public function list_label_data()
+	{
+		return [
+			'description is preserved' => [
+				['announcement_description' => 'Administrator summary', 'announcement_text' => 'Ignored message'],
+				'Administrator summary',
+			],
+			'short message' => [
+				['announcement_text' => 'Short message'],
+				'Short message',
+			],
+			'long formatted message' => [
+				['announcement_text' => '[b:abcde]Maintenance tonight at 10 PM[/b:abcde]', 'announcement_uid' => 'abcde'],
+				'Maintenance tonight …',
+			],
+			'title takes priority over message' => [
+				['announcement_title' => 'Public title', 'announcement_text' => 'Ignored message'],
+				'Public title',
+			],
+			'empty readable message uses fallback' => [
+				[],
+				'BOARD_ANNOUNCEMENTS_UNTITLED',
+			],
+		];
 	}
 
 	public function test_list_announcements_rejects_unknown_status_filter()

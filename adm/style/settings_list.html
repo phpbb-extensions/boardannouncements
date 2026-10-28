@@ -52,9 +52,9 @@
 				<tbody>
 				{% for ba in announcements %}
 					<tr>
-						<td class="ba-select-cell" data-label="{{ lang('MARK') }}"><label><input type="checkbox" name="announcement_ids[]" value="{{ ba.ID }}"><span class="sr-only">{{ ba.DESCRIPTION ?: ba.TITLE ?: lang('BOARD_ANNOUNCEMENTS_UNTITLED') }}</span></label></td>
+						<td class="ba-select-cell" data-label="{{ lang('MARK') }}"><label><input type="checkbox" name="announcement_ids[]" value="{{ ba.ID }}"><span class="sr-only">{{ ba.DESCRIPTION }}</span></label></td>
 						<td class="ba-summary-cell" data-label="{{ lang('BOARD_ANNOUNCEMENTS_TH_DESCRIPTION') }}">
-							<a class="ba-announcement-name" href="{{ ba.U_EDIT }}">{{ ba.DESCRIPTION ?: ba.TITLE ?: lang('BOARD_ANNOUNCEMENTS_UNTITLED') }}</a>
+							<a class="ba-announcement-name" href="{{ ba.U_EDIT }}">{{ ba.DESCRIPTION }}</a>
 							<span class="ba-meta">{{ lang('BOARD_ANNOUNCEMENTS_TONE_' ~ ba.TONE|upper) }}</span>
 						</td>
 						<td data-label="{{ lang('BOARD_ANNOUNCEMENTS_STATUS') }}"><span class="ba-status ba-status--{{ ba.STATUS }}">{{ lang('BOARD_ANNOUNCEMENTS_STATUS_' ~ ba.STATUS|upper) }}</span></td>
