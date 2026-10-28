@@ -221,7 +221,7 @@ class controller_test extends phpbb_database_test_case
 	 *
 	 * @return array
 	 */
-	public function get_redirect_data()
+	public static function get_redirect_data()
 	{
 		return [
 			['viewtopic.php?t=1', 'viewtopic.php?t=1'],

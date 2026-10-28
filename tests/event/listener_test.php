@@ -346,7 +346,7 @@ class listener_test extends \phpbb_database_test_case
 		self::assertSame($expected_ids, $actual_ids);
 	}
 
-	public function dismissal_cookie_data()
+	public static function dismissal_cookie_data()
 	{
 		return [
 			'current timestamp hides announcement' => ['1586466410', [3]],
@@ -414,7 +414,7 @@ class listener_test extends \phpbb_database_test_case
 		self::assertSame($expected, $location);
 	}
 
-	public function posting_location_data()
+	public static function posting_location_data()
 	{
 		return [
 			'posting forum fallback' => [0, 0, 1],
