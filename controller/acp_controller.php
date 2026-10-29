@@ -387,7 +387,7 @@ class acp_controller
 						$this->error('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
 					}
 
-					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $data['announcement_description']);
+					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $this->get_list_label($data));
 					$this->manager->set_announcement_groups($id, $selected_groups);
 				}
 				else
@@ -395,7 +395,7 @@ class acp_controller
 					$result = $this->manager->save_announcement($data);
 					$new_id = is_array($result) ? (int) ($result['announcement_id'] ?? 0) : (int) $result;
 					$this->manager->set_announcement_groups($new_id, $selected_groups);
-					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $data['announcement_description']);
+					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $this->get_list_label($data));
 				}
 
 				// Output message to user for the announcement update
@@ -501,7 +501,13 @@ class acp_controller
 			$this->error('FORM_INVALID');
 		}
 		unset($data['announcement_id']);
-		$data['announcement_description'] = $this->language->lang('BOARD_ANNOUNCEMENTS_COPY_OF', $data['announcement_description']);
+		$description = $data['announcement_description'] ?: $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
+		$data['announcement_description'] = truncate_string(
+			$this->language->lang('BOARD_ANNOUNCEMENTS_COPY_OF', $description),
+			255,
+			255,
+			false
+		);
 		$data['announcement_state'] = ext::STATE_DRAFT;
 		$data['announcement_enabled'] = 0;
 		$data['announcement_revision'] = 1;
@@ -542,10 +548,10 @@ class acp_controller
 		{
 			if ($bulk_action === 'delete')
 			{
-				$description = $this->manager->get_announcement_data($id, 'announcement_description');
+				$announcement = $this->manager->get_announcement($id);
 				if ($this->manager->delete_announcement($id))
 				{
-					$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $description);
+					$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_list_label(array_replace($this->announcement_defaults(), $announcement)));
 				}
 				continue;
 			}
@@ -570,8 +576,8 @@ class acp_controller
 		$id = $this->request->variable('id', 0);
 		if (confirm_box(true))
 		{
-			// Get announcement description for logs
-			$description = $this->manager->get_announcement_data($id, 'announcement_description');
+			// Get announcement data for logs before deletion
+			$announcement = $this->manager->get_announcement($id);
 
 			// Delete announcement
 			try
@@ -590,7 +596,7 @@ class acp_controller
 			}
 			else
 			{
-				$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $description);
+				$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_list_label(array_replace($this->announcement_defaults(), $announcement)));
 
 				if ($this->request->is_ajax())
 				{

@@ -739,6 +739,7 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		return [
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
+			[0, ['add', 0, 'Short message', '', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit without a description
 			[0, ['add', 0, 'Announcement Text 0', 'Hash-prefixed color', '#ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, normalize hash-prefixed color
 			[0, ['add', 0, 'Announcement Text 0', 'Selected locations', 'ffffff', true, 0, [0, -1, 2], true, '', false, false, false], false, true, true, false], // submit, discard location sentinel
 			[0, ['add', 0, 'Announcement Text 0', 'Board index', 'ffffff', true, 0, [-1], true, '', false, false, false], false, true, true, false], // submit, board index mode
@@ -879,8 +880,19 @@ class acp_controller_test extends \phpbb_test_case
 			$groups->with(self::anything(), []);
 		}
 
-		$this->log->expects($successful_submit ? self::once() : self::never())
+		$log = $this->log->expects($successful_submit ? self::once() : self::never())
 			->method('add');
+		if ($successful_submit)
+		{
+			$log->with(
+				'admin',
+				2,
+				self::anything(),
+				$id ? 'BOARD_ANNOUNCEMENTS_UPDATED_LOG' : 'BOARD_ANNOUNCEMENTS_CREATED_LOG',
+				self::anything(),
+				[$expected_description !== '' ? $expected_description : $form[2]]
+			);
+		}
 
 		$this->template->expects(($submit && $errors) || $preview ? self::once() : self::never())
 			->method('assign_vars');
@@ -958,8 +970,26 @@ class acp_controller_test extends \phpbb_test_case
 		];
 	}
 
-	public function test_duplicate_action_creates_draft_with_same_groups()
+	/**
+	 * @dataProvider duplicate_action_data
+	 */
+	public function test_duplicate_action_creates_draft_with_same_groups($description, $expected_description)
 	{
+		$this->language = $this->getMockBuilder('\phpbb\language\language')
+			->disableOriginalConstructor()
+			->setMethods(['add_lang', 'lang'])
+			->getMock();
+		$this->language->method('lang')->willReturnCallback(static function ($key, ...$args) {
+			if ($key === 'BOARD_ANNOUNCEMENTS_COPY_OF')
+			{
+				return sprintf('Copy of %s', $args[0]);
+			}
+			if ($key === 'BOARD_ANNOUNCEMENTS_UNTITLED')
+			{
+				return 'Untitled announcement';
+			}
+			return $key;
+		});
 		$controller = $this->get_controller();
 		$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_DUPLICATED');
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
@@ -971,15 +1001,15 @@ class acp_controller_test extends \phpbb_test_case
 		});
 		$this->manager->expects(self::once())->method('get_announcement')->with(7)->willReturn([
 			'announcement_id' => 7,
-			'announcement_description' => 'Maintenance',
+			'announcement_description' => $description,
 			'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
 			'announcement_enabled' => 1,
 			'announcement_revision' => 9,
 		]);
 		$this->manager->expects(self::once())->method('save_announcement')
-			->with(self::callback(static function ($data) {
+			->with(self::callback(static function ($data) use ($expected_description) {
 				return !isset($data['announcement_id'])
-					&& $data['announcement_description'] === 'BOARD_ANNOUNCEMENTS_COPY_OF'
+					&& $data['announcement_description'] === $expected_description
 					&& $data['announcement_state'] === \phpbb\boardannouncements\ext::STATE_DRAFT
 					&& $data['announcement_enabled'] === 0
 					&& $data['announcement_revision'] === 1
@@ -991,6 +1021,15 @@ class acp_controller_test extends \phpbb_test_case
 		$this->manager->expects(self::once())->method('set_announcement_groups')->with(12, [4, 8]);
 
 		$controller->mode_manage();
+	}
+
+	public function duplicate_action_data()
+	{
+		return [
+			'described announcement' => ['Maintenance', 'Copy of Maintenance'],
+			'undescribed announcement' => ['', 'Copy of Untitled announcement'],
+			'long description' => [str_repeat('x', 255), 'Copy of ' . str_repeat('x', 247)],
+		];
 	}
 
 	public function test_duplicate_action_rejects_unknown_announcement()
@@ -1056,14 +1095,17 @@ class acp_controller_test extends \phpbb_test_case
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
 			return ['action' => 'bulk', 'announcement_ids' => [3, 5], 'bulk_action' => 'delete'][$name] ?? $default;
 		});
-		$this->manager->expects(self::exactly(2))->method('get_announcement_data')
-			->withConsecutive([3, 'announcement_description'], [5, 'announcement_description'])
-			->willReturnOnConsecutiveCalls('First', 'Second');
+		$this->manager->expects(self::exactly(2))->method('get_announcement')
+			->withConsecutive([3], [5])
+			->willReturnOnConsecutiveCalls(
+				['announcement_description' => '', 'announcement_title' => 'First title'],
+				['announcement_description' => 'Second']
+			);
 		$this->manager->expects(self::exactly(2))->method('delete_announcement')
 			->withConsecutive([3], [5])
 			->willReturnOnConsecutiveCalls(true, false);
 		$this->log->expects(self::once())->method('add')->with(
-			'admin', 2, self::anything(), 'BOARD_ANNOUNCEMENTS_DELETED_LOG', self::anything(), ['First']
+			'admin', 2, self::anything(), 'BOARD_ANNOUNCEMENTS_DELETED_LOG', self::anything(), ['First title']
 		);
 
 		$controller->mode_manage();
@@ -1167,7 +1209,15 @@ class acp_controller_test extends \phpbb_test_case
 					$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS');
 				}
 				$this->log->expects(self::once())
-					->method('add');
+					->method('add')
+					->with(
+						'admin',
+						2,
+						self::anything(),
+						'BOARD_ANNOUNCEMENTS_DELETED_LOG',
+						self::anything(),
+						[$id === 1 ? 'Announcement 1' : 'Description ' . $id]
+					);
 			}
 			else
 			{
@@ -1176,8 +1226,11 @@ class acp_controller_test extends \phpbb_test_case
 					->method('add');
 			}
 			$this->manager->expects(self::once())
-				->method('get_announcement_data')
-				->with($id, 'announcement_description');
+				->method('get_announcement')
+				->with($id)
+				->willReturn($id === 1
+					? ['announcement_description' => '', 'announcement_title' => 'Announcement 1']
+					: ['announcement_description' => 'Description ' . $id]);
 			$delete = $this->manager->expects(self::once())
 				->method('delete_announcement')
 				->with($id);
