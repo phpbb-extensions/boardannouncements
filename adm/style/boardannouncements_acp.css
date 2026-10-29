@@ -28,7 +28,6 @@
 }
 
 .ba-page-header > div { max-width: 720px; }
-.ba-eyebrow { color: var(--ba-admin-accent) !important; font-size: 11px !important; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px !important; text-transform: uppercase; }
 .ba-back-link { align-items: center; color: var(--ba-admin-muted); display: inline-flex; gap: 7px; margin-bottom: 12px; text-decoration: none; }
 .ba-back-link:hover { color: var(--ba-admin-accent); text-decoration: none; }
 
