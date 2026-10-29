@@ -1,94 +1,118 @@
-<h1>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS') }}</h1>
+{% INCLUDECSS '@phpbb_boardannouncements/boardannouncements_acp.css' %}
 
-<p>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN') }}</p>
+<div class="ba-acp ba-acp-list">
+	<header class="ba-page-header">
+		<div>
+			<h1>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS') }}</h1>
+			<p>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN') }}</p>
+		</div>
+		<a class="ba-button ba-button-primary" href="{{ U_ACTION_ADD }}"><i class="icon fa-plus" aria-hidden="true"></i>{{ lang('BOARD_ANNOUNCEMENTS_ADD') }}</a>
+	</header>
 
-<form id="board_announcement_settings" method="post" action="{{ U_ACTION }}" data-ajax="true">
-	<fieldset>
-		<legend>{{ lang('GENERAL_OPTIONS') }}</legend>
-		<dl>
-			<dt><label for="board_announcements_enable_all">{{ lang('BOARD_ANNOUNCEMENTS_ENABLE_ALL') ~ lang('COLON') }}</label></dt>
-			<dd>
-				<label><input type="radio" class="radio" id="board_announcements_enable_all" name="board_announcements_enable_all" value="1"{% if BOARD_ANNOUNCEMENTS_ENABLED_ALL %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="board_announcements_enable_all" value="0"{% if not BOARD_ANNOUNCEMENTS_ENABLED_ALL %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
-			</dd>
-		</dl>
-		<p class="quick">
-			<input type="submit" id="board_announcements_enable_all_submit" name="board_announcements_enable_all_submit" class="button2" value="{{ lang('SUBMIT') }}">
+	{% if not BOARD_ANNOUNCEMENTS_ENABLED_ALL %}
+		<div class="ba-notice ba-notice-warning" role="status"><i class="icon fa-exclamation-triangle" aria-hidden="true"></i><span>{{ lang('BOARD_ANNOUNCEMENTS_GLOBAL_DISABLED') }}</span></div>
+	{% endif %}
+
+	<section class="ba-card ba-switch-card">
+		<div><h2>{{ lang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH') }}</h2><p>{{ lang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH_EXPLAIN') }}</p></div>
+		<form id="board_announcement_settings" method="post" action="{{ U_ACTION }}" data-ajax="true">
+			<div class="ba-segmented-control">
+				<label><input type="radio" name="board_announcements_enable_all" value="1"{% if BOARD_ANNOUNCEMENTS_ENABLED_ALL %} checked{% endif %}><span>{{ lang('ENABLED') }}</span></label>
+				<label><input type="radio" name="board_announcements_enable_all" value="0"{% if not BOARD_ANNOUNCEMENTS_ENABLED_ALL %} checked{% endif %}><span>{{ lang('DISABLED') }}</span></label>
+			</div>
 			<input type="hidden" name="action" value="settings">
-		</p>
-		{{ S_FORM_TOKEN }}
-	</fieldset>
-</form>
+			<button type="submit" class="ba-button ba-button-secondary">{{ lang('SUBMIT') }}</button>
+			{{ S_FORM_TOKEN }}
+		</form>
+	</section>
 
-<table class="table1 zebra-table">
-	<thead>
-	<tr>
-		<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_DESCRIPTION') }}</th>
-		<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_SHOW_WHERE') }}</th>
-		<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_SHOW_TO') }}</th>
-		<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_CREATED_DATE') }}</th>
-		<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_ENABLED') }}</th>
-		<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_EXPIRY_DATE') }}</th>
-		<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_EXPIRED') }}</th>
-		<th>{{ lang('ACTION') }}</th>
-	</tr>
-	</thead>
-	<tbody>
-	{% for ba in announcements %}
-		<tr>
-			<td>{{ ba.DESCRIPTION }}</td>
-			<td>
-				{% if ba.LOCATIONS is empty %}
-					{{ lang('BOARD_ANNOUNCEMENTS_EVERYWHERE') }}
-				{% else %}
-					{% set has_index = constant('\\phpbb\\boardannouncements\\ext::INDEX_ONLY') in ba.LOCATIONS %}
-					{% set has_forums = ba.LOCATIONS|filter(v => v > 0)|length > 0 %}
-					{% if has_index and has_forums %}
-						{{ lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE') }}, {{ lang('BOARD_ANNOUNCEMENTS_FORUMS') }}
-					{% elseif has_index %}
-						{{ lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE') }}
-					{% elseif has_forums %}
-						{{ lang('BOARD_ANNOUNCEMENTS_FORUMS') }}
-					{% endif %}
-				{% endif %}
-			</td>
-			<td>{% if ba.USERS == constant('\\phpbb\\boardannouncements\\ext::ALL') %}
-					{{ lang('BOARD_ANNOUNCEMENTS_EVERYONE') }}
-				{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::MEMBERS') %}
-					{{ lang('G_REGISTERED') }}
-				{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::GUESTS') %}
-					{{ lang('G_GUESTS') }}
-				{% endif %}
-			</td>
-			<td>{{ ba.CREATED_DATE }}</td>
-			<td>
-				{% if constant('PHPBB_VERSION') starts with '4' %}
-					{{ include('@phpbb_boardannouncements/settings_list_icon_phpbb4.html') }}
-				{% else %}
-					<i class="icon acp-icon acp-icon-{{ ba.S_ENABLED ? 'settings' : 'delete' }} fa-{{ ba.S_ENABLED ? 'check' : 'times' }} fa-fw" title="{{ lang(ba.S_ENABLED ? 'YES' : 'NO') }}"></i>
-				{% endif %}
-			</td>
-			<td>{{ ba.EXPIRY_DATE }}</td>
-			<td>{{ ba.S_EXPIRED ? lang('YES') : lang('NO') }}</td>
-			<td class="actions">
-				<span class="up-disabled" style="display:none;">{{ ICON_MOVE_UP_DISABLED }}</span>
-				<span class="up"><a href="{{ ba.U_MOVE_UP }}" data-ajax="row_up">{{ ICON_MOVE_UP }}</a></span>
-				<span class="down-disabled" style="display:none;">{{ ICON_MOVE_DOWN_DISABLED }}</span>
-				<span class="down"><a href="{{ ba.U_MOVE_DOWN }}" data-ajax="row_down">{{ ICON_MOVE_DOWN }}</a></span>
-				<a href="{{ ba.U_EDIT }}">{{ ICON_EDIT }}</a> <a href="{{ ba.U_DELETE }}" data-ajax="row_delete">{{ ICON_DELETE }}</a>
-			</td>
-		</tr>
-	{% else %}
-		<tr>
-			<td colspan="8" style="text-align: center;">{{ lang('BOARD_ANNOUNCEMENTS_EMPTY') }}</td>
-		</tr>
-	{% endfor %}
-	</tbody>
-</table>
+	<section class="ba-card ba-filter-card" aria-labelledby="ba-filter-title">
+		<form id="board_announcement_filters" method="post" action="{{ U_ACTION }}">
+			<h2 id="ba-filter-title" class="sr-only">{{ lang('FILTER') }}</h2>
+			<label class="ba-search-field">
+				<span class="sr-only">{{ lang('SEARCH') }}</span>
+				<i class="icon fa-search" aria-hidden="true"></i>
+				<input type="search" name="q" value="{{ S_SEARCH_QUERY }}" placeholder="{{ lang('SEARCH') }}" autocomplete="off">
+			</label>
+			<label class="ba-filter-field">
+				<span>{{ lang('BOARD_ANNOUNCEMENTS_STATUS') }}</span>
+				<select name="status">
+					{% for status in ['all', 'active', 'scheduled', 'draft', 'expired', 'archived'] %}
+						<option value="{{ status }}"{% if S_STATUS_FILTER == status %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_STATUS_' ~ status|upper) }}</option>
+					{% endfor %}
+				</select>
+			</label>
+			<button type="submit" class="ba-button ba-button-secondary">{{ lang('FILTER') }}</button>
+			{% if S_FILTERS_ACTIVE %}<a class="ba-clear-link" href="{{ U_ACTION }}">{{ lang('RESET') }}</a>{% endif %}
+		</form>
+		{% if S_FILTERS_ACTIVE %}<p class="ba-filter-note"><i class="icon fa-lock" aria-hidden="true"></i>{{ lang('BOARD_ANNOUNCEMENTS_REORDER_FILTERED') }}</p>{% endif %}
+	</section>
 
-<form id="quick_add_board_announcements" method="post" action="{{ U_ACTION_ADD }}">
-	<fieldset class="quick">
-		<input class="button2" type="submit" value="{{ lang('BOARD_ANNOUNCEMENTS_ADD') }}">
-		{{ S_FORM_TOKEN }}
-	</fieldset>
-</form>
+	<form method="post" action="{{ U_ACTION }}" class="ba-card ba-list-card">
+		<div class="ba-table-wrap">
+			<table class="ba-table board-announcements-list not-responsive">
+				<thead>
+					<tr>
+						<th class="ba-select-cell"><label><input type="checkbox" data-ba-select-all><span class="sr-only">{{ lang('MARK_ALL') }}</span></label></th>
+						<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_DESCRIPTION') }}</th>
+						<th>{{ lang('BOARD_ANNOUNCEMENTS_STATUS') }}</th>
+						<th>{{ lang('BOARD_ANNOUNCEMENTS_TH_SHOW_TO') }}</th>
+						<th>{{ lang('BOARD_ANNOUNCEMENTS_SCHEDULE') }}</th>
+						<th class="ba-actions-heading">{{ lang('ACTION') }}</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for ba in announcements %}
+					<tr>
+						<td class="ba-select-cell" data-label="{{ lang('MARK') }}"><label><input type="checkbox" name="announcement_ids[]" value="{{ ba.ID }}"><span class="sr-only">{{ ba.DESCRIPTION }}</span></label></td>
+						<td class="ba-summary-cell" data-label="{{ lang('BOARD_ANNOUNCEMENTS_TH_DESCRIPTION') }}">
+							<a class="ba-announcement-name" href="{{ ba.U_EDIT }}">{{ ba.DESCRIPTION }}</a>
+							<span class="ba-meta">{{ lang('BOARD_ANNOUNCEMENTS_TONE_' ~ ba.TONE|upper) }}</span>
+						</td>
+						<td data-label="{{ lang('BOARD_ANNOUNCEMENTS_STATUS') }}"><span class="ba-status ba-status--{{ ba.STATUS }}">{{ lang('BOARD_ANNOUNCEMENTS_STATUS_' ~ ba.STATUS|upper) }}</span></td>
+						<td data-label="{{ lang('BOARD_ANNOUNCEMENTS_TH_SHOW_TO') }}">
+							{% if ba.USERS == constant('\\phpbb\\boardannouncements\\ext::ALL') %}{{ lang('BOARD_ANNOUNCEMENTS_EVERYONE') }}
+							{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::MEMBERS') %}{{ lang('G_REGISTERED') }}
+							{% elseif ba.USERS == constant('\\phpbb\\boardannouncements\\ext::GUESTS') %}{{ lang('G_GUESTS') }}
+							{% else %}{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_GROUPS') }}{% endif %}
+						</td>
+						<td class="ba-schedule-cell" data-label="{{ lang('BOARD_ANNOUNCEMENTS_SCHEDULE') }}">
+							<span><i class="icon fa-play" aria-hidden="true"></i>{% if ba.START_DATE %}{{ ba.START_DATE }}{% else %}{{ lang('BOARD_ANNOUNCEMENTS_NOW') }}{% endif %}</span>
+							<span><i class="icon fa-stop" aria-hidden="true"></i>{% if ba.EXPIRY_DATE %}{{ ba.EXPIRY_DATE }}{% else %}{{ lang('BOARD_ANNOUNCEMENTS_NO_END') }}{% endif %}</span>
+						</td>
+						<td class="ba-actions-cell" data-label="{{ lang('ACTION') }}">
+							<div class="ba-action-group">
+								{% if ba.S_MOVE_UP_DISABLED %}<span class="ba-icon-button is-disabled" aria-disabled="true" title="{{ lang('MOVE_UP') }}"><i class="icon fa-arrow-up" aria-hidden="true"></i><span class="sr-only">{{ lang('MOVE_UP') }}</span></span>{% else %}<a class="ba-icon-button" href="{{ ba.U_MOVE_UP }}" title="{{ lang('MOVE_UP') }}"><i class="icon fa-arrow-up" aria-hidden="true"></i><span class="sr-only">{{ lang('MOVE_UP') }}</span></a>{% endif %}
+								{% if ba.S_MOVE_DOWN_DISABLED %}<span class="ba-icon-button is-disabled" aria-disabled="true" title="{{ lang('MOVE_DOWN') }}"><i class="icon fa-arrow-down" aria-hidden="true"></i><span class="sr-only">{{ lang('MOVE_DOWN') }}</span></span>{% else %}<a class="ba-icon-button" href="{{ ba.U_MOVE_DOWN }}" title="{{ lang('MOVE_DOWN') }}"><i class="icon fa-arrow-down" aria-hidden="true"></i><span class="sr-only">{{ lang('MOVE_DOWN') }}</span></a>{% endif %}
+								<a class="ba-icon-button" href="{{ ba.U_EDIT }}" title="{{ lang('EDIT') }}"><i class="icon fa-pencil" aria-hidden="true"></i><span class="sr-only">{{ lang('EDIT') }}</span></a>
+								<a class="ba-icon-button" href="{{ ba.U_DUPLICATE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_DUPLICATE') }}"><i class="icon fa-clone" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_DUPLICATE') }}</span></a>
+								{% if ba.DISMISSABLE %}<a class="ba-icon-button ba-show-again-action" href="{{ ba.U_RESET }}" title="{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}"><i class="icon fa-refresh" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}</span></a>{% else %}<span class="ba-icon-button ba-show-again-action is-disabled" aria-disabled="true" title="{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}"><i class="icon fa-refresh" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}</span></span>{% endif %}
+								{% if ba.STATUS != 'archived' %}<a class="ba-icon-button" href="{{ ba.U_ARCHIVE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}"><i class="icon fa-archive" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}</span></a>{% endif %}
+								{% if ba.STATUS == 'archived' %}<a class="ba-icon-button ba-icon-button-danger" href="{{ ba.U_DELETE }}" title="{{ lang('DELETE') }}"><i class="icon fa-trash" aria-hidden="true"></i><span class="sr-only">{{ lang('DELETE') }}</span></a>{% endif %}
+							</div>
+						</td>
+					</tr>
+				{% else %}
+					<tr><td colspan="6" class="ba-empty"><i class="icon fa-bullhorn" aria-hidden="true"></i><span>{{ lang(S_FILTERS_ACTIVE ? 'BOARD_ANNOUNCEMENTS_FILTER_EMPTY' : 'BOARD_ANNOUNCEMENTS_EMPTY') }}</span></td></tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="ba-bulk-bar">
+			<label for="ba-bulk-action">{{ lang('BOARD_ANNOUNCEMENTS_BULK_ACTION') }}</label>
+			<select id="ba-bulk-action" name="bulk_action">
+				<option value="">{{ lang('SELECT_OPTION') }}</option>
+				<option value="publish">{{ lang('BOARD_ANNOUNCEMENTS_PUBLISH') }}</option>
+				<option value="draft">{{ lang('BOARD_ANNOUNCEMENTS_STATUS_DRAFT') }}</option>
+				<option value="archive">{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}</option>
+				<option value="delete">{{ lang('BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY') }}</option>
+			</select>
+			<input type="hidden" name="action" value="bulk">
+			<button type="submit" class="ba-button ba-button-secondary">{{ lang('SUBMIT') }}</button>
+			{{ S_FORM_TOKEN }}
+		</div>
+	</form>
+</div>
+
+{% INCLUDEJS '@phpbb_boardannouncements/boardannouncements_acp.js' %}

@@ -2,6 +2,10 @@
 
 This is the repository for the development of the phpBB Board Announcements Extension.
 
+Board Announcements provides scheduled, targeted notices for phpBB 3.3 and phpBB 4. Administrators can publish drafts, choose semantic tones, target guests, members, groups, forums, or forum trees, and archive or duplicate notices. Users can dismiss notices, and administrators can show a dismissed notice again to everyone.
+
+Version 2.0 upgrades existing announcements in place. Existing enabled notices become published notices; disabled notices become drafts. Dismissals are stored only in each browser, and existing registered-user dismissal records are removed during upgrade.
+
 [![Build Status](https://github.com/phpbb-extensions/boardannouncements/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbb-extensions/boardannouncements/actions)
 [![codecov](https://codecov.io/gh/phpbb-extensions/boardannouncements/branch/master/graph/badge.svg?token=9laLSqCOgN)](https://codecov.io/gh/phpbb-extensions/boardannouncements)
 
@@ -12,6 +16,8 @@ This is the repository for the development of the phpBB Board Announcements Exte
 3. Navigate in the ACP to `Customise -> Manage extensions`.
 4. Look for `Board Announcements` under the Disabled Extensions list, and click its `Enable` link.
 5. Set up and configure Board Announcements by navigating in the ACP to `Extensions` -> `Board Announcements`.
+
+Grant `Can manage board announcements` under Administrative permissions to staff who should manage notices. Existing Full and Standard Administrator roles receive this permission during upgrade.
 
 ## Uninstall
 

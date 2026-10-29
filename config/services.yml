@@ -1,13 +1,11 @@
 imports:
     - { resource: tables.yml }
-    - { resource: cron.yml }
 
 services:
     phpbb.boardannouncements.listener:
         class: phpbb\boardannouncements\event\listener
         arguments:
             - '@phpbb.boardannouncements.manager'
-            - '@auth'
             - '@config'
             - '@controller.helper'
             - '@language'
@@ -15,6 +13,7 @@ services:
             - '@template'
             - '@user'
             - '%core.php_ext%'
+            - '@phpbb.boardannouncements.visibility'
         tags:
             - { name: event.listener }
 
@@ -25,11 +24,22 @@ services:
             - '@request'
             - '@user'
             - '%core.php_ext%'
+            - '@phpbb.boardannouncements.visibility'
 
     phpbb.boardannouncements.manager:
         class: phpbb\boardannouncements\manager\manager
         arguments:
             - '@phpbb.boardannouncements.nestedset'
+
+    phpbb.boardannouncements.visibility:
+        class: phpbb\boardannouncements\service\visibility
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@request'
+            - '@user'
+            - '@phpbb.boardannouncements.manager'
+            - '@dispatcher'
 
     phpbb.boardannouncements.acp.controller:
         class: phpbb\boardannouncements\controller\acp_controller
@@ -37,6 +47,7 @@ services:
             - '@phpbb.boardannouncements.manager'
             - '@dbal.conn'
             - '@config'
+            - '@group_helper'
             - '@controller.helper'
             - '@language'
             - '@log'
@@ -52,7 +63,9 @@ services:
             - '@dbal.conn'
             - '@phpbb.boardannouncements.table_lock'
             - '%phpbb.board.announcements.tables.announcements%'
-            - '%phpbb.board.announcements.tables.announcements_track%'
+            - '%phpbb.board.announcements.tables.announcement_groups%'
+            - '%tables.user_group%'
+            - '%tables.forums%'
 
     phpbb.boardannouncements.table_lock:
         class: phpbb\lock\db

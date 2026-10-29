@@ -19,6 +19,11 @@ class ext extends \phpbb\extension\base
 	public const ALL = 0;
 	public const MEMBERS = 1;
 	public const GUESTS = 2;
+	public const GROUPS = 3;
+	public const STATE_DRAFT = 'draft';
+	public const STATE_PUBLISHED = 'published';
+	public const STATE_ARCHIVED = 'archived';
+	public const TONES = ['neutral', 'info', 'success', 'warning', 'critical', 'custom'];
 	public const DATE_FORMAT = 'Y-m-d H:i';
 
 	/**
