@@ -432,36 +432,41 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	 * Test encoded Unicode descriptions are decoded when rendered in the ACP
+	 * Test encoded Unicode metadata is decoded when rendered in the ACP
 	 */
-	public function test_unicode_description_rendering()
+	public function test_unicode_metadata_rendering()
 	{
 		$this->login();
 		$this->admin_login();
 
 		$description = 'Unicode 😀 中文 Кириллица announcement';
+		$title = 'Heading 😀 中文 Кириллица';
 		$id = $this->create_announcement([
 			'board_announcements_description' => $description,
+			'board_announcements_title' => $title,
 		]);
 
 		$this->get_db();
-		$sql = 'SELECT announcement_description
+		$sql = 'SELECT announcement_description, announcement_title
 			FROM phpbb_board_announcements
 			WHERE announcement_id = ' . (int) $id;
 		$result = $this->db->sql_query($sql);
-		$stored_description = $this->db->sql_fetchfield('announcement_description');
+		$stored = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		$expected_description = strpos($this->db->get_sql_layer(), 'mssql') === 0
-			? utf8_encode_ncr($description)
-			: utf8_encode_ucr($description);
-		self::assertSame($expected_description, $stored_description);
+		$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
+		$expected_description = $encode_unicode($description);
+		$expected_title = $encode_unicode($title);
+		self::assertSame($expected_description, $stored['announcement_description']);
+		self::assertSame($expected_title, $stored['announcement_title']);
 
 		$crawler = self::request('GET', $this->get_acp_page());
 		self::assertStringContainsString($description, $crawler->filter('table > tbody')->text());
 
 		$crawler = self::request('GET', $this->get_acp_page('add', $id));
 		self::assertSame($description, $crawler->filter('#board_announcements_description')->attr('value'));
+		self::assertSame($title, $crawler->filter('#board_announcements_title')->attr('value'));
+		self::assertSame($title, $crawler->filter('.ba-preview .phpbb-announcement__title')->text());
 
 		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
 		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_CREATED_LOG', $description)), $crawler->text());

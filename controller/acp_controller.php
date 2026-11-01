@@ -313,9 +313,11 @@ class acp_controller
 			}
 
 			// MSSQL requires all Unicode to be encoded; other DBMS only require four-byte Unicode.
-			$data['announcement_description'] = strpos($this->db->get_sql_layer(), 'mssql') === 0
-				? utf8_encode_ncr($data['announcement_description'])
-				: utf8_encode_ucr($data['announcement_description']);
+			$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
+			foreach (['announcement_description', 'announcement_title'] as $field)
+			{
+				$data[$field] = $encode_unicode($data[$field]);
+			}
 			if (utf8_strlen($data['announcement_description']) > 255)
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_DESC_TOO_LONG');

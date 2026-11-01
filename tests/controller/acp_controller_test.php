@@ -746,8 +746,8 @@ class acp_controller_test extends \phpbb_test_case
 			[0, ['add', 0, 'Announcement Text 0', 'Board index', 'ffffff', true, 0, [-1], true, '', false, false, false], false, true, true, false], // submit, board index mode
 			[0, ['add', 0, 'Announcement Text 0', 'No selected location', 'ffffff', true, 0, [], true, '', false, false, false, 'selected'], false, true, true, true], // submit, selected mode requires a location
 			[0, ['add', 0, 'Announcement Text 0', 'Invalid location mode', 'ffffff', true, 0, [], true, '', false, false, false, 'invalid'], false, true, true, true], // submit, invalid location mode
-			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, emoji encoded for storage
-			[0, ['add', 0, 'Announcement Text 0', 'Unicode 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, true, 'mssqlnative'], // submit, all Unicode encoded for MSSQL
+			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Emoji 😀 heading'], false, true, true, false], // submit, emoji encoded for storage
+			[0, ['add', 0, 'Announcement Text 0', 'Unicode 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading 😀 中文 Кириллица'], false, true, true, false, true, 'mssqlnative'], // submit, all Unicode encoded for MSSQL
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, false], // submit, announcement deleted before update
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, false, true], // submit, bad form
@@ -788,16 +788,19 @@ class acp_controller_test extends \phpbb_test_case
 		$selected_locations = array_values(array_filter(array_map('intval', $form[7])));
 		$location_mode = $form[13] ?? (!$selected_locations ? 'everywhere' : (count($selected_locations) === 1 && $selected_locations[0] === \phpbb\boardannouncements\ext::INDEX_ONLY ? 'index' : 'selected'));
 		$expected_locations = json_encode($location_mode === 'index' ? [\phpbb\boardannouncements\ext::INDEX_ONLY] : ($location_mode === 'selected' ? $selected_locations : []));
-		$expected_description = strpos($sql_layer, 'mssql') === 0 ? utf8_encode_ncr($form[3]) : utf8_encode_ucr($form[3]);
+		$encode_unicode = strpos($sql_layer, 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
+		$expected_description = $encode_unicode($form[3]);
+		$expected_title = $encode_unicode($form[14] ?? '');
 		$creation_timestamp = 1234567890;
 		$expected_bgcolor = ltrim($form[4], '#');
 		$expected_flags = ($form[10] ? 0 : OPTION_FLAG_BBCODE)
 			+ ($form[11] ? 0 : OPTION_FLAG_LINKS)
 			+ ($form[12] ? 0 : OPTION_FLAG_SMILIES);
-		$has_expected_data = static function ($data) use ($expected_locations, $expected_description, $expected_bgcolor, $expected_flags, $creation_timestamp)
+		$has_expected_data = static function ($data) use ($expected_locations, $expected_description, $expected_title, $expected_bgcolor, $expected_flags, $creation_timestamp)
 		{
 			return $data['announcement_locations'] === $expected_locations
 				&& $data['announcement_description'] === $expected_description
+				&& $data['announcement_title'] === $expected_title
 				&& $data['announcement_bgcolor'] === $expected_bgcolor
 				&& $data['announcement_flags'] === $expected_flags
 				&& $data['announcement_timestamp'] > $creation_timestamp;
@@ -819,7 +822,7 @@ class acp_controller_test extends \phpbb_test_case
 			'id' => $form[1],
 			'board_announcements_text' => $form[2],
 			'board_announcements_description' => $form[3],
-			'board_announcements_title' => '',
+			'board_announcements_title' => $form[14] ?? '',
 			'board_announcements_bgcolor' => $form[4],
 			'board_announcements_state' => $form[5] ? \phpbb\boardannouncements\ext::STATE_PUBLISHED : \phpbb\boardannouncements\ext::STATE_DRAFT,
 			'board_announcements_tone' => $form[4] === '' ? 'info' : 'custom',
