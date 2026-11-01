@@ -44,6 +44,6 @@ $lang = array_merge($lang, array(
 
 	// ACP Logs
 	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>Ustvarjeno je bilo obvestilo na plošči</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Spremenjene nastavitve obveščanja na tabli</strong>',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Spremenjene nastavitve obveščanja na tabli</strong><br>» %s',
 	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>Obvestilo na plošči je bilo izbrisano</strong><br>» %s',
 ));

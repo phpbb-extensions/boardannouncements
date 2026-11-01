@@ -38,5 +38,6 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
+	'BOARD_ANNOUNCEMENT'		=> 'obvestilo na forumu',
 	'BOARD_ANNOUNCEMENT_CLOSE'		=> 'Zaprite obvestilo',
 ));

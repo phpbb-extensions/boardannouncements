@@ -39,5 +39,6 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
+	'BOARD_ANNOUNCEMENT'		=> 'thông báo diễn đàn',
 	'BOARD_ANNOUNCEMENT_CLOSE'		=> 'Đóng thông báo',
 ));

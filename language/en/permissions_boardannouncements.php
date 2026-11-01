@@ -11,6 +11,11 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
+if (empty($lang) || !is_array($lang))
+{
+	$lang = [];
+}
+
 $lang = array_merge($lang, [
 	'ACL_A_BOARDANNOUNCEMENTS' => 'Can manage board announcements',
 ]);

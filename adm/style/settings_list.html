@@ -30,7 +30,7 @@
 
 	<section class="ba-card ba-filter-card" aria-labelledby="ba-filter-title">
 		<form id="board_announcement_filters" method="post" action="{{ U_ACTION }}">
-			<h2 id="ba-filter-title" class="sr-only">{{ lang('FILTER') }}</h2>
+			<h2 id="ba-filter-title" class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_FILTER') }}</h2>
 			<label class="ba-search-field">
 				<span class="sr-only">{{ lang('SEARCH') }}</span>
 				<i class="icon fa-search" aria-hidden="true"></i>
@@ -44,7 +44,7 @@
 					{% endfor %}
 				</select>
 			</label>
-			<button type="submit" class="ba-button ba-button-secondary">{{ lang('FILTER') }}</button>
+			<button type="submit" class="ba-button ba-button-secondary">{{ lang('BOARD_ANNOUNCEMENTS_FILTER') }}</button>
 			{% if S_FILTERS_ACTIVE %}<a class="ba-clear-link" href="{{ U_ACTION }}">{{ lang('RESET') }}</a>{% endif %}
 		</form>
 		{% if S_FILTERS_ACTIVE %}<p class="ba-filter-note"><i class="icon fa-lock" aria-hidden="true"></i>{{ lang('BOARD_ANNOUNCEMENTS_REORDER_FILTERED') }}</p>{% endif %}
