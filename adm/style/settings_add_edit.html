@@ -43,6 +43,11 @@
 							<div id="color_palette_placeholder" data-orientation="v" data-color-palette="v" data-height="12" data-width="15" data-bbcode="true"></div>
 							<textarea id="board_announcements_text" name="board_announcements_text" rows="12" cols="60" data-bbcode="true">{{ BOARD_ANNOUNCEMENTS_TEXT }}</textarea>
 						</div>
+						<div class="ba-message-options">
+							{% if S_BBCODE_ALLOWED %}<label class="ba-checkbox"><input type="checkbox" name="disable_bbcode"{% if S_BBCODE_DISABLE_CHECKED %} checked{% endif %}><span>{{ lang('DISABLE_BBCODE') }}</span></label>{% endif %}
+							{% if S_SMILIES_ALLOWED %}<label class="ba-checkbox"><input type="checkbox" name="disable_smilies"{% if S_SMILIES_DISABLE_CHECKED %} checked{% endif %}><span>{{ lang('DISABLE_SMILIES') }}</span></label>{% endif %}
+							{% if S_LINKS_ALLOWED %}<label class="ba-checkbox"><input type="checkbox" name="disable_magic_url"{% if S_MAGIC_URL_DISABLE_CHECKED %} checked{% endif %}><span>{{ lang('DISABLE_MAGIC_URL') }}</span></label>{% endif %}
+						</div>
 					</div>
 				</section>
 

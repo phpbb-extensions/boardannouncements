@@ -739,6 +739,7 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		return [
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
+			[0, ['add', 0, 'Announcement Text 0', 'Parsing disabled', 'ABCDEF', true, 0, [''], true, '', true, true, true], false, true, true, false], // submit with parsing disabled
 			[0, ['add', 0, 'Short message', '', 'ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit without a description
 			[0, ['add', 0, 'Announcement Text 0', 'Hash-prefixed color', '#ABCDEF', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit, normalize hash-prefixed color
 			[0, ['add', 0, 'Announcement Text 0', 'Selected locations', 'ffffff', true, 0, [0, -1, 2], true, '', false, false, false], false, true, true, false], // submit, discard location sentinel
@@ -790,11 +791,15 @@ class acp_controller_test extends \phpbb_test_case
 		$expected_description = strpos($sql_layer, 'mssql') === 0 ? utf8_encode_ncr($form[3]) : utf8_encode_ucr($form[3]);
 		$creation_timestamp = 1234567890;
 		$expected_bgcolor = ltrim($form[4], '#');
-		$has_expected_data = static function ($data) use ($expected_locations, $expected_description, $expected_bgcolor, $creation_timestamp)
+		$expected_flags = ($form[10] ? 0 : OPTION_FLAG_BBCODE)
+			+ ($form[11] ? 0 : OPTION_FLAG_LINKS)
+			+ ($form[12] ? 0 : OPTION_FLAG_SMILIES);
+		$has_expected_data = static function ($data) use ($expected_locations, $expected_description, $expected_bgcolor, $expected_flags, $creation_timestamp)
 		{
 			return $data['announcement_locations'] === $expected_locations
 				&& $data['announcement_description'] === $expected_description
 				&& $data['announcement_bgcolor'] === $expected_bgcolor
+				&& $data['announcement_flags'] === $expected_flags
 				&& $data['announcement_timestamp'] > $creation_timestamp;
 		};
 

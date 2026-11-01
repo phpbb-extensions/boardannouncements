@@ -85,6 +85,10 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(1, $crawler->filter('[data-ba-custom-color].is-disabled[aria-disabled="true"]'));
 		self::assertCount(1, $crawler->filter('#board_announcements_bgcolor_picker[disabled]'));
 		self::assertCount(1, $crawler->filter('#board_announcements_bgcolor[disabled]'));
+		self::assertCount(1, $crawler->filter('input[name="disable_bbcode"]'));
+		self::assertCount(1, $crawler->filter('input[name="disable_smilies"]'));
+		self::assertCount(1, $crawler->filter('input[name="disable_magic_url"]'));
+		self::assertCount(0, $crawler->filter('.ba-message-options input:checked'));
 
 		$values = [
 			'board_announcements_state'			=> ext::STATE_PUBLISHED,
@@ -250,6 +254,8 @@ class announcement_test extends \phpbb_functional_test_case
 	{
 		$this->login();
 		$this->admin_login();
+		$this->get_db();
+		$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_flags = 0 WHERE announcement_id = 1');
 
 		// Test editing announcement and preview works
 		$crawler = self::request('GET', $this->get_acp_page('add', 1));
@@ -266,6 +272,17 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertSame('#ff0000', $crawler->filter('#board_announcements_bgcolor_picker')->attr('value'));
 		self::assertCount(1, $crawler->filter('[data-ba-custom-color]:not(.is-disabled)[aria-disabled="false"]'));
 		self::assertCount(0, $crawler->filter('#board_announcements_bgcolor_picker[disabled], #board_announcements_bgcolor[disabled]'));
+		self::assertCount(3, $crawler->filter('.ba-message-options input:checked'));
+
+		// Preview and save preserve disabled parser options.
+		$form = $crawler->selectButton($this->lang('PREVIEW'))->form();
+		$crawler = self::submit($form);
+		self::assertCount(3, $crawler->filter('.ba-message-options input:checked'));
+		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
+		self::submit($form);
+		$result = $this->db->sql_query('SELECT announcement_flags FROM phpbb_board_announcements WHERE announcement_id = 1');
+		self::assertSame(0, (int) $this->db->sql_fetchfield('announcement_flags'));
+		$this->db->sql_freeresult($result);
 
 		// Test deleting the announcement works
 		$crawler = self::request('GET', $this->get_acp_page('delete', 1));
