@@ -1,15 +1,15 @@
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements.css' %}
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements_acp.css' %}
 
-<div class="ba-acp ba-acp-editor">
-	<header class="ba-page-header">
-		<div>
-			<a class="ba-back-link" href="{{ U_BACK }}"><i class="icon fa-arrow-left" aria-hidden="true"></i>{{ lang('BACK') }}</a>
-			<h1>{{ lang(S_EDIT_ANNOUNCEMENT ? 'BOARD_ANNOUNCEMENTS_EDIT' : 'BOARD_ANNOUNCEMENTS_ADD') }}</h1>
-			<p>{{ lang('BOARD_ANNOUNCEMENTS_EDITOR_EXPLAIN') }}</p>
-		</div>
+<div class="ba-acp-page">
+	<header class="ba-page-header ba-page-header-editor">
+		<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
+		<h1>{{ lang(S_EDIT_ANNOUNCEMENT ? 'BOARD_ANNOUNCEMENTS_EDIT' : 'BOARD_ANNOUNCEMENTS_ADD') }}</h1>
+		<p>{{ lang('BOARD_ANNOUNCEMENTS_EDITOR_EXPLAIN') }}</p>
 	</header>
+</div>
 
+<div class="ba-acp ba-acp-editor">
 	{% if ERRORS %}<div class="ba-notice ba-notice-error" role="alert"><i class="icon fa-exclamation-circle" aria-hidden="true"></i><div><strong>{{ lang('WARNING') }}</strong><p>{{ ERRORS }}</p></div></div>{% endif %}
 
 	<form id="add_board_announcements" method="post" action="{{ U_ACTION }}" data-ba-editor data-groups-value="{{ constant('\\phpbb\\boardannouncements\\ext::GROUPS') }}" data-date-format="{{ PICKER_DATE_FORMAT }}" data-user-lang="{{ S_USER_LANG }}">

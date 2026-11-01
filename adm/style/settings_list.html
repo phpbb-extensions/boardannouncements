@@ -1,6 +1,6 @@
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements_acp.css' %}
 
-<div class="ba-acp ba-acp-list">
+<div class="ba-acp-page">
 	<header class="ba-page-header">
 		<div>
 			<h1>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS') }}</h1>
@@ -8,7 +8,9 @@
 		</div>
 		<a class="ba-button ba-button-primary" href="{{ U_ACTION_ADD }}"><i class="icon fa-plus" aria-hidden="true"></i>{{ lang('BOARD_ANNOUNCEMENTS_ADD') }}</a>
 	</header>
+</div>
 
+<div class="ba-acp ba-acp-list">
 	{% if not BOARD_ANNOUNCEMENTS_ENABLED_ALL %}
 		<div class="ba-notice ba-notice-warning" role="status"><i class="icon fa-exclamation-triangle" aria-hidden="true"></i><span>{{ lang('BOARD_ANNOUNCEMENTS_GLOBAL_DISABLED') }}</span></div>
 	{% endif %}
