@@ -144,6 +144,7 @@ class m10_update_data extends \phpbb\db\migration\container_aware_migration
 				'user_id'			=> $row['user_id'],
 			];
 		}
+		$this->db->sql_freeresult($result);
 		$this->db->sql_multi_insert($this->table_prefix . 'board_announcements_track', $sql_ary);
 	}
 }
