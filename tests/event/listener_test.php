@@ -247,6 +247,33 @@ class listener_test extends \phpbb_database_test_case
 		]));
 	}
 
+	public function test_custom_color_uses_accessible_foreground()
+	{
+		$this->db->sql_query("UPDATE phpbb_board_announcements
+			SET announcement_bgcolor = '767676', announcement_enabled = 1
+			WHERE announcement_id = 1");
+		$this->user->data['user_id'] = ANONYMOUS;
+		$this->user->data['is_registered'] = false;
+		$this->user->page['page_name'] = "index.$this->php_ext";
+		$this->config['board_announcements_enable'] = true;
+
+		$this->set_listener();
+		$this->template->expects(self::exactly(2))
+			->method('assign_block_vars')
+			->willReturnCallback(static function ($block, $data) {
+				if ((int) $data['BOARD_ANNOUNCEMENT_ID'] === 1)
+				{
+					self::assertSame('000000', $data['BOARD_ANNOUNCEMENT_TEXTCOLOR']);
+				}
+			});
+		$this->request->method('variable')->willReturnArgument(1);
+
+		$this->listener->display_board_announcements(new \phpbb\event\data([
+			'item' => 'forum',
+			'item_id' => 0,
+		]));
+	}
+
 	public function test_query_forum_id_fallback()
 	{
 		$this->db->sql_query("UPDATE phpbb_board_announcements

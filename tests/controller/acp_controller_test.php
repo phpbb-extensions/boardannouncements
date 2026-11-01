@@ -539,7 +539,8 @@ class acp_controller_test extends \phpbb_test_case
 		return [
 			'invalid' => ['fff', ''],
 			'black' => ['000000', 'ffffff'],
-			'white' => ['ffffff', '111111'],
+			'mid gray' => ['767676', '000000'],
+			'white' => ['ffffff', '000000'],
 		];
 	}
 
@@ -667,7 +668,7 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function test_edit_form_recognizes_legacy_custom_color()
+	public function test_edit_form_recognizes_legacy_custom_color_and_contrast()
 	{
 		$controller = $this->get_controller();
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
@@ -677,13 +678,14 @@ class acp_controller_test extends \phpbb_test_case
 		$this->manager->method('announcement_columns')->willReturn([]);
 		$this->manager->expects(self::once())->method('get_announcement')->with(1)->willReturn([
 			'announcement_id' => 1,
-			'announcement_bgcolor' => 'abcdef',
+			'announcement_bgcolor' => '767676',
 		]);
 		$this->manager->expects(self::once())->method('get_announcement_groups')->with(1)->willReturn([]);
 		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(static function ($data) {
 			return $data['BOARD_ANNOUNCEMENTS_TONE'] === 'custom'
-				&& $data['BOARD_ANNOUNCEMENTS_BGCOLOR'] === 'abcdef'
-				&& $data['BOARD_ANNOUNCEMENTS_COLOR_PICKER'] === '#abcdef';
+				&& $data['BOARD_ANNOUNCEMENTS_BGCOLOR'] === '767676'
+				&& $data['BOARD_ANNOUNCEMENTS_COLOR_PICKER'] === '#767676'
+				&& $data['BOARD_ANNOUNCEMENTS_TEXTCOLOR'] === '000000';
 		}));
 
 		$controller->mode_manage();
