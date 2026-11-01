@@ -74,6 +74,20 @@ class visibility_test extends \phpbb_test_case
 		self::assertFalse($this->visibility->is_dismissed($row));
 	}
 
+	public function test_dismissal_cookie_only_hides_dismissable_announcements()
+	{
+		$row = $this->announcement();
+		$this->request->expects(self::once())
+			->method('variable')
+			->with('phpbb_ba_1', 0, false, request_interface::COOKIE)
+			->willReturn(3);
+
+		self::assertFalse($this->visibility->is_visible($row, 0));
+
+		$row['announcement_dismissable'] = 0;
+		self::assertTrue($this->visibility->is_visible($row, 0));
+	}
+
 	public function test_visibility_event_can_override_result()
 	{
 		$dispatcher = new \phpbb\event\dispatcher();
@@ -98,6 +112,7 @@ class visibility_test extends \phpbb_test_case
 			'announcement_users' => ext::ALL,
 			'announcement_locations' => '',
 			'announcement_include_children' => 0,
+			'announcement_dismissable' => 1,
 			'announcement_revision' => 3,
 		];
 	}

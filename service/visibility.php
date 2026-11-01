@@ -35,7 +35,7 @@ class visibility
 		$visible = $this->is_active($announcement)
 			&& $this->matches_audience($announcement)
 			&& $this->matches_location($announcement, $location)
-			&& (!$check_dismissal || !$this->is_dismissed($announcement));
+			&& (!$check_dismissal || empty($announcement['announcement_dismissable']) || !$this->is_dismissed($announcement));
 		if ($this->dispatcher)
 		{
 			/**

@@ -245,6 +245,19 @@ class announcement_test extends \phpbb_functional_test_case
 		self::request('POST', 'app.php/boardannouncements/close/1?hash=' . $hash . '&location=' . ext::INDEX_ONLY . '&sid=' . $this->sid);
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+
+		$this->get_db();
+		$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 0 WHERE announcement_id = 1');
+		try
+		{
+			$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+			self::assertCount(1, $crawler->filter('#phpbb_announcement_1'));
+			self::assertCount(0, $crawler->filter('#phpbb_announcement_1 .phpbb-announcement__dismiss-form'));
+		}
+		finally
+		{
+			$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 1 WHERE announcement_id = 1');
+		}
 	}
 
 	/**
