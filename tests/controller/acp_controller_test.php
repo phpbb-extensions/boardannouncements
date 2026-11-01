@@ -522,28 +522,6 @@ class acp_controller_test extends \phpbb_test_case
 		];
 	}
 
-	/**
-	 * @dataProvider contrast_color_data
-	 */
-	public function test_contrast_color($color, $expected)
-	{
-		$controller = $this->get_controller();
-		$method = new \ReflectionMethod($controller, 'contrast_color');
-		$method->setAccessible(true);
-
-		self::assertSame($expected, $method->invoke($controller, $color));
-	}
-
-	public function contrast_color_data()
-	{
-		return [
-			'invalid' => ['fff', ''],
-			'black' => ['000000', 'ffffff'],
-			'mid gray' => ['767676', '000000'],
-			'white' => ['ffffff', '000000'],
-		];
-	}
-
 	public function test_parse_date_reports_invalid_input()
 	{
 		$controller = $this->get_controller();

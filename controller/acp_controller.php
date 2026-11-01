@@ -11,6 +11,7 @@
 namespace phpbb\boardannouncements\controller;
 
 use phpbb\boardannouncements\ext;
+use phpbb\boardannouncements\helper\color;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
@@ -424,7 +425,7 @@ class acp_controller
 			'BOARD_ANNOUNCEMENTS_START'		=> $data['announcement_start'] ? $this->user->format_date($data['announcement_start'], ext::DATE_FORMAT) : '',
 			'BOARD_ANNOUNCEMENTS_BGCOLOR'	=> $data['announcement_bgcolor'],
 			'BOARD_ANNOUNCEMENTS_COLOR_PICKER' => '#' . ($data['announcement_bgcolor'] ?: 'e8f1fa'),
-			'BOARD_ANNOUNCEMENTS_TEXTCOLOR' => $this->contrast_color($data['announcement_bgcolor']),
+			'BOARD_ANNOUNCEMENTS_TEXTCOLOR' => color::contrast_color($data['announcement_bgcolor']),
 			'BOARD_ANNOUNCEMENTS_TONE'		=> $data['announcement_tone'],
 			'BOARD_ANNOUNCEMENTS_STATE'		=> $data['announcement_state'],
 			'BOARD_ANNOUNCEMENTS_GROUPS'	=> $this->get_group_options($selected_groups),
@@ -826,22 +827,6 @@ class acp_controller
 			$errors[] = $this->language->lang($error_key);
 		}
 		return $timestamp;
-	}
-
-	protected function contrast_color($hex)
-	{
-		if (!preg_match('/\A[0-9a-f]{6}\z/i', $hex))
-		{
-			return '';
-		}
-		$channels = [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
-		foreach ($channels as &$channel)
-		{
-			$channel /= 255;
-			$channel = $channel <= 0.04045 ? $channel / 12.92 : pow(($channel + 0.055) / 1.055, 2.4);
-		}
-		$luminance = 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
-		return $luminance > 0.179 ? '000000' : 'ffffff';
 	}
 
 	protected function get_group_options(array $selected)

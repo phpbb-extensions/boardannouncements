@@ -11,6 +11,7 @@
 namespace phpbb\boardannouncements\event;
 
 use phpbb\boardannouncements\ext;
+use phpbb\boardannouncements\helper\color;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
@@ -135,7 +136,7 @@ class listener implements EventSubscriberInterface
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $data['announcement_dismissable'],
 				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_flags']),
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $data['announcement_bgcolor'],
-				'BOARD_ANNOUNCEMENT_TEXTCOLOR'	=> $this->contrast_color($data['announcement_bgcolor']),
+				'BOARD_ANNOUNCEMENT_TEXTCOLOR'	=> color::contrast_color($data['announcement_bgcolor']),
 				'BOARD_ANNOUNCEMENT_LOCATION'	=> $this->location,
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
 					'id'		=> (int) $data['announcement_id'],
@@ -144,22 +145,6 @@ class listener implements EventSubscriberInterface
 				]),
 			]);
 		}
-	}
-
-	protected function contrast_color($hex)
-	{
-		if (!preg_match('/\A[0-9a-f]{6}\z/i', $hex))
-		{
-			return '';
-		}
-		$channels = [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
-		foreach ($channels as &$channel)
-		{
-			$channel /= 255;
-			$channel = $channel <= 0.04045 ? $channel / 12.92 : pow(($channel + 0.055) / 1.055, 2.4);
-		}
-		$luminance = 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
-		return $luminance > 0.179 ? '000000' : 'ffffff';
 	}
 
 	/**
