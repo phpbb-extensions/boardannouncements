@@ -5,7 +5,8 @@
 	box-sizing: border-box;
 	position: relative;
 	margin: 12px 0;
-	padding: 14px 52px 14px 16px;
+	padding-block: 14px;
+	padding-inline: 16px 52px;
 	border: 1px solid var(--ba-accent);
 	border-color: color-mix(in srgb, var(--ba-accent) 45%, transparent);
 	border-inline-start: 4px solid var(--ba-accent);
@@ -47,7 +48,7 @@
 .phpbb-announcement__dismiss:focus-visible { opacity: 1; outline: 3px solid var(--ba-accent); outline-offset: 1px; }
 
 @media (max-width: 500px) {
-	.phpbb-announcement { margin-block: 8px; padding: 12px 48px 12px 12px; }
+	.phpbb-announcement { margin-block: 8px; padding-block: 12px; padding-inline: 12px 48px; }
 }
 
 @media (forced-colors: active) {
