@@ -27,6 +27,9 @@ class nestedset extends \phpbb\tree\nestedset
 	/** @var array */
 	protected $descendant_cache = [];
 
+	/** @var array */
+	protected $user_group_announcements = [];
+
 	/**
 	 * Construct
 	 *
@@ -95,6 +98,7 @@ class nestedset extends \phpbb\tree\nestedset
 
 	public function set_announcement_groups($item_id, array $group_ids)
 	{
+		$this->user_group_announcements = [];
 		$this->db->sql_query('DELETE FROM ' . $this->groups_table . ' WHERE announcement_id = ' . (int) $item_id);
 		$rows = [];
 		foreach (array_unique(array_map('intval', $group_ids)) as $group_id)
@@ -112,17 +116,21 @@ class nestedset extends \phpbb\tree\nestedset
 
 	public function user_matches_groups($item_id, $user_id)
 	{
-		$sql = 'SELECT 1 AS matched
-			FROM ' . $this->groups_table . ' ag
-			INNER JOIN ' . $this->user_group_table . ' ug ON ug.group_id = ag.group_id
-			WHERE ag.announcement_id = ' . (int) $item_id . '
-				AND ug.user_id = ' . (int) $user_id . '
-				AND ug.user_pending = 0';
-		$result = $this->db->sql_query_limit($sql, 1);
-		$matched = (bool) $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
+		$user_id = (int) $user_id;
+		if (!isset($this->user_group_announcements[$user_id]))
+		{
+			$sql = 'SELECT DISTINCT ag.announcement_id
+				FROM ' . $this->groups_table . ' ag
+				INNER JOIN ' . $this->user_group_table . ' ug ON ug.group_id = ag.group_id
+				WHERE ug.user_id = ' . $user_id . '
+					AND ug.user_pending = 0';
+			$result = $this->db->sql_query($sql);
+			$announcement_ids = array_map('intval', array_column($this->db->sql_fetchrowset($result), 'announcement_id'));
+			$this->db->sql_freeresult($result);
+			$this->user_group_announcements[$user_id] = array_fill_keys($announcement_ids, true);
+		}
 
-		return $matched;
+		return isset($this->user_group_announcements[$user_id][(int) $item_id]);
 	}
 
 	public function location_matches_descendant($location, array $selected)

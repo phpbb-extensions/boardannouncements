@@ -30,6 +30,32 @@ class manager_targeting_test extends manager_base
 		self::assertSame([], $this->manager->get_announcement_groups(1));
 	}
 
+	public function test_group_membership_is_batched_per_user()
+	{
+		$this->manager->set_announcement_groups(1, [10]);
+		$this->manager->set_announcement_groups(2, [10]);
+
+		$query_count = $this->db->sql_num_queries();
+		self::assertTrue($this->manager->user_matches_groups(1, 100));
+		self::assertTrue($this->manager->user_matches_groups(2, 100));
+		self::assertFalse($this->manager->user_matches_groups(3, 100));
+		self::assertSame($query_count + 1, $this->db->sql_num_queries());
+
+		self::assertFalse($this->manager->user_matches_groups(1, 102));
+		self::assertSame($query_count + 2, $this->db->sql_num_queries());
+	}
+
+	public function test_group_mapping_change_invalidates_membership_cache()
+	{
+		$this->manager->set_announcement_groups(1, [10]);
+		self::assertTrue($this->manager->user_matches_groups(1, 100));
+
+		$this->manager->set_announcement_groups(1, [20]);
+		$query_count = $this->db->sql_num_queries();
+		self::assertFalse($this->manager->user_matches_groups(1, 100));
+		self::assertSame($query_count + 1, $this->db->sql_num_queries());
+	}
+
 	public function test_descendant_matching_and_cache()
 	{
 		self::assertTrue($this->manager->location_matches_descendant(11, [10]));
