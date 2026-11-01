@@ -66,12 +66,13 @@ class visibility
 	{
 		$audience = (int) $announcement['announcement_users'];
 		$is_registered = !empty($this->user->data['is_registered']);
-		if (($audience === ext::MEMBERS && !$is_registered) || ($audience === ext::GUESTS && $is_registered))
+		$is_bot = !empty($this->user->data['is_bot']);
+		if (($audience === ext::MEMBERS && !$is_registered) || ($audience === ext::GUESTS && ($is_registered || $is_bot)))
 		{
 			return false;
 		}
 
-		return $audience !== ext::GROUPS || ($is_registered && $this->manager->user_matches_groups($announcement['announcement_id'], $this->user->data['user_id']));
+		return $audience !== ext::GROUPS || $this->manager->user_matches_groups($announcement['announcement_id'], $this->user->data['user_id']);
 	}
 
 	public function matches_location(array $announcement, $location)

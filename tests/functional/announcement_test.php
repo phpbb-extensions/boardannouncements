@@ -418,13 +418,17 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	 * Test bots receive guest announcements, not registered-user announcements
+	 * Test bots receive announcements for everyone or selected bot groups only
 	 */
 	public function test_bot_audience()
 	{
 		$this->login();
 		$this->admin_login();
 
+		$everyone_id = $this->create_announcement([
+			'board_announcements_users' => ext::ALL,
+			'board_announcements_description' => 'Everyone announcement',
+		]);
 		$members_id = $this->create_announcement([
 			'board_announcements_users' => ext::MEMBERS,
 			'board_announcements_description' => 'Members announcement',
@@ -433,13 +437,27 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_users' => ext::GUESTS,
 			'board_announcements_description' => 'Guests announcement',
 		]);
+		$this->get_db();
+		$sql = "SELECT group_id
+			FROM phpbb_groups
+			WHERE group_name = 'BOTS'";
+		$result = $this->db->sql_query($sql);
+		$bots_group_id = (int) $this->db->sql_fetchfield('group_id');
+		$this->db->sql_freeresult($result);
+		$bots_id = $this->create_announcement([
+			'board_announcements_users' => ext::GROUPS,
+			'board_announcements_groups' => [$bots_group_id],
+			'board_announcements_description' => 'Bots announcement',
+		]);
 
 		self::$client->restart();
 		self::$client->setHeader('User-Agent', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
 		$crawler = self::request('GET', 'index.php');
 
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everyone_id));
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $members_id));
-		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $guests_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $guests_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $bots_id));
 
 		self::$client->restart();
 	}
@@ -518,23 +536,26 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_start'			=> '',
 			'board_announcements_dismiss'		=> false,
 			'board_announcements_users'			=> 0,
+			'board_announcements_groups'		=> [],
 			'board_announcements_locations'		=> [],
 			'board_announcements_bgcolor'		=> '',
 			'board_announcements_expiry'		=> '',
 			'board_announcements_description'	=> 'Test announcement',
 			'board_announcements_text'			=> 'This is a board announcement test.',
 		], $data);
+		$groups = $values['board_announcements_groups'];
 		$locations = $values['board_announcements_locations'];
 		$selected_locations = array_values(array_filter(array_map('intval', $locations)));
 		$values['board_announcements_location_mode'] = !$selected_locations
 			? 'everywhere'
 			: (count($selected_locations) === 1 && $selected_locations[0] === ext::INDEX_ONLY ? 'index' : 'selected');
 		$bgcolor = $values['board_announcements_bgcolor'];
-		unset($values['board_announcements_locations'], $values['board_announcements_bgcolor']);
+		unset($values['board_announcements_groups'], $values['board_announcements_locations'], $values['board_announcements_bgcolor']);
 		$form->setValues($values);
 
 		// DomCrawler does not combine checkbox fields sharing an array name.
 		$post = $form->getPhpValues();
+		$post['board_announcements_groups'] = $groups;
 		$post['board_announcements_locations'] = $locations;
 		if ($values['board_announcements_tone'] === 'custom')
 		{

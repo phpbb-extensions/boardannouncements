@@ -63,6 +63,55 @@ class visibility_test extends \phpbb_test_case
 		self::assertTrue($this->visibility->is_visible($row, 11, false));
 	}
 
+	/**
+	 * @dataProvider audience_data
+	 */
+	public function test_audience($is_registered, $is_bot, $audience, $expected)
+	{
+		$this->user->data['is_registered'] = $is_registered;
+		$this->user->data['is_bot'] = $is_bot;
+		$row = $this->announcement();
+		$row['announcement_users'] = $audience;
+
+		self::assertSame($expected, $this->visibility->matches_audience($row));
+	}
+
+	public function audience_data()
+	{
+		return [
+			'registered sees everyone' => [true, false, ext::ALL, true],
+			'registered sees members' => [true, false, ext::MEMBERS, true],
+			'registered does not see guests' => [true, false, ext::GUESTS, false],
+			'anonymous sees everyone' => [false, false, ext::ALL, true],
+			'anonymous does not see members' => [false, false, ext::MEMBERS, false],
+			'anonymous sees guests' => [false, false, ext::GUESTS, true],
+			'bot sees everyone' => [false, true, ext::ALL, true],
+			'bot does not see members' => [false, true, ext::MEMBERS, false],
+			'bot does not see guests' => [false, true, ext::GUESTS, false],
+		];
+	}
+
+	/**
+	 * @dataProvider bot_group_membership_data
+	 */
+	public function test_bot_group_audience_uses_membership($matches, $expected)
+	{
+		$this->user->data = ['user_id' => 9, 'is_registered' => false, 'is_bot' => true];
+		$row = $this->announcement();
+		$row['announcement_users'] = ext::GROUPS;
+		$this->manager->expects(self::once())->method('user_matches_groups')->with(1, 9)->willReturn($matches);
+
+		self::assertSame($expected, $this->visibility->matches_audience($row));
+	}
+
+	public function bot_group_membership_data()
+	{
+		return [
+			'member' => [true, true],
+			'non-member' => [false, false],
+		];
+	}
+
 	public function test_guest_cookie_reset_generation()
 	{
 		$row = $this->announcement();
