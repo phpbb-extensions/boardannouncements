@@ -552,7 +552,15 @@ class acp_controller
 			if ($bulk_action === 'delete')
 			{
 				$announcement = $this->manager->get_announcement($id);
-				if ($this->manager->delete_announcement($id))
+				try
+				{
+					$success = $this->manager->delete_announcement($id);
+				}
+				catch (\OutOfBoundsException $e)
+				{
+					continue;
+				}
+				if ($success)
 				{
 					$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_list_label(array_replace($this->announcement_defaults(), $announcement)));
 				}

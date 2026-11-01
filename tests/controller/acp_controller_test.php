@@ -1099,6 +1099,39 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
+	public function test_bulk_delete_skips_missing_announcements()
+	{
+		self::$valid_form = true;
+		self::$confirm = true;
+		$controller = $this->get_controller();
+		$this->setExpectedTriggerError(E_USER_NOTICE, 'BOARD_ANNOUNCEMENTS_BULK_UPDATED');
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => 'bulk', 'announcement_ids' => [3, 5, 7], 'bulk_action' => 'delete'][$name] ?? $default;
+		});
+		$this->manager->expects(self::exactly(3))->method('get_announcement')
+			->withConsecutive([3], [5], [7])
+			->willReturnOnConsecutiveCalls(
+				['announcement_description' => '', 'announcement_title' => 'First title'],
+				[],
+				['announcement_description' => 'Third']
+			);
+		$this->manager->expects(self::exactly(3))->method('delete_announcement')
+			->withConsecutive([3], [5], [7])
+			->willReturnCallback(static function ($id) {
+				if ($id === 5)
+				{
+					throw new \OutOfBoundsException('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
+				}
+				return true;
+			});
+		$this->log->expects(self::exactly(2))->method('add')->withConsecutive(
+			['admin', 2, self::anything(), 'BOARD_ANNOUNCEMENTS_DELETED_LOG', self::anything(), ['First title']],
+			['admin', 2, self::anything(), 'BOARD_ANNOUNCEMENTS_DELETED_LOG', self::anything(), ['Third']]
+		);
+
+		$controller->mode_manage();
+	}
+
 	public function test_bulk_delete_waits_for_confirmation()
 	{
 		self::$valid_form = true;
