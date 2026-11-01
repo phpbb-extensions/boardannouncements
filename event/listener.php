@@ -92,6 +92,7 @@ class listener implements EventSubscriberInterface
 		return [
 			'core.page_header_after' => 'display_board_announcements',
 			'core.posting_modify_row_data' => 'set_posting_location',
+			'core.permissions' => 'set_permissions',
 		];
 	}
 
@@ -171,6 +172,20 @@ class listener implements EventSubscriberInterface
 	public function set_posting_location($event)
 	{
 		$this->location = (int) $event['forum_id'];
+	}
+
+	/**
+	 * Register the administrative permission in ACP permission editors.
+	 *
+	 * @param \phpbb\event\data $event Event data
+	 * @return void
+	 */
+	public function set_permissions($event)
+	{
+		$event->update_subarray('permissions', 'a_boardannouncements', [
+			'lang' => 'ACL_A_BOARDANNOUNCEMENTS',
+			'cat' => 'misc',
+		]);
 	}
 
 	/**

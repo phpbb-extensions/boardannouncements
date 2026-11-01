@@ -169,7 +169,25 @@ class listener_test extends \phpbb_database_test_case
 		self::assertEquals([
 			'core.page_header_after',
 			'core.posting_modify_row_data',
+			'core.permissions',
 		], array_keys(\phpbb\boardannouncements\event\listener::getSubscribedEvents()));
+	}
+
+	public function test_set_permissions()
+	{
+		$this->set_listener();
+		$event = new \phpbb\event\data([
+			'permissions' => [
+				'a_existing' => ['lang' => 'ACL_A_EXISTING', 'cat' => 'settings'],
+			],
+		]);
+
+		$this->listener->set_permissions($event);
+
+		self::assertSame([
+			'a_existing' => ['lang' => 'ACL_A_EXISTING', 'cat' => 'settings'],
+			'a_boardannouncements' => ['lang' => 'ACL_A_BOARDANNOUNCEMENTS', 'cat' => 'misc'],
+		], $event['permissions']);
 	}
 
 	/**
