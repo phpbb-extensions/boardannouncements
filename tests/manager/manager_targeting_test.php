@@ -58,10 +58,19 @@ class manager_targeting_test extends manager_base
 
 	public function test_descendant_matching_and_cache()
 	{
+		$query_count = $this->db->sql_num_queries();
 		self::assertTrue($this->manager->location_matches_descendant(11, [10]));
-		self::assertFalse($this->manager->location_matches_descendant(12, [10]));
+		self::assertSame($query_count + 1, $this->db->sql_num_queries());
+
+		self::assertFalse($this->manager->location_matches_descendant(11, [12]));
+		self::assertSame($query_count + 1, $this->db->sql_num_queries());
+
 		self::assertFalse($this->manager->location_matches_descendant(0, [10]));
 		self::assertFalse($this->manager->location_matches_descendant(11, []));
+		self::assertSame($query_count + 1, $this->db->sql_num_queries());
+
+		self::assertFalse($this->manager->location_matches_descendant(12, [10]));
+		self::assertSame($query_count + 2, $this->db->sql_num_queries());
 
 		$this->db->sql_query('UPDATE phpbb_forums SET left_id = 7, right_id = 8 WHERE forum_id = 11');
 		self::assertTrue($this->manager->location_matches_descendant(11, [10]));

@@ -25,7 +25,7 @@ class nestedset extends \phpbb\tree\nestedset
 	protected $forums_table;
 
 	/** @var array */
-	protected $descendant_cache = [];
+	protected $ancestor_cache = [];
 
 	/** @var array */
 	protected $user_group_announcements = [];
@@ -135,6 +135,7 @@ class nestedset extends \phpbb\tree\nestedset
 
 	public function location_matches_descendant($location, array $selected)
 	{
+		$location = (int) $location;
 		$selected = array_values(array_filter(array_map('intval', $selected), static function ($id) {
 			return $id > 0;
 		}));
@@ -143,22 +144,27 @@ class nestedset extends \phpbb\tree\nestedset
 			return false;
 		}
 
-		$key = (int) $location . ':' . implode(',', $selected);
-		if (isset($this->descendant_cache[$key]))
+		if (!isset($this->ancestor_cache[$location]))
 		{
-			return $this->descendant_cache[$key];
+			$sql = 'SELECT parent.forum_id
+				FROM ' . $this->forums_table . ' child, ' . $this->forums_table . ' parent
+				WHERE child.forum_id = ' . $location . '
+					AND child.left_id > parent.left_id
+					AND child.right_id < parent.right_id';
+			$result = $this->db->sql_query($sql);
+			$ancestor_ids = array_map('intval', array_column($this->db->sql_fetchrowset($result), 'forum_id'));
+			$this->db->sql_freeresult($result);
+			$this->ancestor_cache[$location] = array_fill_keys($ancestor_ids, true);
 		}
 
-		$sql = 'SELECT 1 AS matched
-			FROM ' . $this->forums_table . ' child, ' . $this->forums_table . ' parent
-			WHERE child.forum_id = ' . (int) $location . '
-				AND ' . $this->db->sql_in_set('parent.forum_id', $selected) . '
-				AND child.left_id > parent.left_id
-				AND child.right_id < parent.right_id';
-		$result = $this->db->sql_query_limit($sql, 1);
-		$matched = (bool) $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
+		foreach ($selected as $forum_id)
+		{
+			if (isset($this->ancestor_cache[$location][$forum_id]))
+			{
+				return true;
+			}
+		}
 
-		return $this->descendant_cache[$key] = $matched;
+		return false;
 	}
 }
