@@ -16,7 +16,7 @@
 .ba-acp *, .ba-acp *::before, .ba-acp *::after { box-sizing: border-box; }
 .ba-acp h1, .ba-acp h2, .ba-acp p { margin-top: 0; }
 .ba-acp h1 { color: #172536; font-size: 26px; line-height: 1.2; margin-bottom: 6px; }
-.ba-acp h2 { color: #26384a; font-size: 16px; line-height: 1.25; margin: 0; }
+.ba-acp h2:not(.phpbb-announcement__title) { color: #26384a; font-size: 16px; line-height: 1.25; margin: 0; }
 .ba-acp p { color: var(--ba-admin-muted); font-size: 13px; margin-bottom: 0; }
 
 .ba-page-header {
