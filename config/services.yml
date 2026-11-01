@@ -39,7 +39,6 @@ services:
             - '@request'
             - '@user'
             - '@phpbb.boardannouncements.manager'
-            - '@dispatcher'
 
     phpbb.boardannouncements.acp.controller:
         class: phpbb\boardannouncements\controller\acp_controller

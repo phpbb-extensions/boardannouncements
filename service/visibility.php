@@ -18,39 +18,22 @@ class visibility
 	protected $request;
 	protected $user;
 	protected $manager;
-	protected $dispatcher;
 
-	public function __construct($auth, $config, $request, $user, $manager, $dispatcher = null)
+	public function __construct($auth, $config, $request, $user, $manager)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
 		$this->request = $request;
 		$this->user = $user;
 		$this->manager = $manager;
-		$this->dispatcher = $dispatcher;
 	}
 
 	public function is_visible(array $announcement, $location, $check_dismissal = true)
 	{
-		$visible = $this->is_active($announcement)
+		return $this->is_active($announcement)
 			&& $this->matches_audience($announcement)
 			&& $this->matches_location($announcement, $location)
 			&& (!$check_dismissal || empty($announcement['announcement_dismissable']) || !$this->is_dismissed($announcement));
-		if ($this->dispatcher)
-		{
-			/**
-			 * Change whether an announcement is visible for current request.
-			 *
-			 * @event phpbb.boardannouncements.visibility
-			 * @var array announcement Announcement row
-			 * @var int location Current forum or index identifier
-			 * @var bool visible Calculated visibility
-			 * @since 2.0.0
-			 */
-			$vars = ['announcement', 'location', 'visible'];
-			extract($this->dispatcher->trigger_event('phpbb.boardannouncements.visibility', compact($vars)));
-		}
-		return (bool) $visible;
 	}
 
 	public function is_active(array $announcement, $now = null)
