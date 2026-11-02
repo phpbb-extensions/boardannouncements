@@ -41,8 +41,6 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SETTINGS'			=> 'Board announcements settings',
 	'BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN'	=> 'Here you can create and manage your board’s announcements.',
 
-
-
 	'BOARD_ANNOUNCEMENTS_DESC'				=> 'Description',
 	'BOARD_ANNOUNCEMENTS_DESC_EXPLAIN'		=> 'A short description for this announcement. This will only be visible here in the ACP to help identify this announcement.',
 	'BOARD_ANNOUNCEMENTS_DESC_TOO_LONG'		=> 'Description is too long. Some special characters require additional storage.',
@@ -60,7 +58,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BGCOLOR_INVALID'	=> 'Background colour must be a six-character hexadecimal colour code.',
 
 	'BOARD_ANNOUNCEMENTS_EXPIRY'			=> 'Expiry date',
-	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Set the date the announcement will expire and become disabled. Leave this field blank if you do not want the announcement to expire.',
+	'BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN'	=> 'Leave blank to prevent the announcement from expiring.',
 	'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID'	=> 'The expiry date was invalid or has already expired.',
 
 	'BOARD_ANNOUNCEMENTS_TEXT_INVALID'		=> 'Board announcement contains no message',
@@ -104,7 +102,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_SCHEDULE_BEHAVIOR'	=> 'Schedule and behaviour',
 	'BOARD_ANNOUNCEMENTS_SCHEDULE'			=> 'Schedule',
 	'BOARD_ANNOUNCEMENTS_START'				=> 'Start date',
-	'BOARD_ANNOUNCEMENTS_START_EXPLAIN'		=> 'Leave blank to begin showing the announcement immediately.',
+	'BOARD_ANNOUNCEMENTS_START_EXPLAIN'		=> 'Leave blank to show a published announcement immediately.',
 	'BOARD_ANNOUNCEMENTS_START_INVALID'		=> 'Start date is invalid.',
 	'BOARD_ANNOUNCEMENTS_FILTER'			=> 'Filter',
 	'BOARD_ANNOUNCEMENTS_STATUS'			=> 'Status',
