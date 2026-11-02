@@ -206,6 +206,14 @@ label.ba-filter-field { display: flex; flex-direction: column; font-size: 11px; 
 	gap: 5px;
 	margin: 0;
 }
+/* begin abbc3 adjustments */
+.ba-posting-tools #abbc3_buttons ~ #format-buttons {
+	display: none;
+}
+#main .ba-posting-tools #abbc3_buttons {
+	margin: 0;
+}
+/* end abbc3 adjustments */
 .ba-posting-tools [id="format-buttons"] .button2,
 .ba-posting-tools [id="format-buttons"] select {
 	appearance: none;
