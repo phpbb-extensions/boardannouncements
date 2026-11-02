@@ -17,19 +17,74 @@
 	line-height: 1.5;
 }
 
-.phpbb-announcement--neutral { --ba-background: #f1f2f3; --ba-foreground: #25282b; --ba-accent: #687078; }
-.phpbb-announcement--success { --ba-background: #e6f5eb; --ba-foreground: #163d23; --ba-accent: #298247; }
-.phpbb-announcement--warning { --ba-background: #fff4d6; --ba-foreground: #4c3500; --ba-accent: #b47700; }
-.phpbb-announcement--critical { --ba-background: #fae7e7; --ba-foreground: #511b1b; --ba-accent: #bd3434; }
-.phpbb-announcement--custom { background: var(--ba-background); color: var(--ba-foreground); }
-.phpbb-announcement__title { margin: 0 0 4px; color: inherit; font-size: 1.15em; line-height: 1.35; }
-.phpbb-announcement__message { overflow-wrap: anywhere; }
-.phpbb-announcement__message > :first-child { margin-top: 0; }
-.phpbb-announcement__message > :last-child { margin-bottom: 0; }
-.phpbb-announcement__message .postimage { box-sizing: border-box; max-width: 100%; height: auto; }
+.phpbb-announcement--neutral {
+	--ba-background: #f1f2f3;
+	--ba-foreground: #25282b;
+	--ba-accent: #687078;
+}
+
+.phpbb-announcement--success {
+	--ba-background: #e6f5eb;
+	--ba-foreground: #163d23;
+	--ba-accent: #298247;
+}
+
+.phpbb-announcement--warning {
+	--ba-background: #fff4d6;
+	--ba-foreground: #4c3500;
+	--ba-accent: #b47700;
+}
+
+.phpbb-announcement--critical {
+	--ba-background: #fae7e7;
+	--ba-foreground: #511b1b;
+	--ba-accent: #bd3434;
+}
+
+.phpbb-announcement--custom {
+	background: var(--ba-background);
+	color: var(--ba-foreground);
+}
+
+.phpbb-announcement__title {
+	margin: 0 0 4px;
+	color: inherit;
+	font-family: inherit;
+	font-size: 1.15em;
+	font-weight: 700;
+	line-height: 1.35;
+	overflow-wrap: anywhere;
+}
+
+.phpbb-announcement__message {
+	overflow-wrap: anywhere;
+}
+
+.phpbb-announcement__message > :first-child {
+	margin-top: 0;
+}
+
+.phpbb-announcement__message > :last-child {
+	margin-bottom: 0;
+}
+
+.phpbb-announcement__message .postimage {
+	box-sizing: border-box;
+	max-width: 100%;
+	height: auto;
+}
+
 .phpbb-announcement__message ul,
-.phpbb-announcement__message ol { margin-inline-start: 1.5em; }
-.phpbb-announcement__dismiss-form { position: absolute; inset-block-start: 4px; inset-inline-end: 4px; }
+.phpbb-announcement__message ol {
+	margin-inline-start: 1.5em;
+}
+
+.phpbb-announcement__dismiss-form {
+	position: absolute;
+	inset-block-start: 4px;
+	inset-inline-end: 4px;
+}
+
 .phpbb-announcement__dismiss {
 	display: inline-flex;
 	align-items: center;
@@ -44,14 +99,32 @@
 	cursor: pointer;
 	opacity: .72;
 }
-.phpbb-announcement__dismiss:hover { opacity: 1; background: rgb(0 0 0 / 8%); }
-.phpbb-announcement__dismiss:focus-visible { opacity: 1; outline: 3px solid var(--ba-accent); outline-offset: 1px; }
+
+.phpbb-announcement__dismiss:hover {
+	opacity: 1;
+	background: rgb(0 0 0 / 8%);
+}
+
+.phpbb-announcement__dismiss:focus-visible {
+	opacity: 1;
+	outline: 3px solid var(--ba-accent);
+	outline-offset: 1px;
+}
 
 @media (max-width: 500px) {
-	.phpbb-announcement { margin-block: 8px; padding-block: 12px; padding-inline: 12px 48px; }
+	.phpbb-announcement {
+		margin-block: 8px;
+		padding-block: 12px;
+		padding-inline: 12px 48px;
+	}
 }
 
 @media (forced-colors: active) {
-	.phpbb-announcement { border: 2px solid CanvasText; }
-	.phpbb-announcement__dismiss:focus-visible { outline-color: Highlight; }
+	.phpbb-announcement {
+		border: 2px solid CanvasText;
+	}
+
+	.phpbb-announcement__dismiss:focus-visible {
+		outline-color: Highlight;
+	}
 }
