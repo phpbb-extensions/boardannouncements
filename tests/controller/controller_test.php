@@ -96,6 +96,7 @@ class controller_test extends \phpbb_database_test_case
 				$this->db,
 				new \phpbb\lock\db('boardannouncements.table_lock.board_announcements_table', $this->config, $this->db),
 				'phpbb_board_announcements',
+				'phpbb_board_announcements_track',
 				'phpbb_board_announcement_groups',
 				'phpbb_user_group',
 				'phpbb_forums'
@@ -182,6 +183,14 @@ class controller_test extends \phpbb_database_test_case
 		self::assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
 		self::assertEquals($status_code, $response->getStatusCode());
 		self::assertEquals($content, $response->getContent());
+
+		$sql = 'SELECT COUNT(*) AS total
+			FROM phpbb_board_announcements_track
+			WHERE announcement_id = 1
+				AND user_id = ' . (int) $user_id;
+		$result = $this->db->sql_query($sql);
+		self::assertSame($is_registered ? 1 : 0, (int) $this->db->sql_fetchfield('total'));
+		$this->db->sql_freeresult($result);
 	}
 
 	/**

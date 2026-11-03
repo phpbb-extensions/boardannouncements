@@ -136,7 +136,7 @@ class visibility
 	}
 
 	/**
-	 * Check whether current user dismissed an announcement revision.
+	 * Check whether current browser dismissed an announcement revision.
 	 *
 	 * @param array $announcement Announcement data
 	 * @return bool True when dismissed

@@ -120,6 +120,18 @@
 			<value></value>
 		</row>
 	</table>
+	<table name="phpbb_board_announcements_track">
+		<column>announcement_id</column>
+		<column>user_id</column>
+		<row>
+			<value>2</value>
+			<value>200</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>200</value>
+		</row>
+	</table>
 	<table name="phpbb_user_group">
 		<column>group_id</column>
 		<column>user_id</column>

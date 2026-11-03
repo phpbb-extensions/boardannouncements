@@ -258,7 +258,7 @@ class acp_controller
 			}
 
 			// Get new announcement values from the form
-			// Refresh the timestamp so edits invalidate guest dismissal cookies.
+			// Store the latest edit time without changing dismissal state.
 			$data['announcement_timestamp'] = max(time(), (int) ($data['announcement_timestamp'] ?? 0) + 1);
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
 			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);

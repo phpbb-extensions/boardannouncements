@@ -39,13 +39,14 @@ class manager
 	}
 
 	/**
-	 * Get all board announcements
+	 * Get board announcements, optionally excluding a user's dismissals.
 	 *
+	 * @param int $user_id Registered user identifier, or zero for all announcements
 	 * @return array Array of announcements data, or empty array
 	 */
-	public function get_announcements()
+	public function get_announcements($user_id = 0)
 	{
-		return $this->nestedset->get_all_tree_data();
+		return $this->nestedset->where_visible($user_id)->get_all_tree_data();
 	}
 
 	/**
@@ -93,7 +94,13 @@ class manager
 	public function delete_announcement($id)
 	{
 		$this->set_announcement_groups($id, []);
-		return (bool) $this->nestedset->delete($id);
+		$deleted = (bool) $this->nestedset->delete($id);
+		if ($deleted)
+		{
+			$this->delete_announcement_tracking($id);
+		}
+
+		return $deleted;
 	}
 
 	/**
@@ -124,9 +131,38 @@ class manager
 			return false;
 		}
 
-		return (bool) $this->nestedset->update_item($id, [
+		$updated = (bool) $this->nestedset->update_item($id, [
 			'announcement_revision' => (int) $announcement['announcement_revision'] + 1,
 		]);
+		if ($updated)
+		{
+			$this->delete_announcement_tracking($id);
+		}
+
+		return $updated;
+	}
+
+	/**
+	 * Store a registered user's announcement dismissal.
+	 *
+	 * @param int $id Announcement identifier
+	 * @param int $user_id User identifier
+	 * @return bool True when stored or already present
+	 */
+	public function close_announcement($id, $user_id)
+	{
+		return (bool) $this->nestedset->insert_tracked_item($id, $user_id);
+	}
+
+	/**
+	 * Delete every registered-user dismissal for an announcement.
+	 *
+	 * @param int $id Announcement identifier
+	 * @return bool True when any dismissal was deleted
+	 */
+	public function delete_announcement_tracking($id)
+	{
+		return (bool) $this->nestedset->delete_tracked_items($id);
 	}
 
 	/**

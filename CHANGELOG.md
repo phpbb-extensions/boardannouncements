@@ -6,7 +6,7 @@
 - Added public announcement headings, semantic tone presets, and accessible custom colors.
 - Added audience targeting for phpBB groups and location targeting for complete forum trees.
 - Redesigned the ACP with responsive management and editing screens, desktop and mobile previews, search and status filters, duplication, archiving, ordering, and bulk actions.
-- Moved dismissals to browser-local cookies and added an administrator action to show an announcement again to everyone. Existing stored dismissal records are removed during upgrade.
+- Kept guest dismissals in browser-local cookies, retained account-backed dismissals for registered users, and added an administrator action to show an announcement again to everyone. Existing stored dismissal records are preserved during upgrade.
 - Added a dedicated administrative permission for managing board announcements.
 - Added support for phpBB 4 while retaining phpBB 3.3 support.
 

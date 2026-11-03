@@ -120,6 +120,7 @@ class listener_test extends \phpbb_database_test_case
 				$this->db,
 				new \phpbb\lock\db('boardannouncements.table_lock.board_announcements_table', $this->config, $this->db),
 				'phpbb_board_announcements',
+				'phpbb_board_announcements_track',
 				'phpbb_board_announcement_groups',
 				'phpbb_user_group',
 				'phpbb_forums'
@@ -200,6 +201,7 @@ class listener_test extends \phpbb_database_test_case
 			[2, true, 'index', true, [1, 2]],
 			[3, true, 'index', true, [1, 2]],
 			[3, false, 'index', true, [1, 3]],
+			[200, true, 'index', true, [1]],
 			[4, true, 'viewforum', true, [2]],
 			[5, true, 'viewforum', false, []],
 		];

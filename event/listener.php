@@ -120,7 +120,8 @@ class listener implements EventSubscriberInterface
 
 		$this->get_current_location($event);
 
-		$board_announcements_data = $this->manager->get_announcements();
+		$user_id = !empty($this->user->data['is_registered']) ? (int) ($this->user->data['user_id'] ?? ANONYMOUS) : 0;
+		$board_announcements_data = $this->manager->get_announcements($user_id);
 
 		foreach ($board_announcements_data as $data)
 		{

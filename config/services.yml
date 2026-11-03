@@ -62,6 +62,7 @@ services:
             - '@dbal.conn'
             - '@phpbb.boardannouncements.table_lock'
             - '%phpbb.board.announcements.tables.announcements%'
+            - '%phpbb.board.announcements.tables.announcements_track%'
             - '%phpbb.board.announcements.tables.announcement_groups%'
             - '%tables.user_group%'
             - '%tables.forums%'

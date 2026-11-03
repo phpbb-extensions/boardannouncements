@@ -24,6 +24,9 @@ class nestedset extends \phpbb\tree\nestedset
 	/** @var string */
 	protected $forums_table;
 
+	/** @var string */
+	protected $tracking_table;
+
 	/** @var array */
 	protected $ancestor_cache = [];
 
@@ -36,11 +39,12 @@ class nestedset extends \phpbb\tree\nestedset
 	 * @param \phpbb\db\driver\driver_interface $db         Database connection
 	 * @param \phpbb\lock\db                    $lock       Lock class used to lock the table when moving forums around
 	 * @param string                            $table_name Table name
-	 * @param string                            $groups_table Announcement group map table (legacy migrations pass their former tracking table)
+	 * @param string                            $tracking_table Announcement dismissal tracking table
+	 * @param string                            $groups_table Announcement group map table; omitted by legacy migrations
 	 * @param string                            $user_group_table User group membership table; omitted by legacy migrations
 	 * @param string                            $forums_table Forums table; omitted by legacy migrations
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\lock\db $lock, $table_name, $groups_table, $user_group_table = '', $forums_table = '')
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\lock\db $lock, $table_name, $tracking_table, $groups_table = '', $user_group_table = '', $forums_table = '')
 	{
 		parent::__construct(
 			$db,
@@ -57,9 +61,29 @@ class nestedset extends \phpbb\tree\nestedset
 				'item_parents'	=> 'announcement_parents',
 			]
 		);
+		$this->tracking_table = $tracking_table;
 		$this->groups_table = $groups_table;
 		$this->user_group_table = $user_group_table;
 		$this->forums_table = $forums_table;
+	}
+
+	/**
+	 * Restrict announcement queries to items not dismissed by a registered user.
+	 *
+	 * @param int $user_id User identifier, or zero to remove the restriction
+	 * @return nestedset This object for method chaining
+	 */
+	public function where_visible($user_id = 0)
+	{
+		$user_id = (int) $user_id;
+		$this->sql_where = $user_id > 0 && $user_id !== ANONYMOUS
+			? '(%1$sannouncement_dismissable = 0 OR %1$s' . $this->column_item_id . ' NOT IN (
+				SELECT ' . $this->column_item_id . ' FROM ' . $this->tracking_table . '
+				WHERE user_id = ' . $user_id . '
+			))'
+			: '';
+
+		return $this;
 	}
 
 	/**
@@ -80,6 +104,67 @@ class nestedset extends \phpbb\tree\nestedset
 		$sql = 'UPDATE ' . $this->table_name . '
 			SET ' . $this->db->sql_build_array('UPDATE', $item_data) . '
 			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id;
+		$this->db->sql_query($sql);
+
+		return $this->db->sql_affectedrows();
+	}
+
+	/**
+	 * Delete every registered-user dismissal for an announcement.
+	 *
+	 * @param int $item_id Announcement identifier
+	 * @return int|false Number of affected rows, or false
+	 */
+	public function delete_tracked_items($item_id)
+	{
+		if (!$item_id)
+		{
+			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
+		}
+
+		$sql = 'DELETE FROM ' . $this->tracking_table . '
+			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id;
+		$this->db->sql_query($sql);
+
+		return $this->db->sql_affectedrows();
+	}
+
+	/**
+	 * Record an announcement dismissal for a registered user.
+	 *
+	 * @param int $item_id Announcement identifier
+	 * @param int $user_id User identifier
+	 * @return int|false Number of affected rows, one when already tracked, or false
+	 */
+	public function insert_tracked_item($item_id, $user_id)
+	{
+		$user_id = (int) $user_id;
+		if ($user_id <= 0 || $user_id === ANONYMOUS)
+		{
+			return false;
+		}
+
+		if (empty($this->get_subtree_data($item_id)))
+		{
+			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
+		}
+
+		$sql = 'SELECT 1 AS tracked
+			FROM ' . $this->tracking_table . '
+			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id . '
+				AND user_id = ' . $user_id;
+		$result = $this->db->sql_query_limit($sql, 1);
+		$tracked = (bool) $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+		if ($tracked)
+		{
+			return 1;
+		}
+
+		$sql = 'INSERT INTO ' . $this->tracking_table . ' ' . $this->db->sql_build_array('INSERT', [
+				$this->column_item_id => (int) $item_id,
+				'user_id' => $user_id,
+			]);
 		$this->db->sql_query($sql);
 
 		return $this->db->sql_affectedrows();

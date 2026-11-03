@@ -694,8 +694,8 @@ class acp_controller_test extends \phpbb_test_case
 			'board_announcements_location_mode' => 'everywhere',
 			'board_announcements_locations' => [],
 			'board_announcements_dismiss' => true,
-			'board_announcements_start' => '',
-			'board_announcements_expiry' => '',
+			'board_announcements_start' => '2030-01-02 00:00',
+			'board_announcements_expiry' => '2030-01-01 00:00',
 		];
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($values) {
 			return array_key_exists($name, $values) ? $values[$name] : $default;
@@ -711,6 +711,7 @@ class acp_controller_test extends \phpbb_test_case
 				&& strpos($data['ERRORS'], $this->language->lang('BOARD_ANNOUNCEMENTS_TONE_INVALID')) !== false
 				&& strpos($data['ERRORS'], $this->language->lang('BOARD_ANNOUNCEMENTS_STATE_INVALID')) !== false
 				&& strpos($data['ERRORS'], $this->language->lang('BOARD_ANNOUNCEMENTS_GROUPS_REQUIRED')) !== false
+				&& strpos($data['ERRORS'], $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID')) !== false
 				&& $data['BOARD_ANNOUNCEMENTS_BGCOLOR'] === '';
 		}));
 
@@ -895,6 +896,7 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		return [
 			['custom', '#ABCDEF', 'custom', 'ABCDEF'],
+			['custom', 'not-a-color', 'custom', ''],
 			['invalid', 'not-a-color', 'info', ''],
 		];
 	}

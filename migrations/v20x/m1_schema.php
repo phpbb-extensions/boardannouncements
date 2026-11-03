@@ -20,7 +20,6 @@ class m1_schema extends \phpbb\db\migration\migration
 	public function update_schema()
 	{
 		return [
-			'drop_tables' => [$this->table_prefix . 'board_announcements_track'],
 			'add_columns' => [
 				$this->table_prefix . 'board_announcements' => [
 					'announcement_title' => ['VCHAR_UNI:255', ''],
@@ -59,18 +58,6 @@ class m1_schema extends \phpbb\db\migration\migration
 	{
 		return [
 			'drop_tables' => [$this->table_prefix . 'board_announcement_groups'],
-			'add_tables' => [
-				$this->table_prefix . 'board_announcements_track' => [
-					'COLUMNS' => [
-						'announcement_id' => ['UINT', 0],
-						'user_id' => ['UINT', 0],
-					],
-					'KEYS' => [
-						'announcement_id' => ['INDEX', 'announcement_id'],
-						'user_id' => ['INDEX', 'user_id'],
-					],
-				],
-			],
 			'drop_keys' => [
 				$this->table_prefix . 'board_announcements' => ['announcement_active'],
 			],

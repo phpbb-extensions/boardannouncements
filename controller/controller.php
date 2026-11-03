@@ -66,19 +66,28 @@ class controller
 		$announcement = $this->manager->get_announcement($id);
 
 		$location = $this->request->variable('location', 0);
-		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id']) || !$this->visibility->is_visible($announcement, $location, false))
+		if (empty($announcement)
+			|| !$announcement['announcement_dismissable']
+			|| !$this->visibility->is_visible($announcement, $location, false)
+			|| !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id'])
+		)
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
 		$revision = (int) ($announcement['announcement_revision'] ?? 1);
 		$this->user->set_cookie('ba_' . $announcement['announcement_id'], $revision, strtotime('+1 year'));
+		$response = true;
+		if (!empty($this->user->data['is_registered']))
+		{
+			$response = $this->manager->close_announcement($announcement['announcement_id'], $this->user->data['user_id']);
+		}
 
 		// Send a JSON response if an AJAX request was used
 		if ($this->request->is_ajax())
 		{
 			return new JsonResponse([
-				'success' 	=> true,
+				'success' 	=> $response,
 				'id'		=> (int) $announcement['announcement_id']
 			]);
 		}

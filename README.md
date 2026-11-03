@@ -4,7 +4,7 @@ This is the repository for the development of the phpBB Board Announcements Exte
 
 Board Announcements provides scheduled, targeted notices for phpBB 3.3 and phpBB 4. Administrators can publish drafts, choose semantic tones, target guests, members, groups, forums, or forum trees, and archive or duplicate notices. Users can dismiss notices, and administrators can show a dismissed notice again to everyone.
 
-Version 2.0 upgrades existing announcements in place. Existing enabled notices become published notices; disabled notices become drafts. Dismissals are stored only in each browser, and existing registered-user dismissal records are removed during upgrade.
+Version 2.0 upgrades existing announcements in place. Existing enabled notices become published notices; disabled notices become drafts. Guest dismissals are stored in browser cookies, while registered-user dismissals remain attached to their accounts and work across devices.
 
 [![Build Status](https://github.com/phpbb-extensions/boardannouncements/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbb-extensions/boardannouncements/actions)
 [![codecov](https://codecov.io/gh/phpbb-extensions/boardannouncements/branch/master/graph/badge.svg?token=9laLSqCOgN)](https://codecov.io/gh/phpbb-extensions/boardannouncements)

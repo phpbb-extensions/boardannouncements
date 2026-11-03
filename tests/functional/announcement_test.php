@@ -265,10 +265,37 @@ class announcement_test extends \phpbb_functional_test_case
 
 		$hash = $this->mock_link_hash('close_boardannouncement1');
 		self::request('POST', 'app.php/boardannouncements/close/1?hash=' . $hash . '&location=' . ext::INDEX_ONLY . '&sid=' . $this->sid);
-		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
-		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+
+		$cookie_expired = false;
+		foreach (self::$cookieJar->all() as $cookie)
+		{
+			if (substr($cookie->getName(), -5) === '_ba_1')
+			{
+				self::$cookieJar->expire($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
+				$cookie_expired = true;
+				break;
+			}
+		}
+		self::assertTrue($cookie_expired);
 
 		$this->get_db();
+		$result = $this->db->sql_query('SELECT COUNT(*) AS total
+			FROM phpbb_board_announcements_track
+			WHERE announcement_id = 1
+				AND user_id = 2');
+		self::assertSame(1, (int) $this->db->sql_fetchfield('total'));
+		$this->db->sql_freeresult($result);
+
+		try
+		{
+			$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+			self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+		}
+		finally
+		{
+			$this->db->sql_query('DELETE FROM phpbb_board_announcements_track WHERE announcement_id = 1 AND user_id = 2');
+		}
+
 		$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 0 WHERE announcement_id = 1');
 		try
 		{

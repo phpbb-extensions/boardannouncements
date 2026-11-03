@@ -1,3 +1,4 @@
 parameters:
     phpbb.board.announcements.tables.announcements: '%core.table_prefix%board_announcements'
     phpbb.board.announcements.tables.announcement_groups: '%core.table_prefix%board_announcement_groups'
+    phpbb.board.announcements.tables.announcements_track: '%core.table_prefix%board_announcements_track'

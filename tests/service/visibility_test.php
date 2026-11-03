@@ -123,7 +123,7 @@ class visibility_test extends \phpbb_test_case
 		];
 	}
 
-	public function test_guest_cookie_reset_generation()
+	public function test_cookie_reset_generation()
 	{
 		$row = $this->announcement();
 		$this->request->expects(self::exactly(2))
