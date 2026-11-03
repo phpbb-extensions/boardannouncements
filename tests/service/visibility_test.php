@@ -29,7 +29,6 @@ class visibility_test extends \phpbb_test_case
 		$this->request = $this->createMock('\phpbb\request\request');
 		$this->user = $this->getMockBuilder('\phpbb\user')->disableOriginalConstructor()->getMock();
 		$this->user->data = ['user_id' => 2, 'is_registered' => true];
-		$this->user->method('get_passworded_forums')->willReturn([]);
 		$this->manager = $this->getMockBuilder('\phpbb\boardannouncements\manager\manager')->disableOriginalConstructor()->getMock();
 		$this->manager->method('decode_json')->willReturnCallback(static function ($value) {
 			return json_decode($value, true);
@@ -59,8 +58,20 @@ class visibility_test extends \phpbb_test_case
 		$row['announcement_include_children'] = 1;
 		$this->manager->expects(self::once())->method('user_matches_groups')->with(1, 2)->willReturn(true);
 		$this->manager->expects(self::once())->method('location_matches_descendant')->with(11, [10])->willReturn(true);
+		$this->user->expects(self::once())->method('get_passworded_forums')->willReturn([]);
 		$this->auth->expects(self::once())->method('acl_get')->with('f_read', 11)->willReturn(true);
 		self::assertTrue($this->visibility->is_visible($row, 11, false));
+	}
+
+	public function test_passworded_forums_are_cached_while_permissions_are_checked_each_time()
+	{
+		$row = $this->announcement();
+		$row['announcement_locations'] = '[11]';
+		$this->user->expects(self::once())->method('get_passworded_forums')->willReturn([]);
+		$this->auth->expects(self::exactly(2))->method('acl_get')->with('f_read', 11)->willReturn(true);
+
+		self::assertTrue($this->visibility->matches_location($row, 11));
+		self::assertTrue($this->visibility->matches_location($row, 11));
 	}
 
 	/**

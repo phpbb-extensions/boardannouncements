@@ -28,6 +28,9 @@ class visibility
 	/** @var \phpbb\boardannouncements\manager\manager Announcement manager */
 	protected $manager;
 
+	/** @var array|null Password-protected forum identifiers for current request */
+	protected $passworded_forums;
+
 	/**
 	 * Constructor.
 	 *
@@ -119,7 +122,17 @@ class visibility
 			return false;
 		}
 
-		return $location <= 0 || (!in_array($location, $this->user->get_passworded_forums()) && $this->auth->acl_get('f_read', $location));
+		if ($location <= 0)
+		{
+			return true;
+		}
+
+		if ($this->passworded_forums === null)
+		{
+			$this->passworded_forums = $this->user->get_passworded_forums();
+		}
+
+		return !in_array($location, $this->passworded_forums) && $this->auth->acl_get('f_read', $location);
 	}
 
 	/**
