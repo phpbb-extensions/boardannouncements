@@ -1,4 +1,5 @@
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements_acp.css' %}
+{% import '@phpbb_boardannouncements/icon_macros.html' as icons %}
 
 <div class="ba-acp-page">
 	<header class="ba-page-header">
@@ -6,12 +7,12 @@
 			<h1>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS') }}</h1>
 			<p>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN') }}</p>
 		</div>
-		<a class="ba-button ba-button-primary" href="{{ U_ACTION_ADD }}"><i class="icon fa-plus" aria-hidden="true"></i>{{ lang('BOARD_ANNOUNCEMENTS_ADD') }}</a>
+		<a class="ba-button ba-button-primary" href="{{ U_ACTION_ADD }}">{{ icons.fa('plus', 'plus') }}{{ lang('BOARD_ANNOUNCEMENTS_ADD') }}</a>
 	</header>
 </div>
 
 <div class="ba-acp ba-acp-list">
-	<div class="ba-notice ba-notice-warning" role="status" data-ba-global-disabled{% if BOARD_ANNOUNCEMENTS_ENABLED_ALL %} hidden{% endif %}><i class="icon fa-exclamation-triangle" aria-hidden="true"></i><span>{{ lang('BOARD_ANNOUNCEMENTS_GLOBAL_DISABLED') }}</span></div>
+	<div class="ba-notice ba-notice-warning" role="status" data-ba-global-disabled{% if BOARD_ANNOUNCEMENTS_ENABLED_ALL %} hidden{% endif %}>{{ icons.fa('exclamation-triangle', 'triangle-exclamation') }}<span>{{ lang('BOARD_ANNOUNCEMENTS_GLOBAL_DISABLED') }}</span></div>
 
 	<section class="ba-card ba-switch-card">
 		<div><h2>{{ lang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH') }}</h2><p>{{ lang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH_EXPLAIN') }}</p></div>
@@ -31,7 +32,7 @@
 			<h2 id="ba-filter-title" class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_FILTER') }}</h2>
 			<label class="ba-search-field">
 				<span class="sr-only">{{ lang('SEARCH') }}</span>
-				<i class="icon fa-search" aria-hidden="true"></i>
+				{{ icons.fa('search', 'magnifying-glass') }}
 				<input type="search" name="q" value="{{ S_SEARCH_QUERY }}" placeholder="{{ lang('SEARCH') }}" autocomplete="off">
 			</label>
 			<label class="ba-filter-field">
@@ -45,7 +46,7 @@
 			<button type="submit" class="ba-button ba-button-secondary">{{ lang('BOARD_ANNOUNCEMENTS_FILTER') }}</button>
 			{% if S_FILTERS_ACTIVE %}<a class="ba-clear-link" href="{{ U_ACTION }}">{{ lang('RESET') }}</a>{% endif %}
 		</form>
-		{% if S_FILTERS_ACTIVE %}<p class="ba-filter-note"><i class="icon fa-lock" aria-hidden="true"></i>{{ lang('BOARD_ANNOUNCEMENTS_REORDER_FILTERED') }}</p>{% endif %}
+		{% if S_FILTERS_ACTIVE %}<p class="ba-filter-note">{{ icons.fa('lock', 'lock') }}{{ lang('BOARD_ANNOUNCEMENTS_REORDER_FILTERED') }}</p>{% endif %}
 	</section>
 
 	<form method="post" action="{{ U_ACTION }}" class="ba-card ba-list-card">
@@ -77,23 +78,23 @@
 							{% else %}{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_GROUPS') }}{% endif %}
 						</td>
 						<td class="ba-schedule-cell" data-label="{{ lang('BOARD_ANNOUNCEMENTS_SCHEDULE') }}">
-							<span><i class="icon fa-play" aria-hidden="true"></i>{% if ba.START_DATE %}{{ ba.START_DATE }}{% else %}{{ lang('BOARD_ANNOUNCEMENTS_NOW') }}{% endif %}</span>
-							<span><i class="icon fa-stop" aria-hidden="true"></i>{% if ba.EXPIRY_DATE %}{{ ba.EXPIRY_DATE }}{% else %}{{ lang('BOARD_ANNOUNCEMENTS_NO_END') }}{% endif %}</span>
+							<span>{{ icons.fa('play', 'play') }}{% if ba.START_DATE %}{{ ba.START_DATE }}{% else %}{{ lang('BOARD_ANNOUNCEMENTS_NOW') }}{% endif %}</span>
+							<span>{{ icons.fa('stop', 'stop') }}{% if ba.EXPIRY_DATE %}{{ ba.EXPIRY_DATE }}{% else %}{{ lang('BOARD_ANNOUNCEMENTS_NO_END') }}{% endif %}</span>
 						</td>
 						<td class="ba-actions-cell" data-label="{{ lang('ACTION') }}">
 							<div class="ba-action-group">
-								{% if ba.S_MOVE_UP_DISABLED %}<span class="ba-icon-button is-disabled" aria-disabled="true" title="{{ lang('MOVE_UP') }}"><i class="icon fa-arrow-up" aria-hidden="true"></i><span class="sr-only">{{ lang('MOVE_UP') }}</span></span>{% else %}<a class="ba-icon-button" href="{{ ba.U_MOVE_UP }}" title="{{ lang('MOVE_UP') }}"><i class="icon fa-arrow-up" aria-hidden="true"></i><span class="sr-only">{{ lang('MOVE_UP') }}</span></a>{% endif %}
-								{% if ba.S_MOVE_DOWN_DISABLED %}<span class="ba-icon-button is-disabled" aria-disabled="true" title="{{ lang('MOVE_DOWN') }}"><i class="icon fa-arrow-down" aria-hidden="true"></i><span class="sr-only">{{ lang('MOVE_DOWN') }}</span></span>{% else %}<a class="ba-icon-button" href="{{ ba.U_MOVE_DOWN }}" title="{{ lang('MOVE_DOWN') }}"><i class="icon fa-arrow-down" aria-hidden="true"></i><span class="sr-only">{{ lang('MOVE_DOWN') }}</span></a>{% endif %}
-								<a class="ba-icon-button" href="{{ ba.U_EDIT }}" title="{{ lang('EDIT') }}"><i class="icon fa-pencil" aria-hidden="true"></i><span class="sr-only">{{ lang('EDIT') }}</span></a>
-								<a class="ba-icon-button" href="{{ ba.U_DUPLICATE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_DUPLICATE') }}"><i class="icon fa-clone" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_DUPLICATE') }}</span></a>
-								{% if ba.DISMISSABLE %}<a class="ba-icon-button ba-show-again-action" href="{{ ba.U_RESET }}" title="{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}"><i class="icon fa-refresh" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}</span></a>{% else %}<span class="ba-icon-button ba-show-again-action is-disabled" aria-disabled="true" title="{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}"><i class="icon fa-refresh" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}</span></span>{% endif %}
-								{% if ba.STATUS != 'archived' %}<a class="ba-icon-button" href="{{ ba.U_ARCHIVE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}"><i class="icon fa-archive" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}</span></a>{% endif %}
-								{% if ba.STATUS == 'archived' %}<a class="ba-icon-button ba-icon-button-danger" href="{{ ba.U_DELETE }}" title="{{ lang('DELETE') }}"><i class="icon fa-trash" aria-hidden="true"></i><span class="sr-only">{{ lang('DELETE') }}</span></a>{% endif %}
+								{% if ba.S_MOVE_UP_DISABLED %}<span class="ba-icon-button is-disabled" aria-disabled="true" title="{{ lang('MOVE_UP') }}">{{ icons.fa('arrow-up', 'arrow-up') }}<span class="sr-only">{{ lang('MOVE_UP') }}</span></span>{% else %}<a class="ba-icon-button" href="{{ ba.U_MOVE_UP }}" title="{{ lang('MOVE_UP') }}">{{ icons.fa('arrow-up', 'arrow-up') }}<span class="sr-only">{{ lang('MOVE_UP') }}</span></a>{% endif %}
+								{% if ba.S_MOVE_DOWN_DISABLED %}<span class="ba-icon-button is-disabled" aria-disabled="true" title="{{ lang('MOVE_DOWN') }}">{{ icons.fa('arrow-down', 'arrow-down') }}<span class="sr-only">{{ lang('MOVE_DOWN') }}</span></span>{% else %}<a class="ba-icon-button" href="{{ ba.U_MOVE_DOWN }}" title="{{ lang('MOVE_DOWN') }}">{{ icons.fa('arrow-down', 'arrow-down') }}<span class="sr-only">{{ lang('MOVE_DOWN') }}</span></a>{% endif %}
+								<a class="ba-icon-button" href="{{ ba.U_EDIT }}" title="{{ lang('EDIT') }}">{{ icons.fa('pencil', 'pencil') }}<span class="sr-only">{{ lang('EDIT') }}</span></a>
+								<a class="ba-icon-button" href="{{ ba.U_DUPLICATE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_DUPLICATE') }}">{{ icons.fa('clone', 'clone', 'far') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_DUPLICATE') }}</span></a>
+								{% if ba.DISMISSABLE %}<a class="ba-icon-button ba-show-again-action" href="{{ ba.U_RESET }}" title="{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}">{{ icons.fa('refresh', 'arrows-rotate') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}</span></a>{% else %}<span class="ba-icon-button ba-show-again-action is-disabled" aria-disabled="true" title="{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}">{{ icons.fa('refresh', 'arrows-rotate') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}</span></span>{% endif %}
+								{% if ba.STATUS != 'archived' %}<a class="ba-icon-button" href="{{ ba.U_ARCHIVE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}">{{ icons.fa('archive', 'box-archive') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}</span></a>{% endif %}
+								{% if ba.STATUS == 'archived' %}<a class="ba-icon-button ba-icon-button-danger" href="{{ ba.U_DELETE }}" title="{{ lang('DELETE') }}">{{ icons.fa('trash', 'trash-can') }}<span class="sr-only">{{ lang('DELETE') }}</span></a>{% endif %}
 							</div>
 						</td>
 					</tr>
 				{% else %}
-					<tr><td colspan="6" class="ba-empty"><i class="icon fa-bullhorn" aria-hidden="true"></i><span>{{ lang(S_FILTERS_ACTIVE ? 'BOARD_ANNOUNCEMENTS_FILTER_EMPTY' : 'BOARD_ANNOUNCEMENTS_EMPTY') }}</span></td></tr>
+					<tr><td colspan="6" class="ba-empty">{{ icons.fa('bullhorn', 'bullhorn') }}<span>{{ lang(S_FILTERS_ACTIVE ? 'BOARD_ANNOUNCEMENTS_FILTER_EMPTY' : 'BOARD_ANNOUNCEMENTS_EMPTY') }}</span></td></tr>
 				{% endfor %}
 				</tbody>
 			</table>

@@ -1,5 +1,6 @@
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements.css' %}
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements_acp.css' %}
+{% import '@phpbb_boardannouncements/icon_macros.html' as icons %}
 
 <div class="ba-acp-page">
 	<header class="ba-page-header ba-page-header-editor">
@@ -10,8 +11,8 @@
 </div>
 
 <div class="ba-acp ba-acp-editor">
-	<noscript><div class="ba-notice ba-notice-warning" role="alert"><i class="icon fa-exclamation-triangle" aria-hidden="true"></i><span>{{ lang('BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED') }}</span></div></noscript>
-	{% if ERRORS %}<div class="ba-notice ba-notice-error" role="alert"><i class="icon fa-exclamation-circle" aria-hidden="true"></i><div><strong>{{ lang('WARNING') }}</strong><p>{{ ERRORS }}</p></div></div>{% endif %}
+	<noscript><div class="ba-notice ba-notice-warning" role="alert">{{ icons.fa('exclamation-triangle', 'triangle-exclamation') }}<span>{{ lang('BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED') }}</span></div></noscript>
+	{% if ERRORS %}<div class="ba-notice ba-notice-error" role="alert">{{ icons.fa('exclamation-circle', 'circle-exclamation') }}<div><strong>{{ lang('WARNING') }}</strong><p>{{ ERRORS }}</p></div></div>{% endif %}
 
 	<form id="add_board_announcements" method="post" action="{{ U_ACTION }}" data-ba-editor data-groups-value="{{ constant('\\phpbb\\boardannouncements\\ext::GROUPS') }}" data-date-format="{{ PICKER_DATE_FORMAT }}" data-user-lang="{{ S_USER_LANG }}">
 		<div class="ba-editor-grid">
@@ -19,7 +20,7 @@
 				<div data-ba-preview-slot aria-live="polite">{% include '@phpbb_boardannouncements/announcement_preview.html' %}</div>
 
 				<section class="ba-card ba-form-card" aria-labelledby="ba-content-title">
-					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-align-left" aria-hidden="true"></i></span><div><h2 id="ba-content-title">{{ lang('BOARD_ANNOUNCEMENTS_CONTENT') }}</h2></div></div>
+					<div class="ba-card-header"><span class="ba-section-icon">{{ icons.fa('align-left', 'align-left') }}</span><div><h2 id="ba-content-title">{{ lang('BOARD_ANNOUNCEMENTS_CONTENT') }}</h2></div></div>
 					<div class="ba-field-grid">
 						<div class="ba-field">
 							<label for="board_announcements_description">{{ lang('BOARD_ANNOUNCEMENTS_DESC') }}</label>
@@ -48,7 +49,7 @@
 				</section>
 
 				<section class="ba-card ba-form-card" aria-labelledby="ba-appearance-title">
-					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-paint-brush" aria-hidden="true"></i></span><div><h2 id="ba-appearance-title">{{ lang('BOARD_ANNOUNCEMENTS_APPEARANCE') }}</h2></div></div>
+					<div class="ba-card-header"><span class="ba-section-icon">{{ icons.fa('paint-brush', 'paintbrush') }}</span><div><h2 id="ba-appearance-title">{{ lang('BOARD_ANNOUNCEMENTS_APPEARANCE') }}</h2></div></div>
 					<div class="ba-field-grid">
 						<div class="ba-field">
 							<label for="board_announcements_tone">{{ lang('BOARD_ANNOUNCEMENTS_TONE') }}</label>
@@ -72,22 +73,22 @@
 
 			<aside class="ba-editor-sidebar">
 				<section class="ba-card ba-form-card" aria-labelledby="ba-publish-title">
-					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-calendar" aria-hidden="true"></i></span><div><h2 id="ba-publish-title">{{ lang('BOARD_ANNOUNCEMENTS_SCHEDULE_BEHAVIOR') }}</h2></div></div>
+					<div class="ba-card-header"><span class="ba-section-icon">{{ icons.fa('calendar', 'calendar-days') }}</span><div><h2 id="ba-publish-title">{{ lang('BOARD_ANNOUNCEMENTS_SCHEDULE_BEHAVIOR') }}</h2></div></div>
 					<div class="ba-field">
 						<label for="board_announcements_state">{{ lang('BOARD_ANNOUNCEMENTS_STATUS') }}</label>
 						<select id="board_announcements_state" name="board_announcements_state"><option value="draft"{% if BOARD_ANNOUNCEMENTS_STATE == 'draft' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_STATUS_DRAFT') }}</option><option value="published"{% if BOARD_ANNOUNCEMENTS_STATE == 'published' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_PUBLISHED') }}</option>{% if S_EDIT_ANNOUNCEMENT %}<option value="archived"{% if BOARD_ANNOUNCEMENTS_STATE == 'archived' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_STATUS_ARCHIVED') }}</option>{% endif %}</select>
 					</div>
-					<div class="ba-field"><label for="board_announcements_start">{{ lang('BOARD_ANNOUNCEMENTS_START') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_START_EXPLAIN') }}</span><div class="ba-input-icon"><i class="icon fa-calendar-o" aria-hidden="true"></i><input name="board_announcements_start" id="board_announcements_start" value="{{ BOARD_ANNOUNCEMENTS_START }}" placeholder="{{ START_DATE_PLACEHOLDER }}" autocomplete="off"></div></div>
-					<div class="ba-field"><label for="board_announcements_expiry">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN') }}</span><div class="ba-input-icon"><i class="icon fa-calendar-o" aria-hidden="true"></i><input name="board_announcements_expiry" id="board_announcements_expiry" value="{{ BOARD_ANNOUNCEMENTS_EXPIRY }}" placeholder="{{ EXPIRY_DATE_PLACEHOLDER }}" autocomplete="off"></div></div>
+					<div class="ba-field"><label for="board_announcements_start">{{ lang('BOARD_ANNOUNCEMENTS_START') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_START_EXPLAIN') }}</span><div class="ba-input-icon">{{ icons.fa('calendar-o', 'calendar', 'far') }}<input name="board_announcements_start" id="board_announcements_start" value="{{ BOARD_ANNOUNCEMENTS_START }}" placeholder="{{ START_DATE_PLACEHOLDER }}" autocomplete="off"></div></div>
+					<div class="ba-field"><label for="board_announcements_expiry">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN') }}</span><div class="ba-input-icon">{{ icons.fa('calendar-o', 'calendar', 'far') }}<input name="board_announcements_expiry" id="board_announcements_expiry" value="{{ BOARD_ANNOUNCEMENTS_EXPIRY }}" placeholder="{{ EXPIRY_DATE_PLACEHOLDER }}" autocomplete="off"></div></div>
 					<div class="ba-toggle-field"><div><strong>{{ lang('BOARD_ANNOUNCEMENTS_DISMISS') }}</strong><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_DISMISS_EXPLAIN') }}</span></div><div class="ba-segmented-control"><label><input type="radio" name="board_announcements_dismiss" value="1"{% if BOARD_ANNOUNCEMENTS_DISMISS %} checked{% endif %}><span>{{ lang('YES') }}</span></label><label><input type="radio" name="board_announcements_dismiss" value="0"{% if not BOARD_ANNOUNCEMENTS_DISMISS %} checked{% endif %}><span>{{ lang('NO') }}</span></label></div></div>
 				</section>
 
 				<section class="ba-card ba-form-card" aria-labelledby="ba-audience-title">
-					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-users" aria-hidden="true"></i></span><div><h2 id="ba-audience-title">{{ lang('BOARD_ANNOUNCEMENTS_AUDIENCE_LOCATION') }}</h2></div></div>
+					<div class="ba-card-header"><span class="ba-section-icon">{{ icons.fa('users', 'users') }}</span><div><h2 id="ba-audience-title">{{ lang('BOARD_ANNOUNCEMENTS_AUDIENCE_LOCATION') }}</h2></div></div>
 					<div class="ba-field"><label for="board_announcements_users">{{ lang('BOARD_ANNOUNCEMENTS_USERS') }}</label><select name="board_announcements_users" id="board_announcements_users" aria-controls="board_announcements_group_picker" aria-expanded="{{ S_BOARD_ANNOUNCEMENTS_GROUPS ? 'true' : 'false' }}">{% if S_BOARD_ANNOUNCEMENTS_USERS is iterable %}{% for item in S_BOARD_ANNOUNCEMENTS_USERS %}<option value="{{ item.value }}"{% if item.selected %} selected{% endif %}>{{ item.label }}</option>{% endfor %}{% else %}{{ S_BOARD_ANNOUNCEMENTS_USERS }}{% endif %}</select></div>
 					<div id="board_announcements_group_picker" class="ba-field ba-dependent-panel" data-ba-groups{% if not S_BOARD_ANNOUNCEMENTS_GROUPS %} hidden{% endif %}>
 						<label id="ba-groups-label">{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_GROUPS') }}</label>
-						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span><i class="icon fa-search" aria-hidden="true"></i><input type="search" data-ba-group-search placeholder="{{ lang('SEARCH') }}" autocomplete="off"></label>
+						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span>{{ icons.fa('search', 'magnifying-glass') }}<input type="search" data-ba-group-search placeholder="{{ lang('SEARCH') }}" autocomplete="off"></label>
 						<div class="ba-checklist" role="group" aria-labelledby="ba-groups-label">{% for group in BOARD_ANNOUNCEMENTS_GROUPS %}<label data-ba-group-name="{{ group.NAME|lower }}"><input type="checkbox" name="board_announcements_groups[]" value="{{ group.ID }}"{% if group.S_SELECTED %} checked{% endif %}><span>{{ group.NAME }}</span></label>{% endfor %}</div>
 					</div>
 					<div class="ba-field">
@@ -100,7 +101,7 @@
 					</div>
 					<div id="board_announcements_location_picker" class="ba-field ba-dependent-panel" data-ba-locations{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} hidden{% endif %}>
 						<label id="ba-locations-label">{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_LOCATIONS') }}</label>
-						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span><i class="icon fa-search" aria-hidden="true"></i><input type="search" id="board_announcements_location_search" placeholder="{{ lang('SEARCH') }}" autocomplete="off"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}></label>
+						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span>{{ icons.fa('search', 'magnifying-glass') }}<input type="search" id="board_announcements_location_search" placeholder="{{ lang('SEARCH') }}" autocomplete="off"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}></label>
 						<div id="board_announcements_locations" class="ba-location-picker" role="group" aria-labelledby="ba-locations-label">
 							{% for location in BOARD_ANNOUNCEMENTS_LOCATIONS %}
 								<label class="ba-location-row" style="--ba-forum-depth:{{ location.depth }}" data-ba-location-name="{{ location.forum_name|lower }}"><input type="checkbox" name="board_announcements_locations[]" value="{{ location.forum_id }}"{% if location.selected %} checked{% endif %}{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}><span>{{ location.forum_name }}</span></label>
@@ -115,8 +116,8 @@
 
 		<div class="ba-editor-actions">
 			<a class="ba-button ba-button-quiet" href="{{ U_BACK }}">{{ lang('CANCEL') }}</a>
-			<button class="ba-button ba-button-secondary" type="button" data-ba-preview-request><i class="icon fa-eye" aria-hidden="true"></i>{{ lang('PREVIEW') }}</button>
-			<button class="ba-button ba-button-primary" type="submit" name="submit"><i class="icon fa-check" aria-hidden="true"></i>{{ lang('SUBMIT') }}</button>
+			<button class="ba-button ba-button-secondary" type="button" data-ba-preview-request>{{ icons.fa('eye', 'eye') }}{{ lang('PREVIEW') }}</button>
+			<button class="ba-button ba-button-primary" type="submit" name="submit">{{ icons.fa('check', 'check') }}{{ lang('SUBMIT') }}</button>
 			{{ S_FORM_TOKEN }}
 		</div>
 	</form>
