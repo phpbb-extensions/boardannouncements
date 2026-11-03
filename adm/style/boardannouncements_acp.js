@@ -81,6 +81,68 @@
 		window.upload = false;
 		window.imageTag = false;
 
+		const previewButton = editor.querySelector('[data-ba-preview-request]');
+		const previewSlot = editor.querySelector('[data-ba-preview-slot]');
+		if (previewButton && previewSlot && window.phpbb) {
+			let previewRequested = false;
+
+			window.phpbb.addAjaxCallback('board_announcements_preview', (response) => {
+				if (!response.success || typeof response.preview_html !== 'string') {
+					return;
+				}
+
+				const currentPreview = previewSlot.querySelector('#ba-preview');
+				const mobile = currentPreview && currentPreview.hasAttribute('data-mobile');
+				previewSlot.innerHTML = response.preview_html;
+
+				const updatedPreview = previewSlot.querySelector('#ba-preview');
+				if (mobile && updatedPreview) {
+					updatedPreview.setAttribute('data-mobile', '');
+				}
+				window.scrollTo(0, 0);
+			});
+
+			window.phpbb.ajaxify({
+				selector: editor,
+				callback: 'board_announcements_preview',
+				filter(data) {
+					if (!previewRequested) {
+						return false;
+					}
+
+					previewRequested = false;
+					data.push({ name: 'action', value: 'preview' });
+					return true;
+				},
+			});
+
+			previewButton.addEventListener('click', () => {
+				previewRequested = true;
+				if (typeof editor.requestSubmit === 'function') {
+					editor.requestSubmit();
+				} else {
+					const submitButton = document.createElement('button');
+					submitButton.type = 'submit';
+					submitButton.hidden = true;
+					editor.appendChild(submitButton);
+					submitButton.click();
+					submitButton.remove();
+				}
+			});
+		}
+
+		editor.addEventListener('click', (event) => {
+			const mobileButton = event.target.closest('[data-ba-preview-mobile]');
+			if (!mobileButton) {
+				return;
+			}
+
+			const preview = previewSlot && previewSlot.querySelector('#ba-preview');
+			if (preview) {
+				preview.toggleAttribute('data-mobile');
+			}
+		});
+
 		if (window.jQuery) {
 			const $ = window.jQuery;
 			const $dates = $('#board_announcements_start, #board_announcements_expiry');
@@ -196,14 +258,5 @@
 			updateCustomColor();
 		}
 
-		const preview = document.getElementById('ba-preview');
-		if (preview) {
-			const mobileButton = document.querySelector('[data-ba-preview-mobile]');
-			if (mobileButton) {
-				mobileButton.addEventListener('click', () => {
-					preview.toggleAttribute('data-mobile');
-				});
-			}
-		}
 	});
 })();

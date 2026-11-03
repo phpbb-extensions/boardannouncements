@@ -120,7 +120,7 @@ class acp_controller
 	{
 		// Trigger specific action
 		$action = $this->request->variable('action', '');
-		if (in_array($action, ['add', 'delete', 'move', 'settings', 'archive', 'reset', 'duplicate', 'bulk']))
+		if (in_array($action, ['add', 'preview', 'delete', 'move', 'settings', 'archive', 'reset', 'duplicate', 'bulk']))
 		{
 			$this->{'action_' . $action}();
 		}
@@ -246,10 +246,9 @@ class acp_controller
 		$location_mode = $this->get_location_mode($data['announcement_locations']);
 		$selected_groups = $id ? (array) $this->manager->get_announcement_groups($id) : [];
 
-		// If form is submitted or previewed
-		$submit  = $this->request->is_set_post('submit');
-		$preview = $this->request->is_set_post('preview');
-		if ($submit || $preview)
+		// If form is submitted
+		$submit = $this->request->is_set_post('submit');
+		if ($submit)
 		{
 			// Test if form key is valid
 			if (!check_form_key($form_name))
@@ -381,7 +380,7 @@ class acp_controller
 			);
 
 			// Store the announcement text and settings if submitted with no errors
-			if ($submit && empty($errors))
+			if (empty($errors))
 			{
 				if ($id)
 				{
@@ -407,7 +406,7 @@ class acp_controller
 		}
 
 		// Prepare a fresh announcement preview
-		$announcement_text_preview = $id || $preview ? generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_flags']) : '';
+		$announcement_text_preview = $id ? generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_flags']) : '';
 
 		// Prepare the announcement text for editing inside the text box
 		$announcement_text_edit = generate_text_for_edit($data['announcement_text'], $data['announcement_uid'], $data['announcement_flags']);
@@ -468,6 +467,65 @@ class acp_controller
 
 		// Build custom bbcodes array
 		display_custom_bbcodes();
+	}
+
+	/**
+	 * Generate an announcement preview without validating or saving announcement settings
+	 *
+	 * @return void
+	 */
+	protected function action_preview()
+	{
+		if (!check_form_key('add_board_announcements'))
+		{
+			$this->error('FORM_INVALID');
+		}
+
+		$text = $this->request->variable('board_announcements_text', '', true);
+		$title = $this->request->variable('board_announcements_title', '', true);
+		$tone = $this->request->variable('board_announcements_tone', 'info');
+		if (!in_array($tone, ext::TONES, true))
+		{
+			$tone = 'info';
+		}
+
+		$bgcolor = $tone === 'custom'
+			? ltrim(trim($this->request->variable('board_announcements_bgcolor', '', true)), '#')
+			: '';
+		if ($bgcolor !== '' && !preg_match('/\A[0-9a-f]{6}\z/i', $bgcolor))
+		{
+			$bgcolor = '';
+		}
+
+		$uid = '';
+		$bitfield = '';
+		$flags = 0;
+		generate_text_for_storage(
+			$text,
+			$uid,
+			$bitfield,
+			$flags,
+			!$this->request->variable('disable_bbcode', false),
+			!$this->request->variable('disable_magic_url', false),
+			!$this->request->variable('disable_smilies', false)
+		);
+
+		$this->template->assign_vars([
+			'BOARD_ANNOUNCEMENTS_PREVIEW' => generate_text_for_display($text, $uid, $bitfield, $flags),
+			'BOARD_ANNOUNCEMENTS_TITLE' => $title,
+			'BOARD_ANNOUNCEMENTS_TONE' => $tone,
+			'BOARD_ANNOUNCEMENTS_BGCOLOR' => $bgcolor,
+			'BOARD_ANNOUNCEMENTS_TEXTCOLOR' => color::contrast_color($bgcolor),
+		]);
+		$this->template->set_filenames([
+			'board_announcements_preview' => '@phpbb_boardannouncements/announcement_preview.html',
+		]);
+
+		$json_response = new json_response;
+		$json_response->send([
+			'success' => true,
+			'preview_html' => $this->template->assign_display('board_announcements_preview'),
+		]);
 	}
 
 	protected function action_archive()

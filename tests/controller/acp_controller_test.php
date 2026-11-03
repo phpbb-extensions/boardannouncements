@@ -165,6 +165,7 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		return [
 			['add', 'action_add'],
+			['preview', 'action_preview'],
 			['delete', 'action_delete'],
 			['move', 'action_move'],
 			['settings', 'action_settings'],
@@ -181,7 +182,7 @@ class acp_controller_test extends \phpbb_test_case
 	public function test_mode_manage($action, $expected)
 	{
 		$controller = $this->getMockBuilder('\phpbb\boardannouncements\controller\acp_controller')
-			->setMethods(['action_add', 'action_delete', 'action_move', 'action_settings', 'list_announcements'])
+			->setMethods(['action_add', 'action_preview', 'action_delete', 'action_move', 'action_settings', 'list_announcements'])
 			->setConstructorArgs([
 				$this->manager,
 				$this->db,
@@ -587,7 +588,7 @@ class acp_controller_test extends \phpbb_test_case
 
 	/**
 	 * Test action_add()
-	 * Just test that it shows the form without hitting submit or preview yet
+	 * Just test that it shows the form without hitting submit yet
 	 *
 	 * @dataProvider action_add_data
 	 * @param $id
@@ -613,10 +614,10 @@ class acp_controller_test extends \phpbb_test_case
 			->willReturnOnConsecutiveCalls('add', $id);
 
 		$this->request
-			->expects($missing_announcement ? self::never() : self::exactly(2))
+			->expects($missing_announcement ? self::never() : self::once())
 			->method('is_set_post')
-			->withConsecutive(['submit'], ['preview'])
-			->willReturnOnConsecutiveCalls(false, false);
+			->with('submit')
+			->willReturn(false);
 
 		$this->manager->expects(self::once())
 			->method('announcement_columns')
@@ -737,16 +738,12 @@ class acp_controller_test extends \phpbb_test_case
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'fffff', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, background color too short
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'gggggg', true, 0, [''], true, '', false, false, false], false, true, true, true], // submit, background color is not hexadecimal
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, 'foo', false, false, false], false, true, true, true], // submit, bad expiry
-			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, true, null], // preview
-			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, false, null], // preview, bad form
-			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, true, null], // preview
-			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], true, false, false, null], // preview, bad form
 		];
 	}
 
 	/**
 	 * Test action_add()
-	 * Submit or preview data test
+	 * Submit data test
 	 *
 	 * @dataProvider action_add_submit_data
 	 * @param $id
@@ -824,10 +821,10 @@ class acp_controller_test extends \phpbb_test_case
 			});
 
 		$this->request
-			->expects(self::exactly(2))
+			->expects(self::once())
 			->method('is_set_post')
-			->withConsecutive(['submit'], ['preview'])
-			->willReturnOnConsecutiveCalls($submit, $preview);
+			->with('submit')
+			->willReturn($submit);
 
 		$this->manager->expects($submit && !$errors ? self::never() : self::once())
 			->method('decode_json')
@@ -882,8 +879,69 @@ class acp_controller_test extends \phpbb_test_case
 			);
 		}
 
-		$this->template->expects(($submit && $errors) || $preview ? self::once() : self::never())
+		$this->template->expects($submit && $errors ? self::once() : self::never())
 			->method('assign_vars');
+
+		$controller->mode_manage();
+	}
+
+	public function action_preview_data()
+	{
+		return [
+			['custom', '#ABCDEF', 'custom', 'ABCDEF'],
+			['invalid', 'not-a-color', 'info', ''],
+		];
+	}
+
+	/**
+	 * @dataProvider action_preview_data
+	 */
+	public function test_action_preview($tone, $bgcolor, $expected_tone, $expected_bgcolor)
+	{
+		self::$valid_form = true;
+		$controller = $this->get_controller();
+		$values = [
+			'action' => 'preview',
+			'board_announcements_text' => '[b]Preview text[/b]',
+			'board_announcements_title' => 'Preview title',
+			'board_announcements_tone' => $tone,
+			'board_announcements_bgcolor' => $bgcolor,
+			'disable_bbcode' => false,
+			'disable_magic_url' => false,
+			'disable_smilies' => false,
+		];
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($values) {
+			return array_key_exists($name, $values) ? $values[$name] : $default;
+		});
+		$this->manager->expects(self::never())->method('announcement_columns');
+		$this->manager->expects(self::never())->method('save_announcement');
+		$this->manager->expects(self::never())->method('update_announcement');
+		$this->manager->expects(self::never())->method('set_announcement_groups');
+		$this->log->expects(self::never())->method('add');
+		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(static function ($data) use ($expected_tone, $expected_bgcolor) {
+			return $data['BOARD_ANNOUNCEMENTS_PREVIEW'] !== ''
+				&& $data['BOARD_ANNOUNCEMENTS_TITLE'] === 'Preview title'
+				&& $data['BOARD_ANNOUNCEMENTS_TONE'] === $expected_tone
+				&& $data['BOARD_ANNOUNCEMENTS_BGCOLOR'] === $expected_bgcolor;
+		}));
+		$this->template->expects(self::once())->method('set_filenames')->with([
+			'board_announcements_preview' => '@phpbb_boardannouncements/announcement_preview.html',
+		]);
+		$this->template->expects(self::once())->method('assign_display')->with('board_announcements_preview')->willReturn('<section>Preview</section>');
+		$this->setExpectedTriggerError(E_WARNING);
+
+		$controller->mode_manage();
+	}
+
+	public function test_action_preview_rejects_invalid_form()
+	{
+		self::$valid_form = false;
+		$controller = $this->get_controller();
+		$this->request->expects(self::once())->method('variable')->with('action', '')->willReturn('preview');
+		$this->template->expects(self::never())->method('assign_vars');
+		$this->manager->expects(self::never())->method('announcement_columns');
+		$this->log->expects(self::never())->method('add');
+		$this->setExpectedTriggerError(E_USER_WARNING, 'The submitted form was invalid. Try submitting again.');
 
 		$controller->mode_manage();
 	}

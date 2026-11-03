@@ -94,6 +94,23 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(1, $crawler->filter('input[name="disable_smilies"]'));
 		self::assertCount(1, $crawler->filter('input[name="disable_magic_url"]'));
 		self::assertCount(0, $crawler->filter('.ba-message-options input:checked'));
+		self::assertCount(1, $crawler->filter('noscript .ba-notice-warning'));
+		self::assertCount(1, $crawler->filter('[data-ba-preview-slot]'));
+		self::assertSame('button', $crawler->filter('[data-ba-preview-request]')->attr('type'));
+
+		$form = $crawler->filter('#add_board_announcements')->form();
+		$preview_values = $form->getPhpValues();
+		$preview_values['action'] = 'preview';
+		$preview_values['board_announcements_title'] = 'AJAX preview title';
+		$preview_values['board_announcements_text'] = '[b]AJAX preview text[/b]';
+		self::$client->setServerParameter('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
+		self::$client->request('POST', $form->getUri(), $preview_values);
+		$preview_response = json_decode(self::get_content(), true);
+		self::$client->setServerParameter('HTTP_X_REQUESTED_WITH', '');
+		self::assertArrayHasKey('success', $preview_response, self::get_content());
+		self::assertTrue($preview_response['success']);
+		self::assertStringContainsString('AJAX preview title', $preview_response['preview_html']);
+		self::assertStringContainsString('AJAX preview text', $preview_response['preview_html']);
 
 		$values = [
 			'board_announcements_state'			=> ext::STATE_PUBLISHED,
@@ -280,7 +297,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_PREVIEW', $crawler->text());
 		$this->assertStringContainsString('This is a board announcement test.', $crawler->text());
 		self::assertCount(1, $crawler->filter('#board_announcements_tone option[value="custom"]:selected'));
-		self::assertCount(1, $crawler->filter('.ba-editor-main > .ba-preview-card + [aria-labelledby="ba-content-title"]'));
+		self::assertCount(1, $crawler->filter('.ba-editor-main > [data-ba-preview-slot] > .ba-preview-card'));
 		self::assertCount(1, $crawler->filter('#ba-preview'));
 		self::assertCount(0, $crawler->filter('#ba-preview[data-theme], [data-ba-preview-theme]'));
 		self::assertCount(1, $crawler->filter('[data-ba-preview-mobile]'));
@@ -292,10 +309,7 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(0, $crawler->filter('#board_announcements_bgcolor_picker[disabled], #board_announcements_bgcolor[disabled]'));
 		self::assertCount(3, $crawler->filter('.ba-message-options input:checked'));
 
-		// Preview and save preserve disabled parser options.
-		$form = $crawler->selectButton($this->lang('PREVIEW'))->form();
-		$crawler = self::submit($form);
-		self::assertCount(3, $crawler->filter('.ba-message-options input:checked'));
+		// Save preserves disabled parser options.
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
 		self::submit($form);
 		$result = $this->db->sql_query('SELECT announcement_flags FROM phpbb_board_announcements WHERE announcement_id = 1');

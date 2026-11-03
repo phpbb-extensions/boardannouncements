@@ -10,17 +10,13 @@
 </div>
 
 <div class="ba-acp ba-acp-editor">
+	<noscript><div class="ba-notice ba-notice-warning" role="alert"><i class="icon fa-exclamation-triangle" aria-hidden="true"></i><span>{{ lang('BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED') }}</span></div></noscript>
 	{% if ERRORS %}<div class="ba-notice ba-notice-error" role="alert"><i class="icon fa-exclamation-circle" aria-hidden="true"></i><div><strong>{{ lang('WARNING') }}</strong><p>{{ ERRORS }}</p></div></div>{% endif %}
 
 	<form id="add_board_announcements" method="post" action="{{ U_ACTION }}" data-ba-editor data-groups-value="{{ constant('\\phpbb\\boardannouncements\\ext::GROUPS') }}" data-date-format="{{ PICKER_DATE_FORMAT }}" data-user-lang="{{ S_USER_LANG }}">
 		<div class="ba-editor-grid">
 			<main class="ba-editor-main">
-				{% if BOARD_ANNOUNCEMENTS_PREVIEW %}
-				<section class="ba-card ba-form-card ba-preview-card" aria-labelledby="ba-preview-title">
-					<div class="ba-card-header ba-preview-header"><div><h2 id="ba-preview-title">{{ lang('BOARD_ANNOUNCEMENTS_PREVIEW') }}</h2></div><div class="ba-preview-tools"><button type="button" class="ba-icon-button" data-ba-preview-mobile title="{{ lang('BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE') }}"><i class="icon fa-mobile" aria-hidden="true"></i><span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE') }}</span></button></div></div>
-					<div id="ba-preview" class="ba-preview"><div class="phpbb-announcement phpbb-announcement--{{ BOARD_ANNOUNCEMENTS_TONE }}"{% if BOARD_ANNOUNCEMENTS_BGCOLOR %} style="--ba-background:#{{ BOARD_ANNOUNCEMENTS_BGCOLOR }};--ba-foreground:#{{ BOARD_ANNOUNCEMENTS_TEXTCOLOR }};--ba-accent:#{{ BOARD_ANNOUNCEMENTS_TEXTCOLOR }}"{% endif %}>{% if BOARD_ANNOUNCEMENTS_TITLE %}<h2 class="phpbb-announcement__title">{{ BOARD_ANNOUNCEMENTS_TITLE }}</h2>{% endif %}<div class="phpbb-announcement__message">{{ BOARD_ANNOUNCEMENTS_PREVIEW }}</div></div></div>
-				</section>
-				{% endif %}
+				<div data-ba-preview-slot aria-live="polite">{% include '@phpbb_boardannouncements/announcement_preview.html' %}</div>
 
 				<section class="ba-card ba-form-card" aria-labelledby="ba-content-title">
 					<div class="ba-card-header"><span class="ba-section-icon"><i class="icon fa-align-left" aria-hidden="true"></i></span><div><h2 id="ba-content-title">{{ lang('BOARD_ANNOUNCEMENTS_CONTENT') }}</h2></div></div>
@@ -119,7 +115,7 @@
 
 		<div class="ba-editor-actions">
 			<a class="ba-button ba-button-quiet" href="{{ U_BACK }}">{{ lang('CANCEL') }}</a>
-			<button class="ba-button ba-button-secondary" type="submit" name="preview"><i class="icon fa-eye" aria-hidden="true"></i>{{ lang('PREVIEW') }}</button>
+			<button class="ba-button ba-button-secondary" type="button" data-ba-preview-request><i class="icon fa-eye" aria-hidden="true"></i>{{ lang('PREVIEW') }}</button>
 			<button class="ba-button ba-button-primary" type="submit" name="submit"><i class="icon fa-check" aria-hidden="true"></i>{{ lang('SUBMIT') }}</button>
 			{{ S_FORM_TOKEN }}
 		</div>

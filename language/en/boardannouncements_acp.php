@@ -135,6 +135,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Selected announcements were updated.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Delete permanently',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobile width',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript must be enabled for preview and full editor functionality.',
 
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'The board announcement was deleted',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'The board announcement could not be deleted',
