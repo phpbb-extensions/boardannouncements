@@ -11,19 +11,17 @@
 </div>
 
 <div class="ba-acp ba-acp-list">
-	{% if not BOARD_ANNOUNCEMENTS_ENABLED_ALL %}
-		<div class="ba-notice ba-notice-warning" role="status"><i class="icon fa-exclamation-triangle" aria-hidden="true"></i><span>{{ lang('BOARD_ANNOUNCEMENTS_GLOBAL_DISABLED') }}</span></div>
-	{% endif %}
+	<div class="ba-notice ba-notice-warning" role="status" data-ba-global-disabled{% if BOARD_ANNOUNCEMENTS_ENABLED_ALL %} hidden{% endif %}><i class="icon fa-exclamation-triangle" aria-hidden="true"></i><span>{{ lang('BOARD_ANNOUNCEMENTS_GLOBAL_DISABLED') }}</span></div>
 
 	<section class="ba-card ba-switch-card">
 		<div><h2>{{ lang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH') }}</h2><p>{{ lang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH_EXPLAIN') }}</p></div>
-		<form id="board_announcement_settings" method="post" action="{{ U_ACTION }}" data-ajax="true">
+		<form id="board_announcement_settings" method="post" action="{{ U_ACTION }}" data-ajax="board_announcements_toggle">
 			<div class="ba-segmented-control">
 				<label><input type="radio" name="board_announcements_enable_all" value="1"{% if BOARD_ANNOUNCEMENTS_ENABLED_ALL %} checked{% endif %}><span>{{ lang('ENABLED') }}</span></label>
 				<label><input type="radio" name="board_announcements_enable_all" value="0"{% if not BOARD_ANNOUNCEMENTS_ENABLED_ALL %} checked{% endif %}><span>{{ lang('DISABLED') }}</span></label>
 			</div>
 			<input type="hidden" name="action" value="settings">
-			<button type="submit" class="ba-button ba-button-secondary">{{ lang('SUBMIT') }}</button>
+			<noscript><button type="submit" class="ba-button ba-button-secondary">{{ lang('SUBMIT') }}</button></noscript>
 			{{ S_FORM_TOKEN }}
 		</form>
 	</section>

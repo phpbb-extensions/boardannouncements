@@ -1360,10 +1360,12 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_settings_data()
 	{
 		return [
-			[1, true],
-			[0, true],
-			[1, false],
-			[0, false],
+			[1, true, false],
+			[0, true, false],
+			[1, false, false],
+			[0, false, false],
+			[1, true, true],
+			[0, true, true],
 		];
 	}
 
@@ -1373,9 +1375,10 @@ class acp_controller_test extends \phpbb_test_case
 	 * @dataProvider action_settings_data
 	 * @param $enable
 	 * @param $valid_form
+	 * @param $is_ajax
 	 * @return void
 	 */
-	public function test_action_settings($enable, $valid_form)
+	public function test_action_settings($enable, $valid_form, $is_ajax)
 	{
 		self::$valid_form = $valid_form;
 
@@ -1391,7 +1394,14 @@ class acp_controller_test extends \phpbb_test_case
 		}
 		else
 		{
-			$this->setExpectedTriggerError(E_USER_NOTICE, 'CONFIG_UPDATED');
+			if ($is_ajax)
+			{
+				$this->setExpectedTriggerError(E_WARNING);
+			}
+			else
+			{
+				$this->setExpectedTriggerError(E_USER_NOTICE, 'CONFIG_UPDATED');
+			}
 			$this->request->expects(self::exactly(2))
 				->method('variable')
 				->withConsecutive(['action', ''], ['board_announcements_enable_all', 0])
@@ -1399,6 +1409,9 @@ class acp_controller_test extends \phpbb_test_case
 			$this->config->expects(self::once())
 				->method('set')
 				->with('board_announcements_enable', $enable);
+			$this->request->expects(self::once())
+				->method('is_ajax')
+				->willReturn($is_ajax);
 		}
 
 		$controller->mode_manage();

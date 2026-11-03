@@ -170,6 +170,10 @@
 	padding: 12px 14px;
 }
 
+.ba-notice[hidden] {
+	display: none;
+}
+
 .ba-notice .icon {
 	margin-top: 2px;
 }

@@ -679,7 +679,17 @@ class acp_controller
 			$this->error('FORM_INVALID');
 		}
 
-		$this->config->set('board_announcements_enable', $this->request->variable('board_announcements_enable_all', 0));
+		$enabled = $this->request->variable('board_announcements_enable_all', 0);
+		$this->config->set('board_announcements_enable', $enabled);
+
+		if ($this->request->is_ajax())
+		{
+			$json_response = new json_response;
+			$json_response->send([
+				'success' => true,
+				'enabled' => (bool) $enabled,
+			]);
+		}
 
 		$this->success('CONFIG_UPDATED');
 	}

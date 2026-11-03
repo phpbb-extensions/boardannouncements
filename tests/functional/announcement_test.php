@@ -43,6 +43,7 @@ class announcement_test extends \phpbb_functional_test_case
 
 		$crawler = self::request('GET', $this->get_acp_page());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH', $crawler->text());
+		self::assertSame('board_announcements_toggle', $crawler->filter('#board_announcement_settings')->attr('data-ajax'));
 
 		// Enable announcements
 		$form = $crawler->filter('#board_announcement_settings')->form();
@@ -50,6 +51,10 @@ class announcement_test extends \phpbb_functional_test_case
 		$form->setValues($values);
 		$crawler = self::submit($form);
 		$this->assertContainsLang('CONFIG_UPDATED', $crawler->text());
+
+		$crawler = self::request('GET', $this->get_acp_page());
+		self::assertCount(1, $crawler->filter('[data-ba-global-disabled][hidden]'));
+		self::assertCount(1, $crawler->filter('input[name="board_announcements_enable_all"][value="1"]:checked'));
 
 		// Load Add page
 		$crawler = self::request('GET', $this->get_acp_page('add'));

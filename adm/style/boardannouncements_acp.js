@@ -19,6 +19,48 @@
 	}
 
 	onReady(() => {
+		const settingsForm = document.getElementById('board_announcement_settings');
+		if (settingsForm && window.phpbb) {
+			const warning = document.querySelector('[data-ba-global-disabled]');
+			let savedValue = settingsForm.querySelector('input[name="board_announcements_enable_all"]:checked').value;
+
+			const restoreValue = () => {
+				const savedRadio = settingsForm.querySelector(`input[name="board_announcements_enable_all"][value="${savedValue}"]`);
+				if (savedRadio) {
+					savedRadio.checked = true;
+				}
+			};
+
+			window.phpbb.addAjaxCallback('board_announcements_toggle', (response) => {
+				if (!response.success) {
+					restoreValue();
+					return;
+				}
+
+				savedValue = response.enabled ? '1' : '0';
+				if (warning) {
+					warning.hidden = response.enabled;
+				}
+			});
+
+			settingsForm.addEventListener('change', (event) => {
+				if (event.target.name !== 'board_announcements_enable_all') {
+					return;
+				}
+
+				if (typeof settingsForm.requestSubmit === 'function') {
+					settingsForm.requestSubmit();
+				} else {
+					const submitButton = document.createElement('button');
+					submitButton.type = 'submit';
+					submitButton.hidden = true;
+					settingsForm.appendChild(submitButton);
+					submitButton.click();
+					submitButton.remove();
+				}
+			});
+		}
+
 		const selectAll = document.querySelector('[data-ba-select-all]');
 		if (selectAll) {
 			selectAll.addEventListener('change', () => {
