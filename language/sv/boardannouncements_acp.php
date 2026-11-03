@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Utvalda meddelanden uppdaterades.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Ta bort permanent',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobil bredd',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript måste vara aktiverat för förhandsgranskning och full redigeringsfunktionalitet.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Styrelsens kungörelse raderades',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Styrelsens meddelande kunde inte raderas',
 

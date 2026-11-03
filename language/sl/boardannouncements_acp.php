@@ -138,6 +138,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Izbrane objave so bile posodobljene.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Trajno izbriši',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobilna širina',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'Za predogled in polno delovanje urejevalnika mora biti omogočen JavaScript.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Obvestilo na tabli je bilo izbrisano',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Objave na tabli ni bilo mogoče izbrisati',
 

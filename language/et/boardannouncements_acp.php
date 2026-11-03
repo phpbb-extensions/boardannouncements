@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Valitud teateid värskendati.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Kustuta jäädavalt',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobiilne laius',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'Eelvaate ja redaktori täieliku funktsionaalsuse kasutamiseks peab JavaScript olema lubatud.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Juhatuse teade kustutati',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Juhatuse teadet ei saanud kustutada',
 

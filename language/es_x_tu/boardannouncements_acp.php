@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Se actualizaron los anuncios seleccionados.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Eliminar permanentemente',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Ancho móvil',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript debe estar habilitado para la vista previa y todas las funciones del editor.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'El anuncio del foro fue eliminado.',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'No se pudo eliminar el anuncio del foro.',
 

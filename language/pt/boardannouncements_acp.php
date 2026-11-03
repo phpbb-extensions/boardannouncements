@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Os anúncios selecionados foram atualizados.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Apagar permanentemente',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Largura móvel',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'O JavaScript tem de estar ativado para a pré-visualização e todas as funcionalidades do editor.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'O anúncio do conselho foi excluído',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Não foi possível excluir o anúncio do conselho',
 

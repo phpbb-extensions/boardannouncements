@@ -138,6 +138,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Seçilen duyurular güncellendi.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Kalıcı olarak sil',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobil genişlik',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'Önizleme ve tam düzenleyici işlevselliği için JavaScript etkinleştirilmelidir.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Site duyurusu silindi',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Site duyurusu silinemedi',
 

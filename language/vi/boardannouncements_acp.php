@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Thông báo được chọn đã được cập nhật.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Xóa vĩnh viễn',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Chiều rộng di động',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'Phải bật JavaScript để xem trước và sử dụng đầy đủ chức năng của trình soạn thảo.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Thông báo trên bảng đã bị xóa',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Không thể xóa thông báo trên bảng',
 

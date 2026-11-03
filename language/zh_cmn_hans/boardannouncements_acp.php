@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> '选定的公告已更新。',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => '永久删除',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> '移动宽度',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => '必须启用 JavaScript 才能使用预览和编辑器的完整功能。',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> '此公告已成功删除',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> '此公告无法删除',
 

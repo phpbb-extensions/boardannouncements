@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'تم تحديث الإعلانات المختارة.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'حذف نهائيا',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'عرض الجوال',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'يجب تمكين JavaScript للمعاينة والاستفادة من جميع وظائف المحرر.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'تم حذف إعلان المجلس',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'لا يمكن حذف إعلان المجلس',
 

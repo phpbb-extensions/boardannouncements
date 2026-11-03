@@ -138,6 +138,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Выбранные объявления обновлены.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Удалить навсегда',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Мобильная ширина',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'Включите JavaScript для использования всех функций редактора объявлений.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Объявление было удалено',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Объявление не может быть удалено',
 

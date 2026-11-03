@@ -138,6 +138,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'הודעות נבחרות עודכנו.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'מחק לצמיתות',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'רוחב נייד',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'יש להפעיל JavaScript עבור תצוגה מקדימה ופונקציונליות מלאה של העורך.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'הודעת הדירקטוריון נמחקה',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'לא ניתן היה למחוק את הודעת הדירקטוריון',
 

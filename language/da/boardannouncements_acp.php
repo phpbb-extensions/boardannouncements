@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Udvalgte meddelelser blev opdateret.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Slet permanent',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobil bredde',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript skal være aktiveret for forhåndsvisning og fuld editorfunktionalitet.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Bestyrelsens meddelelse blev slettet',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Bestyrelsens meddelelse kunne ikke slettes',
 

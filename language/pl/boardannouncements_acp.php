@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Wybrane ogłoszenia zostały zaktualizowane.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Usuń trwale',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Szerokość mobilna',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript musi być włączony, aby korzystać z podglądu i pełnej funkcjonalności edytora.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Ogłoszenie witryny zostało usunięte',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Nie udało się usunąć ogłoszenia witryny',
 

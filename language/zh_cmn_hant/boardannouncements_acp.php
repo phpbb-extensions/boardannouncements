@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> '選定的公告已更新。',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => '永久刪除',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> '移動寬度',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => '必須啟用 JavaScript 才能使用預覽和編輯器的完整功能。',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> '討論區公告已刪除',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> '討論區公告無法刪除',
 

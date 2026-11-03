@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Geselecteerde aankondigingen zijn bijgewerkt.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Permanent verwijderen',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobiele breedte',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript moet zijn ingeschakeld voor het voorbeeld en de volledige editorfunctionaliteit.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'De bestuursmededeling is verwijderd',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'De bestuursmededeling kon niet worden verwijderd',
 

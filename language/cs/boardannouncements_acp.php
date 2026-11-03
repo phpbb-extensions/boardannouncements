@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Vybraná oznámení byla aktualizována.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Smazat trvale',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobilní šířka',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'Pro náhled a plnou funkčnost editoru musí být povolen JavaScript.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Oznámení rady bylo smazáno',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Oznámení fóra se nepodařilo smazat',
 

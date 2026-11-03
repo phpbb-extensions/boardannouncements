@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Ausgewählte Ankündigungen wurden aktualisiert.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Dauerhaft löschen',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobile Breite',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript muss für die Vorschau und den vollen Funktionsumfang des Editors aktiviert sein.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Die Vorstandsmitteilung wurde gelöscht',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Die Board-Ankündigung konnte nicht gelöscht werden',
 

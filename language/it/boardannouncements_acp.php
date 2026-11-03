@@ -138,6 +138,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Gli annunci selezionati sono stati aggiornati.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Elimina definitivamente',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Larghezza mobile',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript deve essere abilitato per l’anteprima e tutte le funzionalità dell’editor.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'L’annuncio del consiglio è stato cancellato',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Impossibile eliminare l’annuncio del consiglio',
 

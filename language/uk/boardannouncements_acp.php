@@ -138,6 +138,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Вибрані оголошення оновлено.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Видалити остаточно',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Мобільна ширина',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'Для попереднього перегляду та повної функціональності редактора потрібно ввімкнути JavaScript.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Оголошення з дошки видалено',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Не вдалося видалити оголошення з дошки',
 

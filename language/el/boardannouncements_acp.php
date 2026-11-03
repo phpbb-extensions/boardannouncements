@@ -139,6 +139,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Οι επιλεγμένες ανακοινώσεις ενημερώθηκαν.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Διαγραφή οριστικά',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Πλάτος κινητού',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'Η JavaScript πρέπει να είναι ενεργοποιημένη για την προεπισκόπηση και την πλήρη λειτουργικότητα του επεξεργαστή.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Η ανακοίνωση έχει διαγράφηκε',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Η ανακοίνωση δεν μπορεί να διαγραφεί',
 

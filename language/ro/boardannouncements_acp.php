@@ -138,6 +138,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Anunțurile selectate au fost actualizate.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Ștergeți definitiv',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Lățimea mobilă',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript trebuie activat pentru previzualizare și funcționalitatea completă a editorului.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Anunțul a fost șters',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Anunțul forumului nu a putut fi șters',
 

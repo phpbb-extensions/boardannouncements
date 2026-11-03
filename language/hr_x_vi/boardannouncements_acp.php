@@ -138,6 +138,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_BULK_UPDATED'		=> 'Odabrane najave su ažurirane.',
 	'BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY' => 'Izbriši trajno',
 	'BOARD_ANNOUNCEMENTS_PREVIEW_MOBILE'	=> 'Mobilna širina',
+	'BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED' => 'JavaScript mora biti omogućen za pretpregled i punu funkcionalnost uređivača.',
 	'BOARD_ANNOUNCEMENTS_DELETE_SUCCESS'	=> 'Oglas na ploči je izbrisan',
 	'BOARD_ANNOUNCEMENTS_DELETE_ERROR'		=> 'Obavijest ploče nije bilo moguće izbrisati',
 
