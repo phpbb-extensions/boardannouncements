@@ -30,6 +30,8 @@ class controller
 
 	/** @var string */
 	protected $php_ext;
+
+	/** @var visibility Announcement visibility policy */
 	protected $visibility;
 
 	/**

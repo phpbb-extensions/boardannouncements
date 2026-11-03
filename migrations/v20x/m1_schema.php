@@ -10,11 +10,13 @@ namespace phpbb\boardannouncements\migrations\v20x;
 
 class m1_schema extends \phpbb\db\migration\migration
 {
+	/** {@inheritdoc} */
 	public static function depends_on()
 	{
 		return ['\phpbb\boardannouncements\migrations\v10x\m15_unicode_description'];
 	}
 
+	/** {@inheritdoc} */
 	public function update_schema()
 	{
 		return [
@@ -52,6 +54,7 @@ class m1_schema extends \phpbb\db\migration\migration
 		];
 	}
 
+	/** {@inheritdoc} */
 	public function revert_schema()
 	{
 		return [

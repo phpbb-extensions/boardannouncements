@@ -12,6 +12,11 @@ namespace phpbb\boardannouncements\acp;
 
 class board_announcements_info
 {
+	/**
+	 * Return ACP module configuration.
+	 *
+	 * @return array ACP module configuration
+	 */
 	public function module()
 	{
 		return [

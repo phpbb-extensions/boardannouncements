@@ -147,12 +147,13 @@ class acp_controller
 			$status_filter = 'all';
 		}
 
-		$announcements = array_values((array) $this->manager->get_announcements());
+		$announcements = array_values($this->manager->get_announcements());
+		$announcement_defaults = $this->announcement_defaults();
 		$last_index = count($announcements) - 1;
 		$filters_active = $status_filter !== 'all' || $query !== '';
 		foreach ($announcements as $index => $row)
 		{
-			$row = array_replace($this->announcement_defaults(), $row);
+			$row += $announcement_defaults;
 			$status = $this->get_status($row);
 			if ($status_filter !== 'all' && $status !== $status_filter)
 			{
@@ -227,7 +228,7 @@ class acp_controller
 		}
 
 		// Get board announcement data from the database if it already exists
-		$data = array_replace($this->announcement_defaults(), (array) $this->manager->announcement_columns());
+		$data = array_replace($this->announcement_defaults(), $this->manager->announcement_columns());
 		$id = $this->request->variable('id', 0);
 		if ($id)
 		{
@@ -244,7 +245,7 @@ class acp_controller
 			$data['announcement_tone'] = 'custom';
 		}
 		$location_mode = $this->get_location_mode($data['announcement_locations']);
-		$selected_groups = $id ? (array) $this->manager->get_announcement_groups($id) : [];
+		$selected_groups = $id ? $this->manager->get_announcement_groups($id) : [];
 
 		// If form is submitted
 		$submit = $this->request->is_set_post('submit');
@@ -355,7 +356,10 @@ class acp_controller
 			if ($data['announcement_expiry'] !== '')
 			{
 				$data['announcement_expiry'] = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $data['announcement_expiry']);
-				if (!$data['announcement_expiry'] || ($data['announcement_state'] === ext::STATE_PUBLISHED && $data['announcement_expiry'] < time()) || ($data['announcement_start'] && $data['announcement_expiry'] <= $data['announcement_start']))
+				if (!$data['announcement_expiry']
+					|| ($data['announcement_start'] && $data['announcement_expiry'] <= $data['announcement_start'])
+					|| ($data['announcement_state'] === ext::STATE_PUBLISHED && $data['announcement_expiry'] < time())
+				)
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
 				}
@@ -427,7 +431,7 @@ class acp_controller
 			'BOARD_ANNOUNCEMENTS_TEXTCOLOR' => color::contrast_color($data['announcement_bgcolor']),
 			'BOARD_ANNOUNCEMENTS_TONE'		=> $data['announcement_tone'],
 			'BOARD_ANNOUNCEMENTS_STATE'		=> $data['announcement_state'],
-			'BOARD_ANNOUNCEMENTS_GROUPS'	=> $this->get_group_options($selected_groups),
+			'BOARD_ANNOUNCEMENTS_GROUPS'	=> $this->get_group_options((array) $selected_groups),
 
 			'BOARD_ANNOUNCEMENTS_LOCATIONS'	=> $this->get_location_options($data['announcement_locations']),
 			'BOARD_ANNOUNCEMENTS_LOCATION_MODE' => $location_mode,
@@ -528,6 +532,11 @@ class acp_controller
 		]);
 	}
 
+	/**
+	 * Archive an announcement.
+	 *
+	 * @return void
+	 */
 	protected function action_archive()
 	{
 		$id = $this->request->variable('id', 0);
@@ -543,6 +552,11 @@ class acp_controller
 		$this->success('BOARD_ANNOUNCEMENTS_ARCHIVED');
 	}
 
+	/**
+	 * Reset dismissals so an announcement is shown again.
+	 *
+	 * @return void
+	 */
 	protected function action_reset()
 	{
 		$id = $this->request->variable('id', 0);
@@ -553,11 +567,16 @@ class acp_controller
 		$this->success('BOARD_ANNOUNCEMENTS_SHOWN_AGAIN');
 	}
 
+	/**
+	 * Duplicate an announcement as a draft.
+	 *
+	 * @return void
+	 */
 	protected function action_duplicate()
 	{
 		$id = $this->request->variable('id', 0);
 		$data = $this->manager->get_announcement($id);
-		if (!$this->check_hash('duplicate' . $id) || !$data)
+		if (!$data || !$this->check_hash('duplicate' . $id))
 		{
 			$this->error('FORM_INVALID');
 		}
@@ -582,6 +601,11 @@ class acp_controller
 		$this->success('BOARD_ANNOUNCEMENTS_DUPLICATED');
 	}
 
+	/**
+	 * Apply a bulk action to selected announcements.
+	 *
+	 * @return void
+	 */
 	protected function action_bulk()
 	{
 		if (!check_form_key('board_announcement_settings'))
@@ -756,6 +780,7 @@ class acp_controller
 	 * Print success message.
 	 *
 	 * @param	string	$msg	Message lang key
+	 * @return void
 	 */
 	protected function success($msg)
 	{
@@ -766,6 +791,7 @@ class acp_controller
 	 * Print error message.
 	 *
 	 * @param	string	$msg	Message lang key
+	 * @return void
 	 */
 	protected function error($msg)
 	{
@@ -786,8 +812,8 @@ class acp_controller
 	/**
 	 * Add operations to the system log
 	 *
-	 * @param string $msg
-	 * @param string $params
+	 * @param string $msg Log message language key
+	 * @param string $params Log message parameter
 	 * @return void
 	 */
 	protected function log_change($msg, $params)
@@ -798,8 +824,8 @@ class acp_controller
 	/**
 	 * Get an array of available locations for the announcement
 	 *
-	 * @param string $locations
-	 * @return array
+	 * @param string $locations JSON-encoded selected location identifiers
+	 * @return array Available location options
 	 */
 	protected function get_location_options($locations)
 	{
@@ -829,8 +855,8 @@ class acp_controller
 	/**
 	 * Derive the ACP location mode from stored location identifiers.
 	 *
-	 * @param string|array $locations
-	 * @return string
+	 * @param string|array $locations Stored location identifiers
+	 * @return string Location mode
 	 */
 	protected function get_location_mode($locations)
 	{
@@ -845,6 +871,12 @@ class acp_controller
 		return count($selected) === 1 && $selected[0] === ext::INDEX_ONLY ? 'index' : 'selected';
 	}
 
+	/**
+	 * Derive display status from announcement data.
+	 *
+	 * @param array $row Announcement data
+	 * @return string Announcement status
+	 */
 	protected function get_status(array $row)
 	{
 		if (($row['announcement_state'] ?? '') === ext::STATE_ARCHIVED)
@@ -866,6 +898,12 @@ class acp_controller
 		return 'active';
 	}
 
+	/**
+	 * Get the announcement label displayed in ACP lists and logs.
+	 *
+	 * @param array $row Announcement data
+	 * @return string Announcement label
+	 */
 	protected function get_list_label(array $row)
 	{
 		if ($row['announcement_description'] !== '')
@@ -891,6 +929,14 @@ class acp_controller
 		return $description . ($truncated ? $this->language->lang('ELLIPSIS') : '');
 	}
 
+	/**
+	 * Parse an ACP date value and collect validation errors.
+	 *
+	 * @param string $value Date value
+	 * @param array  $errors Validation errors
+	 * @param string $error_key Language key used when parsing fails
+	 * @return int Parsed timestamp, or zero for an empty or invalid value
+	 */
 	protected function parse_date($value, array &$errors, $error_key)
 	{
 		if ($value === '')
@@ -905,6 +951,12 @@ class acp_controller
 		return $timestamp;
 	}
 
+	/**
+	 * Get selectable group options for the ACP editor.
+	 *
+	 * @param array $selected Selected group identifiers
+	 * @return array Group options
+	 */
 	protected function get_group_options(array $selected)
 	{
 		$options = [];
@@ -926,6 +978,8 @@ class acp_controller
 
 	/**
 	 * Defaults keep ACP rendering compatible with announcements created before 2.0.
+	 *
+	 * @return array Default announcement data
 	 */
 	protected function announcement_defaults()
 	{

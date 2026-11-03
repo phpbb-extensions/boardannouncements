@@ -110,6 +110,12 @@ class manager
 		$this->nestedset->move($id, ($direction !== 'up' ? -$amount : $amount));
 	}
 
+	/**
+	 * Increment an announcement revision so dismissed users see it again.
+	 *
+	 * @param int $id Announcement identifier
+	 * @return bool True when the revision was updated, false when not found
+	 */
 	public function show_announcement_again($id)
 	{
 		$announcement = $this->get_announcement($id);
@@ -123,21 +129,48 @@ class manager
 		]);
 	}
 
+	/**
+	 * Get groups assigned to an announcement.
+	 *
+	 * @param int $id Announcement identifier
+	 * @return array Group identifiers
+	 */
 	public function get_announcement_groups($id)
 	{
 		return $this->nestedset->get_announcement_groups($id);
 	}
 
+	/**
+	 * Replace groups assigned to an announcement.
+	 *
+	 * @param int   $id Announcement identifier
+	 * @param array $group_ids Group identifiers
+	 * @return void
+	 */
 	public function set_announcement_groups($id, array $group_ids)
 	{
 		$this->nestedset->set_announcement_groups($id, $group_ids);
 	}
 
+	/**
+	 * Check whether a user belongs to an announcement's assigned groups.
+	 *
+	 * @param int $id Announcement identifier
+	 * @param int $user_id User identifier
+	 * @return bool True when the user belongs to an assigned group
+	 */
 	public function user_matches_groups($id, $user_id)
 	{
 		return $this->nestedset->user_matches_groups($id, $user_id);
 	}
 
+	/**
+	 * Check whether a location descends from a selected forum.
+	 *
+	 * @param int   $location Forum identifier
+	 * @param array $selected Selected forum identifiers
+	 * @return bool True when the location is a descendant
+	 */
 	public function location_matches_descendant($location, array $selected)
 	{
 		return $this->nestedset->location_matches_descendant($location, $selected);

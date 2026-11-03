@@ -85,6 +85,12 @@ class nestedset extends \phpbb\tree\nestedset
 		return $this->db->sql_affectedrows();
 	}
 
+	/**
+	 * Get groups assigned to an announcement.
+	 *
+	 * @param int $item_id Announcement identifier
+	 * @return array Group identifiers
+	 */
 	public function get_announcement_groups($item_id)
 	{
 		$sql = 'SELECT group_id FROM ' . $this->groups_table . '
@@ -96,6 +102,13 @@ class nestedset extends \phpbb\tree\nestedset
 		return $groups;
 	}
 
+	/**
+	 * Replace groups assigned to an announcement.
+	 *
+	 * @param int   $item_id Announcement identifier
+	 * @param array $group_ids Group identifiers
+	 * @return void
+	 */
 	public function set_announcement_groups($item_id, array $group_ids)
 	{
 		$this->user_group_announcements = [];
@@ -114,6 +127,13 @@ class nestedset extends \phpbb\tree\nestedset
 		}
 	}
 
+	/**
+	 * Check whether a user belongs to an announcement's assigned groups.
+	 *
+	 * @param int $item_id Announcement identifier
+	 * @param int $user_id User identifier
+	 * @return bool True when the user belongs to an assigned group
+	 */
 	public function user_matches_groups($item_id, $user_id)
 	{
 		$user_id = (int) $user_id;
@@ -133,6 +153,13 @@ class nestedset extends \phpbb\tree\nestedset
 		return isset($this->user_group_announcements[$user_id][(int) $item_id]);
 	}
 
+	/**
+	 * Check whether a location descends from a selected forum.
+	 *
+	 * @param int   $location Forum identifier
+	 * @param array $selected Selected forum identifiers
+	 * @return bool True when the location is a descendant
+	 */
 	public function location_matches_descendant($location, array $selected)
 	{
 		$location = (int) $location;

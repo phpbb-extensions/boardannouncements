@@ -12,14 +12,20 @@ namespace phpbb\boardannouncements\acp;
 
 class board_announcements_module
 {
+	/** @var string ACP page title language key */
 	public $page_title;
+
+	/** @var string ACP template name */
 	public $tpl_name;
+
+	/** @var string ACP module action URL */
 	public $u_action;
 
 	/**
 	 * Main ACP module
 	 *
 	 * @throws \Exception
+	 * @return void
 	 */
 	public function main()
 	{

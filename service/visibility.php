@@ -13,12 +13,30 @@ use phpbb\request\request_interface;
 
 class visibility
 {
+	/** @var \phpbb\auth\auth Authorization service */
 	protected $auth;
+
+	/** @var \phpbb\config\config Configuration */
 	protected $config;
+
+	/** @var \phpbb\request\request Request */
 	protected $request;
+
+	/** @var \phpbb\user Current user */
 	protected $user;
+
+	/** @var \phpbb\boardannouncements\manager\manager Announcement manager */
 	protected $manager;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param \phpbb\auth\auth                          $auth    Authorization service
+	 * @param \phpbb\config\config                     $config  Configuration
+	 * @param \phpbb\request\request                   $request Request
+	 * @param \phpbb\user                              $user    Current user
+	 * @param \phpbb\boardannouncements\manager\manager $manager Announcement manager
+	 */
 	public function __construct($auth, $config, $request, $user, $manager)
 	{
 		$this->auth = $auth;
@@ -28,6 +46,14 @@ class visibility
 		$this->manager = $manager;
 	}
 
+	/**
+	 * Check whether an announcement is visible at a location.
+	 *
+	 * @param array $announcement   Announcement data
+	 * @param int   $location       Forum identifier
+	 * @param bool  $check_dismissal Whether to check dismissal state
+	 * @return bool True when visible
+	 */
 	public function is_visible(array $announcement, $location, $check_dismissal = true)
 	{
 		return $this->is_active($announcement)
@@ -36,6 +62,13 @@ class visibility
 			&& (!$check_dismissal || empty($announcement['announcement_dismissable']) || !$this->is_dismissed($announcement));
 	}
 
+	/**
+	 * Check whether an announcement is active.
+	 *
+	 * @param array    $announcement Announcement data
+	 * @param int|null $now          Timestamp used for comparison
+	 * @return bool True when active
+	 */
 	public function is_active(array $announcement, $now = null)
 	{
 		$now = $now === null ? time() : (int) $now;
@@ -45,6 +78,12 @@ class visibility
 			&& (empty($announcement['announcement_expiry']) || (int) $announcement['announcement_expiry'] > $now);
 	}
 
+	/**
+	 * Check whether current user belongs to announcement audience.
+	 *
+	 * @param array $announcement Announcement data
+	 * @return bool True when audience matches
+	 */
 	public function matches_audience(array $announcement)
 	{
 		$audience = (int) $announcement['announcement_users'];
@@ -58,6 +97,13 @@ class visibility
 		return $audience !== ext::GROUPS || $this->manager->user_matches_groups($announcement['announcement_id'], $this->user->data['user_id']);
 	}
 
+	/**
+	 * Check whether announcement targets a location.
+	 *
+	 * @param array $announcement Announcement data
+	 * @param int   $location     Forum identifier
+	 * @return bool True when location matches and is readable
+	 */
 	public function matches_location(array $announcement, $location)
 	{
 		$locations = $this->manager->decode_json($announcement['announcement_locations']);
@@ -76,6 +122,12 @@ class visibility
 		return $location <= 0 || (!in_array($location, $this->user->get_passworded_forums()) && $this->auth->acl_get('f_read', $location));
 	}
 
+	/**
+	 * Check whether current user dismissed an announcement revision.
+	 *
+	 * @param array $announcement Announcement data
+	 * @return bool True when dismissed
+	 */
 	public function is_dismissed(array $announcement)
 	{
 		$cookie_name = $this->config['cookie_name'] . '_ba_' . (int) $announcement['announcement_id'];

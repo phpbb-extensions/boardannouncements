@@ -10,11 +10,13 @@ namespace phpbb\boardannouncements\migrations\v20x;
 
 class m2_data extends \phpbb\db\migration\container_aware_migration
 {
+	/** {@inheritdoc} */
 	public static function depends_on()
 	{
 		return ['\phpbb\boardannouncements\migrations\v20x\m1_schema'];
 	}
 
+	/** {@inheritdoc} */
 	public function update_data()
 	{
 		return [
@@ -32,6 +34,11 @@ class m2_data extends \phpbb\db\migration\container_aware_migration
 		];
 	}
 
+	/**
+	 * Update ACP module authorization expression.
+	 *
+	 * @return void
+	 */
 	public function update_module_auth()
 	{
 		$old_auth = 'ext_phpbb/boardannouncements && acl_a_board';
@@ -48,6 +55,11 @@ class m2_data extends \phpbb\db\migration\container_aware_migration
 		$this->container->get('cache')->destroy('_modules_acp');
 	}
 
+	/**
+	 * Migrate existing announcements to 2.0 state and tone fields.
+	 *
+	 * @return void
+	 */
 	public function migrate_announcements()
 	{
 		$now = time();

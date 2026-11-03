@@ -228,6 +228,8 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_expiry'		=> 0,
 				'announcement_locations'	=> '',
 				'announcement_users'		=> 0,
+				'announcement_tone'		=> '',
+				'announcement_dismissable'	=> false,
 			],
 			[
 				'announcement_id'			=> 2,
@@ -258,13 +260,17 @@ class acp_controller_test extends \phpbb_test_case
 			->withConsecutive(
 				['announcements', self::callback(function ($data) use ($rows) {
 					return $data['DESCRIPTION'] === 'BOARD_ANNOUNCEMENTS_UNTITLED'
+						&& $data['TONE'] === ''
+						&& !$data['DISMISSABLE']
 						&& $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
 						&& $data['EXPIRY_DATE'] === ''
 						&& $data['S_MOVE_UP_DISABLED']
 						&& !$data['S_MOVE_DOWN_DISABLED'];
 				})],
 				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+					return $data['TONE'] === 'info'
+						&& $data['DISMISSABLE']
+						&& $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
 						&& $data['EXPIRY_DATE'] === ''
 						&& !$data['S_MOVE_UP_DISABLED']
 						&& !$data['S_MOVE_DOWN_DISABLED'];

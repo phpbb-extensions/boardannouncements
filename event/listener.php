@@ -50,6 +50,8 @@ class listener implements EventSubscriberInterface
 
 	/** @var string $php_ext */
 	protected $php_ext;
+
+	/** @var visibility $visibility Announcement visibility policy */
 	protected $visibility;
 
 	/** @var int $location */
@@ -66,6 +68,7 @@ class listener implements EventSubscriberInterface
 	 * @param template $template Template object
 	 * @param user $user User object
 	 * @param string $php_ext PHP extension
+	 * @param visibility $visibility Announcement visibility policy
 	 * @access public
 	 */
 	public function __construct(manager $manager, config $config, helper $controller_helper, language $language, request $request, template $template, user $user, $php_ext, visibility $visibility)
