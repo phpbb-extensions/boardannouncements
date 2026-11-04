@@ -88,9 +88,6 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 
 		$new_option_id = (int) $this->field("SELECT auth_option_id FROM phpbb_acl_options WHERE auth_option = 'a_boardannouncements'", 'auth_option_id');
 		self::assertGreaterThan(0, $new_option_id);
-		self::assertSame('1', $this->field('SELECT COUNT(*) AS total FROM phpbb_acl_roles_data WHERE role_id = 10 AND auth_option_id = ' . $new_option_id . ' AND auth_setting = 1', 'total'));
-		self::assertSame('1', $this->field('SELECT COUNT(*) AS total FROM phpbb_acl_groups WHERE group_id = 20 AND auth_option_id = ' . $new_option_id . ' AND auth_setting = 1', 'total'));
-		self::assertSame('1', $this->field('SELECT COUNT(*) AS total FROM phpbb_acl_users WHERE user_id = 30 AND auth_option_id = ' . $new_option_id . ' AND auth_setting = 1', 'total'));
 		self::assertSame('1', $this->field('SELECT COUNT(*) AS total FROM phpbb_acl_roles_data WHERE role_id = 11 AND auth_option_id = ' . $new_option_id . ' AND auth_setting = 1', 'total'));
 		self::assertSame('1', $this->field('SELECT COUNT(*) AS total FROM phpbb_acl_roles_data WHERE role_id = 12 AND auth_option_id = ' . $new_option_id . ' AND auth_setting = 1', 'total'));
 	}

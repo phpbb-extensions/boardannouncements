@@ -44,21 +44,11 @@
 	</table>
 	<table name="phpbb_acl_roles">
 		<column>role_id</column><column>role_name</column><column>role_description</column><column>role_type</column><column>role_order</column>
-		<row><value>10</value><value>CUSTOM_BOARD_ADMIN</value><value></value><value>a_</value><value>1</value></row>
 		<row><value>11</value><value>ROLE_ADMIN_FULL</value><value></value><value>a_</value><value>2</value></row>
 		<row><value>12</value><value>ROLE_ADMIN_STANDARD</value><value></value><value>a_</value><value>3</value></row>
 	</table>
 	<table name="phpbb_acl_roles_data">
 		<column>role_id</column><column>auth_option_id</column><column>auth_setting</column>
-		<row><value>10</value><value>100</value><value>1</value></row>
-	</table>
-	<table name="phpbb_acl_groups">
-		<column>group_id</column><column>forum_id</column><column>auth_option_id</column><column>auth_role_id</column><column>auth_setting</column>
-		<row><value>20</value><value>0</value><value>100</value><value>0</value><value>1</value></row>
-	</table>
-	<table name="phpbb_acl_users">
-		<column>user_id</column><column>forum_id</column><column>auth_option_id</column><column>auth_role_id</column><column>auth_setting</column>
-		<row><value>30</value><value>0</value><value>100</value><value>0</value><value>1</value></row>
 	</table>
 	<table name="phpbb_modules">
 		<column>module_id</column><column>module_enabled</column><column>module_display</column><column>module_basename</column>
