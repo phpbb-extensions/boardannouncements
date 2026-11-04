@@ -11,7 +11,7 @@
 namespace phpbb\boardannouncements\manager;
 
 /**
- * Nested set class
+ * Announcement persistence and targeting queries built on phpBB's nested-set storage.
  */
 class nestedset extends \phpbb\tree\nestedset
 {
@@ -129,6 +129,29 @@ class nestedset extends \phpbb\tree\nestedset
 	}
 
 	/**
+	 * Update a nested item
+	 *
+	 * @param int   $item_id   The item identifier
+	 * @param array $item_data SQL array of data to update
+	 * @return mixed Number of the affected rows updated, or false
+	 * @throws \OutOfBoundsException
+	 */
+	public function update_item($item_id, array $item_data)
+	{
+		if (!$item_id || empty($item_data))
+		{
+			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
+		}
+
+		$sql = 'UPDATE ' . $this->table_name . '
+			SET ' . $this->db->sql_build_array('UPDATE', $item_data) . '
+			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id;
+		$this->db->sql_query($sql);
+
+		return $this->db->sql_affectedrows();
+	}
+
+	/**
 	 * Update an item and optionally replace its group mappings atomically.
 	 *
 	 * @param int        $item_id Announcement identifier
@@ -209,50 +232,6 @@ class nestedset extends \phpbb\tree\nestedset
 	}
 
 	/**
-	 * Update a nested item
-	 *
-	 * @param int   $item_id   The item identifier
-	 * @param array $item_data SQL array of data to update
-	 * @return mixed Number of the affected rows updated, or false
-	 * @throws \OutOfBoundsException
-	 */
-	public function update_item($item_id, array $item_data)
-	{
-		if (!$item_id || empty($item_data))
-		{
-			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
-		}
-
-		$sql = 'UPDATE ' . $this->table_name . '
-			SET ' . $this->db->sql_build_array('UPDATE', $item_data) . '
-			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id;
-		$this->db->sql_query($sql);
-
-		return $this->db->sql_affectedrows();
-	}
-
-	/**
-	 * Delete every registered-user dismissal for an announcement.
-	 *
-	 * @param int $item_id Announcement identifier
-	 * @return int|false Number of affected rows, or false
-	 * @throws \OutOfBoundsException When the announcement identifier is invalid
-	 */
-	public function delete_tracked_items($item_id)
-	{
-		if (!$item_id)
-		{
-			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
-		}
-
-		$sql = 'DELETE FROM ' . $this->tracking_table . '
-			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id;
-		$this->db->sql_query($sql);
-
-		return $this->db->sql_affectedrows();
-	}
-
-	/**
 	 * Record an announcement dismissal for a registered user.
 	 *
 	 * @param int $item_id Announcement identifier
@@ -295,6 +274,27 @@ class nestedset extends \phpbb\tree\nestedset
 	}
 
 	/**
+	 * Delete every registered-user dismissal for an announcement.
+	 *
+	 * @param int $item_id Announcement identifier
+	 * @return int|false Number of affected rows, or false
+	 * @throws \OutOfBoundsException When the announcement identifier is invalid
+	 */
+	public function delete_tracked_items($item_id)
+	{
+		if (!$item_id)
+		{
+			throw new \OutOfBoundsException($this->message_prefix . 'INVALID_ITEM');
+		}
+
+		$sql = 'DELETE FROM ' . $this->tracking_table . '
+			WHERE ' . $this->column_item_id . ' = ' . (int) $item_id;
+		$this->db->sql_query($sql);
+
+		return $this->db->sql_affectedrows();
+	}
+
+	/**
 	 * Get groups assigned to an announcement.
 	 *
 	 * @param int $item_id Announcement identifier
@@ -324,55 +324,6 @@ class nestedset extends \phpbb\tree\nestedset
 		$this->transactional(function () use ($item_id, $group_ids) {
 			$this->replace_announcement_groups($item_id, $group_ids);
 		});
-	}
-
-	/**
-	 * Replace group mappings inside the caller's transaction.
-	 *
-	 * @param int   $item_id Announcement identifier
-	 * @param array $group_ids Group identifiers
-	 * @return void
-	 */
-	protected function replace_announcement_groups($item_id, array $group_ids)
-	{
-		$this->user_group_announcements = [];
-		$this->db->sql_query('DELETE FROM ' . $this->groups_table . ' WHERE announcement_id = ' . (int) $item_id);
-		$rows = [];
-		foreach (array_unique(array_map('intval', $group_ids)) as $group_id)
-		{
-			if ($group_id > 0)
-			{
-				$rows[] = ['announcement_id' => (int) $item_id, 'group_id' => $group_id];
-			}
-		}
-		if ($rows)
-		{
-			$this->db->sql_multi_insert($this->groups_table, $rows);
-		}
-	}
-
-	/**
-	 * Execute a database operation atomically, rolling back and propagating failures.
-	 *
-	 * @param callable $operation Operation to execute
-	 * @return mixed Operation result
-	 * @throws \Throwable Any operation failure after the transaction is rolled back
-	 */
-	protected function transactional(callable $operation)
-	{
-		$this->db->sql_transaction('begin');
-		try
-		{
-			$result = $operation();
-			$this->db->sql_transaction('commit');
-
-			return $result;
-		}
-		catch (\Throwable $e)
-		{
-			$this->db->sql_transaction('rollback');
-			throw $e;
-		}
 	}
 
 	/**
@@ -441,5 +392,54 @@ class nestedset extends \phpbb\tree\nestedset
 		}
 
 		return false;
+	}
+
+	/**
+	 * Replace group mappings inside the caller's transaction.
+	 *
+	 * @param int   $item_id Announcement identifier
+	 * @param array $group_ids Group identifiers
+	 * @return void
+	 */
+	protected function replace_announcement_groups($item_id, array $group_ids)
+	{
+		$this->user_group_announcements = [];
+		$this->db->sql_query('DELETE FROM ' . $this->groups_table . ' WHERE announcement_id = ' . (int) $item_id);
+		$rows = [];
+		foreach (array_unique(array_map('intval', $group_ids)) as $group_id)
+		{
+			if ($group_id > 0)
+			{
+				$rows[] = ['announcement_id' => (int) $item_id, 'group_id' => $group_id];
+			}
+		}
+		if ($rows)
+		{
+			$this->db->sql_multi_insert($this->groups_table, $rows);
+		}
+	}
+
+	/**
+	 * Execute a database operation atomically, rolling back and propagating failures.
+	 *
+	 * @param callable $operation Operation to execute
+	 * @return mixed Operation result
+	 * @throws \Throwable Any operation failure after the transaction is rolled back
+	 */
+	protected function transactional(callable $operation)
+	{
+		$this->db->sql_transaction('begin');
+		try
+		{
+			$result = $operation();
+			$this->db->sql_transaction('commit');
+
+			return $result;
+		}
+		catch (\Throwable $e)
+		{
+			$this->db->sql_transaction('rollback');
+			throw $e;
+		}
 	}
 }
