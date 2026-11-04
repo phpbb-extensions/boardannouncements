@@ -113,8 +113,8 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertStringContainsString('AJAX preview text', $preview_response['preview_html']);
 
 		$values = [
-			'board_announcements_state'			=> ext::STATE_PUBLISHED,
-			'board_announcements_tone'			=> 'custom',
+			'board_announcements_state'			=> ext::STATUS_PUBLISHED,
+			'board_announcements_tone'			=> ext::TONE_CUSTOM,
 			'board_announcements_users'			=> 0,
 			'board_announcements_dismiss'		=> true,
 			'board_announcements_locations'		=> [ext::INDEX_ONLY],
@@ -145,13 +145,13 @@ class announcement_test extends \phpbb_functional_test_case
 
 		$crawler = self::request('GET', $this->get_acp_page());
 		$form = $crawler->filter('#board_announcement_filters')->form();
-		$form->setValues(['q' => 'board announcement test', 'status' => 'active']);
+		$form->setValues(['q' => 'board announcement test', 'status' => ext::STATUS_ACTIVE]);
 		$crawler = self::submit($form);
 		self::assertStringContainsString('Test announcement', $crawler->filter('.board-announcements-list > tbody')->text());
 		self::assertCount(2, $crawler->filter('.ba-action-group .is-disabled'));
 
 		$form = $crawler->filter('#board_announcement_filters')->form();
-		$form->setValues(['q' => 'does not exist', 'status' => 'active']);
+		$form->setValues(['q' => 'does not exist', 'status' => ext::STATUS_ACTIVE]);
 		$crawler = self::submit($form);
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_FILTER_EMPTY', $crawler->filter('.ba-empty')->text());
 
@@ -577,8 +577,8 @@ class announcement_test extends \phpbb_functional_test_case
 		// Set some form values
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
 		$values = array_merge([
-			'board_announcements_state'			=> ext::STATE_PUBLISHED,
-			'board_announcements_tone'			=> 'info',
+			'board_announcements_state'			=> ext::STATUS_PUBLISHED,
+			'board_announcements_tone'			=> ext::TONE_INFO,
 			'board_announcements_start'			=> '',
 			'board_announcements_dismiss'		=> false,
 			'board_announcements_users'			=> 0,
@@ -603,7 +603,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$post = $form->getPhpValues();
 		$post['board_announcements_groups'] = $groups;
 		$post['board_announcements_locations'] = $locations;
-		if ($values['board_announcements_tone'] === 'custom')
+		if ($values['board_announcements_tone'] === ext::TONE_CUSTOM)
 		{
 			$post['board_announcements_bgcolor'] = $bgcolor;
 		}

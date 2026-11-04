@@ -76,7 +76,7 @@ class visibility
 	{
 		$now = $now === null ? time() : (int) $now;
 		return !empty($announcement['announcement_enabled'])
-			&& ($announcement['announcement_state'] ?? ext::STATE_PUBLISHED) === ext::STATE_PUBLISHED
+			&& ($announcement['announcement_state'] ?? ext::STATUS_PUBLISHED) === ext::STATUS_PUBLISHED
 			&& (empty($announcement['announcement_start']) || (int) $announcement['announcement_start'] <= $now)
 			&& (empty($announcement['announcement_expiry']) || (int) $announcement['announcement_expiry'] > $now);
 	}

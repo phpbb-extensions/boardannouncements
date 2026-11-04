@@ -46,7 +46,7 @@ class visibility_test extends \phpbb_test_case
 		$row['announcement_expiry'] = 100;
 		self::assertFalse($this->visibility->is_active($row, 100));
 		$row['announcement_expiry'] = 0;
-		$row['announcement_state'] = ext::STATE_DRAFT;
+		$row['announcement_state'] = ext::STATUS_DRAFT;
 		self::assertFalse($this->visibility->is_active($row, 100));
 	}
 
@@ -153,7 +153,7 @@ class visibility_test extends \phpbb_test_case
 		return [
 			'announcement_id' => 1,
 			'announcement_enabled' => 1,
-			'announcement_state' => ext::STATE_PUBLISHED,
+			'announcement_state' => ext::STATUS_PUBLISHED,
 			'announcement_start' => 0,
 			'announcement_expiry' => 0,
 			'announcement_users' => ext::ALL,

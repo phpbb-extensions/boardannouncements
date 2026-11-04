@@ -139,24 +139,23 @@ class acp_controller
 	 */
 	protected function list_announcements()
 	{
-		$status_filter = $this->request->variable('status', 'all');
+		$status_filter = $this->request->variable('status', ext::STATUS_ALL);
 		$query = trim($this->request->variable('q', '', true));
 		$normalized_query = utf8_strtolower($query);
-		$valid_statuses = ['all', 'active', 'scheduled', 'draft', 'expired', 'archived'];
-		if (!in_array($status_filter, $valid_statuses, true))
+		if (!in_array($status_filter, ext::FILTER_STATUSES, true))
 		{
-			$status_filter = 'all';
+			$status_filter = ext::STATUS_ALL;
 		}
 
 		$announcements = array_values($this->manager->get_announcements());
 		$announcement_defaults = $this->announcement_defaults();
 		$last_index = count($announcements) - 1;
-		$filters_active = $status_filter !== 'all' || $query !== '';
+		$filters_active = $status_filter !== ext::STATUS_ALL || $query !== '';
 		foreach ($announcements as $index => $row)
 		{
 			$row += $announcement_defaults;
 			$status = $this->get_status($row);
-			if ($status_filter !== 'all' && $status !== $status_filter)
+			if ($status_filter !== ext::STATUS_ALL && $status !== $status_filter)
 			{
 				continue;
 			}
@@ -180,8 +179,9 @@ class acp_controller
 				'CREATED_DATE' => $row['announcement_timestamp'] ? $this->user->format_date($row['announcement_timestamp'], ext::DATE_FORMAT) : '',
 				'START_DATE'   => $row['announcement_start'] ? $this->user->format_date($row['announcement_start'], ext::DATE_FORMAT) : '',
 				'EXPIRY_DATE'  => $row['announcement_expiry'] ? $this->user->format_date($row['announcement_expiry'], ext::DATE_FORMAT) : '',
-				'S_EXPIRED'    => $status === 'expired',
-				'S_ENABLED'    => $status === 'active' || $status === 'scheduled',
+				'S_EXPIRED'    => $status === ext::STATUS_EXPIRED,
+				'S_ENABLED'    => $status === ext::STATUS_ACTIVE || $status === ext::STATUS_SCHEDULED,
+				'S_ARCHIVED'   => $status === ext::STATUS_ARCHIVED,
 				'DISMISSABLE'  => (bool) $row['announcement_dismissable'],
 				'LOCATIONS'    => $this->manager->decode_json($row['announcement_locations']),
 				'S_MOVE_UP_DISABLED' => $filters_active || $index === 0,
@@ -245,7 +245,7 @@ class acp_controller
 		}
 		if ($data['announcement_bgcolor'] !== '')
 		{
-			$data['announcement_tone'] = 'custom';
+			$data['announcement_tone'] = ext::TONE_CUSTOM;
 		}
 		$location_mode = $this->get_location_mode($data['announcement_locations']);
 		$selected_groups = $id ? $this->manager->get_announcement_groups($id) : [];
@@ -266,12 +266,12 @@ class acp_controller
 			$data['announcement_text'] = $this->request->variable('board_announcements_text', '', true);
 			$data['announcement_description'] = $this->request->variable('board_announcements_description', '', true);
 			$data['announcement_title'] = $this->request->variable('board_announcements_title', '', true);
-			$data['announcement_tone'] = $this->request->variable('board_announcements_tone', 'info');
-			$data['announcement_bgcolor'] = $data['announcement_tone'] === 'custom'
+			$data['announcement_tone'] = $this->request->variable('board_announcements_tone', ext::TONE_INFO);
+			$data['announcement_bgcolor'] = $data['announcement_tone'] === ext::TONE_CUSTOM
 				? ltrim(trim($this->request->variable('board_announcements_bgcolor', '', true)), '#')
 				: '';
-			$data['announcement_state'] = $this->request->variable('board_announcements_state', ext::STATE_DRAFT);
-			$data['announcement_enabled'] = $data['announcement_state'] === ext::STATE_PUBLISHED;
+			$data['announcement_state'] = $this->request->variable('board_announcements_state', ext::STATUS_DRAFT);
+			$data['announcement_enabled'] = $data['announcement_state'] === ext::STATUS_PUBLISHED;
 			$data['announcement_users'] = $this->request->variable('board_announcements_users', ext::ALL);
 			$selected_groups = $this->request->variable('board_announcements_groups', [0]);
 			if ((int) $data['announcement_users'] !== ext::GROUPS)
@@ -339,7 +339,7 @@ class acp_controller
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TONE_INVALID');
 			}
-			if (!in_array($data['announcement_state'], [ext::STATE_DRAFT, ext::STATE_PUBLISHED, ext::STATE_ARCHIVED], true))
+			if (!in_array($data['announcement_state'], ext::PERSISTED_STATUSES, true))
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_STATE_INVALID');
 			}
@@ -361,7 +361,7 @@ class acp_controller
 				$data['announcement_expiry'] = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $data['announcement_expiry']);
 				if (!$data['announcement_expiry']
 					|| ($data['announcement_start'] && $data['announcement_expiry'] <= $data['announcement_start'])
-					|| ($data['announcement_state'] === ext::STATE_PUBLISHED && $data['announcement_expiry'] < time())
+					|| ($data['announcement_state'] === ext::STATUS_PUBLISHED && $data['announcement_expiry'] < time())
 				)
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
@@ -487,13 +487,13 @@ class acp_controller
 
 		$text = $this->request->variable('board_announcements_text', '', true);
 		$title = $this->request->variable('board_announcements_title', '', true);
-		$tone = $this->request->variable('board_announcements_tone', 'info');
+		$tone = $this->request->variable('board_announcements_tone', ext::TONE_INFO);
 		if (!in_array($tone, ext::TONES, true))
 		{
-			$tone = 'info';
+			$tone = ext::TONE_INFO;
 		}
 
-		$bgcolor = $tone === 'custom'
+		$bgcolor = $tone === ext::TONE_CUSTOM
 			? ltrim(trim($this->request->variable('board_announcements_bgcolor', '', true)), '#')
 			: '';
 		if ($bgcolor !== '' && !preg_match('/\A[0-9a-f]{6}\z/i', $bgcolor))
@@ -542,7 +542,7 @@ class acp_controller
 	{
 		$id = $this->request->variable('id', 0);
 		if (!$this->check_hash('archive' . $id) || !$this->manager->update_announcement($id, [
-			'announcement_state' => ext::STATE_ARCHIVED,
+			'announcement_state' => ext::STATUS_ARCHIVED,
 			'announcement_enabled' => 0,
 			'announcement_updated_at' => time(),
 			'announcement_updated_by' => (int) $this->user->data['user_id'],
@@ -591,7 +591,7 @@ class acp_controller
 			255,
 			false
 		);
-		$data['announcement_state'] = ext::STATE_DRAFT;
+		$data['announcement_state'] = ext::STATUS_DRAFT;
 		$data['announcement_enabled'] = 0;
 		$data['announcement_revision'] = 1;
 		$data['announcement_timestamp'] = time();
@@ -650,10 +650,10 @@ class acp_controller
 				}
 				continue;
 			}
-			$state = $bulk_action === 'publish' ? ext::STATE_PUBLISHED : ($bulk_action === 'archive' ? ext::STATE_ARCHIVED : ext::STATE_DRAFT);
+			$state = $bulk_action === 'publish' ? ext::STATUS_PUBLISHED : ($bulk_action === 'archive' ? ext::STATUS_ARCHIVED : ext::STATUS_DRAFT);
 			$this->manager->update_announcement($id, [
 				'announcement_state' => $state,
-				'announcement_enabled' => $state === ext::STATE_PUBLISHED,
+				'announcement_enabled' => $state === ext::STATUS_PUBLISHED,
 				'announcement_updated_at' => time(),
 				'announcement_updated_by' => (int) $this->user->data['user_id'],
 			]);
@@ -883,23 +883,23 @@ class acp_controller
 	 */
 	protected function get_status(array $row)
 	{
-		if (($row['announcement_state'] ?? '') === ext::STATE_ARCHIVED)
+		if (($row['announcement_state'] ?? '') === ext::STATUS_ARCHIVED)
 		{
-			return 'archived';
+			return ext::STATUS_ARCHIVED;
 		}
-		if (empty($row['announcement_enabled']) || ($row['announcement_state'] ?? '') === ext::STATE_DRAFT)
+		if (empty($row['announcement_enabled']) || ($row['announcement_state'] ?? '') === ext::STATUS_DRAFT)
 		{
-			return 'draft';
+			return ext::STATUS_DRAFT;
 		}
 		if (!empty($row['announcement_start']) && $row['announcement_start'] > time())
 		{
-			return 'scheduled';
+			return ext::STATUS_SCHEDULED;
 		}
 		if (!empty($row['announcement_expiry']) && $row['announcement_expiry'] <= time())
 		{
-			return 'expired';
+			return ext::STATUS_EXPIRED;
 		}
-		return 'active';
+		return ext::STATUS_ACTIVE;
 	}
 
 	/**
@@ -994,8 +994,8 @@ class acp_controller
 			'announcement_title' => '',
 			'announcement_bgcolor' => '',
 			'announcement_enabled' => false,
-			'announcement_tone' => 'info',
-			'announcement_state' => ext::STATE_DRAFT,
+			'announcement_tone' => ext::TONE_INFO,
+			'announcement_state' => ext::STATUS_DRAFT,
 			'announcement_start' => 0,
 			'announcement_include_children' => false,
 			'announcement_locations' => '',

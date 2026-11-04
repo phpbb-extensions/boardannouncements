@@ -130,7 +130,7 @@ class listener implements EventSubscriberInterface
 				continue;
 			}
 
-			$tone = in_array($data['announcement_tone'], ext::TONES, true) ? $data['announcement_tone'] : 'info';
+			$tone = in_array($data['announcement_tone'], ext::TONES, true) ? $data['announcement_tone'] : ext::TONE_INFO;
 
 			// Output board announcement to the template
 			$this->template->assign_block_vars('board_announcements', [

@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\manager;
 
+use phpbb\boardannouncements\ext;
+
 class manager
 {
 	/** @var \phpbb\boardannouncements\manager\nestedset */
@@ -249,13 +251,13 @@ class manager
 			'announcement_title'		=> '',
 			'announcement_bgcolor'		=> '',
 			'announcement_enabled'		=> false,
-			'announcement_tone'			=> 'info',
-			'announcement_state'		=> 'draft',
+			'announcement_tone'			=> ext::TONE_INFO,
+			'announcement_state'		=> ext::STATUS_DRAFT,
 			'announcement_start'		=> 0,
 			'announcement_include_children' => false,
 			'announcement_locations'	=> '',
 			'announcement_dismissable'	=> true,
-			'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+			'announcement_users'		=> ext::ALL,
 			'announcement_revision'		=> 1,
 			'announcement_created_by'	=> 0,
 			'announcement_updated_at'	=> 0,

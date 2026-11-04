@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\controller;
 
+use phpbb\boardannouncements\ext;
+
 require_once __DIR__ . '/../../../../../includes/functions_acp.php';
 
 class acp_controller_test extends \phpbb_test_case
@@ -262,22 +264,22 @@ class acp_controller_test extends \phpbb_test_case
 					return $data['DESCRIPTION'] === 'BOARD_ANNOUNCEMENTS_UNTITLED'
 						&& $data['TONE'] === ''
 						&& !$data['DISMISSABLE']
-						&& $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], ext::DATE_FORMAT)
 						&& $data['EXPIRY_DATE'] === ''
 						&& $data['S_MOVE_UP_DISABLED']
 						&& !$data['S_MOVE_DOWN_DISABLED'];
 				})],
 				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['TONE'] === 'info'
+					return $data['TONE'] === ext::TONE_INFO
 						&& $data['DISMISSABLE']
-						&& $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+						&& $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], ext::DATE_FORMAT)
 						&& $data['EXPIRY_DATE'] === ''
 						&& !$data['S_MOVE_UP_DISABLED']
 						&& !$data['S_MOVE_DOWN_DISABLED'];
 				})],
 				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], \phpbb\boardannouncements\ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], \phpbb\boardannouncements\ext::DATE_FORMAT)
+					return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], ext::DATE_FORMAT)
+						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], ext::DATE_FORMAT)
 						&& !$data['S_MOVE_UP_DISABLED']
 						&& $data['S_MOVE_DOWN_DISABLED'];
 				})]
@@ -287,7 +289,7 @@ class acp_controller_test extends \phpbb_test_case
 			->method('assign_vars')
 			->with(self::callback(function ($data) {
 				return $data['U_ACTION'] === $this->u_action
-					&& $data['S_STATUS_FILTER'] === 'all'
+					&& $data['S_STATUS_FILTER'] === ext::STATUS_ALL
 					&& $data['S_SEARCH_QUERY'] === ''
 					&& !$data['S_FILTERS_ACTIVE'];
 			}));
@@ -296,7 +298,7 @@ class acp_controller_test extends \phpbb_test_case
 			->method('variable')
 			->willReturnMap([
 				['action', '', false, \phpbb\request\request_interface::REQUEST, ''],
-				['status', 'all', false, \phpbb\request\request_interface::REQUEST, 'all'],
+				['status', ext::STATUS_ALL, false, \phpbb\request\request_interface::REQUEST, ext::STATUS_ALL],
 				['q', '', true, \phpbb\request\request_interface::REQUEST, ''],
 			]);
 
@@ -310,16 +312,16 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		$controller = $this->get_controller();
 		$rows = [
-			['announcement_id' => 1, 'announcement_description' => 'First', 'announcement_text' => 'Nothing here', 'announcement_enabled' => true, 'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED],
-			['announcement_id' => 2, 'announcement_description' => 'Second', 'announcement_text' => 'Hidden Needle in message', 'announcement_enabled' => true, 'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED],
-			['announcement_id' => 3, 'announcement_description' => 'Third', 'announcement_text' => 'Needle', 'announcement_state' => \phpbb\boardannouncements\ext::STATE_DRAFT],
+			['announcement_id' => 1, 'announcement_description' => 'First', 'announcement_text' => 'Nothing here', 'announcement_enabled' => true, 'announcement_state' => ext::STATUS_PUBLISHED],
+			['announcement_id' => 2, 'announcement_description' => 'Second', 'announcement_text' => 'Hidden Needle in message', 'announcement_enabled' => true, 'announcement_state' => ext::STATUS_PUBLISHED],
+			['announcement_id' => 3, 'announcement_description' => 'Third', 'announcement_text' => 'Needle', 'announcement_state' => ext::STATUS_DRAFT],
 		];
 
 		$this->request->method('variable')
 			->willReturnCallback(static function ($name, $default = null) {
 				return [
 					'action' => '',
-					'status' => 'active',
+					'status' => ext::STATUS_ACTIVE,
 					'q' => 'Needle',
 				][$name] ?? $default;
 			});
@@ -337,7 +339,7 @@ class acp_controller_test extends \phpbb_test_case
 		$this->template->expects(self::once())
 			->method('assign_vars')
 			->with(self::callback(static function ($data) {
-				return $data['S_STATUS_FILTER'] === 'active'
+				return $data['S_STATUS_FILTER'] === ext::STATUS_ACTIVE
 					&& $data['S_SEARCH_QUERY'] === 'Needle'
 					&& $data['S_FILTERS_ACTIVE'];
 			}));
@@ -355,7 +357,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_title' => '',
 				'announcement_text' => 'Migrated announcement text',
 				'announcement_enabled' => true,
-				'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
+				'announcement_state' => ext::STATUS_PUBLISHED,
 			],
 			[
 				'announcement_id' => 2,
@@ -363,11 +365,11 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_title' => '',
 				'announcement_text' => 'Other text',
 				'announcement_enabled' => true,
-				'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
+				'announcement_state' => ext::STATUS_PUBLISHED,
 			],
 		];
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
-			return ['action' => '', 'status' => 'all', 'q' => 'untitled'][$name] ?? $default;
+			return ['action' => '', 'status' => ext::STATUS_ALL, 'q' => 'untitled'][$name] ?? $default;
 		});
 		$this->manager->expects(self::once())->method('get_announcements')->willReturn($rows);
 		$this->template->expects(self::never())->method('assign_block_vars');
@@ -384,10 +386,10 @@ class acp_controller_test extends \phpbb_test_case
 			'announcement_title' => '',
 			'announcement_text' => '',
 			'announcement_enabled' => true,
-			'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
+			'announcement_state' => ext::STATUS_PUBLISHED,
 		]];
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
-			return ['action' => '', 'status' => 'all', 'q' => 'кириллица'][$name] ?? $default;
+			return ['action' => '', 'status' => ext::STATUS_ALL, 'q' => 'кириллица'][$name] ?? $default;
 		});
 		$this->manager->expects(self::once())->method('get_announcements')->willReturn($rows);
 		$this->template->expects(self::once())
@@ -450,7 +452,7 @@ class acp_controller_test extends \phpbb_test_case
 		});
 		$this->manager->expects(self::once())->method('get_announcements')->willReturn([]);
 		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(static function ($data) {
-			return $data['S_STATUS_FILTER'] === 'all' && !$data['S_FILTERS_ACTIVE'];
+			return $data['S_STATUS_FILTER'] === ext::STATUS_ALL && !$data['S_FILTERS_ACTIVE'];
 		}));
 
 		$controller->mode_manage();
@@ -490,7 +492,7 @@ class acp_controller_test extends \phpbb_test_case
 		$method->setAccessible(true);
 		$defaults = $method->invoke($controller);
 
-		self::assertSame(\phpbb\boardannouncements\ext::STATE_DRAFT, $defaults['announcement_state']);
+		self::assertSame(ext::STATUS_DRAFT, $defaults['announcement_state']);
 		self::assertFalse($defaults['announcement_enabled']);
 	}
 
@@ -525,7 +527,7 @@ class acp_controller_test extends \phpbb_test_case
 		self::assertSame(0, $options[1]['depth']);
 		self::assertSame(1, $options[2]['depth']);
 		self::assertTrue($options[2]['selected']);
-		self::assertSame(\phpbb\boardannouncements\ext::INDEX_ONLY, $options[-1]['forum_id']);
+		self::assertSame(ext::INDEX_ONLY, $options[-1]['forum_id']);
 		self::$forum_options = [];
 	}
 
@@ -544,12 +546,12 @@ class acp_controller_test extends \phpbb_test_case
 	public function status_data()
 	{
 		return [
-			'archived' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_ARCHIVED, 'announcement_enabled' => 0], 'archived'],
-			'draft state' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_DRAFT, 'announcement_enabled' => 1], 'draft'],
-			'disabled' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED, 'announcement_enabled' => 0], 'draft'],
-			'scheduled' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED, 'announcement_enabled' => 1, 'announcement_start' => time() + 3600], 'scheduled'],
-			'expired' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED, 'announcement_enabled' => 1, 'announcement_expiry' => time() - 3600], 'expired'],
-			'active' => [['announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED, 'announcement_enabled' => 1], 'active'],
+			'archived' => [['announcement_state' => ext::STATUS_ARCHIVED, 'announcement_enabled' => 0], ext::STATUS_ARCHIVED],
+			'draft state' => [['announcement_state' => ext::STATUS_DRAFT, 'announcement_enabled' => 1], ext::STATUS_DRAFT],
+			'disabled' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 0], ext::STATUS_DRAFT],
+			'scheduled' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_start' => time() + 3600], ext::STATUS_SCHEDULED],
+			'expired' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_expiry' => time() - 3600], ext::STATUS_EXPIRED],
+			'active' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1], ext::STATUS_ACTIVE],
 		];
 	}
 
@@ -590,7 +592,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_enabled'		=> true,
 				'announcement_locations'	=> '',
 				'announcement_dismissable'	=> true,
-				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+				'announcement_users'		=> ext::ALL,
 				'announcement_timestamp'	=> '',
 				'announcement_expiry'		=> '',
 				'announcement_uid'			=> '',
@@ -606,7 +608,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_enabled'		=> true,
 				'announcement_locations'	=> '',
 				'announcement_dismissable'	=> true,
-				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+				'announcement_users'		=> ext::ALL,
 				'announcement_timestamp'	=> '',
 				'announcement_expiry'		=> '',
 				'announcement_uid'			=> '',
@@ -658,7 +660,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_enabled'		=> true,
 				'announcement_locations'	=> '',
 				'announcement_dismissable'	=> true,
-				'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+				'announcement_users'		=> ext::ALL,
 				'announcement_timestamp'	=> 0,
 				'announcement_expiry'		=> 0,
 				'announcement_uid'			=> '',
@@ -691,7 +693,7 @@ class acp_controller_test extends \phpbb_test_case
 		]);
 		$this->manager->expects(self::once())->method('get_announcement_groups')->with(1)->willReturn([]);
 		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(static function ($data) {
-			return $data['BOARD_ANNOUNCEMENTS_TONE'] === 'custom'
+			return $data['BOARD_ANNOUNCEMENTS_TONE'] === ext::TONE_CUSTOM
 				&& $data['BOARD_ANNOUNCEMENTS_BGCOLOR'] === '767676'
 				&& $data['BOARD_ANNOUNCEMENTS_COLOR_PICKER'] === '#767676'
 				&& $data['BOARD_ANNOUNCEMENTS_TEXTCOLOR'] === '000000';
@@ -713,7 +715,7 @@ class acp_controller_test extends \phpbb_test_case
 			'board_announcements_tone' => 'invalid',
 			'board_announcements_bgcolor' => 'abcdef',
 			'board_announcements_state' => 'invalid',
-			'board_announcements_users' => \phpbb\boardannouncements\ext::GROUPS,
+			'board_announcements_users' => ext::GROUPS,
 			'board_announcements_groups' => [0],
 			'board_announcements_location_mode' => 'everywhere',
 			'board_announcements_locations' => [],
@@ -794,8 +796,8 @@ class acp_controller_test extends \phpbb_test_case
 		$failed_update = $submit && !$errors && $id && !$update_success;
 		$successful_submit = $submit && !$errors && !$failed_update;
 		$selected_locations = array_values(array_filter(array_map('intval', $form[7])));
-		$location_mode = $form[13] ?? (!$selected_locations ? 'everywhere' : (count($selected_locations) === 1 && $selected_locations[0] === \phpbb\boardannouncements\ext::INDEX_ONLY ? 'index' : 'selected'));
-		$expected_locations = json_encode($location_mode === 'index' ? [\phpbb\boardannouncements\ext::INDEX_ONLY] : ($location_mode === 'selected' ? $selected_locations : []));
+		$location_mode = $form[13] ?? (!$selected_locations ? 'everywhere' : (count($selected_locations) === 1 && $selected_locations[0] === ext::INDEX_ONLY ? 'index' : 'selected'));
+		$expected_locations = json_encode($location_mode === 'index' ? [ext::INDEX_ONLY] : ($location_mode === 'selected' ? $selected_locations : []));
 		$encode_unicode = strpos($sql_layer, 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
 		$expected_description = $encode_unicode($form[3]);
 		$expected_title = $encode_unicode($form[14] ?? '');
@@ -832,8 +834,8 @@ class acp_controller_test extends \phpbb_test_case
 			'board_announcements_description' => $form[3],
 			'board_announcements_title' => $form[14] ?? '',
 			'board_announcements_bgcolor' => $form[4],
-			'board_announcements_state' => $form[5] ? \phpbb\boardannouncements\ext::STATE_PUBLISHED : \phpbb\boardannouncements\ext::STATE_DRAFT,
-			'board_announcements_tone' => $form[4] === '' ? 'info' : 'custom',
+			'board_announcements_state' => $form[5] ? ext::STATUS_PUBLISHED : ext::STATUS_DRAFT,
+			'board_announcements_tone' => $form[4] === '' ? ext::TONE_INFO : ext::TONE_CUSTOM,
 			'board_announcements_users' => $form[6],
 			'board_announcements_groups' => [10],
 			'board_announcements_locations' => $form[7],
@@ -914,9 +916,9 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_preview_data()
 	{
 		return [
-			['custom', '#ABCDEF', 'custom', 'ABCDEF'],
-			['custom', 'not-a-color', 'custom', ''],
-			['invalid', 'not-a-color', 'info', ''],
+			[ext::TONE_CUSTOM, '#ABCDEF', ext::TONE_CUSTOM, 'ABCDEF'],
+			[ext::TONE_CUSTOM, 'not-a-color', ext::TONE_CUSTOM, ''],
+			['invalid', 'not-a-color', ext::TONE_INFO, ''],
 		];
 	}
 
@@ -993,7 +995,7 @@ class acp_controller_test extends \phpbb_test_case
 		if ($valid_hash)
 		{
 			$update->with(7, self::callback(static function ($data) {
-				return $data['announcement_state'] === \phpbb\boardannouncements\ext::STATE_ARCHIVED
+				return $data['announcement_state'] === ext::STATUS_ARCHIVED
 					&& $data['announcement_enabled'] === 0
 					&& $data['announcement_updated_by'] === 2
 					&& $data['announcement_updated_at'] > 0;
@@ -1075,7 +1077,7 @@ class acp_controller_test extends \phpbb_test_case
 		$this->manager->expects(self::once())->method('get_announcement')->with(7)->willReturn([
 			'announcement_id' => 7,
 			'announcement_description' => $description,
-			'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
+			'announcement_state' => ext::STATUS_PUBLISHED,
 			'announcement_enabled' => 1,
 			'announcement_revision' => 9,
 		]);
@@ -1084,7 +1086,7 @@ class acp_controller_test extends \phpbb_test_case
 			->with(self::callback(static function ($data) use ($expected_description) {
 				return !isset($data['announcement_id'])
 					&& $data['announcement_description'] === $expected_description
-					&& $data['announcement_state'] === \phpbb\boardannouncements\ext::STATE_DRAFT
+					&& $data['announcement_state'] === ext::STATUS_DRAFT
 					&& $data['announcement_enabled'] === 0
 					&& $data['announcement_revision'] === 1
 					&& $data['announcement_created_by'] === 2
@@ -1153,9 +1155,9 @@ class acp_controller_test extends \phpbb_test_case
 	public function bulk_state_action_data()
 	{
 		return [
-			'publish' => ['publish', \phpbb\boardannouncements\ext::STATE_PUBLISHED, true],
-			'draft' => ['draft', \phpbb\boardannouncements\ext::STATE_DRAFT, false],
-			'archive' => ['archive', \phpbb\boardannouncements\ext::STATE_ARCHIVED, false],
+			'publish' => ['publish', ext::STATUS_PUBLISHED, true],
+			'draft' => ['draft', ext::STATUS_DRAFT, false],
+			'archive' => ['archive', ext::STATUS_ARCHIVED, false],
 		];
 	}
 
@@ -1290,7 +1292,7 @@ class acp_controller_test extends \phpbb_test_case
 
 		$this->request->method('variable')
 			->willReturnCallback(static function ($name, $default = null) use ($id) {
-				return ['action' => 'delete', 'id' => $id, 'status' => 'all', 'q' => ''][$name] ?? $default;
+				return ['action' => 'delete', 'id' => $id, 'status' => ext::STATUS_ALL, 'q' => ''][$name] ?? $default;
 			});
 
 		if (!$confirm_action)
@@ -1417,7 +1419,7 @@ class acp_controller_test extends \phpbb_test_case
 					'id' => $id,
 					'dir' => $dir,
 					'hash' => $valid ? generate_link_hash($dir . $id) : '',
-					'status' => 'all',
+					'status' => ext::STATUS_ALL,
 					'q' => '',
 				][$name] ?? $default;
 			});

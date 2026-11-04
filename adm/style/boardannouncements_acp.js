@@ -245,7 +245,7 @@
 
 		if (tone && customColor && colorInput && colorPicker) {
 			const updateCustomColor = () => {
-				const custom = tone.value === 'custom';
+				const custom = tone.value === editor.dataset.customTone;
 				customColor.classList.toggle('is-disabled', !custom);
 				customColor.setAttribute('aria-disabled', custom ? 'false' : 'true');
 				colorInput.disabled = !custom;

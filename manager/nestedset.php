@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\manager;
 
+use phpbb\boardannouncements\ext;
+
 /**
  * Announcement persistence and targeting queries built on phpBB's nested-set storage.
  */
@@ -91,7 +93,7 @@ class nestedset extends \phpbb\tree\nestedset
 	public function where_published($user_id = 0)
 	{
 		$user_id = (int) $user_id;
-		$this->sql_where = "%1\$sannouncement_state = 'published'";
+		$this->sql_where = "%1\$sannouncement_state = '" . ext::STATUS_PUBLISHED . "'";
 		if ($user_id > 0 && $user_id !== ANONYMOUS)
 		{
 			$this->sql_where .= ' AND (%1$sannouncement_dismissable = 0 OR %1$s' . $this->column_item_id . ' NOT IN (

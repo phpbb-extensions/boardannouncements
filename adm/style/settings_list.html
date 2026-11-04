@@ -38,7 +38,7 @@
 			<label class="ba-filter-field">
 				<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_STATUS') }}</span>
 				<select name="status">
-					{% for status in ['all', 'active', 'scheduled', 'draft', 'expired', 'archived'] %}
+					{% for status in constant('\\phpbb\\boardannouncements\\ext::FILTER_STATUSES') %}
 						<option value="{{ status }}"{% if S_STATUS_FILTER == status %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_STATUS_' ~ status|upper) }}</option>
 					{% endfor %}
 				</select>
@@ -88,8 +88,8 @@
 								<a class="ba-icon-button" href="{{ ba.U_EDIT }}" title="{{ lang('EDIT') }}">{{ icons.fa('pencil', 'pencil') }}<span class="sr-only">{{ lang('EDIT') }}</span></a>
 								<a class="ba-icon-button" href="{{ ba.U_DUPLICATE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_DUPLICATE') }}">{{ icons.fa('clone', 'clone', 'far') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_DUPLICATE') }}</span></a>
 								{% if ba.DISMISSABLE %}<a class="ba-icon-button ba-show-again-action" href="{{ ba.U_RESET }}" title="{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}">{{ icons.fa('refresh', 'arrows-rotate') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}</span></a>{% else %}<span class="ba-icon-button ba-show-again-action is-disabled" aria-disabled="true" title="{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}">{{ icons.fa('refresh', 'arrows-rotate') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_SHOW_AGAIN') }}</span></span>{% endif %}
-								{% if ba.STATUS != 'archived' %}<a class="ba-icon-button" href="{{ ba.U_ARCHIVE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}">{{ icons.fa('archive', 'box-archive') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}</span></a>{% endif %}
-								{% if ba.STATUS == 'archived' %}<a class="ba-icon-button ba-icon-button-danger" href="{{ ba.U_DELETE }}" title="{{ lang('DELETE') }}">{{ icons.fa('trash', 'trash-can') }}<span class="sr-only">{{ lang('DELETE') }}</span></a>{% endif %}
+								{% if not ba.S_ARCHIVED %}<a class="ba-icon-button" href="{{ ba.U_ARCHIVE }}" title="{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}">{{ icons.fa('archive', 'box-archive') }}<span class="sr-only">{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}</span></a>{% endif %}
+								{% if ba.S_ARCHIVED %}<a class="ba-icon-button ba-icon-button-danger" href="{{ ba.U_DELETE }}" title="{{ lang('DELETE') }}">{{ icons.fa('trash', 'trash-can') }}<span class="sr-only">{{ lang('DELETE') }}</span></a>{% endif %}
 							</div>
 						</td>
 					</tr>
@@ -105,7 +105,7 @@
 			<select id="ba-bulk-action" name="bulk_action">
 				<option value="">{{ lang('SELECT_OPTION') }}</option>
 				<option value="publish">{{ lang('BOARD_ANNOUNCEMENTS_PUBLISH') }}</option>
-				<option value="draft">{{ lang('BOARD_ANNOUNCEMENTS_STATUS_DRAFT') }}</option>
+				<option value="{{ constant('\\phpbb\\boardannouncements\\ext::STATUS_DRAFT') }}">{{ lang('BOARD_ANNOUNCEMENTS_STATUS_DRAFT') }}</option>
 				<option value="archive">{{ lang('BOARD_ANNOUNCEMENTS_ARCHIVE') }}</option>
 				<option value="delete">{{ lang('BOARD_ANNOUNCEMENTS_DELETE_PERMANENTLY') }}</option>
 			</select>
