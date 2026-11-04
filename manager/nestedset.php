@@ -68,32 +68,37 @@ class nestedset extends \phpbb\tree\nestedset
 	}
 
 	/**
-	 * Restrict announcement queries to items not dismissed by a registered user.
-	 *
-	 * @param int $user_id User identifier, or zero to remove the restriction
-	 * @return nestedset This object for method chaining
-	 */
-	public function where_visible($user_id = 0)
-	{
-		$user_id = (int) $user_id;
-		$this->sql_where = $user_id > 0 && $user_id !== ANONYMOUS
-			? '(%1$sannouncement_dismissable = 0 OR %1$s' . $this->column_item_id . ' NOT IN (
-				SELECT ' . $this->column_item_id . ' FROM ' . $this->tracking_table . '
-				WHERE user_id = ' . $user_id . '
-			))'
-			: '';
-
-		return $this;
-	}
-
-	/**
-	 * Remove query restrictions.
+	 * Remove frontend restrictions from announcement queries.
 	 *
 	 * @return nestedset This object for method chaining
 	 */
 	public function where_all()
 	{
 		$this->sql_where = '';
+
+		return $this;
+	}
+
+	/**
+	 * Restrict queries to published items not dismissed by a registered user.
+	 *
+	 * This deliberately covers database eligibility only. Audience and location
+	 * policy remain in the visibility service.
+	 *
+	 * @param int $user_id Registered user identifier, or zero for guests
+	 * @return nestedset This object for method chaining
+	 */
+	public function where_published($user_id = 0)
+	{
+		$user_id = (int) $user_id;
+		$this->sql_where = "%1\$sannouncement_state = 'published'";
+		if ($user_id > 0 && $user_id !== ANONYMOUS)
+		{
+			$this->sql_where .= ' AND (%1$sannouncement_dismissable = 0 OR %1$s' . $this->column_item_id . ' NOT IN (
+				SELECT ' . $this->column_item_id . ' FROM ' . $this->tracking_table . '
+				WHERE user_id = ' . $user_id . '
+			))';
+		}
 
 		return $this;
 	}

@@ -375,6 +375,30 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
+	public function test_list_announcements_decodes_ncr_before_case_insensitive_search()
+	{
+		$controller = $this->get_controller();
+		$rows = [[
+			'announcement_id' => 1,
+			'announcement_description' => '&#1050;&#1048;&#1056;&#1048;&#1051;&#1051;&#1048;&#1062;&#1040;',
+			'announcement_title' => '',
+			'announcement_text' => '',
+			'announcement_enabled' => true,
+			'announcement_state' => \phpbb\boardannouncements\ext::STATE_PUBLISHED,
+		]];
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => '', 'status' => 'all', 'q' => 'кириллица'][$name] ?? $default;
+		});
+		$this->manager->expects(self::once())->method('get_announcements')->willReturn($rows);
+		$this->template->expects(self::once())
+			->method('assign_block_vars')
+			->with('announcements', self::callback(static function ($data) {
+				return $data['ID'] === 1;
+			}));
+
+		$controller->mode_manage();
+	}
+
 	/**
 	 * @dataProvider list_label_data
 	 */

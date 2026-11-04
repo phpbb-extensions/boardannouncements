@@ -39,14 +39,35 @@ class manager
 	}
 
 	/**
-	 * Get board announcements, optionally excluding a user's dismissals.
+	 * Get all board announcements for administration.
 	 *
-	 * @param int $user_id Registered user identifier, or zero for all announcements
 	 * @return array Array of announcements data, or empty array
 	 */
-	public function get_announcements($user_id = 0)
+	public function get_announcements()
 	{
-		return $this->nestedset->where_visible($user_id)->get_all_tree_data();
+		return $this->nestedset->where_all()->get_all_tree_data();
+	}
+
+	/**
+	 * Get published announcements eligible for frontend visibility checks.
+	 *
+	 * Audience, location, forum permissions, and guest cookies are evaluated by
+	 * the visibility service after this database-level eligibility query.
+	 *
+	 * @param int $user_id Registered user identifier, or zero for guests
+	 * @return array Array of published announcement data, or empty array
+	 */
+	public function get_published_announcements($user_id = 0)
+	{
+		$this->nestedset->where_published($user_id);
+		try
+		{
+			return $this->nestedset->get_all_tree_data();
+		}
+		finally
+		{
+			$this->nestedset->where_all();
+		}
 	}
 
 	/**
@@ -110,6 +131,8 @@ class manager
 	 * @param string $direction up or down
 	 * @param int $amount
 	 * @return void
+	 * @throws \OutOfBoundsException When the announcement does not exist
+	 * @throws \RuntimeException When the nested-set lock cannot be acquired
 	 */
 	public function move_announcement($id, $direction = 'up', $amount = 1)
 	{

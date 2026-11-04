@@ -160,11 +160,12 @@ class acp_controller
 			{
 				continue;
 			}
-			$search_text = utf8_strtolower(utf8_decode_ncr(implode(' ', [
+			$search_text = utf8_decode_ncr(implode(' ', [
 				$row['announcement_description'],
 				$row['announcement_title'],
 				$row['announcement_text'],
-			])));
+			]));
+			$search_text = utf8_strtolower($search_text);
 			if ($normalized_query !== '' && strpos($search_text, $normalized_query) === false)
 			{
 				continue;
@@ -722,6 +723,7 @@ class acp_controller
 	 * Move an announcement up or down
 	 *
 	 * @return void
+	 * @throws \RuntimeException When the nested-set lock cannot be acquired
 	 */
 	protected function action_move()
 	{

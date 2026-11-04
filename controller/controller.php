@@ -57,6 +57,7 @@ class controller
 	* Board Announcements controller accessed from the URL /boardannouncements/close/id
 	*
 	* @throws http_exception A http exception
+	* @throws \OutOfBoundsException When the announcement no longer exists
 	* @return JsonResponse A Symfony JSON Response object
 	* @access public
 	*/
