@@ -77,7 +77,7 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 
 		self::assertTrue($this->db_tools->sql_column_exists('phpbb_board_announcements', 'announcement_state'));
 		self::assertTrue($this->db_tools->sql_table_exists('phpbb_board_announcement_groups'));
-		self::assertSame([
+		self::assertEquals([
 			['announcement_id' => '1', 'announcement_enabled' => '1', 'announcement_state' => 'published', 'announcement_tone' => 'custom', 'announcement_updated_at' => '100'],
 			['announcement_id' => '2', 'announcement_enabled' => '0', 'announcement_state' => 'draft', 'announcement_tone' => 'info', 'announcement_updated_at' => '200'],
 			['announcement_id' => '3', 'announcement_enabled' => '1', 'announcement_state' => 'published', 'announcement_tone' => 'info', 'announcement_updated_at' => '300'],

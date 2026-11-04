@@ -421,6 +421,7 @@ class nestedset extends \phpbb\tree\nestedset
 
 	/**
 	 * Execute a database operation atomically, rolling back and propagating failures.
+	 * Database engines without transaction support cannot roll back partial writes.
 	 *
 	 * @param callable $operation Operation to execute
 	 * @return mixed Operation result

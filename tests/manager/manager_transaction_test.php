@@ -16,6 +16,14 @@ class manager_transaction_test extends manager_base
 	protected function setUp(): void
 	{
 		parent::setUp();
+		if ($this->db->get_sql_layer() === 'mysqli')
+		{
+			$table_status = $this->db->get_table_status('phpbb_board_announcements');
+			if (isset($table_status['Engine']) && $table_status['Engine'] === 'MyISAM')
+			{
+				self::markTestSkipped('MyISAM does not support transaction rollback.');
+			}
+		}
 
 		$config = new \phpbb\config\config(['boardannouncements.table_lock.board_announcements_table' => 0]);
 		$this->failing_nestedset = new failing_nestedset(
