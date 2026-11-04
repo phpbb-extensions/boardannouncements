@@ -67,10 +67,12 @@ class manager
 	 * Save an announcement to the database
 	 *
 	 * @param array $data An array of announcement data
+	 * @param array $group_ids Assigned group identifiers
+	 * @throws \Throwable Any transaction failure
 	 */
-	public function save_announcement($data)
+	public function save_announcement($data, array $group_ids = [])
 	{
-		return $this->nestedset->insert($this->intersect_data($data));
+		return $this->nestedset->insert_with_groups($this->intersect_data($data), $group_ids);
 	}
 
 	/**
@@ -78,11 +80,14 @@ class manager
 	 *
 	 * @param int $id An announcement identifier
 	 * @param array $data An array of announcement data
+	 * @param array|null $group_ids Replacement group identifiers, or null to leave unchanged
 	 * @return bool
+	 * @throws \OutOfBoundsException When the announcement data is invalid
+	 * @throws \Throwable Any other transaction failure
 	 */
-	public function update_announcement($id, $data)
+	public function update_announcement($id, $data, array $group_ids = null)
 	{
-		return (bool) $this->nestedset->update_item($id, $this->intersect_data($data));
+		return (bool) $this->nestedset->update_with_groups($id, $this->intersect_data($data), $group_ids);
 	}
 
 	/**
@@ -90,17 +95,12 @@ class manager
 	 *
 	 * @param int $id An announcement identifier
 	 * @return bool
+	 * @throws \OutOfBoundsException When the announcement does not exist
+	 * @throws \Throwable Any other transaction failure
 	 */
 	public function delete_announcement($id)
 	{
-		$this->set_announcement_groups($id, []);
-		$deleted = (bool) $this->nestedset->delete($id);
-		if ($deleted)
-		{
-			$this->delete_announcement_tracking($id);
-		}
-
-		return $deleted;
+		return (bool) $this->nestedset->delete_with_relations($id);
 	}
 
 	/**
@@ -122,24 +122,11 @@ class manager
 	 *
 	 * @param int $id Announcement identifier
 	 * @return bool True when the revision was updated, false when not found
+	 * @throws \Throwable Any transaction failure
 	 */
 	public function show_announcement_again($id)
 	{
-		$announcement = $this->get_announcement($id);
-		if (!$announcement)
-		{
-			return false;
-		}
-
-		$updated = (bool) $this->nestedset->update_item($id, [
-			'announcement_revision' => (int) $announcement['announcement_revision'] + 1,
-		]);
-		if ($updated)
-		{
-			$this->delete_announcement_tracking($id);
-		}
-
-		return $updated;
+		return (bool) $this->nestedset->show_again($id);
 	}
 
 	/**
@@ -148,21 +135,11 @@ class manager
 	 * @param int $id Announcement identifier
 	 * @param int $user_id User identifier
 	 * @return bool True when stored or already present
+	 * @throws \OutOfBoundsException When the announcement does not exist
 	 */
 	public function close_announcement($id, $user_id)
 	{
 		return (bool) $this->nestedset->insert_tracked_item($id, $user_id);
-	}
-
-	/**
-	 * Delete every registered-user dismissal for an announcement.
-	 *
-	 * @param int $id Announcement identifier
-	 * @return bool True when any dismissal was deleted
-	 */
-	public function delete_announcement_tracking($id)
-	{
-		return (bool) $this->nestedset->delete_tracked_items($id);
 	}
 
 	/**
@@ -182,6 +159,7 @@ class manager
 	 * @param int   $id Announcement identifier
 	 * @param array $group_ids Group identifiers
 	 * @return void
+	 * @throws \Throwable Any transaction failure
 	 */
 	public function set_announcement_groups($id, array $group_ids)
 	{

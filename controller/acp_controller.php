@@ -115,6 +115,7 @@ class acp_controller
 	 * Handle user request for management mode
 	 *
 	 * @return	void
+	 * @throws \Throwable Any action failure
 	 */
 	public function mode_manage()
 	{
@@ -211,6 +212,7 @@ class acp_controller
 	 * Add, update and preview an announcement
 	 *
 	 * @return void
+	 * @throws \Throwable Any transaction failure
 	 */
 	protected function action_add()
 	{
@@ -388,19 +390,16 @@ class acp_controller
 			{
 				if ($id)
 				{
-					if (!$this->manager->update_announcement($id, $data))
+					if (!$this->manager->update_announcement($id, $data, $selected_groups))
 					{
 						$this->error('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
 					}
 
 					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $this->get_list_label($data));
-					$this->manager->set_announcement_groups($id, $selected_groups);
 				}
 				else
 				{
-					$result = $this->manager->save_announcement($data);
-					$new_id = is_array($result) ? (int) ($result['announcement_id'] ?? 0) : (int) $result;
-					$this->manager->set_announcement_groups($new_id, $selected_groups);
+					$this->manager->save_announcement($data, $selected_groups);
 					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $this->get_list_label($data));
 				}
 
@@ -536,6 +535,7 @@ class acp_controller
 	 * Archive an announcement.
 	 *
 	 * @return void
+	 * @throws \Throwable Any transaction failure
 	 */
 	protected function action_archive()
 	{
@@ -556,6 +556,7 @@ class acp_controller
 	 * Reset dismissals so an announcement is shown again.
 	 *
 	 * @return void
+	 * @throws \Throwable Any transaction failure
 	 */
 	protected function action_reset()
 	{
@@ -571,6 +572,7 @@ class acp_controller
 	 * Duplicate an announcement as a draft.
 	 *
 	 * @return void
+	 * @throws \Throwable Any transaction failure
 	 */
 	protected function action_duplicate()
 	{
@@ -595,9 +597,7 @@ class acp_controller
 		$data['announcement_updated_at'] = time();
 		$data['announcement_created_by'] = (int) $this->user->data['user_id'];
 		$data['announcement_updated_by'] = (int) $this->user->data['user_id'];
-		$result = $this->manager->save_announcement($data);
-		$new_id = is_array($result) ? (int) ($result['announcement_id'] ?? 0) : (int) $result;
-		$this->manager->set_announcement_groups($new_id, $this->manager->get_announcement_groups($id));
+		$this->manager->save_announcement($data, $this->manager->get_announcement_groups($id));
 		$this->success('BOARD_ANNOUNCEMENTS_DUPLICATED');
 	}
 
@@ -605,6 +605,7 @@ class acp_controller
 	 * Apply a bulk action to selected announcements.
 	 *
 	 * @return void
+	 * @throws \Throwable Any transaction failure
 	 */
 	protected function action_bulk()
 	{
@@ -663,6 +664,7 @@ class acp_controller
 	 * Delete an announcement
 	 *
 	 * @return void
+	 * @throws \Throwable Any transaction failure
 	 */
 	protected function action_delete()
 	{

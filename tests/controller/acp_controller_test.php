@@ -855,22 +855,17 @@ class acp_controller_test extends \phpbb_test_case
 			->willReturn($update_success);
 		if ($submit && $id && !$errors)
 		{
-			$update->with($id, self::callback($has_expected_data));
+			$update->with($id, self::callback($has_expected_data), []);
 		}
 
 		$save = $this->manager->expects($submit && !$id && !$errors ? self::once() : self::never())
 			->method('save_announcement');
 		if ($submit && !$id && !$errors)
 		{
-			$save->with(self::callback($has_expected_data));
+			$save->with(self::callback($has_expected_data), []);
 		}
 
-		$groups = $this->manager->expects($successful_submit ? self::once() : self::never())
-			->method('set_announcement_groups');
-		if ($successful_submit)
-		{
-			$groups->with(self::anything(), []);
-		}
+		$this->manager->expects(self::never())->method('set_announcement_groups');
 
 		$log = $this->log->expects($successful_submit ? self::once() : self::never())
 			->method('add');
@@ -1060,6 +1055,7 @@ class acp_controller_test extends \phpbb_test_case
 			'announcement_enabled' => 1,
 			'announcement_revision' => 9,
 		]);
+		$this->manager->expects(self::once())->method('get_announcement_groups')->with(7)->willReturn([4, 8]);
 		$this->manager->expects(self::once())->method('save_announcement')
 			->with(self::callback(static function ($data) use ($expected_description) {
 				return !isset($data['announcement_id'])
@@ -1069,10 +1065,9 @@ class acp_controller_test extends \phpbb_test_case
 					&& $data['announcement_revision'] === 1
 					&& $data['announcement_created_by'] === 2
 					&& $data['announcement_updated_by'] === 2;
-			}))
+			}), [4, 8])
 			->willReturn(['announcement_id' => 12]);
-		$this->manager->expects(self::once())->method('get_announcement_groups')->with(7)->willReturn([4, 8]);
-		$this->manager->expects(self::once())->method('set_announcement_groups')->with(12, [4, 8]);
+		$this->manager->expects(self::never())->method('set_announcement_groups');
 
 		$controller->mode_manage();
 	}

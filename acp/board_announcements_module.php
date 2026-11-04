@@ -24,7 +24,7 @@ class board_announcements_module
 	/**
 	 * Main ACP module
 	 *
-	 * @throws \Exception
+	 * @throws \Throwable Any controller action failure
 	 * @return void
 	 */
 	public function main()

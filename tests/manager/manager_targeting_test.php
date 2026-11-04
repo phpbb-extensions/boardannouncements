@@ -10,6 +10,35 @@ namespace phpbb\boardannouncements\tests\manager;
 
 class manager_targeting_test extends manager_base
 {
+	public function test_save_and_update_store_group_mappings_with_announcement()
+	{
+		$result = $this->manager->save_announcement(array_replace($this->manager->announcement_columns(), [
+			'announcement_text' => 'Grouped announcement',
+			'announcement_description' => 'Grouped announcement',
+		]), [10]);
+		$id = (int) $result['announcement_id'];
+
+		self::assertSame([10], $this->manager->get_announcement_groups($id));
+		self::assertTrue($this->manager->update_announcement($id, ['announcement_description' => 'Updated group'], [20]));
+		self::assertSame('Updated group', $this->manager->get_announcement_data($id, 'announcement_description'));
+		self::assertSame([20], $this->manager->get_announcement_groups($id));
+	}
+
+	/**
+	 * @throws \Throwable
+	 */
+	public function test_group_only_update_replaces_group_mappings()
+	{
+		$description = $this->manager->get_announcement_data(1, 'announcement_description');
+		$this->manager->set_announcement_groups(1, [10]);
+
+		self::assertTrue($this->manager->update_announcement(1, [
+			'announcement_description' => $description,
+		], [20]));
+		self::assertSame($description, $this->manager->get_announcement_data(1, 'announcement_description'));
+		self::assertSame([20], $this->manager->get_announcement_groups(1));
+	}
+
 	public function test_group_mapping_and_membership()
 	{
 		$this->manager->set_announcement_groups(1, [10, 10, 0, -1]);

@@ -87,6 +87,123 @@ class nestedset extends \phpbb\tree\nestedset
 	}
 
 	/**
+	 * Remove query restrictions.
+	 *
+	 * @return nestedset This object for method chaining
+	 */
+	public function where_all()
+	{
+		$this->sql_where = '';
+
+		return $this;
+	}
+
+	/**
+	 * Insert an item and its group mappings atomically.
+	 *
+	 * @param array $item_data Announcement data
+	 * @param array $group_ids Assigned group identifiers
+	 * @return mixed Nested-set insert result
+	 * @throws \Throwable Any transaction failure
+	 */
+	public function insert_with_groups(array $item_data, array $group_ids = [])
+	{
+		$this->where_all();
+		if (!$group_ids)
+		{
+			return $this->insert($item_data);
+		}
+
+		return $this->transactional(function () use ($item_data, $group_ids) {
+			$result = $this->insert($item_data);
+			$item_id = is_array($result) ? (int) ($result[$this->column_item_id] ?? 0) : (int) $result;
+			$this->replace_announcement_groups($item_id, $group_ids);
+
+			return $result;
+		});
+	}
+
+	/**
+	 * Update an item and optionally replace its group mappings atomically.
+	 *
+	 * @param int        $item_id Announcement identifier
+	 * @param array      $item_data Announcement data
+	 * @param array|null $group_ids Replacement group identifiers, or null to leave unchanged
+	 * @return mixed Number of affected rows, or false
+	 * @throws \OutOfBoundsException When the announcement data is invalid
+	 * @throws \Throwable Any other transaction failure
+	 */
+	public function update_with_groups($item_id, array $item_data, array $group_ids = null)
+	{
+		if ($group_ids === null)
+		{
+			return $this->update_item($item_id, $item_data);
+		}
+
+		return $this->transactional(function () use ($item_id, $item_data, $group_ids) {
+			$updated = $this->update_item($item_id, $item_data);
+			if ($updated)
+			{
+				$this->replace_announcement_groups($item_id, $group_ids);
+			}
+
+			return $updated;
+		});
+	}
+
+	/**
+	 * Delete an item and all extension-owned relations atomically.
+	 *
+	 * @param int $item_id Announcement identifier
+	 * @return mixed Nested-set delete result
+	 * @throws \OutOfBoundsException When the announcement does not exist
+	 * @throws \Throwable Any other transaction failure
+	 */
+	public function delete_with_relations($item_id)
+	{
+		$this->where_all();
+		return $this->transactional(function () use ($item_id) {
+			$deleted = parent::delete($item_id);
+			if ($deleted)
+			{
+				$this->replace_announcement_groups($item_id, []);
+				$this->delete_tracked_items($item_id);
+			}
+
+			return $deleted;
+		});
+	}
+
+	/**
+	 * Increment an item revision and clear registered dismissals atomically.
+	 *
+	 * @param int $item_id Announcement identifier
+	 * @return int|false Number of affected rows, or false
+	 * @throws \Throwable Any transaction failure
+	 */
+	public function show_again($item_id)
+	{
+		if (!$item_id)
+		{
+			return false;
+		}
+
+		return $this->transactional(function () use ($item_id) {
+			$sql = 'UPDATE ' . $this->table_name . '
+				SET announcement_revision = announcement_revision + 1
+				WHERE ' . $this->column_item_id . ' = ' . (int) $item_id;
+			$this->db->sql_query($sql);
+			$updated = $this->db->sql_affectedrows();
+			if ($updated)
+			{
+				$this->delete_tracked_items($item_id);
+			}
+
+			return $updated;
+		});
+	}
+
+	/**
 	 * Update a nested item
 	 *
 	 * @param int   $item_id   The item identifier
@@ -114,6 +231,7 @@ class nestedset extends \phpbb\tree\nestedset
 	 *
 	 * @param int $item_id Announcement identifier
 	 * @return int|false Number of affected rows, or false
+	 * @throws \OutOfBoundsException When the announcement identifier is invalid
 	 */
 	public function delete_tracked_items($item_id)
 	{
@@ -135,6 +253,7 @@ class nestedset extends \phpbb\tree\nestedset
 	 * @param int $item_id Announcement identifier
 	 * @param int $user_id User identifier
 	 * @return int|false Number of affected rows, one when already tracked, or false
+	 * @throws \OutOfBoundsException When the announcement does not exist
 	 */
 	public function insert_tracked_item($item_id, $user_id)
 	{
@@ -190,11 +309,26 @@ class nestedset extends \phpbb\tree\nestedset
 	/**
 	 * Replace groups assigned to an announcement.
 	 *
+	 * @param int $item_id Announcement identifier
+	 * @param array $group_ids Group identifiers
+	 * @return void
+	 * @throws \Throwable Any transaction failure
+	 */
+	public function set_announcement_groups($item_id, array $group_ids)
+	{
+		$this->transactional(function () use ($item_id, $group_ids) {
+			$this->replace_announcement_groups($item_id, $group_ids);
+		});
+	}
+
+	/**
+	 * Replace group mappings inside the caller's transaction.
+	 *
 	 * @param int   $item_id Announcement identifier
 	 * @param array $group_ids Group identifiers
 	 * @return void
 	 */
-	public function set_announcement_groups($item_id, array $group_ids)
+	protected function replace_announcement_groups($item_id, array $group_ids)
 	{
 		$this->user_group_announcements = [];
 		$this->db->sql_query('DELETE FROM ' . $this->groups_table . ' WHERE announcement_id = ' . (int) $item_id);
@@ -209,6 +343,30 @@ class nestedset extends \phpbb\tree\nestedset
 		if ($rows)
 		{
 			$this->db->sql_multi_insert($this->groups_table, $rows);
+		}
+	}
+
+	/**
+	 * Execute a database operation atomically, rolling back and propagating failures.
+	 *
+	 * @param callable $operation Operation to execute
+	 * @return mixed Operation result
+	 * @throws \Throwable Any operation failure after the transaction is rolled back
+	 */
+	protected function transactional(callable $operation)
+	{
+		$this->db->sql_transaction('begin');
+		try
+		{
+			$result = $operation();
+			$this->db->sql_transaction('commit');
+
+			return $result;
+		}
+		catch (\Throwable $e)
+		{
+			$this->db->sql_transaction('rollback');
+			throw $e;
 		}
 	}
 
