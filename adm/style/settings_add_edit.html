@@ -66,8 +66,8 @@
 							<label for="board_announcements_bgcolor_picker">{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR') }}</label>
 							<span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN') }}</span>
 							<div class="ba-color-control">
-								<input type="color" class="ba-color-picker" id="board_announcements_bgcolor_picker" value="{{ BOARD_ANNOUNCEMENTS_COLOR_PICKER }}" aria-label="{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_PICKER') }}"{% if BOARD_ANNOUNCEMENTS_TONE != custom_tone %} disabled{% endif %}>
-								<div class="ba-color-field"><span>#</span><input name="board_announcements_bgcolor" id="board_announcements_bgcolor" value="{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}" size="6" maxlength="6" inputmode="text" autocomplete="off" spellcheck="false" aria-label="{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_HEX') }}"{% if BOARD_ANNOUNCEMENTS_TONE != custom_tone %} disabled{% endif %}></div>
+								<input type="color" class="ba-color-picker" id="board_announcements_bgcolor_picker" value="{{ BOARD_ANNOUNCEMENTS_COLOR_PICKER }}" aria-label="{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_PICKER')|e('html_attr') }}"{% if BOARD_ANNOUNCEMENTS_TONE != custom_tone %} disabled{% endif %}>
+								<div class="ba-color-field"><span>#</span><input name="board_announcements_bgcolor" id="board_announcements_bgcolor" value="{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}" size="6" maxlength="6" inputmode="text" autocomplete="off" spellcheck="false" aria-label="{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_HEX')|e('html_attr') }}"{% if BOARD_ANNOUNCEMENTS_TONE != custom_tone %} disabled{% endif %}></div>
 							</div>
 						</div>
 					</div>
@@ -92,7 +92,7 @@
 					<div class="ba-field"><label for="board_announcements_users">{{ lang('BOARD_ANNOUNCEMENTS_USERS') }}</label><select name="board_announcements_users" id="board_announcements_users" aria-controls="board_announcements_group_picker" aria-expanded="{{ S_BOARD_ANNOUNCEMENTS_GROUPS ? 'true' : 'false' }}">{% if S_BOARD_ANNOUNCEMENTS_USERS is iterable %}{% for item in S_BOARD_ANNOUNCEMENTS_USERS %}<option value="{{ item.value }}"{% if item.selected %} selected{% endif %}>{{ item.label }}</option>{% endfor %}{% else %}{{ S_BOARD_ANNOUNCEMENTS_USERS }}{% endif %}</select></div>
 					<div id="board_announcements_group_picker" class="ba-field ba-dependent-panel" data-ba-groups{% if not S_BOARD_ANNOUNCEMENTS_GROUPS %} hidden{% endif %}>
 						<label id="ba-groups-label">{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_GROUPS') }}</label>
-						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span>{{ icons.fa('search', 'magnifying-glass') }}<input type="search" data-ba-group-search placeholder="{{ lang('SEARCH') }}" autocomplete="off"></label>
+						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span>{{ icons.fa('search', 'magnifying-glass') }}<input type="search" data-ba-group-search placeholder="{{ lang('SEARCH')|e('html_attr') }}" autocomplete="off"></label>
 						<div class="ba-checklist" role="group" aria-labelledby="ba-groups-label">{% for group in BOARD_ANNOUNCEMENTS_GROUPS %}<label data-ba-group-name="{{ group.NAME|lower }}"><input type="checkbox" name="board_announcements_groups[]" value="{{ group.ID }}"{% if group.S_SELECTED %} checked{% endif %}><span>{{ group.NAME }}</span></label>{% endfor %}</div>
 					</div>
 					<div class="ba-field">
