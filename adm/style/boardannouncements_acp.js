@@ -83,6 +83,16 @@
 
 		const previewButton = editor.querySelector('[data-ba-preview-request]');
 		const previewSlot = editor.querySelector('[data-ba-preview-slot]');
+		const dismissControls = editor.querySelectorAll('input[name="board_announcements_dismiss"]');
+		const updatePreviewDismiss = () => {
+			const selected = editor.querySelector('input[name="board_announcements_dismiss"]:checked');
+			const previewDismiss = previewSlot && previewSlot.querySelector('[data-ba-preview-dismiss]');
+			if (selected && previewDismiss) {
+				previewDismiss.hidden = selected.value !== '1';
+			}
+		};
+		dismissControls.forEach((control) => control.addEventListener('change', updatePreviewDismiss));
+		updatePreviewDismiss();
 		if (previewButton && previewSlot && window.phpbb) {
 			let previewRequested = false;
 
@@ -99,6 +109,7 @@
 				if (mobile && updatedPreview) {
 					updatedPreview.setAttribute('data-mobile', '');
 				}
+				updatePreviewDismiss();
 				window.scrollTo(0, 0);
 			});
 

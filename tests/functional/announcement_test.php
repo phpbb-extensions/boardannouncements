@@ -103,6 +103,7 @@ class announcement_test extends \phpbb_functional_test_case
 		$preview_values['action'] = 'preview';
 		$preview_values['board_announcements_title'] = 'AJAX preview title';
 		$preview_values['board_announcements_text'] = '[b]AJAX preview text[/b]';
+		$preview_values['board_announcements_dismiss'] = 0;
 		self::$client->setServerParameter('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
 		self::$client->request('POST', $form->getUri(), $preview_values);
 		$preview_response = json_decode(self::get_content(), true);
@@ -111,6 +112,8 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertTrue($preview_response['success']);
 		self::assertStringContainsString('AJAX preview title', $preview_response['preview_html']);
 		self::assertStringContainsString('AJAX preview text', $preview_response['preview_html']);
+		self::assertStringContainsString('data-ba-preview-dismiss hidden', $preview_response['preview_html']);
+		self::assertStringContainsString('type="button"', $preview_response['preview_html']);
 
 		$values = [
 			'board_announcements_state'			=> ext::STATUS_PUBLISHED,
@@ -328,6 +331,7 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertCount(1, $crawler->filter('#ba-preview'));
 		self::assertCount(0, $crawler->filter('#ba-preview[data-theme], [data-ba-preview-theme]'));
 		self::assertCount(1, $crawler->filter('[data-ba-preview-mobile]'));
+		self::assertCount(1, $crawler->filter('[data-ba-preview-dismiss]:not([hidden]) .phpbb-announcement__dismiss[type="button"]'));
 		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="-1"]:checked'));
 		self::assertCount(1, $crawler->filter('#board_announcements_location_mode option[value="index"]:selected'));
 		self::assertCount(1, $crawler->filter('[data-ba-locations][hidden]'));

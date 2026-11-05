@@ -97,6 +97,7 @@ class acp_controller
 		$this->php_ext = $php_ext;
 
 		$this->language->add_lang('posting');
+		$this->language->add_lang('boardannouncements', 'phpbb/boardannouncements');
 		$this->language->add_lang('boardannouncements_acp', 'phpbb/boardannouncements');
 	}
 
@@ -487,6 +488,7 @@ class acp_controller
 
 		$text = $this->request->variable('board_announcements_text', '', true);
 		$title = $this->request->variable('board_announcements_title', '', true);
+		$dismissable = $this->request->variable('board_announcements_dismiss', true);
 		$tone = $this->request->variable('board_announcements_tone', ext::TONE_INFO);
 		if (!in_array($tone, ext::TONES, true))
 		{
@@ -517,6 +519,7 @@ class acp_controller
 		$this->template->assign_vars([
 			'BOARD_ANNOUNCEMENTS_PREVIEW' => generate_text_for_display($text, $uid, $bitfield, $flags),
 			'BOARD_ANNOUNCEMENTS_TITLE' => $title,
+			'BOARD_ANNOUNCEMENTS_DISMISS' => $dismissable,
 			'BOARD_ANNOUNCEMENTS_TONE' => $tone,
 			'BOARD_ANNOUNCEMENTS_BGCOLOR' => $bgcolor,
 			'BOARD_ANNOUNCEMENTS_TEXTCOLOR' => color::contrast_color($bgcolor),

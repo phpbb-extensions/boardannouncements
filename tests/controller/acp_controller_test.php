@@ -916,16 +916,16 @@ class acp_controller_test extends \phpbb_test_case
 	public function action_preview_data()
 	{
 		return [
-			[ext::TONE_CUSTOM, '#ABCDEF', ext::TONE_CUSTOM, 'ABCDEF'],
-			[ext::TONE_CUSTOM, 'not-a-color', ext::TONE_CUSTOM, ''],
-			['invalid', 'not-a-color', ext::TONE_INFO, ''],
+			[ext::TONE_CUSTOM, '#ABCDEF', true, ext::TONE_CUSTOM, 'ABCDEF'],
+			[ext::TONE_CUSTOM, 'not-a-color', false, ext::TONE_CUSTOM, ''],
+			['invalid', 'not-a-color', true, ext::TONE_INFO, ''],
 		];
 	}
 
 	/**
 	 * @dataProvider action_preview_data
 	 */
-	public function test_action_preview($tone, $bgcolor, $expected_tone, $expected_bgcolor)
+	public function test_action_preview($tone, $bgcolor, $dismissable, $expected_tone, $expected_bgcolor)
 	{
 		self::$valid_form = true;
 		$controller = $this->get_controller();
@@ -933,6 +933,7 @@ class acp_controller_test extends \phpbb_test_case
 			'action' => 'preview',
 			'board_announcements_text' => '[b]Preview text[/b]',
 			'board_announcements_title' => 'Preview title',
+			'board_announcements_dismiss' => $dismissable,
 			'board_announcements_tone' => $tone,
 			'board_announcements_bgcolor' => $bgcolor,
 			'disable_bbcode' => false,
@@ -947,9 +948,10 @@ class acp_controller_test extends \phpbb_test_case
 		$this->manager->expects(self::never())->method('update_announcement');
 		$this->manager->expects(self::never())->method('set_announcement_groups');
 		$this->log->expects(self::never())->method('add');
-		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(static function ($data) use ($expected_tone, $expected_bgcolor) {
+		$this->template->expects(self::once())->method('assign_vars')->with(self::callback(static function ($data) use ($dismissable, $expected_tone, $expected_bgcolor) {
 			return $data['BOARD_ANNOUNCEMENTS_PREVIEW'] !== ''
 				&& $data['BOARD_ANNOUNCEMENTS_TITLE'] === 'Preview title'
+				&& $data['BOARD_ANNOUNCEMENTS_DISMISS'] === $dismissable
 				&& $data['BOARD_ANNOUNCEMENTS_TONE'] === $expected_tone
 				&& $data['BOARD_ANNOUNCEMENTS_BGCOLOR'] === $expected_bgcolor;
 		}));
