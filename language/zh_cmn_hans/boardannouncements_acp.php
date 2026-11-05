@@ -76,7 +76,7 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> '任何地方',
 	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> '论坛首页',
 
-	'BOARD_ANNOUNCEMENTS_EMPTY'				=> '没有论坛公告可显示T',
+	'BOARD_ANNOUNCEMENTS_EMPTY'				=> '没有论坛公告可显示',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> '创建论坛公告',
 
 	'BOARD_ANNOUNCEMENTS_EDIT'				=> '编辑公告',
