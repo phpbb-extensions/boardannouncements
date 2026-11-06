@@ -462,7 +462,6 @@ class acp_controller
 			'S_ADD_ANNOUNCEMENT'	=> true,
 			'S_EDIT_ANNOUNCEMENT'	=> (bool) $id,
 
-			'PICKER_DATE_FORMAT'	=> ext::DATE_FORMAT,
 			'START_DATE_PLACEHOLDER' => $this->user->format_date(time(), ext::DATE_FORMAT),
 			'EXPIRY_DATE_PLACEHOLDER' => $this->user->format_date(time() + 7 * 86400, ext::DATE_FORMAT),
 

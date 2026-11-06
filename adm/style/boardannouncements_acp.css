@@ -1001,6 +1001,29 @@ label.ba-filter-field {
 	z-index: 5;
 }
 
+.ba-calendar {
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	z-index: 9999;
+}
+
+.ba-calendar button,
+.ba-calendar input {
+	font-family: inherit;
+}
+
+.ba-calendar input {
+	vertical-align: baseline;
+}
+
+.ba-calendar [data-vc-time-input] input,
+.ba-calendar [data-vc-time-range] input {
+	border: 0;
+}
+
+.ba-calendar [data-vc-time-range] input {
+	padding: 0;
+}
+
 @media (max-width: 1050px) {
 	.ba-editor-grid {
 		grid-template-columns: 1fr;

@@ -1,4 +1,4 @@
-/*global storeCaret, initInsertions */
+/*global storeCaret, initInsertions, VanillaCalendarPro */
 
 (() => {
 	'use strict';
@@ -16,6 +16,103 @@
 		items.forEach((item) => {
 			item.hidden = !(item.getAttribute(attribute) || '').includes(query);
 		});
+	}
+
+	function parseDateTime(value) {
+		const match = String(value || '').trim().match(/^(\d{4})-(\d{2})-(\d{2}) ([01]\d|2[0-3]):([0-5]\d)$/);
+		if (!match) {
+			return null;
+		}
+
+		const year = Number(match[1]);
+		const month = Number(match[2]);
+		const day = Number(match[3]);
+		const date = new Date(year, month - 1, day);
+		if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+			return null;
+		}
+
+		return {
+			date: `${match[1]}-${match[2]}-${match[3]}`,
+			time: `${match[4]}:${match[5]}`,
+		};
+	}
+
+	function getDefaultTime() {
+		const now = new Date();
+		return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+	}
+
+	function syncDatePicker(calendar, input) {
+		const value = parseDateTime(input.value);
+		const selectedDates = calendar.context.selectedDates || [];
+		if (!value) {
+			if (!input.value.trim() && selectedDates.length) {
+				calendar.set({ selectedDates: [] });
+			}
+			return;
+		}
+
+		if (selectedDates[0] !== value.date || calendar.context.selectedTime !== value.time) {
+			calendar.set({
+				selectedDates: [ value.date ],
+				selectedTime: value.time,
+			});
+		}
+	}
+
+	function getCalendarLocale(value) {
+		const locale = String(value || '').replace(/_/g, '-');
+		try {
+			new Intl.DateTimeFormat(locale).format();
+			return locale;
+		} catch (error) {
+			return 'en-GB';
+		}
+	}
+
+	function initializeDatePicker(input, locale) {
+		if (!input || typeof VanillaCalendarPro === 'undefined') {
+			return;
+		}
+
+		/** @type {typeof import('vanilla-calendar-pro')} */
+		const calendarPro = VanillaCalendarPro;
+		const { Calendar, time } = calendarPro;
+		const initialValue = parseDateTime(input.value);
+		/** @type {import('vanilla-calendar-pro').Options} */
+		const options = {
+			extensions: [ time ],
+			inputMode: true,
+			positionToInput: 'auto',
+			locale,
+			firstWeekday: 0,
+			disableDatesPast: true,
+			enableDateToggle: false,
+			enableJumpToSelectedDate: true,
+			selectionDatesMode: 'single',
+			selectionTimeMode: 24,
+			selectedDates: initialValue ? [ initialValue.date ] : [],
+			selectedTime: initialValue ? initialValue.time : getDefaultTime(),
+			selectedTheme: 'light',
+			styles: { calendar: 'vc ba-calendar' },
+			timeStepMinute: 1,
+			onChangeToInput(self) {
+				const selectedDate = self.context.selectedDates[0];
+				if (!selectedDate) {
+					return;
+				}
+
+				input.value = `${selectedDate} ${self.context.selectedTime}`;
+				input.dispatchEvent(new Event('change', { bubbles: true }));
+			},
+			onShow(self) {
+				syncDatePicker(self, input);
+			},
+		};
+		const calendar = new Calendar(input, options);
+		calendar.init();
+		input.addEventListener('input', () => syncDatePicker(calendar, input));
 	}
 
 	onReady(() => {
@@ -154,18 +251,9 @@
 			}
 		});
 
-		if (window.jQuery) {
-			const $ = window.jQuery;
-			const $dates = $('#board_announcements_start, #board_announcements_expiry');
-			if ($dates.length && typeof $dates.datetimepicker === 'function') {
-				$.datetimepicker.setLocale(editor.getAttribute('data-user-lang'));
-				$dates.datetimepicker({
-					format: editor.getAttribute('data-date-format'),
-					validateOnBlur: false,
-					minDate: 0,
-				});
-			}
-		}
+		const calendarLocale = getCalendarLocale(editor.getAttribute('data-user-lang'));
+		initializeDatePicker(document.getElementById('board_announcements_start'), calendarLocale);
+		initializeDatePicker(document.getElementById('board_announcements_expiry'), calendarLocale);
 
 		const textarea = document.getElementById('board_announcements_text');
 		if (textarea) {

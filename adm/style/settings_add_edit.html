@@ -1,3 +1,7 @@
+{% INCLUDEJS '@phpbb_boardannouncements/vanilla-calendar/index.js' %}
+{% INCLUDECSS '@phpbb_boardannouncements/vanilla-calendar/core.css' %}
+{% INCLUDECSS '@phpbb_boardannouncements/vanilla-calendar/time.css' %}
+{% INCLUDEJS '@phpbb_boardannouncements/boardannouncements_acp.js' %}
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements.css' %}
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements_acp.css' %}
 {% import '@phpbb_boardannouncements/icon_macros.html' as icons %}
@@ -18,7 +22,7 @@
 	<noscript><div class="ba-notice ba-notice-warning" role="alert">{{ icons.fa('exclamation-triangle', 'triangle-exclamation') }}<span>{{ lang('BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED') }}</span></div></noscript>
 	{% if ERRORS %}<div class="ba-notice ba-notice-error" role="alert">{{ icons.fa('exclamation-circle', 'circle-exclamation') }}<div><strong>{{ lang('WARNING') }}</strong><p>{{ ERRORS }}</p></div></div>{% endif %}
 
-	<form id="add_board_announcements" method="post" action="{{ U_ACTION }}" data-ba-editor data-groups-value="{{ constant('\\phpbb\\boardannouncements\\ext::GROUPS') }}" data-custom-tone="{{ custom_tone }}" data-date-format="{{ PICKER_DATE_FORMAT }}" data-user-lang="{{ S_USER_LANG }}">
+	<form id="add_board_announcements" method="post" action="{{ U_ACTION }}" data-ba-editor data-groups-value="{{ constant('\\phpbb\\boardannouncements\\ext::GROUPS') }}" data-custom-tone="{{ custom_tone }}" data-user-lang="{{ S_USER_LANG }}">
 		<div class="ba-editor-grid">
 			<main class="ba-editor-main">
 				<div data-ba-preview-slot aria-live="polite">{% include '@phpbb_boardannouncements/announcement_preview.html' %}</div>
