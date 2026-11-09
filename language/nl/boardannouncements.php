@@ -39,5 +39,6 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
+	'BOARD_ANNOUNCEMENT'		=> 'forumaankondiging',
 	'BOARD_ANNOUNCEMENT_CLOSE'		=> 'Sluit aankondiging',
 ));

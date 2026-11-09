@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.0 - Unreleased
+
+- Added draft, scheduled, active, expired, and archived announcement states, including future start dates.
+- Added public announcement headings, semantic tone presets, and accessible custom colors.
+- Added audience targeting for phpBB groups and location targeting for complete forum trees.
+- Redesigned the ACP with responsive management and editing screens, desktop and mobile previews, search and status filters, duplication, archiving, ordering, and bulk actions.
+- Kept guest dismissals in browser-local cookies, retained account-backed dismissals for registered users, and added an administrator action to show an announcement again to everyone. Existing stored dismissal records are preserved during upgrade.
+- Added a dedicated administrative permission for managing board announcements.
+- Added support for phpBB 4 while retaining phpBB 3.3 support.
+
 ## 1.3.1 - 2026-09-03
 
 - Fixed the announcement close button appearing above other page elements, such as menus and overlays.

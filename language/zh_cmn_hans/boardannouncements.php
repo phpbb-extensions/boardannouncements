@@ -39,5 +39,6 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
+	'BOARD_ANNOUNCEMENT'		=> '论坛公告',
 	'BOARD_ANNOUNCEMENT_CLOSE'		=> '关闭公告',
 ));

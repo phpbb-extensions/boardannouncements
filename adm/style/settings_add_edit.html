@@ -1,134 +1,132 @@
+{% INCLUDEJS '@phpbb_boardannouncements/vanilla-calendar/index.js' %}
+{% INCLUDECSS '@phpbb_boardannouncements/vanilla-calendar/core.css' %}
+{% INCLUDECSS '@phpbb_boardannouncements/vanilla-calendar/time.css' %}
+{% INCLUDEJS '@phpbb_boardannouncements/boardannouncements_acp.js' %}
 {% INCLUDECSS '@phpbb_boardannouncements/boardannouncements.css' %}
-<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
+{% INCLUDECSS '@phpbb_boardannouncements/boardannouncements_acp.css' %}
+{% import '@phpbb_boardannouncements/icon_macros.html' as icons %}
+{% set custom_tone = constant('\\phpbb\\boardannouncements\\ext::TONE_CUSTOM') %}
+{% set draft_status = constant('\\phpbb\\boardannouncements\\ext::STATUS_DRAFT') %}
+{% set published_status = constant('\\phpbb\\boardannouncements\\ext::STATUS_PUBLISHED') %}
+{% set archived_status = constant('\\phpbb\\boardannouncements\\ext::STATUS_ARCHIVED') %}
 
-<h1>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS') }}</h1>
+<div class="ba-acp-page">
+	<header class="ba-page-header ba-page-header-editor">
+		<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
+		<h1>{{ lang(S_EDIT_ANNOUNCEMENT ? 'BOARD_ANNOUNCEMENTS_EDIT' : 'BOARD_ANNOUNCEMENTS_ADD') }}</h1>
+		<p>{{ lang('BOARD_ANNOUNCEMENTS_EDITOR_EXPLAIN') }}</p>
+	</header>
+</div>
 
-<p>{{ lang('BOARD_ANNOUNCEMENTS_SETTINGS_EXPLAIN') }}</p>
+<div class="ba-acp ba-acp-editor">
+	<noscript><div class="ba-notice ba-notice-warning" role="alert">{{ icons.fa('exclamation-triangle', 'triangle-exclamation') }}<span>{{ lang('BOARD_ANNOUNCEMENTS_JAVASCRIPT_REQUIRED') }}</span></div></noscript>
+	{% if ERRORS %}<div class="ba-notice ba-notice-error" role="alert">{{ icons.fa('exclamation-circle', 'circle-exclamation') }}<div><strong>{{ lang('WARNING') }}</strong><p>{{ ERRORS }}</p></div></div>{% endif %}
 
-<script>
-	var form_name = 'add_board_announcements';
-	var text_name = 'board_announcements_text';
-	var load_draft = false;
-	var upload = false;
-	var imageTag = false;
-</script>
+	<form id="add_board_announcements" method="post" action="{{ U_ACTION }}" data-ba-editor data-groups-value="{{ constant('\\phpbb\\boardannouncements\\ext::GROUPS') }}" data-custom-tone="{{ custom_tone }}" data-user-lang="{{ S_USER_LANG }}">
+		<div class="ba-editor-grid">
+			<main class="ba-editor-main">
+				<div data-ba-preview-slot aria-live="polite">{% include '@phpbb_boardannouncements/announcement_preview.html' %}</div>
 
-{% if ERRORS %}
-	<div class="errorbox">
-		<h3>{{ lang('WARNING') }}</h3>
-		<p>{{ ERRORS }}</p>
-	</div>
-{% endif %}
+				<section class="ba-card ba-form-card" aria-labelledby="ba-content-title">
+					<div class="ba-card-header"><span class="ba-section-icon">{{ icons.fa('align-left', 'align-left') }}</span><div><h2 id="ba-content-title">{{ lang('BOARD_ANNOUNCEMENTS_CONTENT') }}</h2></div></div>
+					<div class="ba-field-grid">
+						<div class="ba-field">
+							<label for="board_announcements_description">{{ lang('BOARD_ANNOUNCEMENTS_DESC') }}</label>
+							<span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_DESC_EXPLAIN') }}</span>
+							<input name="board_announcements_description" type="text" id="board_announcements_description" maxlength="255" value="{{ BOARD_ANNOUNCEMENTS_DESC }}">
+						</div>
+						<div class="ba-field">
+							<label for="board_announcements_title">{{ lang('BOARD_ANNOUNCEMENTS_TITLE') }}</label>
+							<span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_TITLE_EXPLAIN') }}</span>
+							<input name="board_announcements_title" type="text" id="board_announcements_title" maxlength="255" value="{{ BOARD_ANNOUNCEMENTS_TITLE }}">
+						</div>
+					</div>
+					<div class="ba-field ba-message-field">
+						<label for="board_announcements_text">{{ lang('BOARD_ANNOUNCEMENTS_TEXT') }}</label>
+						<div class="ba-posting-tools">{% include 'acp_posting_buttons.html' %}</div>
+						<div class="ba-message-editor">
+							<div id="color_palette_placeholder" data-orientation="v" data-color-palette="v" data-height="12" data-width="15" data-bbcode="true"></div>
+							<textarea id="board_announcements_text" name="board_announcements_text" rows="12" cols="60" data-bbcode="true">{{ BOARD_ANNOUNCEMENTS_TEXT }}</textarea>
+						</div>
+						<div class="ba-message-options">
+							{% if S_BBCODE_ALLOWED %}<label class="ba-checkbox"><input type="checkbox" name="disable_bbcode"{% if S_BBCODE_DISABLE_CHECKED %} checked{% endif %}><span>{{ lang('DISABLE_BBCODE') }}</span></label>{% endif %}
+							{% if S_SMILIES_ALLOWED %}<label class="ba-checkbox"><input type="checkbox" name="disable_smilies"{% if S_SMILIES_DISABLE_CHECKED %} checked{% endif %}><span>{{ lang('DISABLE_SMILIES') }}</span></label>{% endif %}
+							{% if S_LINKS_ALLOWED %}<label class="ba-checkbox"><input type="checkbox" name="disable_magic_url"{% if S_MAGIC_URL_DISABLE_CHECKED %} checked{% endif %}><span>{{ lang('DISABLE_MAGIC_URL') }}</span></label>{% endif %}
+						</div>
+					</div>
+				</section>
 
-<form id="add_board_announcements" method="post" action="{{ U_ACTION }}">
-	<fieldset>
-		<legend>{{ lang('BOARD_ANNOUNCEMENTS_OPTIONS') }}</legend>
-		<dl>
-			<dt><label for="board_announcements_enabled">{{ lang('BOARD_ANNOUNCEMENTS_ENABLE') ~ lang('COLON') }}</label></dt>
-			<dd>
-				<label><input type="radio" class="radio" id="board_announcements_enabled" name="board_announcements_enabled" value="1"{% if BOARD_ANNOUNCEMENTS_ENABLED %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="board_announcements_enabled" value="0"{% if not BOARD_ANNOUNCEMENTS_ENABLED %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
-			</dd>
-		</dl>
-		<dl>
-			<dt><label for="board_announcements_dismiss">{{ lang('BOARD_ANNOUNCEMENTS_DISMISS') ~ lang('COLON') }}</label></dt>
-			<dd>
-				<label><input type="radio" class="radio" id="board_announcements_dismiss" name="board_announcements_dismiss" value="1"{% if BOARD_ANNOUNCEMENTS_DISMISS %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="board_announcements_dismiss" value="0"{% if not BOARD_ANNOUNCEMENTS_DISMISS %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
-			</dd>
-		</dl>
-		<dl>
-			<dt><label for="board_announcements_users">{{ lang('BOARD_ANNOUNCEMENTS_USERS') ~ lang('COLON') }}</label></dt>
-			<dd>
-				<select name="board_announcements_users" id="board_announcements_users">
-					{% if S_BOARD_ANNOUNCEMENTS_USERS is iterable %}
-						{% for item in S_BOARD_ANNOUNCEMENTS_USERS %}
-							<option value="{{ item.value }}"{% if item.selected %} selected="selected"{% endif %}>{{ item.label }}</option>
-						{% endfor %}
-					{% else %}
-						{{ S_BOARD_ANNOUNCEMENTS_USERS }}
-					{% endif %}
-				</select>
-			</dd>
-		</dl>
-		<dl>
-			<dt><label for="board_announcements_locations">{{ lang('BOARD_ANNOUNCEMENTS_LOCATIONS') ~ lang('COLON') }}</label><br><span>{{ lang('BOARD_ANNOUNCEMENTS_LOCATIONS_EXPLAIN') }}</span></dt>
-			<dd>
-				<select id="board_announcements_locations" name="board_announcements_locations[]" size="8" multiple="multiple">
-					{% for locations in BOARD_ANNOUNCEMENTS_LOCATIONS %}
-						<option value="{{ locations.forum_id }}"{% if locations.selected %} selected="selected"{% endif %}>
-							{{ locations.padding ~ locations.forum_name}}
-						</option>
-					{% endfor %}
-				</select>
-			</dd>
-		</dl>
+				<section class="ba-card ba-form-card" aria-labelledby="ba-appearance-title">
+					<div class="ba-card-header"><span class="ba-section-icon">{{ icons.fa('paint-brush', 'paintbrush') }}</span><div><h2 id="ba-appearance-title">{{ lang('BOARD_ANNOUNCEMENTS_APPEARANCE') }}</h2></div></div>
+					<div class="ba-field-grid">
+						<div class="ba-field">
+							<label for="board_announcements_tone">{{ lang('BOARD_ANNOUNCEMENTS_TONE') }}</label>
+							<span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_TONE_EXPLAIN') }}</span>
+							<select id="board_announcements_tone" name="board_announcements_tone">
+								{% for tone in constant('\\phpbb\\boardannouncements\\ext::TONES') %}<option value="{{ tone }}"{% if BOARD_ANNOUNCEMENTS_TONE == tone %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_TONE_' ~ tone|upper) }}</option>{% endfor %}
+							</select>
+						</div>
+						<div class="ba-field{% if BOARD_ANNOUNCEMENTS_TONE != custom_tone %} is-disabled{% endif %}" data-ba-custom-color aria-disabled="{{ BOARD_ANNOUNCEMENTS_TONE != custom_tone ? 'true' : 'false' }}">
+							<label for="board_announcements_bgcolor_picker">{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR') }}</label>
+							<span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN') }}</span>
+							<div class="ba-color-control">
+								<input type="color" class="ba-color-picker" id="board_announcements_bgcolor_picker" value="{{ BOARD_ANNOUNCEMENTS_COLOR_PICKER }}" aria-label="{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_PICKER')|e('html_attr') }}"{% if BOARD_ANNOUNCEMENTS_TONE != custom_tone %} disabled{% endif %}>
+								<div class="ba-color-field"><span>#</span><input name="board_announcements_bgcolor" id="board_announcements_bgcolor" value="{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}" size="6" maxlength="6" inputmode="text" autocomplete="off" spellcheck="false" aria-label="{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_HEX')|e('html_attr') }}"{% if BOARD_ANNOUNCEMENTS_TONE != custom_tone %} disabled{% endif %}></div>
+							</div>
+						</div>
+					</div>
+				</section>
 
-	</fieldset>
+			</main>
 
-	{% if BOARD_ANNOUNCEMENTS_PREVIEW %}
-		<fieldset>
-			<legend>{{ lang('BOARD_ANNOUNCEMENTS_PREVIEW') }}</legend>
-			<div class="phpbb_announcement"{% if BOARD_ANNOUNCEMENTS_BGCOLOR %} style="background-color:#{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}"{% endif %}>{{ BOARD_ANNOUNCEMENTS_PREVIEW }}</div>
-		</fieldset>
-	{% endif %}
+			<aside class="ba-editor-sidebar">
+				<section class="ba-card ba-form-card" aria-labelledby="ba-publish-title">
+					<div class="ba-card-header"><span class="ba-section-icon">{{ icons.fa('calendar', 'calendar-days') }}</span><div><h2 id="ba-publish-title">{{ lang('BOARD_ANNOUNCEMENTS_SCHEDULE_BEHAVIOR') }}</h2></div></div>
+					<div class="ba-field">
+						<label for="board_announcements_state">{{ lang('BOARD_ANNOUNCEMENTS_STATUS') }}</label>
+						<select id="board_announcements_state" name="board_announcements_state"><option value="{{ draft_status }}"{% if BOARD_ANNOUNCEMENTS_STATE == draft_status %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_STATUS_DRAFT') }}</option><option value="{{ published_status }}"{% if BOARD_ANNOUNCEMENTS_STATE == published_status %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_PUBLISHED') }}</option>{% if S_EDIT_ANNOUNCEMENT %}<option value="{{ archived_status }}"{% if BOARD_ANNOUNCEMENTS_STATE == archived_status %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_STATUS_ARCHIVED') }}</option>{% endif %}</select>
+					</div>
+					<div class="ba-field"><label for="board_announcements_start">{{ lang('BOARD_ANNOUNCEMENTS_START') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_START_EXPLAIN') }}</span><div class="ba-input-icon">{{ icons.fa('calendar-o', 'calendar', 'far') }}<input name="board_announcements_start" id="board_announcements_start" value="{{ BOARD_ANNOUNCEMENTS_START }}" placeholder="{{ START_DATE_PLACEHOLDER }}" autocomplete="off"></div></div>
+					<div class="ba-field"><label for="board_announcements_expiry">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY') }}</label><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN') }}</span><div class="ba-input-icon">{{ icons.fa('calendar-o', 'calendar', 'far') }}<input name="board_announcements_expiry" id="board_announcements_expiry" value="{{ BOARD_ANNOUNCEMENTS_EXPIRY }}" placeholder="{{ EXPIRY_DATE_PLACEHOLDER }}" autocomplete="off"></div></div>
+					<div class="ba-toggle-field"><div><strong>{{ lang('BOARD_ANNOUNCEMENTS_DISMISS') }}</strong><span class="ba-help">{{ lang('BOARD_ANNOUNCEMENTS_DISMISS_EXPLAIN') }}</span></div><div class="ba-segmented-control"><label><input type="radio" name="board_announcements_dismiss" value="1"{% if BOARD_ANNOUNCEMENTS_DISMISS %} checked{% endif %}><span>{{ lang('YES') }}</span></label><label><input type="radio" name="board_announcements_dismiss" value="0"{% if not BOARD_ANNOUNCEMENTS_DISMISS %} checked{% endif %}><span>{{ lang('NO') }}</span></label></div></div>
+				</section>
 
-	<fieldset>
-		<legend>{{ lang('BOARD_ANNOUNCEMENTS_TEXT') }}</legend>
-		<dl>
-			<dt><label for="board_announcements_description">{{ lang('BOARD_ANNOUNCEMENTS_DESC') ~ lang('COLON') }}</label><br><span>{{ lang('BOARD_ANNOUNCEMENTS_DESC_EXPLAIN') }}</span></dt>
-			<dd>
-				<input name="board_announcements_description" type="text" id="board_announcements_description" size="20" maxlength="255" value="{{ BOARD_ANNOUNCEMENTS_DESC }}">
-			</dd>
-		</dl>
-		<dl>
-			<dt><label for="board_announcements_expiry">{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY') ~ lang('COLON') }}</label><br><span>{{ lang('BOARD_ANNOUNCEMENTS_EXPIRY_EXPLAIN') }}</span></dt>
-			<dd>
-				<input name="board_announcements_expiry" type="text" id="board_announcements_expiry" value="{{ BOARD_ANNOUNCEMENTS_EXPIRY }}" size="20" maxlength="25" placeholder="{{ "now"|date(constant('\\phpbb\\boardannouncements\\ext::DATE_FORMAT')) }}">
-			</dd>
-		</dl>
-		<dl>
-			<dt><label for="board_announcements_bgcolor">{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR') ~ lang('COLON') }}</label><br><span>{{ lang('BOARD_ANNOUNCEMENTS_BGCOLOR_EXPLAIN') }}</span></dt>
-			<dd>
-				<input name="board_announcements_bgcolor" type="text" id="board_announcements_bgcolor" value="{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}" size="6" maxlength="6" {% if BOARD_ANNOUNCEMENTS_BGCOLOR %}style="border-right:20px solid #{{ BOARD_ANNOUNCEMENTS_BGCOLOR }}"{% endif %}>
-			</dd>
-		</dl>
+				<section class="ba-card ba-form-card" aria-labelledby="ba-audience-title">
+					<div class="ba-card-header"><span class="ba-section-icon">{{ icons.fa('users', 'users') }}</span><div><h2 id="ba-audience-title">{{ lang('BOARD_ANNOUNCEMENTS_AUDIENCE_LOCATION') }}</h2></div></div>
+					<div class="ba-field"><label for="board_announcements_users">{{ lang('BOARD_ANNOUNCEMENTS_USERS') }}</label><select name="board_announcements_users" id="board_announcements_users" aria-controls="board_announcements_group_picker" aria-expanded="{{ S_BOARD_ANNOUNCEMENTS_GROUPS ? 'true' : 'false' }}">{% if S_BOARD_ANNOUNCEMENTS_USERS is iterable %}{% for item in S_BOARD_ANNOUNCEMENTS_USERS %}<option value="{{ item.value }}"{% if item.selected %} selected{% endif %}>{{ item.label }}</option>{% endfor %}{% else %}{{ S_BOARD_ANNOUNCEMENTS_USERS }}{% endif %}</select></div>
+					<div id="board_announcements_group_picker" class="ba-field ba-dependent-panel" data-ba-groups{% if not S_BOARD_ANNOUNCEMENTS_GROUPS %} hidden{% endif %}>
+						<label id="ba-groups-label">{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_GROUPS') }}</label>
+						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span>{{ icons.fa('search', 'magnifying-glass') }}<input type="search" data-ba-group-search placeholder="{{ lang('SEARCH')|e('html_attr') }}" autocomplete="off"></label>
+						<div class="ba-checklist" role="group" aria-labelledby="ba-groups-label">{% for group in BOARD_ANNOUNCEMENTS_GROUPS %}<label data-ba-group-name="{{ group.NAME|lower }}"><input type="checkbox" name="board_announcements_groups[]" value="{{ group.ID }}"{% if group.S_SELECTED %} checked{% endif %}><span>{{ group.NAME }}</span></label>{% endfor %}</div>
+					</div>
+					<div class="ba-field">
+						<label for="board_announcements_location_mode">{{ lang('BOARD_ANNOUNCEMENTS_LOCATIONS') }}</label>
+						<select name="board_announcements_location_mode" id="board_announcements_location_mode" aria-controls="board_announcements_location_picker" aria-expanded="{{ BOARD_ANNOUNCEMENTS_LOCATION_MODE == 'selected' ? 'true' : 'false' }}">
+							<option value="everywhere"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE == 'everywhere' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_EVERYWHERE') }}</option>
+							<option value="index"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE == 'index' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE') }}</option>
+							<option value="selected"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE == 'selected' %} selected{% endif %}>{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_LOCATIONS') }}</option>
+						</select>
+					</div>
+					<div id="board_announcements_location_picker" class="ba-field ba-dependent-panel" data-ba-locations{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} hidden{% endif %}>
+						<label id="ba-locations-label">{{ lang('BOARD_ANNOUNCEMENTS_SELECTED_LOCATIONS') }}</label>
+						<label class="ba-search-field ba-picker-search"><span class="sr-only">{{ lang('SEARCH') }}</span>{{ icons.fa('search', 'magnifying-glass') }}<input type="search" id="board_announcements_location_search" placeholder="{{ lang('SEARCH') }}" autocomplete="off"{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}></label>
+						<div id="board_announcements_locations" class="ba-location-picker" role="group" aria-labelledby="ba-locations-label">
+							{% for location in BOARD_ANNOUNCEMENTS_LOCATIONS %}
+								<label class="ba-location-row" style="--ba-forum-depth:{{ location.depth }}" data-ba-location-name="{{ location.forum_name|lower }}"><input type="checkbox" name="board_announcements_locations[]" value="{{ location.forum_id }}"{% if location.selected %} checked{% endif %}{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}><span>{{ location.forum_name }}</span></label>
+							{% endfor %}
+							<p class="ba-picker-empty" data-ba-location-empty hidden>{{ lang('BOARD_ANNOUNCEMENTS_LOCATION_EMPTY') }}</p>
+						</div>
+						<label class="ba-checkbox"><input type="checkbox" name="board_announcements_include_children" value="1"{% if BOARD_ANNOUNCEMENTS_INCLUDE_CHILDREN %} checked{% endif %}{% if BOARD_ANNOUNCEMENTS_LOCATION_MODE != 'selected' %} disabled{% endif %}><span>{{ lang('BOARD_ANNOUNCEMENTS_INCLUDE_CHILDREN') }}</span></label>
+					</div>
+				</section>
+			</aside>
+		</div>
 
-		<br>
-
-		{% include 'acp_posting_buttons.html' %}
-
-		<dl class="responsive-columns">
-			<dt style="width: 90px;" id="color_palette_placeholder" data-orientation="v" data-color-palette="v" data-height="12" data-width="15" data-bbcode="true"></dt>
-			<dd style="margin-{{ S_CONTENT_FLOW_BEGIN }}: 90px;">
-				<textarea name="board_announcements_text" rows="10" cols="60" style="width: 95%;" data-bbcode="true">{{ BOARD_ANNOUNCEMENTS_TEXT }}</textarea>
-			</dd>
-			<dd style="margin-{{ S_CONTENT_FLOW_BEGIN }}: 90px; margin-top: 5px;">
-				{% if S_BBCODE_ALLOWED %}
-					<label><input type="checkbox" class="radio" name="disable_bbcode"{% if S_BBCODE_DISABLE_CHECKED %} checked="checked"{% endif %}> {{ lang('DISABLE_BBCODE') }}</label>
-				{% endif %}
-				{% if S_SMILIES_ALLOWED %}
-					<label><input type="checkbox" class="radio" name="disable_smilies"{% if S_SMILIES_DISABLE_CHECKED %} checked="checked"{% endif %}> {{ lang('DISABLE_SMILIES') }}</label>
-				{% endif %}
-				{% if S_LINKS_ALLOWED %}
-					<label><input type="checkbox" class="radio" name="disable_magic_url"{% if S_MAGIC_URL_DISABLE_CHECKED %} checked="checked"{% endif %}> {{ lang('DISABLE_MAGIC_URL') }}</label>
-				{% endif %}
-			</dd>
-			<dd style="margin-{{ S_CONTENT_FLOW_BEGIN }}: 90px; margin-top: 10px;"><strong>{{ lang('OPTIONS') ~ lang('COLON') }} </strong>{{ BBCODE_STATUS }} :: {{ IMG_STATUS }} :: {{ URL_STATUS }} :: {{ SMILIES_STATUS }}</dd>
-		</dl>
-	</fieldset>
-
-	<fieldset class="submit-buttons">
-		<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}">&nbsp;
-		<input class="button2" type="submit" name="preview" value="{{ lang('PREVIEW') }}">
-		{{ S_FORM_TOKEN }}
-	</fieldset>
-</form>
-
-<script>
-	const textarea = document.querySelector("textarea[name='board_announcements_text']");
-	textarea.addEventListener("select", (e) => storeCaret(e.target));
-	textarea.addEventListener("click", (e) => storeCaret(e.target));
-	textarea.addEventListener("keyup", (e) => storeCaret(e.target));
-	textarea.addEventListener("focus", () => initInsertions());
-</script>
+		<div class="ba-editor-actions">
+			<a class="ba-button ba-button-quiet" href="{{ U_BACK }}">{{ lang('CANCEL') }}</a>
+			<button class="ba-button ba-button-secondary" type="button" data-ba-preview-request>{{ icons.fa('eye', 'eye') }}{{ lang('PREVIEW') }}</button>
+			<button class="ba-button ba-button-primary" type="submit" name="submit">{{ icons.fa('check', 'check') }}{{ lang('SUBMIT') }}</button>
+			{{ S_FORM_TOKEN }}
+		</div>
+	</form>
+</div>

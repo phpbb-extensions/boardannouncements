@@ -101,6 +101,7 @@ class listener_test extends \phpbb_database_test_case
 				'\phpbb\datetime'
 			])
 			->getMock();
+		$this->user->method('get_passworded_forums')->willReturn([]);
 
 		$this->user->data['board_announcements_status'] = 1;
 
@@ -117,7 +118,10 @@ class listener_test extends \phpbb_database_test_case
 				$this->db,
 				new \phpbb\lock\db('boardannouncements.table_lock.board_announcements_table', $this->config, $this->db),
 				'phpbb_board_announcements',
-				'phpbb_board_announcements_track'
+				'phpbb_board_announcements_track',
+				'phpbb_board_announcement_groups',
+				'phpbb_user_group',
+				'phpbb_forums'
 			)
 		);
 	}
@@ -127,16 +131,23 @@ class listener_test extends \phpbb_database_test_case
 	 */
 	protected function set_listener()
 	{
+		$visibility = new \phpbb\boardannouncements\service\visibility(
+			$this->auth,
+			$this->config,
+			$this->request,
+			$this->user,
+			$this->manager
+		);
 		$this->listener = new \phpbb\boardannouncements\event\listener(
 			$this->manager,
-			$this->auth,
 			$this->config,
 			$this->controller_helper,
 			$this->language,
 			$this->request,
 			$this->template,
 			$this->user,
-			$this->php_ext
+			$this->php_ext,
+			$visibility
 		);
 	}
 
@@ -157,7 +168,25 @@ class listener_test extends \phpbb_database_test_case
 		self::assertEquals([
 			'core.page_header_after',
 			'core.posting_modify_row_data',
+			'core.permissions',
 		], array_keys(\phpbb\boardannouncements\event\listener::getSubscribedEvents()));
+	}
+
+	public function test_set_permissions()
+	{
+		$this->set_listener();
+		$event = new \phpbb\event\data([
+			'permissions' => [
+				'a_existing' => ['lang' => 'ACL_A_EXISTING', 'cat' => 'settings'],
+			],
+		]);
+
+		$this->listener->set_permissions($event);
+
+		self::assertSame([
+			'a_existing' => ['lang' => 'ACL_A_EXISTING', 'cat' => 'settings'],
+			'a_boardannouncements' => ['lang' => 'ACL_A_BOARDANNOUNCEMENTS', 'cat' => 'misc'],
+		], $event['permissions']);
 	}
 
 	/**
@@ -165,87 +194,13 @@ class listener_test extends \phpbb_database_test_case
 	 */
 	public static function display_board_announcements_data()
 	{
-		global $user;
-		$user = new \phpbb_mock_user();
-		$user->data['user_form_salt'] = '';
-
 		return [
-			[ANONYMOUS, false, 'index', true,
-				[
-					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => 1,
-						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
-						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
-						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
-					]],
-					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => '3',
-						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
-						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 3',
-						'BOARD_ANNOUNCEMENT_BGCOLOR' => '000000',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3, 'hash' => generate_link_hash('close_boardannouncement3')]),
-					]],
-				]
-			],
-			[2, true, 'index', true,
-				[
-					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => 1,
-						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
-						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
-						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
-					]],
-				]
-			],
-			[3, true, 'index', true,
-				[
-					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => 1,
-						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
-						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
-						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
-					]],
-					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => 2,
-						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
-						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 2',
-						'BOARD_ANNOUNCEMENT_BGCOLOR' => 'ffffff',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement2')]),
-					]],
-				]
-			],
-			[3, false, 'index', true,
-				[
-					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => 1,
-						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
-						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 1',
-						'BOARD_ANNOUNCEMENT_BGCOLOR' => '',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 1, 'hash' => generate_link_hash('close_boardannouncement1')]),
-					]],
-					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => '3',
-						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
-						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 3',
-						'BOARD_ANNOUNCEMENT_BGCOLOR' => '000000',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 3, 'hash' => generate_link_hash('close_boardannouncement3')]),
-					]],
-				]
-			],
-			[4, true, 'viewforum', true,
-				[
-					['board_announcements', [
-						'BOARD_ANNOUNCEMENT_ID' => 2,
-						'S_BOARD_ANNOUNCEMENT_DISMISS' => true,
-						'BOARD_ANNOUNCEMENT' => 'Sample Announcement Test Text 2',
-						'BOARD_ANNOUNCEMENT_BGCOLOR' => 'ffffff',
-						'U_BOARD_ANNOUNCEMENT_CLOSE' => 'phpbb_boardannouncements_controller#' . serialize(['id' => 2, 'hash' => generate_link_hash('close_boardannouncement2')]),
-					]],
-				]
-			],
+			[ANONYMOUS, false, 'index', true, [1, 3]],
+			[2, true, 'index', true, [1, 2]],
+			[3, true, 'index', true, [1, 2]],
+			[3, false, 'index', true, [1, 3]],
+			[200, true, 'index', true, [1]],
+			[4, true, 'viewforum', true, [2]],
 			[5, true, 'viewforum', false, []],
 		];
 	}
@@ -269,23 +224,19 @@ class listener_test extends \phpbb_database_test_case
 
 		$this->set_listener();
 
-		$invocation = 0;
-		$this->template->expects($enabled ? self::atLeastOnce() : self::never())
+		$actual_ids = [];
+		$this->template->expects($enabled ? self::exactly(count($expected)) : self::never())
 			->method('assign_block_vars')
-			->willReturnCallback(function($block, $vars) use (&$invocation, $expected) {
-				if (isset($expected[$invocation])) {
-					self::assertEquals($expected[$invocation][0], $block);
-					self::assertEquals($expected[$invocation][1], $vars);
-					$invocation++;
-				}
+			->willReturnCallback(static function ($block, $data) use (&$actual_ids) {
+				self::assertSame('board_announcements', $block);
+				self::assertArrayHasKey('BOARD_ANNOUNCEMENT_TITLE', $data);
+				$actual_ids[] = (int) $data['BOARD_ANNOUNCEMENT_ID'];
 			});
 
-		$this->request->expects(self::atMost(10))
-			->method('variable')
-			->willReturnMap([
-				['f', 0, false, \phpbb\request\request_interface::REQUEST, 0],
-				['_ba_1', '', false, \phpbb\request\request_interface::COOKIE, ''],
-			]);
+		$this->request->method('variable')
+			->willReturnCallback(static function ($name, $default) {
+				return $name === 'f' ? 0 : $default;
+			});
 
 		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.page_header_after', [$this->listener, 'display_board_announcements']);
@@ -293,6 +244,7 @@ class listener_test extends \phpbb_database_test_case
 			'item' => 'forum',
 			'item_id' => $page === 'viewforum' ? 2 : 0,
 		]);
+		self::assertSame($expected, $actual_ids);
 	}
 
 	public function test_display_board_announcements_without_registered_state()
@@ -313,53 +265,38 @@ class listener_test extends \phpbb_database_test_case
 		]));
 	}
 
-	/**
-	 * @dataProvider dismissal_cookie_data
-	 */
-	public function test_dismissal_cookie_uses_strict_timestamp_comparison($cookie, array $expected_ids)
+	public function test_custom_color_uses_accessible_foreground()
 	{
+		$this->db->sql_query("UPDATE phpbb_board_announcements
+			SET announcement_bgcolor = '767676', announcement_enabled = 1
+			WHERE announcement_id = 1");
 		$this->user->data['user_id'] = ANONYMOUS;
 		$this->user->data['is_registered'] = false;
 		$this->user->page['page_name'] = "index.$this->php_ext";
 		$this->config['board_announcements_enable'] = true;
 
-		$this->request->method('variable')
-			->willReturnMap([
-				['_ba_1', '', true, \phpbb\request\request_interface::COOKIE, $cookie],
-				['_ba_3', '', true, \phpbb\request\request_interface::COOKIE, ''],
-			]);
-
-		$actual_ids = [];
-		$this->template->expects(self::exactly(count($expected_ids)))
-			->method('assign_block_vars')
-			->willReturnCallback(static function ($block, $data) use (&$actual_ids) {
-				self::assertSame('board_announcements', $block);
-				$actual_ids[] = (int) $data['BOARD_ANNOUNCEMENT_ID'];
-			});
-
 		$this->set_listener();
+		$this->template->expects(self::exactly(2))
+			->method('assign_block_vars')
+			->willReturnCallback(static function ($block, $data) {
+				if ((int) $data['BOARD_ANNOUNCEMENT_ID'] === 1)
+				{
+					self::assertSame('000000', $data['BOARD_ANNOUNCEMENT_TEXTCOLOR']);
+				}
+			});
+		$this->request->method('variable')->willReturnArgument(1);
+
 		$this->listener->display_board_announcements(new \phpbb\event\data([
 			'item' => 'forum',
 			'item_id' => 0,
 		]));
-
-		self::assertSame($expected_ids, $actual_ids);
-	}
-
-	public static function dismissal_cookie_data()
-	{
-		return [
-			'current timestamp hides announcement' => ['1586466410', [3]],
-			'previous timestamp shows announcement' => ['1586466409', [1, 3]],
-			'malformed timestamp shows announcement' => ['1586466410invalid', [1, 3]],
-		];
 	}
 
 	public function test_query_forum_id_fallback()
 	{
 		$this->db->sql_query("UPDATE phpbb_board_announcements
-			SET announcement_locations = '[2]'
-			WHERE announcement_id = 1");
+			SET announcement_enabled = CASE WHEN announcement_id = 1 THEN 1 ELSE 0 END,
+				announcement_locations = CASE WHEN announcement_id = 1 THEN '[2]' ELSE announcement_locations END");
 
 		$this->user->data['user_id'] = 2;
 		$this->user->data['is_registered'] = true;
@@ -377,7 +314,7 @@ class listener_test extends \phpbb_database_test_case
 			->method('variable')
 			->willReturnMap([
 				['f', 0, false, \phpbb\request\request_interface::REQUEST, 2],
-				['_ba_1', '', true, \phpbb\request\request_interface::COOKIE, ''],
+				['_ba_1', 0, false, \phpbb\request\request_interface::COOKIE, 0],
 			]);
 
 		$dispatcher = new \phpbb\event\dispatcher();
@@ -426,8 +363,8 @@ class listener_test extends \phpbb_database_test_case
 	public function test_query_forum_id_does_not_scope_non_forum_event()
 	{
 		$this->db->sql_query("UPDATE phpbb_board_announcements
-			SET announcement_locations = '[2]'
-			WHERE announcement_id = 1");
+			SET announcement_enabled = CASE WHEN announcement_id = 1 THEN 1 ELSE 0 END,
+				announcement_locations = CASE WHEN announcement_id = 1 THEN '[2]' ELSE announcement_locations END");
 
 		$this->user->data['user_id'] = 2;
 		$this->user->data['is_registered'] = true;
@@ -447,5 +384,16 @@ class listener_test extends \phpbb_database_test_case
 			'item' => 'user',
 			'item_id' => 0,
 		]);
+	}
+
+	public function test_current_location_returns_cached_posting_forum()
+	{
+		$this->set_listener();
+		$this->listener->set_posting_location(new \phpbb\event\data(['forum_id' => 12]));
+
+		$method = new \ReflectionMethod($this->listener, 'get_current_location');
+		$method->setAccessible(true);
+
+		self::assertSame(12, $method->invoke($this->listener));
 	}
 }

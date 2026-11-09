@@ -45,6 +45,6 @@ $lang = array_merge($lang, array(
 
 	// ACP Logs
 	'BOARD_ANNOUNCEMENTS_CREATED_LOG'		=> '<strong>Se creó un anuncio del foro.</strong><br>» %s',
-	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Ajustes del anuncio del foro alterados</strong>',
+	'BOARD_ANNOUNCEMENTS_UPDATED_LOG'		=> '<strong>Ajustes del anuncio del foro alterados</strong><br>» %s',
 	'BOARD_ANNOUNCEMENTS_DELETED_LOG'		=> '<strong>Se eliminó un anuncio del foro.</strong><br>» %s',
 ));

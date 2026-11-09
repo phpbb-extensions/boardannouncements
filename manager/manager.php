@@ -10,6 +10,8 @@
 
 namespace phpbb\boardannouncements\manager;
 
+use phpbb\boardannouncements\ext;
+
 class manager
 {
 	/** @var \phpbb\boardannouncements\manager\nestedset */
@@ -39,32 +41,35 @@ class manager
 	}
 
 	/**
-	 * Get all board announcements
+	 * Get all board announcements for administration.
 	 *
 	 * @return array Array of announcements data, or empty array
 	 */
 	public function get_announcements()
 	{
-		return $this->nestedset->get_all_tree_data();
+		return $this->nestedset->where_all()->get_all_tree_data();
 	}
 
 	/**
-	 * Get all board announcements that can be seen by the user
+	 * Get published announcements eligible for frontend visibility checks.
 	 *
-	 * @param int $user_id A user identifier
-	 * @param bool $is_registered Whether the user is registered
-	 * @return array Array of announcements data, or empty array
+	 * Audience, location, forum permissions, and guest cookies are evaluated by
+	 * the visibility service after this database-level eligibility query.
+	 *
+	 * @param int $user_id Registered user identifier, or zero for guests
+	 * @return array Array of published announcement data, or empty array
 	 */
-	public function get_visible_announcements($user_id, $is_registered)
+	public function get_published_announcements($user_id = 0)
 	{
-		$data = $this->nestedset->where_visible($user_id)->get_all_tree_data();
-
-		if (!$is_registered)
+		$this->nestedset->where_published($user_id);
+		try
 		{
-			return array_filter($data, [$this, 'filter_members']);
+			return $this->nestedset->get_all_tree_data();
 		}
-
-		return array_filter($data, [$this, 'filter_guests']);
+		finally
+		{
+			$this->nestedset->where_all();
+		}
 	}
 
 	/**
@@ -85,10 +90,12 @@ class manager
 	 * Save an announcement to the database
 	 *
 	 * @param array $data An array of announcement data
+	 * @param array $group_ids Assigned group identifiers
+	 * @throws \Throwable Any transaction failure
 	 */
-	public function save_announcement($data)
+	public function save_announcement($data, array $group_ids = [])
 	{
-		$this->nestedset->insert($this->intersect_data($data));
+		return $this->nestedset->insert_with_groups($this->intersect_data($data), $group_ids);
 	}
 
 	/**
@@ -96,18 +103,14 @@ class manager
 	 *
 	 * @param int $id An announcement identifier
 	 * @param array $data An array of announcement data
+	 * @param array|null $group_ids Replacement group identifiers, or null to leave unchanged
 	 * @return bool
+	 * @throws \OutOfBoundsException When the announcement data is invalid
+	 * @throws \Throwable Any other transaction failure
 	 */
-	public function update_announcement($id, $data)
+	public function update_announcement($id, $data, array $group_ids = null)
 	{
-		$updated = (bool) $this->nestedset->update_item($id, $this->intersect_data($data));
-
-		if ($updated)
-		{
-			$this->delete_announcement_tracking($id);
-		}
-
-		return $updated;
+		return (bool) $this->nestedset->update_with_groups($id, $this->intersect_data($data), $group_ids);
 	}
 
 	/**
@@ -115,17 +118,12 @@ class manager
 	 *
 	 * @param int $id An announcement identifier
 	 * @return bool
+	 * @throws \OutOfBoundsException When the announcement does not exist
+	 * @throws \Throwable Any other transaction failure
 	 */
 	public function delete_announcement($id)
 	{
-		$deleted = (bool) $this->nestedset->delete($id);
-
-		if ($deleted)
-		{
-			$this->delete_announcement_tracking($id);
-		}
-
-		return $deleted;
+		return (bool) $this->nestedset->delete_with_relations($id);
 	}
 
 	/**
@@ -135,56 +133,86 @@ class manager
 	 * @param string $direction up or down
 	 * @param int $amount
 	 * @return void
+	 * @throws \OutOfBoundsException When the announcement does not exist
+	 * @throws \RuntimeException When the nested-set lock cannot be acquired
 	 */
 	public function move_announcement($id, $direction = 'up', $amount = 1)
 	{
 		$amount = (int) $amount;
-
 		$this->nestedset->move($id, ($direction !== 'up' ? -$amount : $amount));
 	}
 
 	/**
-	 * Set an announcement to disabled state
+	 * Increment an announcement revision so dismissed users see it again.
 	 *
-	 * @param int $id An announcement identifier
-	 * @return bool Return enabled state of announcement, true if still enabled, false if successfully disabled
+	 * @param int $id Announcement identifier
+	 * @return bool True when the revision was updated, false when not found
+	 * @throws \Throwable Any transaction failure
 	 */
-	public function disable_announcement($id)
+	public function show_announcement_again($id)
 	{
-		return $this->nestedset->update_item($id, ['announcement_enabled' => 0]) === false;
+		return (bool) $this->nestedset->show_again($id);
 	}
 
 	/**
-	 * Set all expired announcements to disabled state
+	 * Store a registered user's announcement dismissal.
 	 *
-	 * @return int|false Number of rows affected, or false
-	 */
-	public function disable_expired_announcements()
-	{
-		return $this->nestedset->disable_expired_items();
-	}
-
-	/**
-	 * Delete user tracking for a board announcement
-	 *
-	 * @param int $id An announcement identifier
-	 * @return bool
-	 */
-	public function delete_announcement_tracking($id)
-	{
-		return (bool) $this->nestedset->delete_tracked_items($id);
-	}
-
-	/**
-	 * Closing an announcement, store the user and announcement ids for tracking purposes
-	 *
-	 * @param int $id An announcement identifier
-	 * @param int $user_id An user identifier
-	 * @return bool
+	 * @param int $id Announcement identifier
+	 * @param int $user_id User identifier
+	 * @return bool True when stored or already present
+	 * @throws \OutOfBoundsException When the announcement does not exist
 	 */
 	public function close_announcement($id, $user_id)
 	{
-		return (bool) $this->nestedset->insert_tracked_item($id, ['user_id' => (int) $user_id]);
+		return (bool) $this->nestedset->insert_tracked_item($id, $user_id);
+	}
+
+	/**
+	 * Get groups assigned to an announcement.
+	 *
+	 * @param int $id Announcement identifier
+	 * @return array Group identifiers
+	 */
+	public function get_announcement_groups($id)
+	{
+		return $this->nestedset->get_announcement_groups($id);
+	}
+
+	/**
+	 * Replace groups assigned to an announcement.
+	 *
+	 * @param int   $id Announcement identifier
+	 * @param array $group_ids Group identifiers
+	 * @return void
+	 * @throws \Throwable Any transaction failure
+	 */
+	public function set_announcement_groups($id, array $group_ids)
+	{
+		$this->nestedset->set_announcement_groups($id, $group_ids);
+	}
+
+	/**
+	 * Check whether a user belongs to an announcement's assigned groups.
+	 *
+	 * @param int $id Announcement identifier
+	 * @param int $user_id User identifier
+	 * @return bool True when the user belongs to an assigned group
+	 */
+	public function user_matches_groups($id, $user_id)
+	{
+		return $this->nestedset->user_matches_groups($id, $user_id);
+	}
+
+	/**
+	 * Check whether a location descends from a selected forum.
+	 *
+	 * @param int   $location Forum identifier
+	 * @param array $selected Selected forum identifiers
+	 * @return bool True when the location is a descendant
+	 */
+	public function location_matches_descendant($location, array $selected)
+	{
+		return $this->nestedset->location_matches_descendant($location, $selected);
 	}
 
 	/**
@@ -197,28 +225,6 @@ class manager
 	{
 		$result = json_decode($data, true);
 		return json_last_error() === JSON_ERROR_NONE ? $result : $data;
-	}
-
-	/**
-	 * Filter members only announcements
-	 *
-	 * @param array $row
-	 * @return bool
-	 */
-	protected function filter_members(array $row)
-	{
-		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\ext::MEMBERS;
-	}
-
-	/**
-	 * Filter guests only announcements
-	 *
-	 * @param array $row
-	 * @return bool
-	 */
-	protected function filter_guests(array $row)
-	{
-		return (int) $row['announcement_users'] !== \phpbb\boardannouncements\ext::GUESTS;
 	}
 
 	/**
@@ -242,11 +248,20 @@ class manager
 		return [
 			'announcement_text'			=> '',
 			'announcement_description'	=> '',
+			'announcement_title'		=> '',
 			'announcement_bgcolor'		=> '',
-			'announcement_enabled'		=> true,
+			'announcement_enabled'		=> false,
+			'announcement_tone'			=> ext::TONE_INFO,
+			'announcement_state'		=> ext::STATUS_DRAFT,
+			'announcement_start'		=> 0,
+			'announcement_include_children' => false,
 			'announcement_locations'	=> '',
 			'announcement_dismissable'	=> true,
-			'announcement_users'		=> \phpbb\boardannouncements\ext::ALL,
+			'announcement_users'		=> ext::ALL,
+			'announcement_revision'		=> 1,
+			'announcement_created_by'	=> 0,
+			'announcement_updated_at'	=> 0,
+			'announcement_updated_by'	=> 0,
 			'announcement_timestamp'	=> 0,
 			'announcement_expiry'		=> 0,
 			'announcement_uid'			=> '',

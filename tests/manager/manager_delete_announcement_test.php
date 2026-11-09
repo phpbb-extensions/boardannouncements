@@ -17,9 +17,12 @@ class manager_delete_announcement_test extends manager_base
 	 */
 	public function test_delete_announcement()
 	{
+		$this->manager->set_announcement_groups(2, [10]);
 		self::assertNotEmpty($this->manager->get_announcement(2));
 		self::assertTrue($this->manager->delete_announcement(2));
 		self::assertEmpty($this->manager->get_announcement(2));
+		self::assertSame([], $this->manager->get_announcement_groups(2));
+		self::assertSame(0, $this->count_dismissals(2, 200));
 	}
 
 	/**

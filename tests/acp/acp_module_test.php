@@ -54,7 +54,7 @@ class acp_module_test extends \phpbb_test_case
 				'modes'		=> [
 					'settings'	=> [
 						'title'	=> 'ACP_BOARD_ANNOUNCEMENTS_SETTINGS',
-						'auth'	=> 'ext_phpbb/boardannouncements && acl_a_board',
+						'auth'	=> 'ext_phpbb/boardannouncements && acl_a_boardannouncements',
 						'cat'	=> ['ACP_BOARD_ANNOUNCEMENTS']
 					],
 				],

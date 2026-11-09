@@ -10,13 +10,14 @@
 
 namespace phpbb\boardannouncements\event;
 
-use phpbb\auth\auth;
 use phpbb\boardannouncements\ext;
+use phpbb\boardannouncements\helper\color;
 use phpbb\boardannouncements\manager\manager;
 use phpbb\config\config;
 use phpbb\controller\helper;
 use phpbb\language\language;
 use phpbb\request\request;
+use phpbb\boardannouncements\service\visibility;
 use phpbb\template\template;
 use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -28,9 +29,6 @@ class listener implements EventSubscriberInterface
 {
 	/** @var manager $manager */
 	protected $manager;
-
-	/** @var auth $auth */
-	protected $auth;
 
 	/** @var config $config */
 	protected $config;
@@ -53,20 +51,16 @@ class listener implements EventSubscriberInterface
 	/** @var string $php_ext */
 	protected $php_ext;
 
-	/** @var array $protected_forums*/
-	protected $protected_forums;
+	/** @var visibility $visibility Announcement visibility policy */
+	protected $visibility;
 
 	/** @var int $location */
 	protected $location;
-
-	/** @var bool|mixed $permission */
-	protected $permission;
 
 	/**
 	 * Constructor
 	 *
 	 * @param manager $manager Board announcements manager object
-	 * @param auth $auth Auth object
 	 * @param config $config Config object
 	 * @param helper $controller_helper Controller helper object
 	 * @param language $language Language object
@@ -74,18 +68,19 @@ class listener implements EventSubscriberInterface
 	 * @param template $template Template object
 	 * @param user $user User object
 	 * @param string $php_ext PHP extension
+	 * @param visibility $visibility Announcement visibility policy
 	 * @access public
 	 */
-	public function __construct(manager $manager, auth $auth, config $config, helper $controller_helper, language $language, request $request, template $template, user $user, $php_ext)
+	public function __construct(manager $manager, config $config, helper $controller_helper, language $language, request $request, template $template, user $user, $php_ext, visibility $visibility)
 	{
 		$this->manager = $manager;
-		$this->auth = $auth;
 		$this->config = $config;
 		$this->controller_helper = $controller_helper;
 		$this->language = $language;
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
+		$this->visibility = $visibility;
 		$this->php_ext = $php_ext;
 	}
 
@@ -101,6 +96,7 @@ class listener implements EventSubscriberInterface
 		return [
 			'core.page_header_after' => 'display_board_announcements',
 			'core.posting_modify_row_data' => 'set_posting_location',
+			'core.permissions' => 'set_permissions',
 		];
 	}
 
@@ -124,39 +120,32 @@ class listener implements EventSubscriberInterface
 
 		$this->get_current_location($event);
 
-		$board_announcements_data = $this->manager->get_visible_announcements(
-			$this->user->data['user_id'] ?? ANONYMOUS,
-			$this->user->data['is_registered'] ?? false
-		);
+		$user_id = !empty($this->user->data['is_registered']) ? (int) ($this->user->data['user_id'] ?? ANONYMOUS) : 0;
+		$board_announcements_data = $this->manager->get_published_announcements($user_id);
 
 		foreach ($board_announcements_data as $data)
 		{
-			$locations = $this->manager->decode_json($data['announcement_locations']);
-
-			// Do not include announcement if user is in a location where it shouldn't be visible
-			if (!empty($locations) && ($this->location_not_in($locations) || $this->is_protected() || $this->no_permission()))
+			if (!$this->visibility->is_visible($data, $this->location))
 			{
 				continue;
 			}
 
-			$cookie_name = $this->config['cookie_name'] . '_ba_' . $data['announcement_id'];
-			$announcement_dismissed = $this->request->variable($cookie_name, '', true, \phpbb\request\request_interface::COOKIE) === (string) $data['announcement_timestamp'];
-
-			// Do not include announcement if it has been dismissed
-			if ($announcement_dismissed)
-			{
-				continue;
-			}
+			$tone = in_array($data['announcement_tone'], ext::TONES, true) ? $data['announcement_tone'] : ext::TONE_INFO;
 
 			// Output board announcement to the template
 			$this->template->assign_block_vars('board_announcements', [
 				'BOARD_ANNOUNCEMENT_ID'			=> $data['announcement_id'],
+				'BOARD_ANNOUNCEMENT_TITLE'		=> $data['announcement_title'],
+				'BOARD_ANNOUNCEMENT_TONE'		=> $tone,
 				'S_BOARD_ANNOUNCEMENT_DISMISS'	=> (bool) $data['announcement_dismissable'],
 				'BOARD_ANNOUNCEMENT'			=> generate_text_for_display($data['announcement_text'], $data['announcement_uid'], $data['announcement_bitfield'], $data['announcement_flags']),
 				'BOARD_ANNOUNCEMENT_BGCOLOR'	=> $data['announcement_bgcolor'],
+				'BOARD_ANNOUNCEMENT_TEXTCOLOR'	=> color::contrast_color($data['announcement_bgcolor']),
+				'BOARD_ANNOUNCEMENT_LOCATION'	=> $this->location,
 				'U_BOARD_ANNOUNCEMENT_CLOSE'	=> $this->controller_helper->route('phpbb_boardannouncements_controller', [
-					'id'	=> (int) $data['announcement_id'],
-					'hash'	=> generate_link_hash('close_boardannouncement' . $data['announcement_id']),
+					'id'		=> (int) $data['announcement_id'],
+					'hash'		=> generate_link_hash('close_boardannouncement' . $data['announcement_id']),
+					'location'	=> $this->location,
 				]),
 			]);
 		}
@@ -172,6 +161,20 @@ class listener implements EventSubscriberInterface
 	public function set_posting_location($event)
 	{
 		$this->location = (int) $event['forum_id'];
+	}
+
+	/**
+	 * Register the administrative permission in ACP permission editors.
+	 *
+	 * @param \phpbb\event\data $event Event data
+	 * @return void
+	 */
+	public function set_permissions($event)
+	{
+		$event->update_subarray('permissions', 'a_boardannouncements', [
+			'lang' => 'ACL_A_BOARDANNOUNCEMENTS',
+			'cat' => 'misc',
+		]);
 	}
 
 	/**
@@ -200,46 +203,5 @@ class listener implements EventSubscriberInterface
 		$location = (int) $event['item_id'] ?: $this->request->variable('f', 0);
 
 		return $location ? ($this->location = $location) : ($this->location ?? 0);
-	}
-
-	/**
-	 * Is the current location not in the announcement's array of allowed locations?
-	 *
-	 * @param array|string $locations An array of locations
-	 * @return bool
-	 */
-	protected function location_not_in($locations)
-	{
-		return !in_array($this->get_current_location(), $locations);
-	}
-
-	/**
-	 * Is the current page a password protected forum?
-	 *
-	 * @return bool
-	 */
-	protected function is_protected()
-	{
-		if (!isset($this->protected_forums))
-		{
-			$this->protected_forums = $this->user->get_passworded_forums();
-		}
-
-		return $this->get_current_location() > 0 && !empty($this->protected_forums) && in_array($this->get_current_location(), $this->protected_forums);
-	}
-
-	/**
-	 * Is the current page a forum not accessible to the current user?
-	 *
-	 * @return bool
-	 */
-	protected function no_permission()
-	{
-		if (!isset($this->permission))
-		{
-			$this->permission = $this->auth->acl_get('f_read', $this->get_current_location());
-		}
-
-		return $this->get_current_location() > 0 && !$this->permission;
 	}
 }

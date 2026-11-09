@@ -12,6 +12,11 @@ namespace phpbb\boardannouncements\acp;
 
 class board_announcements_info
 {
+	/**
+	 * Return ACP module configuration.
+	 *
+	 * @return array ACP module configuration
+	 */
 	public function module()
 	{
 		return [
@@ -20,7 +25,7 @@ class board_announcements_info
 			'modes'		=> [
 				'settings'	=> [
 					'title'	=> 'ACP_BOARD_ANNOUNCEMENTS_SETTINGS',
-					'auth'	=> 'ext_phpbb/boardannouncements && acl_a_board',
+					'auth'	=> 'ext_phpbb/boardannouncements && acl_a_boardannouncements',
 					'cat'	=> ['ACP_BOARD_ANNOUNCEMENTS']
 				],
 			],
