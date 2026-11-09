@@ -972,12 +972,9 @@ label.ba-filter-field {
 
 .ba-preview {
 	background: #fff;
-	border: 1px solid #dce2e7;
-	border-radius: 5px;
 	color: var(--ba-admin-text);
 	font-size: 10px;
 	margin: 0 auto;
-	padding: 14px;
 	transition: max-width .2s ease;
 }
 
