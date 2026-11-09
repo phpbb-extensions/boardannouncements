@@ -256,33 +256,39 @@ class acp_controller_test extends \phpbb_test_case
 			->method('get_announcements')
 			->willReturn($rows);
 
+		$assignment = 0;
+		$assignment_checks = [
+			function ($data) use ($rows) {
+				return $data['DESCRIPTION'] === 'BOARD_ANNOUNCEMENTS_UNTITLED'
+					&& $data['TONE'] === ''
+					&& !$data['DISMISSABLE']
+					&& $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], ext::DATE_FORMAT)
+					&& $data['EXPIRY_DATE'] === ''
+					&& $data['S_MOVE_UP_DISABLED']
+					&& !$data['S_MOVE_DOWN_DISABLED'];
+			},
+			function ($data) use ($rows) {
+				return $data['TONE'] === ext::TONE_INFO
+					&& $data['DISMISSABLE']
+					&& $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], ext::DATE_FORMAT)
+					&& $data['EXPIRY_DATE'] === ''
+					&& !$data['S_MOVE_UP_DISABLED']
+					&& !$data['S_MOVE_DOWN_DISABLED'];
+			},
+			function ($data) use ($rows) {
+				return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], ext::DATE_FORMAT)
+					&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], ext::DATE_FORMAT)
+					&& !$data['S_MOVE_UP_DISABLED']
+					&& $data['S_MOVE_DOWN_DISABLED'];
+			},
+		];
 		$this->template->expects(self::exactly(3))
 			->method('assign_block_vars')
-			->withConsecutive(
-				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['DESCRIPTION'] === 'BOARD_ANNOUNCEMENTS_UNTITLED'
-						&& $data['TONE'] === ''
-						&& !$data['DISMISSABLE']
-						&& $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === ''
-						&& $data['S_MOVE_UP_DISABLED']
-						&& !$data['S_MOVE_DOWN_DISABLED'];
-				})],
-				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['TONE'] === ext::TONE_INFO
-						&& $data['DISMISSABLE']
-						&& $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === ''
-						&& !$data['S_MOVE_UP_DISABLED']
-						&& !$data['S_MOVE_DOWN_DISABLED'];
-				})],
-				['announcements', self::callback(function ($data) use ($rows) {
-					return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], ext::DATE_FORMAT)
-						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], ext::DATE_FORMAT)
-						&& !$data['S_MOVE_UP_DISABLED']
-						&& $data['S_MOVE_DOWN_DISABLED'];
-				})]
-			);
+			->willReturnCallback(function ($block, $data) use (&$assignment, $assignment_checks) {
+				self::assertSame('announcements', $block);
+				self::assertTrue($assignment_checks[$assignment]($data));
+				$assignment++;
+			});
 
 		$this->template->expects(self::once())
 			->method('assign_vars')
@@ -417,7 +423,7 @@ class acp_controller_test extends \phpbb_test_case
 		], $row)));
 	}
 
-	public function list_label_data()
+	public static function list_label_data()
 	{
 		return [
 			'description is preserved' => [
@@ -542,7 +548,7 @@ class acp_controller_test extends \phpbb_test_case
 		self::assertSame($expected, $method->invoke($controller, $row));
 	}
 
-	public function status_data()
+	public static function status_data()
 	{
 		return [
 			'archived' => [['announcement_state' => ext::STATUS_ARCHIVED, 'announcement_enabled' => 0], ext::STATUS_ARCHIVED],
@@ -565,7 +571,7 @@ class acp_controller_test extends \phpbb_test_case
 		self::assertSame([$this->language->lang('BOARD_ANNOUNCEMENTS_START_INVALID')], $errors);
 	}
 
-	public function location_mode_data()
+	public static function location_mode_data()
 	{
 		return [
 			'everywhere' => ['', 'everywhere'],
@@ -928,7 +934,7 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function action_preview_data()
+	public static function action_preview_data()
 	{
 		return [
 			[ext::TONE_CUSTOM, '#ABCDEF', true, ext::TONE_CUSTOM, 'ABCDEF'],
@@ -974,7 +980,9 @@ class acp_controller_test extends \phpbb_test_case
 			'board_announcements_preview' => '@phpbb_boardannouncements/announcement_preview.html',
 		]);
 		$this->template->expects(self::once())->method('assign_display')->with('board_announcements_preview')->willReturn('<section>Preview</section>');
-		$this->setExpectedTriggerError(E_WARNING);
+		$this->expectOutputString('{"success":true,"preview_html":"<section>Preview<\/section>"}');
+		$this->expectException(\RuntimeException::class);
+		$this->expectExceptionMessage('Exit handler called');
 
 		$controller->mode_manage();
 	}
@@ -1022,7 +1030,7 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function archive_action_data()
+	public static function archive_action_data()
 	{
 		return [
 			'success' => [true, true],
@@ -1053,7 +1061,7 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function reset_action_data()
+	public static function reset_action_data()
 	{
 		return [
 			'success' => [true, true],
@@ -1069,7 +1077,7 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		$this->language = $this->getMockBuilder('\phpbb\language\language')
 			->disableOriginalConstructor()
-			->setMethods(['add_lang', 'lang'])
+			->onlyMethods(['add_lang', 'lang'])
 			->getMock();
 		$this->language->method('lang')->willReturnCallback(static function ($key, ...$args) {
 			if ($key === 'BOARD_ANNOUNCEMENTS_COPY_OF')
@@ -1115,7 +1123,7 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function duplicate_action_data()
+	public static function duplicate_action_data()
 	{
 		return [
 			'described announcement' => ['Maintenance', 'Copy of Maintenance'],
@@ -1156,20 +1164,20 @@ class acp_controller_test extends \phpbb_test_case
 				'bulk_action' => $action,
 			][$name] ?? $default;
 		});
+		$invocation = 0;
 		$this->manager->expects(self::exactly(2))->method('update_announcement')
-			->withConsecutive(
-				[3, self::callback(static function ($data) use ($expected_state, $expected_enabled) {
-					return $data['announcement_state'] === $expected_state && $data['announcement_enabled'] === $expected_enabled && $data['announcement_updated_by'] === 2;
-				})],
-				[5, self::callback(static function ($data) use ($expected_state, $expected_enabled) {
-					return $data['announcement_state'] === $expected_state && $data['announcement_enabled'] === $expected_enabled && $data['announcement_updated_by'] === 2;
-				})]
-			);
+			->willReturnCallback(static function ($id, $data) use (&$invocation, $expected_state, $expected_enabled) {
+				self::assertSame([3, 5][$invocation], $id);
+				self::assertSame($expected_state, $data['announcement_state']);
+				self::assertSame($expected_enabled, $data['announcement_enabled']);
+				self::assertSame(2, $data['announcement_updated_by']);
+				$invocation++;
+			});
 
 		$controller->mode_manage();
 	}
 
-	public function bulk_state_action_data()
+	public static function bulk_state_action_data()
 	{
 		return [
 			'publish' => ['publish', ext::STATUS_PUBLISHED, true],
@@ -1187,15 +1195,22 @@ class acp_controller_test extends \phpbb_test_case
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
 			return ['action' => 'bulk', 'announcement_ids' => [3, 5], 'bulk_action' => 'delete'][$name] ?? $default;
 		});
+		$get_invocation = 0;
+		$announcements = [
+			['announcement_description' => '', 'announcement_title' => 'First title'],
+			['announcement_description' => 'Second'],
+		];
 		$this->manager->expects(self::exactly(2))->method('get_announcement')
-			->withConsecutive([3], [5])
-			->willReturnOnConsecutiveCalls(
-				['announcement_description' => '', 'announcement_title' => 'First title'],
-				['announcement_description' => 'Second']
-			);
+			->willReturnCallback(static function ($id) use (&$get_invocation, $announcements) {
+				self::assertSame([3, 5][$get_invocation], $id);
+				return $announcements[$get_invocation++];
+			});
+		$delete_invocation = 0;
 		$this->manager->expects(self::exactly(2))->method('delete_announcement')
-			->withConsecutive([3], [5])
-			->willReturnOnConsecutiveCalls(true, false);
+			->willReturnCallback(static function ($id) use (&$delete_invocation) {
+				self::assertSame([3, 5][$delete_invocation], $id);
+				return [true, false][$delete_invocation++];
+			});
 		$this->log->expects(self::once())->method('add')->with(
 			'admin', 2, self::anything(), 'BOARD_ANNOUNCEMENTS_DELETED_LOG', self::anything(), ['First title']
 		);
@@ -1212,26 +1227,35 @@ class acp_controller_test extends \phpbb_test_case
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
 			return ['action' => 'bulk', 'announcement_ids' => [3, 5, 7], 'bulk_action' => 'delete'][$name] ?? $default;
 		});
+		$get_invocation = 0;
+		$announcements = [
+			['announcement_description' => '', 'announcement_title' => 'First title'],
+			[],
+			['announcement_description' => 'Third'],
+		];
 		$this->manager->expects(self::exactly(3))->method('get_announcement')
-			->withConsecutive([3], [5], [7])
-			->willReturnOnConsecutiveCalls(
-				['announcement_description' => '', 'announcement_title' => 'First title'],
-				[],
-				['announcement_description' => 'Third']
-			);
+			->willReturnCallback(static function ($id) use (&$get_invocation, $announcements) {
+				self::assertSame([3, 5, 7][$get_invocation], $id);
+				return $announcements[$get_invocation++];
+			});
+		$delete_invocation = 0;
 		$this->manager->expects(self::exactly(3))->method('delete_announcement')
-			->withConsecutive([3], [5], [7])
-			->willReturnCallback(static function ($id) {
+			->willReturnCallback(static function ($id) use (&$delete_invocation) {
+				self::assertSame([3, 5, 7][$delete_invocation++], $id);
 				if ($id === 5)
 				{
 					throw new \OutOfBoundsException('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
 				}
 				return true;
 			});
-		$this->log->expects(self::exactly(2))->method('add')->withConsecutive(
-			['admin', 2, self::anything(), 'BOARD_ANNOUNCEMENTS_DELETED_LOG', self::anything(), ['First title']],
-			['admin', 2, self::anything(), 'BOARD_ANNOUNCEMENTS_DELETED_LOG', self::anything(), ['Third']]
-		);
+		$log_invocation = 0;
+		$this->log->expects(self::exactly(2))->method('add')
+			->willReturnCallback(static function ($mode, $user_id, $ip, $operation, $time, $data) use (&$log_invocation) {
+				self::assertSame('admin', $mode);
+				self::assertSame(2, $user_id);
+				self::assertSame('BOARD_ANNOUNCEMENTS_DELETED_LOG', $operation);
+				self::assertSame([['First title'], ['Third']][$log_invocation++], $data);
+			});
 
 		$controller->mode_manage();
 	}
@@ -1266,7 +1290,7 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function invalid_bulk_action_data()
+	public static function invalid_bulk_action_data()
 	{
 		return [
 			'invalid form' => [false, [1], 'publish'],
@@ -1500,9 +1524,15 @@ class acp_controller_test extends \phpbb_test_case
 		}
 		else
 		{
+			$variable_expectations = [
+				['action', '', 'settings'],
+				['board_announcements_enable_all', 0, $enable],
+			];
 			if ($is_ajax)
 			{
-				$this->setExpectedTriggerError(E_WARNING);
+				$this->expectOutputString('{"success":true,"enabled":' . ($enable ? 'true' : 'false') . '}');
+				$this->expectException(\RuntimeException::class);
+				$this->expectExceptionMessage('Exit handler called');
 			}
 			else
 			{

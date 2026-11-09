@@ -22,7 +22,7 @@ class color_test extends \phpbb_test_case
 		self::assertSame($expected, color::contrast_color($background));
 	}
 
-	public function contrast_color_data()
+	public static function contrast_color_data()
 	{
 		return [
 			'invalid' => ['fff', ''],

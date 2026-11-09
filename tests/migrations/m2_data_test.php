@@ -39,7 +39,8 @@ class m2_data_test extends \phpbb_test_case
 			$db_tools,
 			'',
 			'php',
-			'phpbb_'
+			'phpbb_',
+			\phpbb_database_test_case::get_core_tables()
 		);
 		$migration->setContainer($container);
 		$migration->update_module_auth();
@@ -82,7 +83,8 @@ class m2_data_test extends \phpbb_test_case
 			$db_tools,
 			'',
 			'php',
-			'phpbb_'
+			'phpbb_',
+			\phpbb_database_test_case::get_core_tables()
 		);
 		$migration->migrate_announcements();
 

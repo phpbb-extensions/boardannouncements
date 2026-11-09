@@ -246,12 +246,12 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// Hash bound to a different announcement
-		$crawler = self::request('POST', 'app.php/boardannouncements/close/2?hash=' . $hash . '&sid=' . $this->sid, [], false);
+		$crawler = self::request('POST', 'index.php/boardannouncements/close/2?hash=' . $hash . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// GET requests cannot mutate dismissal state
-		self::request('GET', 'app.php/boardannouncements/close/1?hash=' . $hash . '&sid=' . $this->sid, [], false);
+		self::request('GET', 'index.php/boardannouncements/close/1?hash=' . $hash . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(405);
 	}
 
@@ -267,7 +267,7 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertSame('POST', $form->getMethod());
 
 		$hash = $this->mock_link_hash('close_boardannouncement1');
-		self::request('POST', 'app.php/boardannouncements/close/1?hash=' . $hash . '&location=' . ext::INDEX_ONLY . '&sid=' . $this->sid);
+		self::request('POST', 'index.php/boardannouncements/close/1?hash=' . $hash . '&location=' . ext::INDEX_ONLY . '&sid=' . $this->sid);
 
 		$cookie_expired = false;
 		foreach (self::$cookieJar->all() as $cookie)
@@ -585,7 +585,7 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_state'			=> ext::STATUS_PUBLISHED,
 			'board_announcements_tone'			=> ext::TONE_INFO,
 			'board_announcements_start'			=> '',
-			'board_announcements_dismiss'		=> false,
+			'board_announcements_dismiss'		=> 0,
 			'board_announcements_users'			=> 0,
 			'board_announcements_groups'		=> [],
 			'board_announcements_locations'		=> [],

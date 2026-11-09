@@ -87,7 +87,7 @@ class visibility_test extends \phpbb_test_case
 		self::assertSame($expected, $this->visibility->matches_audience($row));
 	}
 
-	public function audience_data()
+	public static function audience_data()
 	{
 		return [
 			'registered sees everyone' => [true, false, ext::ALL, true],
@@ -115,7 +115,7 @@ class visibility_test extends \phpbb_test_case
 		self::assertSame($expected, $this->visibility->matches_audience($row));
 	}
 
-	public function bot_group_membership_data()
+	public static function bot_group_membership_data()
 	{
 		return [
 			'member' => [true, true],

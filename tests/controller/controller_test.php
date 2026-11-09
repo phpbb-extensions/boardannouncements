@@ -237,11 +237,11 @@ class controller_test extends phpbb_database_test_case
 	{
 		return [
 			['viewtopic.php?t=1', 'viewtopic.php?t=1'],
-			['app.php/boardannouncements/close/1?hash=valid', 'index.php'],
-			['https://example.com/forum/app.php/boardannouncements/close/1?hash=valid', 'index.php'],
+			['index.php/boardannouncements/close/1?hash=valid', 'index.php'],
+			['https://example.com/forum/index.php/boardannouncements/close/1?hash=valid', 'index.php'],
 			['/boardannouncements/close/2/', 'index.php'],
-			['app.php/boardannouncements/close/1', 'index.phtml', 'phtml'],
-			['viewtopic.php?redirect=app.php/boardannouncements/close/1', 'viewtopic.php?redirect=app.php/boardannouncements/close/1'],
+			['index.php/boardannouncements/close/1', 'index.phtml', 'phtml'],
+			['viewtopic.php?redirect=index.php/boardannouncements/close/1', 'viewtopic.php?redirect=index.php/boardannouncements/close/1'],
 		];
 	}
 

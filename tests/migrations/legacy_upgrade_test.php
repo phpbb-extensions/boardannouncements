@@ -30,7 +30,7 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 	{
 		parent::setUp();
 		$this->db = $this->new_dbal();
-		$this->db_tools = (new \phpbb\db\tools\factory())->get($this->db);
+		$this->db_tools = (new \phpbb\db\tools\factory())->get($this->new_doctrine_dbal());
 
 		$migration = $this->migration('\phpbb\boardannouncements\migrations\v20x\m1_schema');
 		$this->db_tools->perform_schema_changes($migration->revert_schema());
@@ -49,7 +49,7 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 
 		$container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
 		$container->set('cache', $cache);
-		$container->set('dispatcher', $phpbb_dispatcher);
+		$container->set('event_dispatcher', $phpbb_dispatcher);
 		$permission = new \phpbb\db\migration\tool\permission($this->db, $cache, $auth, $phpbb_root_path, $phpEx);
 
 		$migrator = new \phpbb\db\migrator(
@@ -61,6 +61,7 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 			$phpbb_root_path,
 			$phpEx,
 			'phpbb_',
+			self::get_core_tables(),
 			[$permission],
 			new \phpbb\db\migration\helper()
 		);
@@ -96,7 +97,7 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 	{
 		global $phpbb_root_path, $phpEx;
 
-		return new $class(new \phpbb\config\config([]), $this->db, $this->db_tools, $phpbb_root_path, $phpEx, 'phpbb_');
+		return new $class(new \phpbb\config\config([]), $this->db, $this->db_tools, $phpbb_root_path, $phpEx, 'phpbb_', self::get_core_tables());
 	}
 
 	protected function rows($sql)
