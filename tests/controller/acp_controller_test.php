@@ -566,6 +566,28 @@ class acp_controller_test extends \phpbb_test_case
 		self::assertSame([$this->language->lang('BOARD_ANNOUNCEMENTS_START_INVALID')], $errors);
 	}
 
+	public function test_parse_date_reports_invalid_calendar_date()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'parse_date');
+		$method->setAccessible(true);
+		$errors = [];
+
+		self::assertSame(0, $method->invokeArgs($controller, ['2030-02-31 12:00', &$errors, 'BOARD_ANNOUNCEMENTS_START_INVALID']));
+		self::assertSame([$this->language->lang('BOARD_ANNOUNCEMENTS_START_INVALID')], $errors);
+	}
+
+	public function test_parse_date_accepts_valid_leap_date()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'parse_date');
+		$method->setAccessible(true);
+		$errors = [];
+
+		self::assertSame(1961668800, $method->invokeArgs($controller, ['2032-02-29 12:00', &$errors, 'BOARD_ANNOUNCEMENTS_START_INVALID']));
+		self::assertSame([], $errors);
+	}
+
 	public function location_mode_data()
 	{
 		return [
@@ -702,7 +724,10 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function test_action_add_reports_invalid_v2_fields()
+	/**
+	 * @dataProvider invalid_expiry_data
+	 */
+	public function test_action_add_reports_invalid_v2_fields($expiry)
 	{
 		self::$valid_form = true;
 		$controller = $this->get_controller();
@@ -721,7 +746,7 @@ class acp_controller_test extends \phpbb_test_case
 			'board_announcements_locations' => [],
 			'board_announcements_dismiss' => true,
 			'board_announcements_start' => '2030-01-02 00:00',
-			'board_announcements_expiry' => '2030-01-01 00:00',
+			'board_announcements_expiry' => $expiry,
 		];
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($values) {
 			return array_key_exists($name, $values) ? $values[$name] : $default;
@@ -742,6 +767,14 @@ class acp_controller_test extends \phpbb_test_case
 		}));
 
 		$controller->mode_manage();
+	}
+
+	public function invalid_expiry_data()
+	{
+		return [
+			'expiry before start' => ['2030-01-01 00:00'],
+			'invalid calendar date' => ['2030-02-31 00:00'],
+		];
 	}
 
 	/**

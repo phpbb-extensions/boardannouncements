@@ -359,10 +359,11 @@ class acp_controller
 			// Special handling for the expiration date, convert from date string to timestamp
 			if ($data['announcement_expiry'] !== '')
 			{
-				$data['announcement_expiry'] = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $data['announcement_expiry']);
-				if (!$data['announcement_expiry']
-					|| ($data['announcement_start'] && $data['announcement_expiry'] <= $data['announcement_start'])
+				$data['announcement_expiry'] = $this->parse_date($data['announcement_expiry'], $errors, 'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+				if ($data['announcement_expiry']
+					&& (($data['announcement_start'] && $data['announcement_expiry'] <= $data['announcement_start'])
 					|| ($data['announcement_state'] === ext::STATUS_PUBLISHED && $data['announcement_expiry'] < time())
+					)
 				)
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
@@ -950,9 +951,11 @@ class acp_controller
 			return 0;
 		}
 		$timestamp = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $value);
-		if (!$timestamp)
+		$parse_errors = \DateTime::getLastErrors();
+		if (!$timestamp || ($parse_errors !== false && ($parse_errors['warning_count'] || $parse_errors['error_count'])))
 		{
 			$errors[] = $this->language->lang($error_key);
+			return 0;
 		}
 		return $timestamp;
 	}
