@@ -1,0 +1,7 @@
+{% macro fa(phpbb3_name, phpbb4_name, phpbb4_style = 'fas') -%}
+	{% if constant('PHPBB_VERSION') starts with '4' -%}
+		{% include '@phpbb_boardannouncements/icon_phpbb4.html' with {'BA_ICON_NAME': phpbb4_name, 'BA_ICON_STYLE': phpbb4_style} only %}
+	{%- else -%}
+		<i class="icon fa-{{ phpbb3_name }}" aria-hidden="true"></i>
+	{%- endif %}
+{%- endmacro %}

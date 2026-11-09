@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+	<table name="phpbb_board_announcements">
+		<column>announcement_id</column>
+		<column>announcement_text</column>
+		<column>announcement_description</column>
+		<column>announcement_bgcolor</column>
+		<column>announcement_enabled</column>
+		<column>announcement_locations</column>
+		<column>announcement_dismissable</column>
+		<column>announcement_users</column>
+		<column>announcement_timestamp</column>
+		<column>announcement_expiry</column>
+		<column>announcement_uid</column>
+		<column>announcement_bitfield</column>
+		<column>announcement_flags</column>
+		<column>announcement_parent_id</column>
+		<column>announcement_left_id</column>
+		<column>announcement_right_id</column>
+		<column>announcement_parents</column>
+		<row>
+			<value>1</value><value>Published legacy message</value><value>Published legacy</value><value>abcdef</value>
+			<value>1</value><value>[-1]</value><value>1</value><value>0</value><value>100</value><value>0</value>
+			<value></value><value></value><value>7</value><value>0</value><value>1</value><value>2</value><value></value>
+		</row>
+		<row>
+			<value>2</value><value>Disabled legacy message</value><value></value><value></value>
+			<value>0</value><value></value><value>1</value><value>1</value><value>200</value><value>0</value>
+			<value></value><value></value><value>7</value><value>0</value><value>3</value><value>4</value><value></value>
+		</row>
+		<row>
+			<value>3</value><value>Expired legacy message</value><value>Expired legacy</value><value></value>
+			<value>0</value><value></value><value>1</value><value>2</value><value>300</value><value>1</value>
+			<value></value><value></value><value>7</value><value>0</value><value>5</value><value>6</value><value></value>
+		</row>
+	</table>
+	<table name="phpbb_board_announcements_track">
+		<column>announcement_id</column><column>user_id</column>
+		<row><value>1</value><value>42</value></row>
+	</table>
+	<table name="phpbb_acl_options">
+		<column>auth_option_id</column><column>auth_option</column><column>is_global</column><column>is_local</column><column>founder_only</column>
+		<row><value>100</value><value>a_board</value><value>1</value><value>0</value><value>0</value></row>
+	</table>
+	<table name="phpbb_acl_roles">
+		<column>role_id</column><column>role_name</column><column>role_description</column><column>role_type</column><column>role_order</column>
+		<row><value>11</value><value>ROLE_ADMIN_FULL</value><value></value><value>a_</value><value>2</value></row>
+		<row><value>12</value><value>ROLE_ADMIN_STANDARD</value><value></value><value>a_</value><value>3</value></row>
+	</table>
+	<table name="phpbb_acl_roles_data">
+		<column>role_id</column><column>auth_option_id</column><column>auth_setting</column>
+	</table>
+	<table name="phpbb_modules">
+		<column>module_id</column><column>module_enabled</column><column>module_display</column><column>module_basename</column>
+		<column>module_class</column><column>parent_id</column><column>left_id</column><column>right_id</column>
+		<column>module_langname</column><column>module_mode</column><column>module_auth</column>
+		<row>
+			<value>1</value><value>1</value><value>1</value><value>\phpbb\boardannouncements\acp\board_announcements_module</value>
+			<value>acp</value><value>0</value><value>1</value><value>2</value><value>ACP_BOARD_ANNOUNCEMENTS_SETTINGS</value>
+			<value>settings</value><value>ext_phpbb/boardannouncements &amp;&amp; acl_a_board</value>
+		</row>
+	</table>
+</dataset>

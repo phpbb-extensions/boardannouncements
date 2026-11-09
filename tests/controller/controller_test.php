@@ -96,15 +96,24 @@ class controller_test extends \phpbb_database_test_case
 				$this->db,
 				new \phpbb\lock\db('boardannouncements.table_lock.board_announcements_table', $this->config, $this->db),
 				'phpbb_board_announcements',
-				'phpbb_board_announcements_track'
+				'phpbb_board_announcements_track',
+				'phpbb_board_announcement_groups',
+				'phpbb_user_group',
+				'phpbb_forums'
 			)
 		);
+
+		$visibility = $this->getMockBuilder('\phpbb\boardannouncements\service\visibility')
+			->disableOriginalConstructor()
+			->getMock();
+		$visibility->method('is_visible')->willReturn($mode !== 'not_visible');
 
 		return new \phpbb\boardannouncements\controller\controller(
 			$manager,
 			$request,
 			$user,
-			$php_ext ?? $phpEx
+			$php_ext ?? $phpEx,
+			$visibility
 		);
 	}
 
@@ -124,7 +133,6 @@ class controller_test extends \phpbb_database_test_case
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
-				false,
 			],
 			[
 				1, // Announcement ID
@@ -133,8 +141,7 @@ class controller_test extends \phpbb_database_test_case
 				'valid',
 				true,
 				200,
-				'{"success":true,"id":1}', // True because a cookie and status were set
-				true,
+				'{"success":true,"id":1}', // True because a cookie was set
 			],
 			[
 				1, // Announcement ID
@@ -144,7 +151,6 @@ class controller_test extends \phpbb_database_test_case
 				true,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
-				false, // Status should return false due to user not existing
 			],
 			[
 				1, // Announcement ID
@@ -154,7 +160,6 @@ class controller_test extends \phpbb_database_test_case
 				false,
 				200,
 				'{"success":true,"id":1}', // True because a cookie was set
-				false,
 			],
 		];
 	}
@@ -164,7 +169,7 @@ class controller_test extends \phpbb_database_test_case
 	 *
 	 * @dataProvider controller_data
 	 */
-	public function test_controller($id, $user_id, $is_registered, $mode, $ajax, $status_code, $content, $expected)
+	public function test_controller($id, $user_id, $is_registered, $mode, $ajax, $status_code, $content)
 	{
 		// If non-ajax redirect is encountered, in testing it will trigger error
 		if (!$ajax)
@@ -178,7 +183,14 @@ class controller_test extends \phpbb_database_test_case
 		self::assertInstanceOf('\Symfony\Component\HttpFoundation\JsonResponse', $response);
 		self::assertEquals($status_code, $response->getStatusCode());
 		self::assertEquals($content, $response->getContent());
-		self::assertEquals($expected, $this->get_closed_announcements($id, $user_id));
+
+		$sql = 'SELECT COUNT(*) AS total
+			FROM phpbb_board_announcements_track
+			WHERE announcement_id = 1
+				AND user_id = ' . (int) $user_id;
+		$result = $this->db->sql_query($sql);
+		self::assertSame($is_registered ? 1 : 0, (int) $this->db->sql_fetchfield('total'));
+		$this->db->sql_freeresult($result);
 	}
 
 	/**
@@ -220,7 +232,7 @@ class controller_test extends \phpbb_database_test_case
 	public function controller_fails_data()
 	{
 		return [
-			[	// test link hash fail
+			[	// test invalid link hash
 				1,
 				2,
 				true, // Guest is a registered user
@@ -265,6 +277,15 @@ class controller_test extends \phpbb_database_test_case
 				403,
 				'NO_AUTH_OPERATION',
 			],
+			[	// test announcement hidden from current user and location
+				1,
+				2,
+				true,
+				'not_visible',
+				true,
+				403,
+				'NO_AUTH_OPERATION',
+			],
 		];
 	}
 
@@ -287,25 +308,5 @@ class controller_test extends \phpbb_database_test_case
 			self::assertEquals($status_code, $exception->getStatusCode());
 			self::assertEquals($content, $exception->getMessage());
 		}
-	}
-
-	/**
-	 * Helper to get the stored board announcement status for a user
-	 *
-	 * @param $id
-	 * @param $user_id
-	 * @return bool
-	 */
-	protected function get_closed_announcements($id, $user_id)
-	{
-		$ids = [];
-		$sql = 'SELECT announcement_id FROM phpbb_board_announcements_track WHERE user_id = ' . (int) $user_id;
-		$result = $this->db->sql_query($sql);
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$ids[] = $row['announcement_id'];
-		}
-		$this->db->sql_freeresult($result);
-		return in_array($id, $ids);
 	}
 }

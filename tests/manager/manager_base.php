@@ -51,9 +51,25 @@ class manager_base extends \phpbb_database_test_case
 				$this->db,
 				$lock,
 				'phpbb_board_announcements',
-				'phpbb_board_announcements_track'
+				'phpbb_board_announcements_track',
+				'phpbb_board_announcement_groups',
+				'phpbb_user_group',
+				'phpbb_forums'
 			)
 		);
+	}
+
+	protected function count_dismissals($announcement_id, $user_id)
+	{
+		$sql = 'SELECT COUNT(*) AS total
+			FROM phpbb_board_announcements_track
+			WHERE announcement_id = ' . (int) $announcement_id . '
+				AND user_id = ' . (int) $user_id;
+		$result = $this->db->sql_query($sql);
+		$total = (int) $this->db->sql_fetchfield('total');
+		$this->db->sql_freeresult($result);
+
+		return $total;
 	}
 
 }

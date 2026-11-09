@@ -42,20 +42,25 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->admin_login();
 
 		$crawler = self::request('GET', $this->get_acp_page());
-		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE_ALL', $crawler->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH', $crawler->text());
+		self::assertSame('board_announcements_toggle', $crawler->filter('#board_announcement_settings')->attr('data-ajax'));
 
 		// Enable announcements
-		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
+		$form = $crawler->filter('#board_announcement_settings')->form();
 		$values = ['board_announcements_enable_all' => true];
 		$form->setValues($values);
 		$crawler = self::submit($form);
 		$this->assertContainsLang('CONFIG_UPDATED', $crawler->text());
 
+		$crawler = self::request('GET', $this->get_acp_page());
+		self::assertCount(1, $crawler->filter('[data-ba-global-disabled][hidden]'));
+		self::assertCount(1, $crawler->filter('input[name="board_announcements_enable_all"][value="1"]:checked'));
+
 		// Load Add page
 		$crawler = self::request('GET', $this->get_acp_page('add'));
 
 		// Test that our settings fields are found
-		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE', $crawler->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_STATUS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_DISMISS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_USERS', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_LOCATIONS', $crawler->text());
@@ -63,9 +68,56 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_EXPIRY', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_BGCOLOR', $crawler->text());
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_TEXT', $crawler->text());
+		self::assertStringContainsString($this->lang('G_REGISTERED'), $crawler->filter('[data-ba-groups]')->text());
+		self::assertCount(1, $crawler->filter('[data-ba-groups][hidden]'));
+		self::assertSame('false', $crawler->filter('#board_announcements_users')->attr('aria-expanded'));
+		self::assertGreaterThan(0, $crawler->filter('#board_announcements_locations input[type="checkbox"][name="board_announcements_locations[]"]')->count());
+		self::assertCount(0, $crawler->filter('select[name="board_announcements_locations[]"]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_location_mode option[value="everywhere"]:selected'));
+		self::assertSame('false', $crawler->filter('#board_announcements_location_mode')->attr('aria-expanded'));
+		self::assertCount(1, $crawler->filter('[data-ba-locations][hidden]'));
+		self::assertGreaterThan(0, $crawler->filter('[data-ba-locations] input[name="board_announcements_locations[]"][disabled]')->count());
+		self::assertCount(0, $crawler->filter('[data-ba-select-visible], [data-ba-clear-locations], [data-ba-location-count]'));
+		self::assertCount(0, $crawler->filter('[name="board_announcements_placement"], [name="board_announcements_cta_label"], [name="board_announcements_cta_url"]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_state option[value="draft"]:selected'));
+		self::assertNotSame('', $crawler->filter('#board_announcements_start')->attr('placeholder'));
+		self::assertNotSame('', $crawler->filter('#board_announcements_expiry')->attr('placeholder'));
+		self::assertNotSame($crawler->filter('#board_announcements_start')->attr('placeholder'), $crawler->filter('#board_announcements_expiry')->attr('placeholder'));
+		self::assertCount(1, $crawler->filter('[data-ba-custom-color]:not([hidden])'));
+		self::assertSame('color', $crawler->filter('#board_announcements_bgcolor_picker')->attr('type'));
+		self::assertSame('#e8f1fa', $crawler->filter('#board_announcements_bgcolor_picker')->attr('value'));
+		self::assertNull($crawler->filter('#board_announcements_bgcolor')->attr('pattern'));
+		self::assertCount(1, $crawler->filter('[data-ba-custom-color].is-disabled[aria-disabled="true"]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_bgcolor_picker[disabled]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_bgcolor[disabled]'));
+		self::assertCount(1, $crawler->filter('input[name="disable_bbcode"]'));
+		self::assertCount(1, $crawler->filter('input[name="disable_smilies"]'));
+		self::assertCount(1, $crawler->filter('input[name="disable_magic_url"]'));
+		self::assertCount(0, $crawler->filter('.ba-message-options input:checked'));
+		self::assertCount(1, $crawler->filter('noscript .ba-notice-warning'));
+		self::assertCount(1, $crawler->filter('[data-ba-preview-slot]'));
+		self::assertSame('button', $crawler->filter('[data-ba-preview-request]')->attr('type'));
+
+		$form = $crawler->filter('#add_board_announcements')->form();
+		$preview_values = $form->getPhpValues();
+		$preview_values['action'] = 'preview';
+		$preview_values['board_announcements_title'] = 'AJAX preview title';
+		$preview_values['board_announcements_text'] = '[b]AJAX preview text[/b]';
+		$preview_values['board_announcements_dismiss'] = 0;
+		self::$client->setServerParameter('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
+		self::$client->request('POST', $form->getUri(), $preview_values);
+		$preview_response = json_decode(self::get_content(), true);
+		self::$client->setServerParameter('HTTP_X_REQUESTED_WITH', '');
+		self::assertArrayHasKey('success', $preview_response, self::get_content());
+		self::assertTrue($preview_response['success']);
+		self::assertStringContainsString('AJAX preview title', $preview_response['preview_html']);
+		self::assertStringContainsString('AJAX preview text', $preview_response['preview_html']);
+		self::assertStringContainsString('data-ba-preview-dismiss hidden', $preview_response['preview_html']);
+		self::assertStringContainsString('type="button"', $preview_response['preview_html']);
 
 		$values = [
-			'board_announcements_enabled'		=> true,
+			'board_announcements_state'			=> ext::STATUS_PUBLISHED,
+			'board_announcements_tone'			=> ext::TONE_CUSTOM,
 			'board_announcements_users'			=> 0,
 			'board_announcements_dismiss'		=> true,
 			'board_announcements_locations'		=> [ext::INDEX_ONLY],
@@ -82,8 +134,62 @@ class announcement_test extends \phpbb_functional_test_case
 
 		// Confirm ACP page shows added announcement
 		$crawler = self::request('GET', $this->get_acp_page());
-		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_ENABLE_ALL', $crawler->text());
-		$this->assertStringContainsString($values['board_announcements_description'], $crawler->filter('table > tbody > tr > td')->text());
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_EMERGENCY_SWITCH', $crawler->text());
+		$this->assertStringContainsString($values['board_announcements_description'], $crawler->filter('table > tbody')->text());
+	}
+
+	/**
+	 * Test ACP search and status filters preserve module routing.
+	 */
+	public function test_acp_filters()
+	{
+		$this->login();
+		$this->admin_login();
+
+		$crawler = self::request('GET', $this->get_acp_page());
+		$form = $crawler->filter('#board_announcement_filters')->form();
+		$form->setValues(['q' => 'board announcement test', 'status' => ext::STATUS_ACTIVE]);
+		$crawler = self::submit($form);
+		self::assertStringContainsString('Test announcement', $crawler->filter('.board-announcements-list > tbody')->text());
+		self::assertCount(2, $crawler->filter('.ba-action-group .is-disabled'));
+
+		$form = $crawler->filter('#board_announcement_filters')->form();
+		$form->setValues(['q' => 'does not exist', 'status' => ext::STATUS_ACTIVE]);
+		$crawler = self::submit($form);
+		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_FILTER_EMPTY', $crawler->filter('.ba-empty')->text());
+
+		$crawler = self::request('GET', $this->get_acp_page());
+		self::assertStringContainsString('Test announcement', $crawler->filter('.board-announcements-list > tbody')->text());
+	}
+
+	/**
+	 * Re-show controls keep a fixed action slot and are disabled when dismissal is unavailable.
+	 */
+	public function test_acp_reshow_action_alignment()
+	{
+		$this->login();
+		$this->admin_login();
+
+		$crawler = self::request('GET', $this->get_acp_page());
+		self::assertSame(
+			$crawler->filter('input[name="announcement_ids[]"]')->count(),
+			$crawler->filter('.ba-show-again-action')->count()
+		);
+		$row = $crawler->filterXPath('//input[@name="announcement_ids[]" and @value="1"]/ancestor::tr');
+		self::assertCount(1, $row->filter('a.ba-show-again-action'));
+
+		$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 0 WHERE announcement_id = 1');
+		try
+		{
+			$crawler = self::request('GET', $this->get_acp_page());
+			$row = $crawler->filterXPath('//input[@name="announcement_ids[]" and @value="1"]/ancestor::tr');
+			self::assertCount(1, $row->filter('span.ba-show-again-action.is-disabled[aria-disabled="true"]'));
+			self::assertCount(0, $row->filter('a.ba-show-again-action'));
+		}
+		finally
+		{
+			$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 1 WHERE announcement_id = 1');
+		}
 	}
 
 	/**
@@ -140,17 +246,12 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// Hash bound to a different announcement
-		$crawler = self::request('POST', 'app.php/boardannouncements/close/3?hash=' . $hash . '&sid=' . $this->sid, [], false);
-		self::assert_response_status_code(403);
-		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
-
-		// Non-dismissible announcement
-		$crawler = self::request('POST', 'app.php/boardannouncements/close/4?hash=' . $this->mock_link_hash('close_boardannouncement4') . '&sid=' . $this->sid, [], false);
+		$crawler = self::request('POST', 'app.php/boardannouncements/close/2?hash=' . $hash . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(403);
 		$this->assertContainsLang('NO_AUTH_OPERATION', $crawler->text());
 
 		// GET requests cannot mutate dismissal state
-		$crawler = self::request('GET', 'app.php/boardannouncements/close/1?hash=' . $hash . '&sid=' . $this->sid, [], false);
+		self::request('GET', 'app.php/boardannouncements/close/1?hash=' . $hash . '&sid=' . $this->sid, [], false);
 		self::assert_response_status_code(405);
 	}
 
@@ -162,13 +263,53 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
-		$form = $crawler->filter('#phpbb_announcement_1 form[data-ajax="close_announcement"]')->form();
+		$form = $crawler->filter('#phpbb_announcement_1 .phpbb-announcement__dismiss-form')->form();
 		self::assertSame('POST', $form->getMethod());
 
 		$hash = $this->mock_link_hash('close_boardannouncement1');
-		self::request('POST', 'app.php/boardannouncements/close/1?hash=' . $hash . '&sid=' . $this->sid);
-		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
-		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+		self::request('POST', 'app.php/boardannouncements/close/1?hash=' . $hash . '&location=' . ext::INDEX_ONLY . '&sid=' . $this->sid);
+
+		$cookie_expired = false;
+		foreach (self::$cookieJar->all() as $cookie)
+		{
+			if (substr($cookie->getName(), -5) === '_ba_1')
+			{
+				self::$cookieJar->expire($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
+				$cookie_expired = true;
+				break;
+			}
+		}
+		self::assertTrue($cookie_expired);
+
+		$this->get_db();
+		$result = $this->db->sql_query('SELECT COUNT(*) AS total
+			FROM phpbb_board_announcements_track
+			WHERE announcement_id = 1
+				AND user_id = 2');
+		self::assertSame(1, (int) $this->db->sql_fetchfield('total'));
+		$this->db->sql_freeresult($result);
+
+		try
+		{
+			$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+			self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+		}
+		finally
+		{
+			$this->db->sql_query('DELETE FROM phpbb_board_announcements_track WHERE announcement_id = 1 AND user_id = 2');
+		}
+
+		$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 0 WHERE announcement_id = 1');
+		try
+		{
+			$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+			self::assertCount(1, $crawler->filter('#phpbb_announcement_1'));
+			self::assertCount(0, $crawler->filter('#phpbb_announcement_1 .phpbb-announcement__dismiss-form'));
+		}
+		finally
+		{
+			$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 1 WHERE announcement_id = 1');
+		}
 	}
 
 	/**
@@ -178,11 +319,33 @@ class announcement_test extends \phpbb_functional_test_case
 	{
 		$this->login();
 		$this->admin_login();
+		$this->get_db();
+		$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_flags = 0 WHERE announcement_id = 1');
 
 		// Test editing announcement and preview works
 		$crawler = self::request('GET', $this->get_acp_page('add', 1));
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_PREVIEW', $crawler->text());
 		$this->assertStringContainsString('This is a board announcement test.', $crawler->text());
+		self::assertCount(1, $crawler->filter('#board_announcements_tone option[value="custom"]:selected'));
+		self::assertCount(1, $crawler->filter('.ba-editor-main > [data-ba-preview-slot] > .ba-preview-card'));
+		self::assertCount(1, $crawler->filter('#ba-preview'));
+		self::assertCount(0, $crawler->filter('#ba-preview[data-theme], [data-ba-preview-theme]'));
+		self::assertCount(1, $crawler->filter('[data-ba-preview-mobile]'));
+		self::assertCount(1, $crawler->filter('[data-ba-preview-dismiss]:not([hidden]) .phpbb-announcement__dismiss[type="button"]'));
+		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="-1"]:checked'));
+		self::assertCount(1, $crawler->filter('#board_announcements_location_mode option[value="index"]:selected'));
+		self::assertCount(1, $crawler->filter('[data-ba-locations][hidden]'));
+		self::assertSame('#ff0000', $crawler->filter('#board_announcements_bgcolor_picker')->attr('value'));
+		self::assertCount(1, $crawler->filter('[data-ba-custom-color]:not(.is-disabled)[aria-disabled="false"]'));
+		self::assertCount(0, $crawler->filter('#board_announcements_bgcolor_picker[disabled], #board_announcements_bgcolor[disabled]'));
+		self::assertCount(3, $crawler->filter('.ba-message-options input:checked'));
+
+		// Save preserves disabled parser options.
+		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
+		self::submit($form);
+		$result = $this->db->sql_query('SELECT announcement_flags FROM phpbb_board_announcements WHERE announcement_id = 1');
+		self::assertSame(0, (int) $this->db->sql_fetchfield('announcement_flags'));
+		$this->db->sql_freeresult($result);
 
 		// Test deleting the announcement works
 		$crawler = self::request('GET', $this->get_acp_page('delete', 1));
@@ -237,6 +400,15 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_text'			=> 'Forum and Index announcement',
 		]);
 
+		// Selected locations exposes the filterable checkbox panel and preserves mixed targeting.
+		$crawler = self::request('GET', $this->get_acp_page('add', $index_forum_id));
+		self::assertCount(1, $crawler->filter('#board_announcements_location_mode option[value="selected"]:selected'));
+		self::assertSame('true', $crawler->filter('#board_announcements_location_mode')->attr('aria-expanded'));
+		self::assertCount(1, $crawler->filter('[data-ba-locations]:not([hidden])'));
+		self::assertCount(1, $crawler->filter('#board_announcements_location_search:not([disabled])'));
+		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="-1"]:checked:not([disabled])'));
+		self::assertCount(1, $crawler->filter('#board_announcements_locations input[value="2"]:checked:not([disabled])'));
+
 		// Test board index - see everywhere, index and index+forum
 		$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
@@ -257,14 +429,14 @@ class announcement_test extends \phpbb_functional_test_case
 		self::assertStringContainsString('Forum announcement', $crawler->filter('#phpbb_announcement_' . $forum_id)->text());
 		self::assertStringContainsString('Forum and Index announcement', $crawler->filter('#phpbb_announcement_' . $index_forum_id)->text());
 
-		// Test new-topic page - see everywhere, forum and index+forum
+		// Test new-topic page in forum 2
 		$crawler = self::request('GET', 'posting.php?mode=post&f=2&sid=' . $this->sid);
 		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
 		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $forum_id));
 		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $index_forum_id));
 
-		// Test reply page without a forum ID - see everywhere, forum and index+forum
+		// Test reply page, where forum ID is not present in query string
 		$crawler = self::request('GET', 'posting.php?mode=reply&t=1&sid=' . $this->sid);
 		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everywhere_id));
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $index_id));
@@ -296,13 +468,17 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	 * Test bots receive guest announcements, not registered-user announcements
+	 * Test bots receive announcements for everyone or selected bot groups only
 	 */
 	public function test_bot_audience()
 	{
 		$this->login();
 		$this->admin_login();
 
+		$everyone_id = $this->create_announcement([
+			'board_announcements_users' => ext::ALL,
+			'board_announcements_description' => 'Everyone announcement',
+		]);
 		$members_id = $this->create_announcement([
 			'board_announcements_users' => ext::MEMBERS,
 			'board_announcements_description' => 'Members announcement',
@@ -311,48 +487,67 @@ class announcement_test extends \phpbb_functional_test_case
 			'board_announcements_users' => ext::GUESTS,
 			'board_announcements_description' => 'Guests announcement',
 		]);
+		$this->get_db();
+		$sql = "SELECT group_id
+			FROM phpbb_groups
+			WHERE group_name = 'BOTS'";
+		$result = $this->db->sql_query($sql);
+		$bots_group_id = (int) $this->db->sql_fetchfield('group_id');
+		$this->db->sql_freeresult($result);
+		$bots_id = $this->create_announcement([
+			'board_announcements_users' => ext::GROUPS,
+			'board_announcements_groups' => [$bots_group_id],
+			'board_announcements_description' => 'Bots announcement',
+		]);
 
 		self::$client->restart();
 		self::$client->setHeader('User-Agent', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
 		$crawler = self::request('GET', 'index.php');
 
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $everyone_id));
 		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $members_id));
-		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $guests_id));
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_' . $guests_id));
+		self::assertCount(1, $crawler->filter('#phpbb_announcement_' . $bots_id));
 
 		self::$client->restart();
 	}
 
 	/**
-	 * Test encoded Unicode descriptions are decoded when rendered in the ACP
+	 * Test encoded Unicode metadata is decoded when rendered in the ACP
 	 */
-	public function test_unicode_description_rendering()
+	public function test_unicode_metadata_rendering()
 	{
 		$this->login();
 		$this->admin_login();
 
 		$description = 'Unicode 😀 中文 Кириллица announcement';
+		$title = 'Heading 😀 中文 Кириллица';
 		$id = $this->create_announcement([
 			'board_announcements_description' => $description,
+			'board_announcements_title' => $title,
 		]);
 
 		$this->get_db();
-		$sql = 'SELECT announcement_description
+		$sql = 'SELECT announcement_description, announcement_title
 			FROM phpbb_board_announcements
 			WHERE announcement_id = ' . (int) $id;
 		$result = $this->db->sql_query($sql);
-		$stored_description = $this->db->sql_fetchfield('announcement_description');
+		$stored = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		$expected_description = strpos($this->db->get_sql_layer(), 'mssql') === 0
-			? utf8_encode_ncr($description)
-			: utf8_encode_ucr($description);
-		self::assertSame($expected_description, $stored_description);
+		$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
+		$expected_description = $encode_unicode($description);
+		$expected_title = $encode_unicode($title);
+		self::assertSame($expected_description, $stored['announcement_description']);
+		self::assertSame($expected_title, $stored['announcement_title']);
 
 		$crawler = self::request('GET', $this->get_acp_page());
 		self::assertStringContainsString($description, $crawler->filter('table > tbody')->text());
 
 		$crawler = self::request('GET', $this->get_acp_page('add', $id));
 		self::assertSame($description, $crawler->filter('#board_announcements_description')->attr('value'));
+		self::assertSame($title, $crawler->filter('#board_announcements_title')->attr('value'));
+		self::assertSame($title, $crawler->filter('.ba-preview .phpbb-announcement__title')->text());
 
 		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
 		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_CREATED_LOG', $description)), $crawler->text());
@@ -386,19 +581,38 @@ class announcement_test extends \phpbb_functional_test_case
 		// Set some form values
 		$form = $crawler->selectButton($this->lang('SUBMIT'))->form();
 		$values = array_merge([
-			'board_announcements_enabled'		=> true,
+			'board_announcements_state'			=> ext::STATUS_PUBLISHED,
+			'board_announcements_tone'			=> ext::TONE_INFO,
+			'board_announcements_start'			=> '',
 			'board_announcements_dismiss'		=> false,
 			'board_announcements_users'			=> 0,
+			'board_announcements_groups'		=> [],
 			'board_announcements_locations'		=> [],
-			'board_announcements_bgcolor'		=> 'ff0000',
+			'board_announcements_bgcolor'		=> '',
 			'board_announcements_expiry'		=> '',
 			'board_announcements_description'	=> 'Test announcement',
 			'board_announcements_text'			=> 'This is a board announcement test.',
 		], $data);
+		$groups = $values['board_announcements_groups'];
+		$locations = $values['board_announcements_locations'];
+		$selected_locations = array_values(array_filter(array_map('intval', $locations)));
+		$values['board_announcements_location_mode'] = !$selected_locations
+			? 'everywhere'
+			: (count($selected_locations) === 1 && $selected_locations[0] === ext::INDEX_ONLY ? 'index' : 'selected');
+		$bgcolor = $values['board_announcements_bgcolor'];
+		unset($values['board_announcements_groups'], $values['board_announcements_locations'], $values['board_announcements_bgcolor']);
 		$form->setValues($values);
 
-		// Submit form and test success
-		$crawler = self::submit($form);
+		// DomCrawler does not combine checkbox fields sharing an array name.
+		$post = $form->getPhpValues();
+		$post['board_announcements_groups'] = $groups;
+		$post['board_announcements_locations'] = $locations;
+		if ($values['board_announcements_tone'] === ext::TONE_CUSTOM)
+		{
+			$post['board_announcements_bgcolor'] = $bgcolor;
+		}
+		$post['submit'] = $this->lang('SUBMIT');
+		$crawler = self::request('POST', $this->get_acp_page('add'), $post);
 		$this->assertContainsLang('BOARD_ANNOUNCEMENTS_UPDATED', $crawler->text());
 
 		return ++$counter;

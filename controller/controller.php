@@ -11,6 +11,7 @@
 namespace phpbb\boardannouncements\controller;
 
 use phpbb\boardannouncements\manager\manager;
+use phpbb\boardannouncements\service\visibility;
 use phpbb\exception\http_exception;
 use phpbb\request\request;
 use phpbb\user;
@@ -30,6 +31,9 @@ class controller
 	/** @var string */
 	protected $php_ext;
 
+	/** @var visibility Announcement visibility policy */
+	protected $visibility;
+
 	/**
 	 * Constructor
 	 *
@@ -37,20 +41,23 @@ class controller
 	 * @param request $request Request object
 	 * @param user $user User object
 	 * @param string $php_ext PHP file extension
+	 * @param visibility $visibility Visibility policy
 	 * @access public
 	 */
-	public function __construct(manager $manager, request $request, user $user, $php_ext)
+	public function __construct(manager $manager, request $request, user $user, $php_ext, visibility $visibility)
 	{
 		$this->manager = $manager;
 		$this->request = $request;
 		$this->user = $user;
 		$this->php_ext = $php_ext;
+		$this->visibility = $visibility;
 	}
 
 	/**
 	* Board Announcements controller accessed from the URL /boardannouncements/close/id
 	*
 	* @throws http_exception A http exception
+	* @throws \OutOfBoundsException When the announcement no longer exists
 	* @return JsonResponse A Symfony JSON Response object
 	* @access public
 	*/
@@ -59,18 +66,20 @@ class controller
 		// Get the announcements data
 		$announcement = $this->manager->get_announcement($id);
 
-		// Only accept intentional, authorized dismissal requests
-		if (empty($announcement) || !$announcement['announcement_dismissable'] || !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id']))
+		$location = $this->request->variable('location', 0);
+		if (empty($announcement)
+			|| !$announcement['announcement_dismissable']
+			|| !$this->visibility->is_visible($announcement, $location, false)
+			|| !check_link_hash($this->request->variable('hash', ''), 'close_boardannouncement' . $announcement['announcement_id'])
+		)
 		{
 			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
-		// Set a cookie
-		$this->user->set_cookie('ba_' . $announcement['announcement_id'], $announcement['announcement_timestamp'], strtotime('+1 year'));
+		$revision = (int) ($announcement['announcement_revision'] ?? 1);
+		$this->user->set_cookie('ba_' . $announcement['announcement_id'], $revision, strtotime('+1 year'));
 		$response = true;
-
-		// Close the announcement for registered users
-		if ($this->user->data['is_registered'])
+		if (!empty($this->user->data['is_registered']))
 		{
 			$response = $this->manager->close_announcement($announcement['announcement_id'], $this->user->data['user_id']);
 		}
