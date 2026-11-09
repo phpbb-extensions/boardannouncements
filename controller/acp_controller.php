@@ -120,11 +120,21 @@ class acp_controller
 	 */
 	public function mode_manage()
 	{
-		// Trigger specific action
+		$actions = [
+			'add'		=> [$this, 'action_add'],
+			'preview'	=> [$this, 'action_preview'],
+			'delete'	=> [$this, 'action_delete'],
+			'move'		=> [$this, 'action_move'],
+			'settings'	=> [$this, 'action_settings'],
+			'archive'	=> [$this, 'action_archive'],
+			'reset'		=> [$this, 'action_reset'],
+			'duplicate'	=> [$this, 'action_duplicate'],
+			'bulk'		=> [$this, 'action_bulk'],
+		];
 		$action = $this->request->variable('action', '');
-		if (in_array($action, ['add', 'preview', 'delete', 'move', 'settings', 'archive', 'reset', 'duplicate', 'bulk']))
+		if (isset($actions[$action]))
 		{
-			$this->{'action_' . $action}();
+			$actions[$action]();
 		}
 		else
 		{

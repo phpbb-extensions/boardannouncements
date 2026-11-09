@@ -171,8 +171,13 @@ class acp_controller_test extends \phpbb_test_case
 			['delete', 'action_delete'],
 			['move', 'action_move'],
 			['settings', 'action_settings'],
+			['archive', 'action_archive'],
+			['reset', 'action_reset'],
+			['duplicate', 'action_duplicate'],
+			['bulk', 'action_bulk'],
 			['', 'list_announcements'],
 			[null, 'list_announcements'],
+			['unknown', 'list_announcements'],
 		];
 	}
 
@@ -184,7 +189,18 @@ class acp_controller_test extends \phpbb_test_case
 	public function test_mode_manage($action, $expected)
 	{
 		$controller = $this->getMockBuilder('\phpbb\boardannouncements\controller\acp_controller')
-			->setMethods(['action_add', 'action_preview', 'action_delete', 'action_move', 'action_settings', 'list_announcements'])
+			->setMethods([
+				'action_add',
+				'action_preview',
+				'action_delete',
+				'action_move',
+				'action_settings',
+				'action_archive',
+				'action_reset',
+				'action_duplicate',
+				'action_bulk',
+				'list_announcements',
+			])
 			->setConstructorArgs([
 				$this->manager,
 				$this->db,
