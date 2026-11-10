@@ -327,11 +327,9 @@ class acp_controller
 				$data['announcement_created_by'] = (int) $this->user->data['user_id'];
 			}
 
-			// MSSQL requires all Unicode to be encoded; other DBMS only require four-byte Unicode.
-			$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
 			foreach (['announcement_description', 'announcement_title'] as $field)
 			{
-				$data[$field] = $encode_unicode($data[$field]);
+				$data[$field] = $this->encode_unicode_for_storage($data[$field]);
 			}
 			if (utf8_strlen($data['announcement_description']) > 255)
 			{
@@ -967,16 +965,33 @@ class acp_controller
 	protected function truncate_description_for_storage($description, $max_length)
 	{
 		$description = utf8_decode_ncr($description);
-		$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
-		$encoded = $encode_unicode($description);
+		$encoded = $this->encode_unicode_for_storage($description);
 
 		while (utf8_strlen($encoded) > $max_length)
 		{
 			$description = utf8_substr($description, 0, -1);
-			$encoded = $encode_unicode($description);
+			$encoded = $this->encode_unicode_for_storage($description);
 		}
 
 		return $encoded;
+	}
+
+	/**
+	 * Encode Unicode characters that cannot be stored safely by the DBMS.
+	 *
+	 * phpBB's DBAL emits unprefixed string literals. MSSQL may convert BMP
+	 * characters through the database code page before storing them in an
+	 * nvarchar column, so all non-ASCII characters must be encoded there.
+	 * Other DBMSes only require four-byte Unicode characters to be encoded.
+	 *
+	 * @param string $text Text to encode
+	 * @return string Encoded text
+	 */
+	protected function encode_unicode_for_storage($text)
+	{
+		return strpos($this->db->get_sql_layer(), 'mssql') === 0
+			? utf8_encode_ncr($text)
+			: utf8_encode_ucr($text);
 	}
 
 	/**

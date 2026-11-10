@@ -530,8 +530,8 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 		$this->admin_login();
 
-		$description = 'Unicode 😀 中文 Кириллица announcement';
-		$title = 'Heading 😀 中文 Кириллица';
+		$description = 'Unicode Café 😀 中文 Кириллица announcement';
+		$title = 'Heading Café 😀 中文 Кириллица';
 		$id = $this->create_announcement([
 			'board_announcements_description' => $description,
 			'board_announcements_title' => $title,

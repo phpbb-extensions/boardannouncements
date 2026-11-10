@@ -860,8 +860,17 @@ class acp_controller_test extends \phpbb_test_case
 			[0, ['add', 0, 'Announcement Text 0', 'Board index', 'ffffff', true, 0, [-1], true, '', false, false, false], false, true, true, false], // submit, board index mode
 			[0, ['add', 0, 'Announcement Text 0', 'No selected location', 'ffffff', true, 0, [], true, '', false, false, false, 'selected'], false, true, true, true], // submit, selected mode requires a location
 			[0, ['add', 0, 'Announcement Text 0', 'Invalid location mode', 'ffffff', true, 0, [], true, '', false, false, false, 'invalid'], false, true, true, true], // submit, invalid location mode
-			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Emoji 😀 heading'], false, true, true, false], // submit, emoji encoded for storage
-			[0, ['add', 0, 'Announcement Text 0', 'Unicode 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading 😀 中文 Кириллица'], false, true, true, false, true, 'mssqlnative'], // submit, all Unicode encoded for MSSQL
+			'four-byte Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false],
+			'MSSQL native Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false, true, 'mssqlnative'],
+			'MSSQL ODBC Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false, true, 'mssql_odbc'],
+			'four-byte Unicode at storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 246) . '😀', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false],
+			'four-byte Unicode over storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 247) . '😀', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true],
+			'four-byte Unicode title at storage limit' => [0, ['add', 0, 'Announcement Text 0', 'Description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', str_repeat('a', 246) . '😀'], false, true, true, false],
+			'four-byte Unicode title over storage limit' => [0, ['add', 0, 'Announcement Text 0', 'Description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', str_repeat('a', 247) . '😀'], false, true, true, true],
+			'MSSQL BMP Unicode at storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 249) . 'é', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, true, 'mssqlnative'],
+			'MSSQL BMP Unicode over storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 250) . 'é', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true, true, 'mssqlnative'],
+			'MSSQL BMP Unicode title at storage limit' => [0, ['add', 0, 'Announcement Text 0', 'Description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', str_repeat('a', 249) . 'é'], false, true, true, false, true, 'mssqlnative'],
+			'MSSQL BMP Unicode title over storage limit' => [0, ['add', 0, 'Announcement Text 0', 'Description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', str_repeat('a', 250) . 'é'], false, true, true, true, true, 'mssqlnative'],
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, false], // submit, announcement deleted before update
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, false, true], // submit, bad form
@@ -901,6 +910,7 @@ class acp_controller_test extends \phpbb_test_case
 		$encode_unicode = strpos($sql_layer, 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
 		$expected_description = $encode_unicode($form[3]);
 		$expected_title = $encode_unicode($form[14] ?? '');
+		$expected_log_label = utf8_encode_ncr($expected_description !== '' ? $expected_description : $form[2]);
 		$creation_timestamp = 1234567890;
 		$expected_bgcolor = ltrim($form[4], '#');
 		$expected_flags = ($form[10] ? 0 : OPTION_FLAG_BBCODE)
@@ -1003,7 +1013,7 @@ class acp_controller_test extends \phpbb_test_case
 				self::anything(),
 				$id ? 'BOARD_ANNOUNCEMENTS_UPDATED_LOG' : 'BOARD_ANNOUNCEMENTS_CREATED_LOG',
 				self::anything(),
-				[$expected_description !== '' ? $expected_description : $form[2]]
+				[$expected_log_label]
 			);
 		}
 
@@ -1220,9 +1230,13 @@ class acp_controller_test extends \phpbb_test_case
 			'described announcement' => ['Maintenance', 'Copy of Maintenance'],
 			'undescribed announcement' => ['', 'Copy of Untitled announcement'],
 			'long description' => [str_repeat('x', 255), 'Copy of ' . str_repeat('x', 247)],
+			'Unicode' => [utf8_encode_ucr('Café 😀 中文 Кириллица'), utf8_encode_ucr('Copy of Café 😀 中文 Кириллица')],
 			'encoded emoji' => ['Launch &#128512;', 'Copy of Launch &#128512;'],
-			'encoded emoji at storage limit' => [str_repeat('x', 240) . '&#128512;', 'Copy of ' . str_repeat('x', 240)],
-			'mssql unicode' => [utf8_encode_ncr('Тест'), utf8_encode_ncr('Copy of Тест'), 'mssql'],
+			'encoded emoji truncated as one character' => [str_repeat('x', 240) . '&#128512;', 'Copy of ' . str_repeat('x', 240)],
+			'MSSQL native Unicode' => [utf8_encode_ncr('Café Тест'), utf8_encode_ncr('Copy of Café Тест'), 'mssqlnative'],
+			'MSSQL ODBC Unicode' => [utf8_encode_ncr('Café Тест'), utf8_encode_ncr('Copy of Café Тест'), 'mssql_odbc'],
+			'MSSQL BMP character at storage limit' => [str_repeat('x', 241) . utf8_encode_ncr('é'), 'Copy of ' . str_repeat('x', 241) . utf8_encode_ncr('é'), 'mssqlnative'],
+			'MSSQL BMP NCR truncated as one character' => [str_repeat('x', 242) . utf8_encode_ncr('é'), 'Copy of ' . str_repeat('x', 242), 'mssqlnative'],
 		];
 	}
 
