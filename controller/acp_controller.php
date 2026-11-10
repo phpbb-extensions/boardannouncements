@@ -26,6 +26,12 @@ use phpbb\user;
 
 class acp_controller
 {
+	/** Maximum stored length for announcement metadata. */
+	protected const METADATA_MAX_LENGTH = 255;
+
+	/** Maximum displayed length when announcement content supplies the label. */
+	protected const CONTENT_LABEL_MAX_LENGTH = 20;
+
 	/** @var manager */
 	protected $manager;
 
@@ -120,11 +126,21 @@ class acp_controller
 	 */
 	public function mode_manage()
 	{
-		// Trigger specific action
+		$actions = [
+			'add'		=> [$this, 'action_add'],
+			'preview'	=> [$this, 'action_preview'],
+			'delete'	=> [$this, 'action_delete'],
+			'move'		=> [$this, 'action_move'],
+			'settings'	=> [$this, 'action_settings'],
+			'archive'	=> [$this, 'action_archive'],
+			'reset'		=> [$this, 'action_reset'],
+			'duplicate'	=> [$this, 'action_duplicate'],
+			'bulk'		=> [$this, 'action_bulk'],
+		];
 		$action = $this->request->variable('action', '');
-		if (in_array($action, ['add', 'preview', 'delete', 'move', 'settings', 'archive', 'reset', 'duplicate', 'bulk']))
+		if (isset($actions[$action]))
 		{
-			$this->{'action_' . $action}();
+			$actions[$action]();
 		}
 		else
 		{
@@ -142,7 +158,7 @@ class acp_controller
 	{
 		$status_filter = $this->request->variable('status', ext::STATUS_ALL);
 		$query = trim($this->request->variable('q', '', true));
-		$normalized_query = utf8_strtolower($query);
+		$normalized_query = utf8_strtolower($this->decode_stored_text($query));
 		if (!in_array($status_filter, ext::FILTER_STATUSES, true))
 		{
 			$status_filter = ext::STATUS_ALL;
@@ -160,7 +176,7 @@ class acp_controller
 			{
 				continue;
 			}
-			$search_text = utf8_decode_ncr(implode(' ', [
+			$search_text = $this->decode_stored_text(implode(' ', [
 				$row['announcement_description'],
 				$row['announcement_title'],
 				$row['announcement_text'],
@@ -173,7 +189,7 @@ class acp_controller
 
 			$this->template->assign_block_vars('announcements' , [
 				'ID'           => $row['announcement_id'],
-				'DESCRIPTION'  => $this->get_list_label($row),
+				'DESCRIPTION'  => $this->get_announcement_label($row),
 				'STATUS'       => $status,
 				'TONE'         => $row['announcement_tone'],
 				'USERS'        => $row['announcement_users'],
@@ -183,7 +199,7 @@ class acp_controller
 				'S_EXPIRED'    => $status === ext::STATUS_EXPIRED,
 				'S_ENABLED'    => $status === ext::STATUS_ACTIVE || $status === ext::STATUS_SCHEDULED,
 				'S_ARCHIVED'   => $status === ext::STATUS_ARCHIVED,
-				'DISMISSABLE'  => (bool) $row['announcement_dismissable'],
+				'S_CAN_SHOW_AGAIN' => $this->can_show_again($row),
 				'LOCATIONS'    => $this->manager->decode_json($row['announcement_locations']),
 				'S_MOVE_UP_DISABLED' => $filters_active || $index === 0,
 				'S_MOVE_DOWN_DISABLED' => $filters_active || $index === $last_index,
@@ -317,17 +333,15 @@ class acp_controller
 				$data['announcement_created_by'] = (int) $this->user->data['user_id'];
 			}
 
-			// MSSQL requires all Unicode to be encoded; other DBMS only require four-byte Unicode.
-			$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
 			foreach (['announcement_description', 'announcement_title'] as $field)
 			{
-				$data[$field] = $encode_unicode($data[$field]);
+				$data[$field] = $this->encode_unicode_for_storage($data[$field]);
 			}
-			if (utf8_strlen($data['announcement_description']) > 255)
+			if (utf8_strlen($data['announcement_description']) > self::METADATA_MAX_LENGTH)
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_DESC_TOO_LONG');
 			}
-			if (utf8_strlen($data['announcement_title']) > 255)
+			if (utf8_strlen($data['announcement_title']) > self::METADATA_MAX_LENGTH)
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TITLE_TOO_LONG');
 			}
@@ -356,21 +370,18 @@ class acp_controller
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TEXT_INVALID');
 			}
 
-			// Special handling for the expiration date, convert from date string to timestamp
-			if ($data['announcement_expiry'] !== '')
+			$expiry = $this->parse_date($data['announcement_expiry'], $errors, 'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+			$data['announcement_expiry'] = $expiry;
+
+			if ($expiry)
 			{
-				$data['announcement_expiry'] = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $data['announcement_expiry']);
-				if (!$data['announcement_expiry']
-					|| ($data['announcement_start'] && $data['announcement_expiry'] <= $data['announcement_start'])
-					|| ($data['announcement_state'] === ext::STATUS_PUBLISHED && $data['announcement_expiry'] < time())
-				)
+				$expires_at_or_before_start = $data['announcement_start'] && $expiry <= $data['announcement_start'];
+				$published_with_past_expiry = $data['announcement_state'] === ext::STATUS_PUBLISHED && $expiry < time();
+
+				if ($expires_at_or_before_start || $published_with_past_expiry)
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
 				}
-			}
-			else
-			{
-				$data['announcement_expiry'] = 0;
 			}
 
 			// Locations array should be json encoded for storage in the DB
@@ -397,12 +408,12 @@ class acp_controller
 						$this->error('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
 					}
 
-					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $this->get_list_label($data));
+					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $this->get_announcement_label($data));
 				}
 				else
 				{
 					$this->manager->save_announcement($data, $selected_groups);
-					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $this->get_list_label($data));
+					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $this->get_announcement_label($data));
 				}
 
 				// Output message to user for the announcement update
@@ -543,7 +554,12 @@ class acp_controller
 	protected function action_archive()
 	{
 		$id = $this->request->variable('id', 0);
-		if (!$this->check_hash('archive' . $id) || !$this->manager->update_announcement($id, [
+		if (!$this->check_hash('archive' . $id))
+		{
+			$this->error('FORM_INVALID');
+		}
+
+		if (!$this->manager->update_announcement($id, [
 			'announcement_state' => ext::STATUS_ARCHIVED,
 			'announcement_enabled' => 0,
 			'announcement_updated_at' => time(),
@@ -552,6 +568,7 @@ class acp_controller
 		{
 			$this->error('FORM_INVALID');
 		}
+
 		$this->success('BOARD_ANNOUNCEMENTS_ARCHIVED');
 	}
 
@@ -564,10 +581,27 @@ class acp_controller
 	protected function action_reset()
 	{
 		$id = $this->request->variable('id', 0);
-		if (!$this->check_hash('reset' . $id) || !$this->manager->show_announcement_again($id))
+		if (!$this->check_hash('reset' . $id))
 		{
 			$this->error('FORM_INVALID');
 		}
+
+		$announcement = $this->manager->get_announcement($id);
+		if (!$announcement)
+		{
+			$this->error('FORM_INVALID');
+		}
+
+		if (!$this->can_show_again(array_replace($this->announcement_defaults(), $announcement)))
+		{
+			$this->error('FORM_INVALID');
+		}
+
+		if (!$this->manager->show_announcement_again($id))
+		{
+			$this->error('FORM_INVALID');
+		}
+
 		$this->success('BOARD_ANNOUNCEMENTS_SHOWN_AGAIN');
 	}
 
@@ -586,13 +620,17 @@ class acp_controller
 			$this->error('FORM_INVALID');
 		}
 		unset($data['announcement_id']);
-		$description = $data['announcement_description'] ?: $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
-		$data['announcement_description'] = truncate_string(
-			$this->language->lang('BOARD_ANNOUNCEMENTS_COPY_OF', $description),
-			255,
-			255,
-			false
-		);
+		$description = $data['announcement_description'] !== ''
+			? $this->decode_stored_text($data['announcement_description'])
+			: $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
+		$description = $this->language->lang('BOARD_ANNOUNCEMENTS_COPY_OF', $description);
+		$stored_description = $this->encode_unicode_for_storage(utf8_htmlspecialchars($description));
+		while (utf8_strlen($stored_description) > self::METADATA_MAX_LENGTH)
+		{
+			$description = utf8_substr($description, 0, -1);
+			$stored_description = $this->encode_unicode_for_storage(utf8_htmlspecialchars($description));
+		}
+		$data['announcement_description'] = $stored_description;
 		$data['announcement_state'] = ext::STATUS_DRAFT;
 		$data['announcement_enabled'] = 0;
 		$data['announcement_revision'] = 1;
@@ -648,7 +686,7 @@ class acp_controller
 				}
 				if ($success)
 				{
-					$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_list_label(array_replace($this->announcement_defaults(), $announcement)));
+					$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_announcement_label(array_replace($this->announcement_defaults(), $announcement)));
 				}
 				continue;
 			}
@@ -694,7 +732,7 @@ class acp_controller
 			}
 			else
 			{
-				$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_list_label(array_replace($this->announcement_defaults(), $announcement)));
+				$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_announcement_label(array_replace($this->announcement_defaults(), $announcement)));
 
 				if ($this->request->is_ajax())
 				{
@@ -818,13 +856,13 @@ class acp_controller
 	/**
 	 * Add operations to the system log
 	 *
-	 * @param string $msg Log message language key
-	 * @param string $params Log message parameter
+	 * @param string $log_operation Log operation language key
+	 * @param string $announcement_label Human-readable announcement label
 	 * @return void
 	 */
-	protected function log_change($msg, $params)
+	protected function log_change($log_operation, $announcement_label)
 	{
-		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $msg, time(), [$params]);
+		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $log_operation, time(), [utf8_encode_ncr($announcement_label)]);
 	}
 
 	/**
@@ -837,7 +875,7 @@ class acp_controller
 	{
 		$selected = !empty($locations) ? $this->manager->decode_json($locations) : [];
 
-		$forum_list = (array) make_forum_select($selected, false, false, false, false, false, true);
+		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
 		foreach ($forum_list as &$forum)
 		{
 			$forum['depth'] = substr_count($forum['padding'], '&nbsp; &nbsp;');
@@ -905,12 +943,24 @@ class acp_controller
 	}
 
 	/**
-	 * Get the announcement label displayed in ACP lists and logs.
+	 * Check whether dismissals can be reset for an announcement.
 	 *
 	 * @param array $row Announcement data
-	 * @return string Announcement label
+	 * @return bool True when the announcement is active and dismissable
 	 */
-	protected function get_list_label(array $row)
+	protected function can_show_again(array $row)
+	{
+		return !empty($row['announcement_dismissable'])
+			&& $this->get_status($row) === ext::STATUS_ACTIVE;
+	}
+
+	/**
+	 * Get the HTML-safe announcement label displayed in ACP lists and logs.
+	 *
+	 * @param array $row Announcement data
+	 * @return string HTML-safe announcement label
+	 */
+	protected function get_announcement_label(array $row)
 	{
 		if ($row['announcement_description'] !== '')
 		{
@@ -921,18 +971,48 @@ class acp_controller
 			return $row['announcement_title'];
 		}
 
-		$description = $row['announcement_text'];
-		strip_bbcode($description, $row['announcement_uid']);
-		$description = trim(preg_replace('/\s+/u', ' ', utf8_decode_ncr($description)));
-		if ($description === '')
+		$label = $row['announcement_text'];
+		strip_bbcode($label, $row['announcement_uid']);
+		$label = $this->decode_stored_text($label);
+		$label = trim(preg_replace('/\s+/u', ' ', $label));
+		if ($label === '')
 		{
 			return $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
 		}
 
-		$truncated = utf8_strlen(html_entity_decode($description, ENT_COMPAT)) > 20;
-		$description = truncate_string($description, 20, 255, false);
+		$truncated = utf8_strlen($label) > self::CONTENT_LABEL_MAX_LENGTH;
+		$label = utf8_htmlspecialchars(utf8_substr($label, 0, self::CONTENT_LABEL_MAX_LENGTH));
 
-		return $description . ($truncated ? $this->language->lang('ELLIPSIS') : '');
+		return $label . ($truncated ? $this->language->lang('ELLIPSIS') : '');
+	}
+
+	/**
+	 * Decode HTML-safe, Unicode-encoded text into plain Unicode.
+	 *
+	 * @param string $stored_text Encoded request or database text
+	 * @return string Plain Unicode text
+	 */
+	protected function decode_stored_text($stored_text)
+	{
+		return htmlspecialchars_decode(utf8_decode_ncr($stored_text), ENT_COMPAT);
+	}
+
+	/**
+	 * Encode Unicode characters that cannot be stored safely by the DBMS.
+	 *
+	 * phpBB's DBAL emits unprefixed string literals. MSSQL may convert BMP
+	 * characters through the database code page before storing them in a
+	 * nvarchar column, so all non-ASCII characters must be encoded there.
+	 * Other DBMSes only require four-byte Unicode characters to be encoded.
+	 *
+	 * @param string $text HTML-safe text
+	 * @return string Unicode-encoded text
+	 */
+	protected function encode_unicode_for_storage($text)
+	{
+		return strpos($this->db->get_sql_layer(), 'mssql') === 0
+			? utf8_encode_ncr($text)
+			: utf8_encode_ucr($text);
 	}
 
 	/**
@@ -950,9 +1030,11 @@ class acp_controller
 			return 0;
 		}
 		$timestamp = (int) $this->user->get_timestamp_from_format(ext::DATE_FORMAT, $value);
-		if (!$timestamp)
+		$parse_errors = \DateTime::getLastErrors();
+		if (!$timestamp || ($parse_errors !== false && ($parse_errors['warning_count'] || $parse_errors['error_count'])))
 		{
 			$errors[] = $this->language->lang($error_key);
+			return 0;
 		}
 		return $timestamp;
 	}

@@ -170,8 +170,13 @@ class acp_controller_test extends \phpbb_test_case
 			['delete', 'action_delete'],
 			['move', 'action_move'],
 			['settings', 'action_settings'],
+			['archive', 'action_archive'],
+			['reset', 'action_reset'],
+			['duplicate', 'action_duplicate'],
+			['bulk', 'action_bulk'],
 			['', 'list_announcements'],
 			[null, 'list_announcements'],
+			['unknown', 'list_announcements'],
 		];
 	}
 
@@ -183,7 +188,18 @@ class acp_controller_test extends \phpbb_test_case
 	public function test_mode_manage($action, $expected)
 	{
 		$controller = $this->getMockBuilder('\phpbb\boardannouncements\controller\acp_controller')
-			->onlyMethods(['action_add', 'action_preview', 'action_delete', 'action_move', 'action_settings', 'list_announcements'])
+			->onlyMethods([
+				'action_add',
+				'action_preview',
+				'action_delete',
+				'action_move',
+				'action_settings',
+				'action_archive',
+				'action_reset',
+				'action_duplicate',
+				'action_bulk',
+				'list_announcements',
+			])
 			->setConstructorArgs([
 				$this->manager,
 				$this->db,
@@ -225,6 +241,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_id'			=> 1,
 				'announcement_description'	=> '',
 				'announcement_enabled'		=> 1,
+				'announcement_state'		=> ext::STATUS_PUBLISHED,
 				'announcement_timestamp'	=> 734284394,
 				'announcement_expiry'		=> 0,
 				'announcement_locations'	=> '',
@@ -236,6 +253,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_id'			=> 2,
 				'announcement_description'	=> '',
 				'announcement_enabled'		=> 1,
+				'announcement_state'		=> ext::STATUS_PUBLISHED,
 				'announcement_timestamp'	=> 797442794,
 				'announcement_expiry'		=> 0,
 				'announcement_locations'	=> '[-1,1]',
@@ -245,6 +263,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_id'			=> 3,
 				'announcement_description'	=> '',
 				'announcement_enabled'		=> 1,
+				'announcement_state'		=> ext::STATUS_PUBLISHED,
 				'announcement_timestamp'	=> 681493994,
 				'announcement_expiry'		=> 1644162794,
 				'announcement_locations'	=> '[]',
@@ -261,7 +280,7 @@ class acp_controller_test extends \phpbb_test_case
 			function ($data) use ($rows) {
 				return $data['DESCRIPTION'] === 'BOARD_ANNOUNCEMENTS_UNTITLED'
 					&& $data['TONE'] === ''
-					&& !$data['DISMISSABLE']
+					&& !$data['S_CAN_SHOW_AGAIN']
 					&& $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], ext::DATE_FORMAT)
 					&& $data['EXPIRY_DATE'] === ''
 					&& $data['S_MOVE_UP_DISABLED']
@@ -269,7 +288,7 @@ class acp_controller_test extends \phpbb_test_case
 			},
 			function ($data) use ($rows) {
 				return $data['TONE'] === ext::TONE_INFO
-					&& $data['DISMISSABLE']
+					&& $data['S_CAN_SHOW_AGAIN']
 					&& $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], ext::DATE_FORMAT)
 					&& $data['EXPIRY_DATE'] === ''
 					&& !$data['S_MOVE_UP_DISABLED']
@@ -278,17 +297,19 @@ class acp_controller_test extends \phpbb_test_case
 			function ($data) use ($rows) {
 				return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], ext::DATE_FORMAT)
 					&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], ext::DATE_FORMAT)
+					&& !$data['S_CAN_SHOW_AGAIN']
 					&& !$data['S_MOVE_UP_DISABLED']
 					&& $data['S_MOVE_DOWN_DISABLED'];
 			},
 		];
 		$this->template->expects(self::exactly(3))
 			->method('assign_block_vars')
-			->willReturnCallback(function ($block, $data) use (&$assignment, $assignment_checks) {
-				self::assertSame('announcements', $block);
-				self::assertTrue($assignment_checks[$assignment]($data));
-				$assignment++;
-			});
+			->with(
+				'announcements',
+				self::callback(function ($data) use (&$assignment, $assignment_checks) {
+					return $assignment_checks[$assignment++]($data);
+				})
+			);
 
 		$this->template->expects(self::once())
 			->method('assign_vars')
@@ -406,13 +427,42 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	/**
-	 * @dataProvider list_label_data
-	 */
-	public function test_list_label(array $row, $expected)
+	public function test_list_announcements_searches_decoded_entities()
 	{
 		$controller = $this->get_controller();
-		$method = new \ReflectionMethod($controller, 'get_list_label');
+		$rows = [[
+			'announcement_id' => 1,
+			'announcement_description' => 'Fish &amp; Chips',
+			'announcement_title' => '',
+			'announcement_text' => '',
+			'announcement_enabled' => true,
+			'announcement_state' => ext::STATUS_PUBLISHED,
+		]];
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => '', 'status' => ext::STATUS_ALL, 'q' => 'Fish &amp; Chips'][$name] ?? $default;
+		});
+		$this->manager->expects(self::once())->method('get_announcements')->willReturn($rows);
+		$this->template->expects(self::once())
+			->method('assign_block_vars')
+			->with('announcements', self::callback(static function ($data) {
+				return $data['ID'] === 1;
+			}));
+		$this->template->expects(self::once())
+			->method('assign_vars')
+			->with(self::callback(static function ($data) {
+				return $data['S_SEARCH_QUERY'] === 'Fish &amp; Chips';
+			}));
+
+		$controller->mode_manage();
+	}
+
+	/**
+	 * @dataProvider announcement_label_data
+	 */
+	public function test_announcement_label(array $row, $expected)
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_announcement_label');
 		$method->setAccessible(true);
 
 		self::assertSame($expected, $method->invoke($controller, array_replace([
@@ -423,20 +473,24 @@ class acp_controller_test extends \phpbb_test_case
 		], $row)));
 	}
 
-	public static function list_label_data()
+	public static function announcement_label_data()
 	{
 		return [
 			'description is preserved' => [
-				['announcement_description' => 'Administrator summary', 'announcement_text' => 'Ignored message'],
-				'Administrator summary',
+				['announcement_description' => 'Café &amp; Tea', 'announcement_text' => 'Ignored message'],
+				'Café &amp; Tea',
 			],
 			'short message' => [
 				['announcement_text' => 'Short message'],
 				'Short message',
 			],
-			'long formatted message' => [
+			'formatted message is truncated' => [
 				['announcement_text' => '[b:abcde]Maintenance tonight at 10 PM[/b:abcde]', 'announcement_uid' => 'abcde'],
 				'Maintenance tonight …',
+			],
+			'html entity is not split' => [
+				['announcement_text' => str_repeat('A', 19) . '&amp;B'],
+				str_repeat('A', 19) . '&amp;…',
 			],
 			'title takes priority over message' => [
 				['announcement_title' => 'Public title', 'announcement_text' => 'Ignored message'],
@@ -447,6 +501,77 @@ class acp_controller_test extends \phpbb_test_case
 				'BOARD_ANNOUNCEMENTS_UNTITLED',
 			],
 		];
+	}
+
+	public function test_announcement_label_truncates_only_content()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_announcement_label');
+		$method->setAccessible(true);
+		$label = 'Café 😀 中文 Кириллица&&&&&';
+		$defaults = [
+			'announcement_description' => '',
+			'announcement_title' => '',
+			'announcement_text' => '',
+			'announcement_uid' => '',
+		];
+
+		foreach ([
+			'description' => [
+				['announcement_description' => utf8_htmlspecialchars($label)],
+				utf8_htmlspecialchars($label),
+			],
+			'title' => [
+				['announcement_title' => utf8_htmlspecialchars($label)],
+				utf8_htmlspecialchars($label),
+			],
+			'content' => [
+				['announcement_text' => utf8_htmlspecialchars($label)],
+				'Café 😀 中文 Кириллица&amp;…',
+			],
+		] as $source => [$row, $expected])
+		{
+			self::assertSame($expected, $method->invoke($controller, array_replace($defaults, $row)), $source);
+		}
+	}
+
+	public function test_announcement_label_does_not_truncate_exact_limit()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_announcement_label');
+		$method->setAccessible(true);
+
+		self::assertSame('Café 😀 中文 Кириллица&amp;', $method->invoke($controller, [
+			'announcement_description' => '',
+			'announcement_title' => '',
+			'announcement_text' => 'Café 😀 中文 Кириллица&amp;',
+			'announcement_uid' => '',
+		]));
+	}
+
+	public function test_announcement_label_preserves_trusted_language_strings()
+	{
+		$this->language = $this->getMockBuilder('\phpbb\language\language')
+			->disableOriginalConstructor()
+			->onlyMethods(['add_lang', 'lang'])
+			->getMock();
+		$this->language->method('lang')->willReturnCallback(static function ($key) {
+			return $key === 'BOARD_ANNOUNCEMENTS_UNTITLED' ? 'Untitled & ready' : '&hellip;';
+		});
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_announcement_label');
+		$method->setAccessible(true);
+		$defaults = [
+			'announcement_description' => '',
+			'announcement_title' => '',
+			'announcement_text' => '',
+			'announcement_uid' => '',
+		];
+
+		self::assertSame('Untitled & ready', $method->invoke($controller, $defaults));
+		self::assertSame(str_repeat('A', 20) . '&hellip;', $method->invoke($controller, array_replace($defaults, [
+			'announcement_text' => str_repeat('A', 21),
+		])));
 	}
 
 	public function test_list_announcements_rejects_unknown_status_filter()
@@ -560,6 +685,30 @@ class acp_controller_test extends \phpbb_test_case
 		];
 	}
 
+	/**
+	 * @dataProvider show_again_eligibility_data
+	 */
+	public function test_show_again_eligibility(array $row, $expected)
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'can_show_again');
+		$method->setAccessible(true);
+
+		self::assertSame($expected, $method->invoke($controller, $row));
+	}
+
+	public static function show_again_eligibility_data()
+	{
+		return [
+			'active and dismissable' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_dismissable' => 1], true],
+			'active and not dismissable' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_dismissable' => 0], false],
+			'draft' => [['announcement_state' => ext::STATUS_DRAFT, 'announcement_enabled' => 0, 'announcement_dismissable' => 1], false],
+			'scheduled' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_dismissable' => 1, 'announcement_start' => time() + 3600], false],
+			'expired' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_dismissable' => 1, 'announcement_expiry' => time() - 3600], false],
+			'archived' => [['announcement_state' => ext::STATUS_ARCHIVED, 'announcement_enabled' => 0, 'announcement_dismissable' => 1], false],
+		];
+	}
+
 	public function test_parse_date_reports_invalid_input()
 	{
 		$controller = $this->get_controller();
@@ -569,6 +718,47 @@ class acp_controller_test extends \phpbb_test_case
 
 		self::assertSame(0, $method->invokeArgs($controller, ['invalid', &$errors, 'BOARD_ANNOUNCEMENTS_START_INVALID']));
 		self::assertSame([$this->language->lang('BOARD_ANNOUNCEMENTS_START_INVALID')], $errors);
+	}
+
+	public function test_parse_date_reports_invalid_calendar_date()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'parse_date');
+		$method->setAccessible(true);
+		$errors = [];
+
+		self::assertSame(0, $method->invokeArgs($controller, ['2030-02-31 12:00', &$errors, 'BOARD_ANNOUNCEMENTS_START_INVALID']));
+		self::assertSame([$this->language->lang('BOARD_ANNOUNCEMENTS_START_INVALID')], $errors);
+	}
+
+	public function test_parse_date_accepts_valid_leap_date()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'parse_date');
+		$method->setAccessible(true);
+		$errors = [];
+
+		self::assertSame(1961668800, $method->invokeArgs($controller, ['2032-02-29 12:00', &$errors, 'BOARD_ANNOUNCEMENTS_START_INVALID']));
+		self::assertSame([], $errors);
+	}
+
+	public function test_log_change_encodes_unicode_for_storage()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'log_change');
+		$method->setAccessible(true);
+		$this->log->expects(self::once())
+			->method('add')
+			->with(
+				'admin',
+				2,
+				self::anything(),
+				'BOARD_ANNOUNCEMENTS_CREATED_LOG',
+				self::isType('int'),
+				['Hello &#128075; Nurse! How A&#8230;']
+			);
+
+		$method->invoke($controller, 'BOARD_ANNOUNCEMENTS_CREATED_LOG', 'Hello 👋 Nurse! How A…');
 	}
 
 	public static function location_mode_data()
@@ -719,7 +909,10 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function test_action_add_reports_invalid_v2_fields()
+	/**
+	 * @dataProvider invalid_expiry_data
+	 */
+	public function test_action_add_reports_invalid_v2_fields($expiry)
 	{
 		self::$valid_form = true;
 		$controller = $this->get_controller();
@@ -738,7 +931,7 @@ class acp_controller_test extends \phpbb_test_case
 			'board_announcements_locations' => [],
 			'board_announcements_dismiss' => true,
 			'board_announcements_start' => '2030-01-02 00:00',
-			'board_announcements_expiry' => '2030-01-01 00:00',
+			'board_announcements_expiry' => $expiry,
 		];
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($values) {
 			return array_key_exists($name, $values) ? $values[$name] : $default;
@@ -761,6 +954,14 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
+	public static function invalid_expiry_data()
+	{
+		return [
+			'expiry before start' => ['2030-01-01 00:00'],
+			'invalid calendar date' => ['2030-02-31 00:00'],
+		];
+	}
+
 	/**
 	 * Test data for test_action_add
 	 *
@@ -777,8 +978,18 @@ class acp_controller_test extends \phpbb_test_case
 			[0, ['add', 0, 'Announcement Text 0', 'Board index', 'ffffff', true, 0, [-1], true, '', false, false, false], false, true, true, false], // submit, board index mode
 			[0, ['add', 0, 'Announcement Text 0', 'No selected location', 'ffffff', true, 0, [], true, '', false, false, false, 'selected'], false, true, true, true], // submit, selected mode requires a location
 			[0, ['add', 0, 'Announcement Text 0', 'Invalid location mode', 'ffffff', true, 0, [], true, '', false, false, false, 'invalid'], false, true, true, true], // submit, invalid location mode
-			[0, ['add', 0, 'Announcement Text 0', 'Emoji 😀 description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Emoji 😀 heading'], false, true, true, false], // submit, emoji encoded for storage
-			[0, ['add', 0, 'Announcement Text 0', 'Unicode 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading 😀 中文 Кириллица'], false, true, true, false, true, 'mssqlnative'], // submit, all Unicode encoded for MSSQL
+			'four-byte Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false],
+			'HTML-safe metadata storage' => [0, ['add', 0, 'Announcement Text 0', 'Fish &amp; &quot;Chips&quot; &lt;hot&gt;', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Title &amp; &quot;Subtitle&quot;'], false, true, true, false],
+			'MSSQL native Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false, true, 'mssqlnative'],
+			'MSSQL ODBC Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false, true, 'mssql_odbc'],
+			'four-byte Unicode at storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 246) . '😀', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false],
+			'four-byte Unicode over storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 247) . '😀', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true],
+			'four-byte Unicode title at storage limit' => [0, ['add', 0, 'Announcement Text 0', 'Description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', str_repeat('a', 246) . '😀'], false, true, true, false],
+			'four-byte Unicode title over storage limit' => [0, ['add', 0, 'Announcement Text 0', 'Description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', str_repeat('a', 247) . '😀'], false, true, true, true],
+			'MSSQL BMP Unicode at storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 249) . 'é', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, true, 'mssqlnative'],
+			'MSSQL BMP Unicode over storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 250) . 'é', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, true, true, 'mssqlnative'],
+			'MSSQL BMP Unicode title at storage limit' => [0, ['add', 0, 'Announcement Text 0', 'Description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', str_repeat('a', 249) . 'é'], false, true, true, false, true, 'mssqlnative'],
+			'MSSQL BMP Unicode title over storage limit' => [0, ['add', 0, 'Announcement Text 0', 'Description', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', str_repeat('a', 250) . 'é'], false, true, true, true, true, 'mssqlnative'],
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false], // submit
 			[1, ['add', 1, 'Announcement Text 1', 'Announcement Description 1', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false, false], // submit, announcement deleted before update
 			[0, ['add', 0, 'Announcement Text 0', 'Announcement Description 0', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, false, true], // submit, bad form
@@ -818,6 +1029,23 @@ class acp_controller_test extends \phpbb_test_case
 		$encode_unicode = strpos($sql_layer, 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
 		$expected_description = $encode_unicode($form[3]);
 		$expected_title = $encode_unicode($form[14] ?? '');
+		if ($expected_description !== '')
+		{
+			$expected_log_label = utf8_encode_ncr($expected_description);
+		}
+		else if ($expected_title !== '')
+		{
+			$expected_log_label = utf8_encode_ncr($expected_title);
+		}
+		else
+		{
+			$plain_log_label = $form[2];
+			if (utf8_strlen($plain_log_label) > 20)
+			{
+				$plain_log_label = utf8_substr($plain_log_label, 0, 20) . $this->language->lang('ELLIPSIS');
+			}
+			$expected_log_label = utf8_encode_ncr(utf8_htmlspecialchars($plain_log_label));
+		}
 		$creation_timestamp = 1234567890;
 		$expected_bgcolor = ltrim($form[4], '#');
 		$expected_flags = ($form[10] ? 0 : OPTION_FLAG_BBCODE)
@@ -924,7 +1152,7 @@ class acp_controller_test extends \phpbb_test_case
 				self::anything(),
 				$id ? 'BOARD_ANNOUNCEMENTS_UPDATED_LOG' : 'BOARD_ANNOUNCEMENTS_CREATED_LOG',
 				self::anything(),
-				[$expected_description !== '' ? $expected_description : $form[2]]
+				[$expected_log_label]
 			);
 		}
 
@@ -1042,10 +1270,11 @@ class acp_controller_test extends \phpbb_test_case
 	/**
 	 * @dataProvider reset_action_data
 	 */
-	public function test_reset_action($valid_hash, $reset)
+	public function test_reset_action($valid_hash, $announcement, $reset, $should_reset)
 	{
 		$controller = $this->get_controller();
-		$this->setExpectedTriggerError($valid_hash && $reset ? E_USER_NOTICE : E_USER_WARNING, $valid_hash && $reset ? 'BOARD_ANNOUNCEMENTS_SHOWN_AGAIN' : 'The submitted form was invalid. Try submitting again.');
+		$success = $should_reset && $reset;
+		$this->setExpectedTriggerError($success ? E_USER_NOTICE : E_USER_WARNING, $success ? 'BOARD_ANNOUNCEMENTS_SHOWN_AGAIN' : 'The submitted form was invalid. Try submitting again.');
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($valid_hash) {
 			return [
 				'action' => 'reset',
@@ -1054,6 +1283,10 @@ class acp_controller_test extends \phpbb_test_case
 			][$name] ?? $default;
 		});
 		$this->manager->expects($valid_hash ? self::once() : self::never())
+			->method('get_announcement')
+			->with(7)
+			->willReturn($announcement);
+		$this->manager->expects($should_reset ? self::once() : self::never())
 			->method('show_announcement_again')
 			->with(7)
 			->willReturn($reset);
@@ -1063,18 +1296,27 @@ class acp_controller_test extends \phpbb_test_case
 
 	public static function reset_action_data()
 	{
+		$active = [
+			'announcement_state' => ext::STATUS_PUBLISHED,
+			'announcement_enabled' => 1,
+			'announcement_dismissable' => 1,
+		];
 		return [
-			'success' => [true, true],
-			'unknown announcement' => [true, false],
-			'invalid hash' => [false, false],
+			'success' => [true, $active, true, true],
+			'manager failure' => [true, $active, false, true],
+			'unknown announcement' => [true, false, false, false],
+			'draft announcement' => [true, array_replace($active, ['announcement_state' => ext::STATUS_DRAFT]), false, false],
+			'non-dismissable announcement' => [true, array_replace($active, ['announcement_dismissable' => 0]), false, false],
+			'invalid hash' => [false, false, false, false],
 		];
 	}
 
 	/**
 	 * @dataProvider duplicate_action_data
 	 */
-	public function test_duplicate_action_creates_draft_with_same_groups($description, $expected_description)
+	public function test_duplicate_action_creates_draft_with_same_groups($description, $expected_description, $sql_layer = 'mysqli')
 	{
+		$this->sql_layer = $sql_layer;
 		$this->language = $this->getMockBuilder('\phpbb\language\language')
 			->disableOriginalConstructor()
 			->onlyMethods(['add_lang', 'lang'])
@@ -1129,6 +1371,16 @@ class acp_controller_test extends \phpbb_test_case
 			'described announcement' => ['Maintenance', 'Copy of Maintenance'],
 			'undescribed announcement' => ['', 'Copy of Untitled announcement'],
 			'long description' => [str_repeat('x', 255), 'Copy of ' . str_repeat('x', 247)],
+			'Unicode' => [utf8_encode_ucr('Café 😀 中文 Кириллица'), utf8_encode_ucr('Copy of Café 😀 中文 Кириллица')],
+			'encoded emoji' => ['Launch &#128512;', 'Copy of Launch &#128512;'],
+			'encoded emoji truncated as one character' => [str_repeat('x', 240) . '&#128512;', 'Copy of ' . str_repeat('x', 240)],
+			'HTML entities' => ['Fish &amp; &quot;Chips&quot; &lt;hot&gt;', 'Copy of Fish &amp; &quot;Chips&quot; &lt;hot&gt;'],
+			'literal entity text' => ['Literal &amp;amp;', 'Copy of Literal &amp;amp;'],
+			'named entity truncated as one character' => [str_repeat('x', 244) . '&amp;', 'Copy of ' . str_repeat('x', 244)],
+			'MSSQL native Unicode' => [utf8_encode_ncr('Café Тест'), utf8_encode_ncr('Copy of Café Тест'), 'mssqlnative'],
+			'MSSQL ODBC Unicode' => [utf8_encode_ncr('Café Тест'), utf8_encode_ncr('Copy of Café Тест'), 'mssql_odbc'],
+			'MSSQL BMP character at storage limit' => [str_repeat('x', 241) . utf8_encode_ncr('é'), 'Copy of ' . str_repeat('x', 241) . utf8_encode_ncr('é'), 'mssqlnative'],
+			'MSSQL BMP NCR truncated as one character' => [str_repeat('x', 242) . utf8_encode_ncr('é'), 'Copy of ' . str_repeat('x', 242), 'mssqlnative'],
 		];
 	}
 

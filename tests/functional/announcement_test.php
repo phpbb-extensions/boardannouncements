@@ -163,7 +163,7 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	 * Re-show controls keep a fixed action slot and are disabled when dismissal is unavailable.
+	 * Re-show controls keep a fixed action slot and are disabled when unavailable.
 	 */
 	public function test_acp_reshow_action_alignment()
 	{
@@ -185,10 +185,20 @@ class announcement_test extends \phpbb_functional_test_case
 			$row = $crawler->filterXPath('//input[@name="announcement_ids[]" and @value="1"]/ancestor::tr');
 			self::assertCount(1, $row->filter('span.ba-show-again-action.is-disabled[aria-disabled="true"]'));
 			self::assertCount(0, $row->filter('a.ba-show-again-action'));
+
+			$this->db->sql_query("UPDATE phpbb_board_announcements
+				SET announcement_dismissable = 1, announcement_enabled = 0, announcement_state = 'draft'
+				WHERE announcement_id = 1");
+			$crawler = self::request('GET', $this->get_acp_page());
+			$row = $crawler->filterXPath('//input[@name="announcement_ids[]" and @value="1"]/ancestor::tr');
+			self::assertCount(1, $row->filter('span.ba-show-again-action.is-disabled[aria-disabled="true"]'));
+			self::assertCount(0, $row->filter('a.ba-show-again-action'));
 		}
 		finally
 		{
-			$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 1 WHERE announcement_id = 1');
+			$this->db->sql_query("UPDATE phpbb_board_announcements
+				SET announcement_dismissable = 1, announcement_enabled = 1, announcement_state = 'published'
+				WHERE announcement_id = 1");
 		}
 	}
 
@@ -521,8 +531,8 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 		$this->admin_login();
 
-		$description = 'Unicode 😀 中文 Кириллица announcement';
-		$title = 'Heading 😀 中文 Кириллица';
+		$description = 'Unicode Café & "quoted" 😀 中文 Кириллица announcement';
+		$title = 'Heading Café & "quoted" 😀 中文 Кириллица';
 		$id = $this->create_announcement([
 			'board_announcements_description' => $description,
 			'board_announcements_title' => $title,
@@ -537,8 +547,8 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->db->sql_freeresult($result);
 
 		$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
-		$expected_description = $encode_unicode($description);
-		$expected_title = $encode_unicode($title);
+		$expected_description = $encode_unicode(utf8_htmlspecialchars($description));
+		$expected_title = $encode_unicode(utf8_htmlspecialchars($title));
 		self::assertSame($expected_description, $stored['announcement_description']);
 		self::assertSame($expected_title, $stored['announcement_title']);
 
@@ -552,6 +562,26 @@ class announcement_test extends \phpbb_functional_test_case
 
 		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
 		self::assertStringContainsString(strip_tags($this->lang('BOARD_ANNOUNCEMENTS_CREATED_LOG', $description)), $crawler->text());
+	}
+
+	/**
+	 * Test Unicode from a generated message label can be stored in the admin log.
+	 */
+	public function test_unicode_message_label_is_logged()
+	{
+		$this->login();
+		$this->admin_login();
+
+		$this->create_announcement([
+			'board_announcements_description' => '',
+			'board_announcements_text' => 'Hello 👋 Nurse! How Are You?',
+		]);
+
+		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
+		self::assertStringContainsString(
+			strip_tags($this->lang('BOARD_ANNOUNCEMENTS_CREATED_LOG', 'Hello 👋 Nurse! How A…')),
+			$crawler->text()
+		);
 	}
 
 	/**
