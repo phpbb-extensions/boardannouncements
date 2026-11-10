@@ -366,22 +366,18 @@ class acp_controller
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TEXT_INVALID');
 			}
 
-			// Special handling for the expiration date, convert from date string to timestamp
-			if ($data['announcement_expiry'] !== '')
+			$expiry = $this->parse_date($data['announcement_expiry'], $errors, 'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
+			$data['announcement_expiry'] = $expiry;
+
+			if ($expiry)
 			{
-				$data['announcement_expiry'] = $this->parse_date($data['announcement_expiry'], $errors, 'BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
-				if ($data['announcement_expiry']
-					&& (($data['announcement_start'] && $data['announcement_expiry'] <= $data['announcement_start'])
-					|| ($data['announcement_state'] === ext::STATUS_PUBLISHED && $data['announcement_expiry'] < time())
-					)
-				)
+				$expires_at_or_before_start = $data['announcement_start'] && $expiry <= $data['announcement_start'];
+				$published_with_past_expiry = $data['announcement_state'] === ext::STATUS_PUBLISHED && $expiry < time();
+
+				if ($expires_at_or_before_start || $published_with_past_expiry)
 				{
 					$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_EXPIRY_INVALID');
 				}
-			}
-			else
-			{
-				$data['announcement_expiry'] = 0;
 			}
 
 			// Locations array should be json encoded for storage in the DB
