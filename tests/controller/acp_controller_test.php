@@ -421,6 +421,35 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
+	public function test_list_announcements_searches_decoded_entities()
+	{
+		$controller = $this->get_controller();
+		$rows = [[
+			'announcement_id' => 1,
+			'announcement_description' => 'Fish &amp; Chips',
+			'announcement_title' => '',
+			'announcement_text' => '',
+			'announcement_enabled' => true,
+			'announcement_state' => ext::STATUS_PUBLISHED,
+		]];
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
+			return ['action' => '', 'status' => ext::STATUS_ALL, 'q' => 'Fish &amp; Chips'][$name] ?? $default;
+		});
+		$this->manager->expects(self::once())->method('get_announcements')->willReturn($rows);
+		$this->template->expects(self::once())
+			->method('assign_block_vars')
+			->with('announcements', self::callback(static function ($data) {
+				return $data['ID'] === 1;
+			}));
+		$this->template->expects(self::once())
+			->method('assign_vars')
+			->with(self::callback(static function ($data) {
+				return $data['S_SEARCH_QUERY'] === 'Fish &amp; Chips';
+			}));
+
+		$controller->mode_manage();
+	}
+
 	/**
 	 * @dataProvider announcement_label_data
 	 */
@@ -442,18 +471,18 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		return [
 			'description is preserved' => [
-				['announcement_description' => 'Administrator summary', 'announcement_text' => 'Ignored message'],
-				'Administrator summary',
+				['announcement_description' => 'Café &amp; Tea', 'announcement_text' => 'Ignored message'],
+				'Café &amp; Tea',
 			],
 			'short message' => [
 				['announcement_text' => 'Short message'],
 				'Short message',
 			],
-			'long formatted message' => [
+			'formatted message is truncated' => [
 				['announcement_text' => '[b:abcde]Maintenance tonight at 10 PM[/b:abcde]', 'announcement_uid' => 'abcde'],
 				'Maintenance tonight …',
 			],
-			'html entity is preserved' => [
+			'html entity is not split' => [
 				['announcement_text' => str_repeat('A', 19) . '&amp;B'],
 				str_repeat('A', 19) . '&amp;…',
 			],
@@ -466,6 +495,77 @@ class acp_controller_test extends \phpbb_test_case
 				'BOARD_ANNOUNCEMENTS_UNTITLED',
 			],
 		];
+	}
+
+	public function test_announcement_label_truncates_only_content()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_announcement_label');
+		$method->setAccessible(true);
+		$label = 'Café 😀 中文 Кириллица&&&&&';
+		$defaults = [
+			'announcement_description' => '',
+			'announcement_title' => '',
+			'announcement_text' => '',
+			'announcement_uid' => '',
+		];
+
+		foreach ([
+			'description' => [
+				['announcement_description' => utf8_htmlspecialchars($label)],
+				utf8_htmlspecialchars($label),
+			],
+			'title' => [
+				['announcement_title' => utf8_htmlspecialchars($label)],
+				utf8_htmlspecialchars($label),
+			],
+			'content' => [
+				['announcement_text' => utf8_htmlspecialchars($label)],
+				'Café 😀 中文 Кириллица&amp;…',
+			],
+		] as $source => [$row, $expected])
+		{
+			self::assertSame($expected, $method->invoke($controller, array_replace($defaults, $row)), $source);
+		}
+	}
+
+	public function test_announcement_label_does_not_truncate_exact_limit()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_announcement_label');
+		$method->setAccessible(true);
+
+		self::assertSame('Café 😀 中文 Кириллица&amp;', $method->invoke($controller, [
+			'announcement_description' => '',
+			'announcement_title' => '',
+			'announcement_text' => 'Café 😀 中文 Кириллица&amp;',
+			'announcement_uid' => '',
+		]));
+	}
+
+	public function test_announcement_label_preserves_trusted_language_strings()
+	{
+		$this->language = $this->getMockBuilder('\phpbb\language\language')
+			->disableOriginalConstructor()
+			->setMethods(['add_lang', 'lang'])
+			->getMock();
+		$this->language->method('lang')->willReturnCallback(static function ($key) {
+			return $key === 'BOARD_ANNOUNCEMENTS_UNTITLED' ? 'Untitled & ready' : '&hellip;';
+		});
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'get_announcement_label');
+		$method->setAccessible(true);
+		$defaults = [
+			'announcement_description' => '',
+			'announcement_title' => '',
+			'announcement_text' => '',
+			'announcement_uid' => '',
+		];
+
+		self::assertSame('Untitled & ready', $method->invoke($controller, $defaults));
+		self::assertSame(str_repeat('A', 20) . '&hellip;', $method->invoke($controller, array_replace($defaults, [
+			'announcement_text' => str_repeat('A', 21),
+		])));
 	}
 
 	public function test_list_announcements_rejects_unknown_status_filter()
@@ -861,6 +961,7 @@ class acp_controller_test extends \phpbb_test_case
 			[0, ['add', 0, 'Announcement Text 0', 'No selected location', 'ffffff', true, 0, [], true, '', false, false, false, 'selected'], false, true, true, true], // submit, selected mode requires a location
 			[0, ['add', 0, 'Announcement Text 0', 'Invalid location mode', 'ffffff', true, 0, [], true, '', false, false, false, 'invalid'], false, true, true, true], // submit, invalid location mode
 			'four-byte Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false],
+			'HTML-safe metadata storage' => [0, ['add', 0, 'Announcement Text 0', 'Fish &amp; &quot;Chips&quot; &lt;hot&gt;', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Title &amp; &quot;Subtitle&quot;'], false, true, true, false],
 			'MSSQL native Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false, true, 'mssqlnative'],
 			'MSSQL ODBC Unicode storage' => [0, ['add', 0, 'Announcement Text 0', 'Café 😀 中文 Кириллица', 'ffffff', true, 0, [''], true, '', false, false, false, 'everywhere', 'Heading Café 😀 中文 Кириллица'], false, true, true, false, true, 'mssql_odbc'],
 			'four-byte Unicode at storage limit' => [0, ['add', 0, 'Announcement Text 0', str_repeat('a', 246) . '😀', 'ffffff', true, 0, [''], true, '', false, false, false], false, true, true, false],
@@ -910,7 +1011,23 @@ class acp_controller_test extends \phpbb_test_case
 		$encode_unicode = strpos($sql_layer, 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
 		$expected_description = $encode_unicode($form[3]);
 		$expected_title = $encode_unicode($form[14] ?? '');
-		$expected_log_label = utf8_encode_ncr($expected_description !== '' ? $expected_description : $form[2]);
+		if ($expected_description !== '')
+		{
+			$expected_log_label = utf8_encode_ncr($expected_description);
+		}
+		else if ($expected_title !== '')
+		{
+			$expected_log_label = utf8_encode_ncr($expected_title);
+		}
+		else
+		{
+			$plain_log_label = $form[2];
+			if (utf8_strlen($plain_log_label) > 20)
+			{
+				$plain_log_label = utf8_substr($plain_log_label, 0, 20) . $this->language->lang('ELLIPSIS');
+			}
+			$expected_log_label = utf8_encode_ncr(utf8_htmlspecialchars($plain_log_label));
+		}
 		$creation_timestamp = 1234567890;
 		$expected_bgcolor = ltrim($form[4], '#');
 		$expected_flags = ($form[10] ? 0 : OPTION_FLAG_BBCODE)
@@ -1233,6 +1350,9 @@ class acp_controller_test extends \phpbb_test_case
 			'Unicode' => [utf8_encode_ucr('Café 😀 中文 Кириллица'), utf8_encode_ucr('Copy of Café 😀 中文 Кириллица')],
 			'encoded emoji' => ['Launch &#128512;', 'Copy of Launch &#128512;'],
 			'encoded emoji truncated as one character' => [str_repeat('x', 240) . '&#128512;', 'Copy of ' . str_repeat('x', 240)],
+			'HTML entities' => ['Fish &amp; &quot;Chips&quot; &lt;hot&gt;', 'Copy of Fish &amp; &quot;Chips&quot; &lt;hot&gt;'],
+			'literal entity text' => ['Literal &amp;amp;', 'Copy of Literal &amp;amp;'],
+			'named entity truncated as one character' => [str_repeat('x', 244) . '&amp;', 'Copy of ' . str_repeat('x', 244)],
 			'MSSQL native Unicode' => [utf8_encode_ncr('Café Тест'), utf8_encode_ncr('Copy of Café Тест'), 'mssqlnative'],
 			'MSSQL ODBC Unicode' => [utf8_encode_ncr('Café Тест'), utf8_encode_ncr('Copy of Café Тест'), 'mssql_odbc'],
 			'MSSQL BMP character at storage limit' => [str_repeat('x', 241) . utf8_encode_ncr('é'), 'Copy of ' . str_repeat('x', 241) . utf8_encode_ncr('é'), 'mssqlnative'],

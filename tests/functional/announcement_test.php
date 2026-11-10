@@ -530,8 +530,8 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->login();
 		$this->admin_login();
 
-		$description = 'Unicode Café 😀 中文 Кириллица announcement';
-		$title = 'Heading Café 😀 中文 Кириллица';
+		$description = 'Unicode Café & "quoted" 😀 中文 Кириллица announcement';
+		$title = 'Heading Café & "quoted" 😀 中文 Кириллица';
 		$id = $this->create_announcement([
 			'board_announcements_description' => $description,
 			'board_announcements_title' => $title,
@@ -546,8 +546,8 @@ class announcement_test extends \phpbb_functional_test_case
 		$this->db->sql_freeresult($result);
 
 		$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
-		$expected_description = $encode_unicode($description);
-		$expected_title = $encode_unicode($title);
+		$expected_description = $encode_unicode(utf8_htmlspecialchars($description));
+		$expected_title = $encode_unicode(utf8_htmlspecialchars($title));
 		self::assertSame($expected_description, $stored['announcement_description']);
 		self::assertSame($expected_title, $stored['announcement_title']);
 

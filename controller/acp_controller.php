@@ -26,6 +26,12 @@ use phpbb\user;
 
 class acp_controller
 {
+	/** Maximum stored length for announcement metadata. */
+	protected const METADATA_MAX_LENGTH = 255;
+
+	/** Maximum displayed length when announcement content supplies the label. */
+	protected const CONTENT_LABEL_MAX_LENGTH = 20;
+
 	/** @var manager */
 	protected $manager;
 
@@ -152,7 +158,7 @@ class acp_controller
 	{
 		$status_filter = $this->request->variable('status', ext::STATUS_ALL);
 		$query = trim($this->request->variable('q', '', true));
-		$normalized_query = utf8_strtolower($query);
+		$normalized_query = utf8_strtolower($this->decode_stored_text($query));
 		if (!in_array($status_filter, ext::FILTER_STATUSES, true))
 		{
 			$status_filter = ext::STATUS_ALL;
@@ -170,7 +176,7 @@ class acp_controller
 			{
 				continue;
 			}
-			$search_text = utf8_decode_ncr(implode(' ', [
+			$search_text = $this->decode_stored_text(implode(' ', [
 				$row['announcement_description'],
 				$row['announcement_title'],
 				$row['announcement_text'],
@@ -331,11 +337,11 @@ class acp_controller
 			{
 				$data[$field] = $this->encode_unicode_for_storage($data[$field]);
 			}
-			if (utf8_strlen($data['announcement_description']) > 255)
+			if (utf8_strlen($data['announcement_description']) > self::METADATA_MAX_LENGTH)
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_DESC_TOO_LONG');
 			}
-			if (utf8_strlen($data['announcement_title']) > 255)
+			if (utf8_strlen($data['announcement_title']) > self::METADATA_MAX_LENGTH)
 			{
 				$errors[] = $this->language->lang('BOARD_ANNOUNCEMENTS_TITLE_TOO_LONG');
 			}
@@ -614,11 +620,17 @@ class acp_controller
 			$this->error('FORM_INVALID');
 		}
 		unset($data['announcement_id']);
-		$description = $data['announcement_description'] ?: $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
-		$data['announcement_description'] = $this->truncate_description_for_storage(
-			$this->language->lang('BOARD_ANNOUNCEMENTS_COPY_OF', $description),
-			255
-		);
+		$description = $data['announcement_description'] !== ''
+			? $this->decode_stored_text($data['announcement_description'])
+			: $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
+		$description = $this->language->lang('BOARD_ANNOUNCEMENTS_COPY_OF', $description);
+		$stored_description = $this->encode_unicode_for_storage(utf8_htmlspecialchars($description));
+		while (utf8_strlen($stored_description) > self::METADATA_MAX_LENGTH)
+		{
+			$description = utf8_substr($description, 0, -1);
+			$stored_description = $this->encode_unicode_for_storage(utf8_htmlspecialchars($description));
+		}
+		$data['announcement_description'] = $stored_description;
 		$data['announcement_state'] = ext::STATUS_DRAFT;
 		$data['announcement_enabled'] = 0;
 		$data['announcement_revision'] = 1;
@@ -943,10 +955,10 @@ class acp_controller
 	}
 
 	/**
-	 * Get the announcement label displayed in ACP lists and logs.
+	 * Get the HTML-safe announcement label displayed in ACP lists and logs.
 	 *
 	 * @param array $row Announcement data
-	 * @return string Announcement label
+	 * @return string HTML-safe announcement label
 	 */
 	protected function get_announcement_label(array $row)
 	{
@@ -959,40 +971,30 @@ class acp_controller
 			return $row['announcement_title'];
 		}
 
-		$description = $row['announcement_text'];
-		strip_bbcode($description, $row['announcement_uid']);
-		$description = html_entity_decode(utf8_decode_ncr($description), ENT_COMPAT, 'UTF-8');
-		$description = trim(preg_replace('/\s+/u', ' ', $description));
-		if ($description === '')
+		$label = $row['announcement_text'];
+		strip_bbcode($label, $row['announcement_uid']);
+		$label = $this->decode_stored_text($label);
+		$label = trim(preg_replace('/\s+/u', ' ', $label));
+		if ($label === '')
 		{
 			return $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
 		}
 
-		$truncated = utf8_strlen($description) > 20;
-		$description = utf8_htmlspecialchars(utf8_substr($description, 0, 20));
+		$truncated = utf8_strlen($label) > self::CONTENT_LABEL_MAX_LENGTH;
+		$label = utf8_htmlspecialchars(utf8_substr($label, 0, self::CONTENT_LABEL_MAX_LENGTH));
 
-		return $description . ($truncated ? $this->language->lang('ELLIPSIS') : '');
+		return $label . ($truncated ? $this->language->lang('ELLIPSIS') : '');
 	}
 
 	/**
-	 * Truncate an announcement description to its encoded storage limit.
+	 * Decode HTML-safe, Unicode-encoded text into plain Unicode.
 	 *
-	 * @param string $description Description text
-	 * @param int    $max_length  Maximum stored length
-	 * @return string Encoded description
+	 * @param string $stored_text Encoded request or database text
+	 * @return string Plain Unicode text
 	 */
-	protected function truncate_description_for_storage($description, $max_length)
+	protected function decode_stored_text($stored_text)
 	{
-		$description = utf8_decode_ncr($description);
-		$encoded = $this->encode_unicode_for_storage($description);
-
-		while (utf8_strlen($encoded) > $max_length)
-		{
-			$description = utf8_substr($description, 0, -1);
-			$encoded = $this->encode_unicode_for_storage($description);
-		}
-
-		return $encoded;
+		return htmlspecialchars_decode(utf8_decode_ncr($stored_text), ENT_COMPAT);
 	}
 
 	/**
@@ -1003,8 +1005,8 @@ class acp_controller
 	 * nvarchar column, so all non-ASCII characters must be encoded there.
 	 * Other DBMSes only require four-byte Unicode characters to be encoded.
 	 *
-	 * @param string $text Text to encode
-	 * @return string Encoded text
+	 * @param string $text HTML-safe text
+	 * @return string Unicode-encoded text
 	 */
 	protected function encode_unicode_for_storage($text)
 	{
