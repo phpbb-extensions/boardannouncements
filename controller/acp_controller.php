@@ -183,7 +183,7 @@ class acp_controller
 
 			$this->template->assign_block_vars('announcements' , [
 				'ID'           => $row['announcement_id'],
-				'DESCRIPTION'  => $this->get_list_label($row),
+				'DESCRIPTION'  => $this->get_announcement_label($row),
 				'STATUS'       => $status,
 				'TONE'         => $row['announcement_tone'],
 				'USERS'        => $row['announcement_users'],
@@ -408,12 +408,12 @@ class acp_controller
 						$this->error('BOARD_ANNOUNCEMENTS_INVALID_ITEM');
 					}
 
-					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $this->get_list_label($data));
+					$this->log_change('BOARD_ANNOUNCEMENTS_UPDATED_LOG', $this->get_announcement_label($data));
 				}
 				else
 				{
 					$this->manager->save_announcement($data, $selected_groups);
-					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $this->get_list_label($data));
+					$this->log_change('BOARD_ANNOUNCEMENTS_CREATED_LOG', $this->get_announcement_label($data));
 				}
 
 				// Output message to user for the announcement update
@@ -657,7 +657,7 @@ class acp_controller
 				}
 				if ($success)
 				{
-					$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_list_label(array_replace($this->announcement_defaults(), $announcement)));
+					$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_announcement_label(array_replace($this->announcement_defaults(), $announcement)));
 				}
 				continue;
 			}
@@ -703,7 +703,7 @@ class acp_controller
 			}
 			else
 			{
-				$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_list_label(array_replace($this->announcement_defaults(), $announcement)));
+				$this->log_change('BOARD_ANNOUNCEMENTS_DELETED_LOG', $this->get_announcement_label(array_replace($this->announcement_defaults(), $announcement)));
 
 				if ($this->request->is_ajax())
 				{
@@ -827,13 +827,13 @@ class acp_controller
 	/**
 	 * Add operations to the system log
 	 *
-	 * @param string $msg Log message language key
-	 * @param string $params Log message parameter
+	 * @param string $log_operation Log operation language key
+	 * @param string $announcement_label Human-readable announcement label
 	 * @return void
 	 */
-	protected function log_change($msg, $params)
+	protected function log_change($log_operation, $announcement_label)
 	{
-		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $msg, time(), [$params]);
+		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $log_operation, time(), [utf8_encode_ncr($announcement_label)]);
 	}
 
 	/**
@@ -919,7 +919,7 @@ class acp_controller
 	 * @param array $row Announcement data
 	 * @return string Announcement label
 	 */
-	protected function get_list_label(array $row)
+	protected function get_announcement_label(array $row)
 	{
 		if ($row['announcement_description'] !== '')
 		{

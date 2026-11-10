@@ -418,12 +418,12 @@ class acp_controller_test extends \phpbb_test_case
 	}
 
 	/**
-	 * @dataProvider list_label_data
+	 * @dataProvider announcement_label_data
 	 */
-	public function test_list_label(array $row, $expected)
+	public function test_announcement_label(array $row, $expected)
 	{
 		$controller = $this->get_controller();
-		$method = new \ReflectionMethod($controller, 'get_list_label');
+		$method = new \ReflectionMethod($controller, 'get_announcement_label');
 		$method->setAccessible(true);
 
 		self::assertSame($expected, $method->invoke($controller, array_replace([
@@ -434,7 +434,7 @@ class acp_controller_test extends \phpbb_test_case
 		], $row)));
 	}
 
-	public function list_label_data()
+	public function announcement_label_data()
 	{
 		return [
 			'description is preserved' => [
@@ -606,6 +606,25 @@ class acp_controller_test extends \phpbb_test_case
 
 		self::assertSame(1961668800, $method->invokeArgs($controller, ['2032-02-29 12:00', &$errors, 'BOARD_ANNOUNCEMENTS_START_INVALID']));
 		self::assertSame([], $errors);
+	}
+
+	public function test_log_change_encodes_unicode_for_storage()
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'log_change');
+		$method->setAccessible(true);
+		$this->log->expects(self::once())
+			->method('add')
+			->with(
+				'admin',
+				2,
+				self::anything(),
+				'BOARD_ANNOUNCEMENTS_CREATED_LOG',
+				self::isType('int'),
+				['Hello &#128075; Nurse! How A&#8230;']
+			);
+
+		$method->invoke($controller, 'BOARD_ANNOUNCEMENTS_CREATED_LOG', 'Hello 👋 Nurse! How A…');
 	}
 
 	public function location_mode_data()

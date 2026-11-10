@@ -554,6 +554,26 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
+	 * Test Unicode from a generated message label can be stored in the admin log.
+	 */
+	public function test_unicode_message_label_is_logged()
+	{
+		$this->login();
+		$this->admin_login();
+
+		$this->create_announcement([
+			'board_announcements_description' => '',
+			'board_announcements_text' => 'Hello 👋 Nurse! How Are You?',
+		]);
+
+		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
+		self::assertStringContainsString(
+			strip_tags($this->lang('BOARD_ANNOUNCEMENTS_CREATED_LOG', 'Hello 👋 Nurse! How A…')),
+			$crawler->text()
+		);
+	}
+
+	/**
 	 * Get the board announcements ACP page link to crawl
 	 *
 	 * @param string $action
