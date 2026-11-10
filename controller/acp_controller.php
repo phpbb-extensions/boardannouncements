@@ -598,11 +598,9 @@ class acp_controller
 		}
 		unset($data['announcement_id']);
 		$description = $data['announcement_description'] ?: $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
-		$data['announcement_description'] = truncate_string(
+		$data['announcement_description'] = $this->truncate_description_for_storage(
 			$this->language->lang('BOARD_ANNOUNCEMENTS_COPY_OF', $description),
-			255,
-			255,
-			false
+			255
 		);
 		$data['announcement_state'] = ext::STATUS_DRAFT;
 		$data['announcement_enabled'] = 0;
@@ -848,7 +846,7 @@ class acp_controller
 	{
 		$selected = !empty($locations) ? $this->manager->decode_json($locations) : [];
 
-		$forum_list = (array) make_forum_select($selected, false, false, false, false, false, true);
+		$forum_list = make_forum_select($selected, false, false, false, false, false, true);
 		foreach ($forum_list as &$forum)
 		{
 			$forum['depth'] = substr_count($forum['padding'], '&nbsp; &nbsp;');
@@ -934,16 +932,39 @@ class acp_controller
 
 		$description = $row['announcement_text'];
 		strip_bbcode($description, $row['announcement_uid']);
-		$description = trim(preg_replace('/\s+/u', ' ', utf8_decode_ncr($description)));
+		$description = html_entity_decode(utf8_decode_ncr($description), ENT_COMPAT, 'UTF-8');
+		$description = trim(preg_replace('/\s+/u', ' ', $description));
 		if ($description === '')
 		{
 			return $this->language->lang('BOARD_ANNOUNCEMENTS_UNTITLED');
 		}
 
-		$truncated = utf8_strlen(html_entity_decode($description, ENT_COMPAT)) > 20;
-		$description = truncate_string($description, 20, 255, false);
+		$truncated = utf8_strlen($description) > 20;
+		$description = utf8_htmlspecialchars(utf8_substr($description, 0, 20));
 
 		return $description . ($truncated ? $this->language->lang('ELLIPSIS') : '');
+	}
+
+	/**
+	 * Truncate an announcement description to its encoded storage limit.
+	 *
+	 * @param string $description Description text
+	 * @param int    $max_length  Maximum stored length
+	 * @return string Encoded description
+	 */
+	protected function truncate_description_for_storage($description, $max_length)
+	{
+		$description = utf8_decode_ncr($description);
+		$encode_unicode = strpos($this->db->get_sql_layer(), 'mssql') === 0 ? 'utf8_encode_ncr' : 'utf8_encode_ucr';
+		$encoded = $encode_unicode($description);
+
+		while (utf8_strlen($encoded) > $max_length)
+		{
+			$description = utf8_substr($description, 0, -1);
+			$encoded = $encode_unicode($description);
+		}
+
+		return $encoded;
 	}
 
 	/**

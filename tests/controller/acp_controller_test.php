@@ -449,6 +449,10 @@ class acp_controller_test extends \phpbb_test_case
 				['announcement_text' => '[b:abcde]Maintenance tonight at 10 PM[/b:abcde]', 'announcement_uid' => 'abcde'],
 				'Maintenance tonight …',
 			],
+			'html entity is preserved' => [
+				['announcement_text' => str_repeat('A', 19) . '&amp;B'],
+				str_repeat('A', 19) . '&amp;…',
+			],
 			'title takes priority over message' => [
 				['announcement_title' => 'Public title', 'announcement_text' => 'Ignored message'],
 				'Public title',
@@ -1099,8 +1103,9 @@ class acp_controller_test extends \phpbb_test_case
 	/**
 	 * @dataProvider duplicate_action_data
 	 */
-	public function test_duplicate_action_creates_draft_with_same_groups($description, $expected_description)
+	public function test_duplicate_action_creates_draft_with_same_groups($description, $expected_description, $sql_layer = 'mysqli')
 	{
+		$this->sql_layer = $sql_layer;
 		$this->language = $this->getMockBuilder('\phpbb\language\language')
 			->disableOriginalConstructor()
 			->setMethods(['add_lang', 'lang'])
@@ -1155,6 +1160,9 @@ class acp_controller_test extends \phpbb_test_case
 			'described announcement' => ['Maintenance', 'Copy of Maintenance'],
 			'undescribed announcement' => ['', 'Copy of Untitled announcement'],
 			'long description' => [str_repeat('x', 255), 'Copy of ' . str_repeat('x', 247)],
+			'encoded emoji' => ['Launch &#128512;', 'Copy of Launch &#128512;'],
+			'encoded emoji at storage limit' => [str_repeat('x', 240) . '&#128512;', 'Copy of ' . str_repeat('x', 240)],
+			'mssql unicode' => [utf8_encode_ncr('Тест'), utf8_encode_ncr('Copy of Тест'), 'mssql'],
 		];
 	}
 
