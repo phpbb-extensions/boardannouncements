@@ -548,7 +548,12 @@ class acp_controller
 	protected function action_archive()
 	{
 		$id = $this->request->variable('id', 0);
-		if (!$this->check_hash('archive' . $id) || !$this->manager->update_announcement($id, [
+		if (!$this->check_hash('archive' . $id))
+		{
+			$this->error('FORM_INVALID');
+		}
+
+		if (!$this->manager->update_announcement($id, [
 			'announcement_state' => ext::STATUS_ARCHIVED,
 			'announcement_enabled' => 0,
 			'announcement_updated_at' => time(),
@@ -557,6 +562,7 @@ class acp_controller
 		{
 			$this->error('FORM_INVALID');
 		}
+
 		$this->success('BOARD_ANNOUNCEMENTS_ARCHIVED');
 	}
 
@@ -569,14 +575,27 @@ class acp_controller
 	protected function action_reset()
 	{
 		$id = $this->request->variable('id', 0);
-		$announcement = $this->check_hash('reset' . $id) ? $this->manager->get_announcement($id) : false;
-		if (!$announcement
-			|| !$this->can_show_again(array_replace($this->announcement_defaults(), $announcement))
-			|| !$this->manager->show_announcement_again($id)
-		)
+		if (!$this->check_hash('reset' . $id))
 		{
 			$this->error('FORM_INVALID');
 		}
+
+		$announcement = $this->manager->get_announcement($id);
+		if (!$announcement)
+		{
+			$this->error('FORM_INVALID');
+		}
+
+		if (!$this->can_show_again(array_replace($this->announcement_defaults(), $announcement)))
+		{
+			$this->error('FORM_INVALID');
+		}
+
+		if (!$this->manager->show_announcement_again($id))
+		{
+			$this->error('FORM_INVALID');
+		}
+
 		$this->success('BOARD_ANNOUNCEMENTS_SHOWN_AGAIN');
 	}
 
@@ -980,7 +999,7 @@ class acp_controller
 	 * Encode Unicode characters that cannot be stored safely by the DBMS.
 	 *
 	 * phpBB's DBAL emits unprefixed string literals. MSSQL may convert BMP
-	 * characters through the database code page before storing them in an
+	 * characters through the database code page before storing them in a
 	 * nvarchar column, so all non-ASCII characters must be encoded there.
 	 * Other DBMSes only require four-byte Unicode characters to be encoded.
 	 *
