@@ -242,6 +242,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_id'			=> 1,
 				'announcement_description'	=> '',
 				'announcement_enabled'		=> 1,
+				'announcement_state'		=> ext::STATUS_PUBLISHED,
 				'announcement_timestamp'	=> 734284394,
 				'announcement_expiry'		=> 0,
 				'announcement_locations'	=> '',
@@ -253,6 +254,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_id'			=> 2,
 				'announcement_description'	=> '',
 				'announcement_enabled'		=> 1,
+				'announcement_state'		=> ext::STATUS_PUBLISHED,
 				'announcement_timestamp'	=> 797442794,
 				'announcement_expiry'		=> 0,
 				'announcement_locations'	=> '[-1,1]',
@@ -262,6 +264,7 @@ class acp_controller_test extends \phpbb_test_case
 				'announcement_id'			=> 3,
 				'announcement_description'	=> '',
 				'announcement_enabled'		=> 1,
+				'announcement_state'		=> ext::STATUS_PUBLISHED,
 				'announcement_timestamp'	=> 681493994,
 				'announcement_expiry'		=> 1644162794,
 				'announcement_locations'	=> '[]',
@@ -279,7 +282,7 @@ class acp_controller_test extends \phpbb_test_case
 				['announcements', self::callback(function ($data) use ($rows) {
 					return $data['DESCRIPTION'] === 'BOARD_ANNOUNCEMENTS_UNTITLED'
 						&& $data['TONE'] === ''
-						&& !$data['DISMISSABLE']
+						&& !$data['S_CAN_SHOW_AGAIN']
 						&& $data['CREATED_DATE'] === $this->user->format_date($rows[0]['announcement_timestamp'], ext::DATE_FORMAT)
 						&& $data['EXPIRY_DATE'] === ''
 						&& $data['S_MOVE_UP_DISABLED']
@@ -287,7 +290,7 @@ class acp_controller_test extends \phpbb_test_case
 				})],
 				['announcements', self::callback(function ($data) use ($rows) {
 					return $data['TONE'] === ext::TONE_INFO
-						&& $data['DISMISSABLE']
+						&& $data['S_CAN_SHOW_AGAIN']
 						&& $data['CREATED_DATE'] === $this->user->format_date($rows[1]['announcement_timestamp'], ext::DATE_FORMAT)
 						&& $data['EXPIRY_DATE'] === ''
 						&& !$data['S_MOVE_UP_DISABLED']
@@ -296,6 +299,7 @@ class acp_controller_test extends \phpbb_test_case
 				['announcements', self::callback(function ($data) use ($rows) {
 					return $data['CREATED_DATE'] === $this->user->format_date($rows[2]['announcement_timestamp'], ext::DATE_FORMAT)
 						&& $data['EXPIRY_DATE'] === $this->user->format_date($rows[2]['announcement_expiry'], ext::DATE_FORMAT)
+						&& !$data['S_CAN_SHOW_AGAIN']
 						&& !$data['S_MOVE_UP_DISABLED']
 						&& $data['S_MOVE_DOWN_DISABLED'];
 				})]
@@ -572,6 +576,30 @@ class acp_controller_test extends \phpbb_test_case
 			'scheduled' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_start' => time() + 3600], ext::STATUS_SCHEDULED],
 			'expired' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_expiry' => time() - 3600], ext::STATUS_EXPIRED],
 			'active' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1], ext::STATUS_ACTIVE],
+		];
+	}
+
+	/**
+	 * @dataProvider show_again_eligibility_data
+	 */
+	public function test_show_again_eligibility(array $row, $expected)
+	{
+		$controller = $this->get_controller();
+		$method = new \ReflectionMethod($controller, 'can_show_again');
+		$method->setAccessible(true);
+
+		self::assertSame($expected, $method->invoke($controller, $row));
+	}
+
+	public function show_again_eligibility_data()
+	{
+		return [
+			'active and dismissable' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_dismissable' => 1], true],
+			'active and not dismissable' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_dismissable' => 0], false],
+			'draft' => [['announcement_state' => ext::STATUS_DRAFT, 'announcement_enabled' => 0, 'announcement_dismissable' => 1], false],
+			'scheduled' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_dismissable' => 1, 'announcement_start' => time() + 3600], false],
+			'expired' => [['announcement_state' => ext::STATUS_PUBLISHED, 'announcement_enabled' => 1, 'announcement_dismissable' => 1, 'announcement_expiry' => time() - 3600], false],
+			'archived' => [['announcement_state' => ext::STATUS_ARCHIVED, 'announcement_enabled' => 0, 'announcement_dismissable' => 1], false],
 		];
 	}
 
@@ -1091,10 +1119,11 @@ class acp_controller_test extends \phpbb_test_case
 	/**
 	 * @dataProvider reset_action_data
 	 */
-	public function test_reset_action($valid_hash, $reset)
+	public function test_reset_action($valid_hash, $announcement, $reset, $should_reset)
 	{
 		$controller = $this->get_controller();
-		$this->setExpectedTriggerError($valid_hash && $reset ? E_USER_NOTICE : E_USER_WARNING, $valid_hash && $reset ? 'BOARD_ANNOUNCEMENTS_SHOWN_AGAIN' : 'The submitted form was invalid. Try submitting again.');
+		$success = $should_reset && $reset;
+		$this->setExpectedTriggerError($success ? E_USER_NOTICE : E_USER_WARNING, $success ? 'BOARD_ANNOUNCEMENTS_SHOWN_AGAIN' : 'The submitted form was invalid. Try submitting again.');
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) use ($valid_hash) {
 			return [
 				'action' => 'reset',
@@ -1103,6 +1132,10 @@ class acp_controller_test extends \phpbb_test_case
 			][$name] ?? $default;
 		});
 		$this->manager->expects($valid_hash ? self::once() : self::never())
+			->method('get_announcement')
+			->with(7)
+			->willReturn($announcement);
+		$this->manager->expects($should_reset ? self::once() : self::never())
 			->method('show_announcement_again')
 			->with(7)
 			->willReturn($reset);
@@ -1112,10 +1145,18 @@ class acp_controller_test extends \phpbb_test_case
 
 	public function reset_action_data()
 	{
+		$active = [
+			'announcement_state' => ext::STATUS_PUBLISHED,
+			'announcement_enabled' => 1,
+			'announcement_dismissable' => 1,
+		];
 		return [
-			'success' => [true, true],
-			'unknown announcement' => [true, false],
-			'invalid hash' => [false, false],
+			'success' => [true, $active, true, true],
+			'manager failure' => [true, $active, false, true],
+			'unknown announcement' => [true, false, false, false],
+			'draft announcement' => [true, array_replace($active, ['announcement_state' => ext::STATUS_DRAFT]), false, false],
+			'non-dismissable announcement' => [true, array_replace($active, ['announcement_dismissable' => 0]), false, false],
+			'invalid hash' => [false, false, false, false],
 		];
 	}
 

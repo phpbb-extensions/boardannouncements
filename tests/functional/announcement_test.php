@@ -163,7 +163,7 @@ class announcement_test extends \phpbb_functional_test_case
 	}
 
 	/**
-	 * Re-show controls keep a fixed action slot and are disabled when dismissal is unavailable.
+	 * Re-show controls keep a fixed action slot and are disabled when unavailable.
 	 */
 	public function test_acp_reshow_action_alignment()
 	{
@@ -185,10 +185,20 @@ class announcement_test extends \phpbb_functional_test_case
 			$row = $crawler->filterXPath('//input[@name="announcement_ids[]" and @value="1"]/ancestor::tr');
 			self::assertCount(1, $row->filter('span.ba-show-again-action.is-disabled[aria-disabled="true"]'));
 			self::assertCount(0, $row->filter('a.ba-show-again-action'));
+
+			$this->db->sql_query("UPDATE phpbb_board_announcements
+				SET announcement_dismissable = 1, announcement_enabled = 0, announcement_state = 'draft'
+				WHERE announcement_id = 1");
+			$crawler = self::request('GET', $this->get_acp_page());
+			$row = $crawler->filterXPath('//input[@name="announcement_ids[]" and @value="1"]/ancestor::tr');
+			self::assertCount(1, $row->filter('span.ba-show-again-action.is-disabled[aria-disabled="true"]'));
+			self::assertCount(0, $row->filter('a.ba-show-again-action'));
 		}
 		finally
 		{
-			$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 1 WHERE announcement_id = 1');
+			$this->db->sql_query("UPDATE phpbb_board_announcements
+				SET announcement_dismissable = 1, announcement_enabled = 1, announcement_state = 'published'
+				WHERE announcement_id = 1");
 		}
 	}
 

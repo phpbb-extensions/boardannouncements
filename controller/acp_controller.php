@@ -193,7 +193,7 @@ class acp_controller
 				'S_EXPIRED'    => $status === ext::STATUS_EXPIRED,
 				'S_ENABLED'    => $status === ext::STATUS_ACTIVE || $status === ext::STATUS_SCHEDULED,
 				'S_ARCHIVED'   => $status === ext::STATUS_ARCHIVED,
-				'DISMISSABLE'  => (bool) $row['announcement_dismissable'],
+				'S_CAN_SHOW_AGAIN' => $this->can_show_again($row),
 				'LOCATIONS'    => $this->manager->decode_json($row['announcement_locations']),
 				'S_MOVE_UP_DISABLED' => $filters_active || $index === 0,
 				'S_MOVE_DOWN_DISABLED' => $filters_active || $index === $last_index,
@@ -571,7 +571,11 @@ class acp_controller
 	protected function action_reset()
 	{
 		$id = $this->request->variable('id', 0);
-		if (!$this->check_hash('reset' . $id) || !$this->manager->show_announcement_again($id))
+		$announcement = $this->check_hash('reset' . $id) ? $this->manager->get_announcement($id) : false;
+		if (!$announcement
+			|| !$this->can_show_again(array_replace($this->announcement_defaults(), $announcement))
+			|| !$this->manager->show_announcement_again($id)
+		)
 		{
 			$this->error('FORM_INVALID');
 		}
@@ -907,6 +911,18 @@ class acp_controller
 			return ext::STATUS_EXPIRED;
 		}
 		return ext::STATUS_ACTIVE;
+	}
+
+	/**
+	 * Check whether dismissals can be reset for an announcement.
+	 *
+	 * @param array $row Announcement data
+	 * @return bool True when the announcement is active and dismissable
+	 */
+	protected function can_show_again(array $row)
+	{
+		return !empty($row['announcement_dismissable'])
+			&& $this->get_status($row) === ext::STATUS_ACTIVE;
 	}
 
 	/**
