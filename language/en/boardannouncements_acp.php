@@ -70,8 +70,8 @@ $lang = array_merge($lang, array(
 	'BOARD_ANNOUNCEMENTS_TH_DESCRIPTION'	=> 'Announcement',
 	'BOARD_ANNOUNCEMENTS_TH_SHOW_TO'		=> 'Visible To',
 
-	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'Everywhere',
-	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board Index',
+	'BOARD_ANNOUNCEMENTS_EVERYWHERE'		=> 'All pages',
+	'BOARD_ANNOUNCEMENTS_INDEX_PAGE'		=> 'Board index',
 
 	'BOARD_ANNOUNCEMENTS_EMPTY'				=> 'There are no board announcements to display',
 	'BOARD_ANNOUNCEMENTS_ADD'				=> 'Create announcement',

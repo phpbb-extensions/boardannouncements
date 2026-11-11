@@ -885,6 +885,7 @@ label.ba-filter-field {
 }
 
 .ba-checklist label {
+	font-size: 12px;
 	align-items: center;
 	border-radius: 3px;
 	cursor: pointer;
@@ -910,6 +911,7 @@ label.ba-filter-field {
 }
 
 .ba-location-picker .ba-location-row {
+	font-size: 12px;
 	align-items: center;
 	border-bottom: 1px solid #e8edf1;
 	cursor: pointer;
