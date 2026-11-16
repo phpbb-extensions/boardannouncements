@@ -1,10 +1,15 @@
 # phpBB Board Announcements Extension
 
-This is the repository for the development of the phpBB Board Announcements Extension.
+Board Announcements lets you display important messages across your phpBB forum or in selected forums.
 
-Board Announcements provides scheduled, targeted notices for phpBB 3.3 and phpBB 4. Administrators can publish drafts, choose semantic tones, target guests, members, groups, forums, or forum trees, and archive or duplicate notices. Users can dismiss notices, and administrators can show a dismissed notice again to everyone.
+- Drafts and scheduled announcements
+- Audience selection by user group
+- Forum and subforum selection
+- Custom headings and colour schemes
+- Dismissible announcements
+- Announcement duplication and archiving
 
-Version 2.0 upgrades existing announcements in place. Existing enabled notices become published notices; disabled notices become drafts. Guest dismissals are stored in browser cookies, while registered-user dismissals remain attached to their accounts and work across devices.
+Requires phpBB 3.3.2 or later, including phpBB 4.
 
 [![Build Status](https://github.com/phpbb-extensions/boardannouncements/actions/workflows/tests.yml/badge.svg)](https://github.com/phpbb-extensions/boardannouncements/actions)
 [![codecov](https://codecov.io/gh/phpbb-extensions/boardannouncements/branch/master/graph/badge.svg?token=9laLSqCOgN)](https://codecov.io/gh/phpbb-extensions/boardannouncements)
@@ -35,5 +40,5 @@ Grant `Can manage board announcements` under Administrative permissions to staff
 
 * Translations should be posted to the [Board Announcements topic at phpBB.com](https://www.phpbb.com/customise/db/extension/boardannouncements/support/topic/130751). We accept pull requests for translation corrections, but we do not accept pull requests for new translations.
 
-## License
+## Licence
 [GNU General Public License v2](https://opensource.org/licenses/GPL-2.0)
