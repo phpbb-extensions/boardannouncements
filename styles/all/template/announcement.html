@@ -10,7 +10,6 @@
 	</div>
 	{% if announcement.S_BOARD_ANNOUNCEMENT_DISMISS %}
 		<form method="post" action="{{ announcement.U_BOARD_ANNOUNCEMENT_CLOSE }}" data-ajax="close_announcement" class="phpbb-announcement__dismiss-form">
-			<input type="hidden" name="redirect" value="{{ U_CURRENT_PAGE }}">
 			<button type="submit" class="phpbb-announcement__dismiss" title="{{ lang('BOARD_ANNOUNCEMENT_CLOSE')|e('html_attr') }}">
 				{% if constant('PHPBB_VERSION') starts with '4' %}
 					{{ include('@phpbb_boardannouncements/close_icon_phpbb4.html') }}
