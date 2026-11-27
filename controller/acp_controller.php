@@ -395,7 +395,12 @@ class acp_controller
 				$data['announcement_flags'],
 				!$this->request->variable('disable_bbcode', false),
 				!$this->request->variable('disable_magic_url', false),
-				!$this->request->variable('disable_smilies', false)
+				!$this->request->variable('disable_smilies', false),
+				true,
+				true,
+				true,
+				true,
+				'phpbb_board_announcements'
 			);
 
 			// Store the announcement text and settings if submitted with no errors
@@ -523,7 +528,12 @@ class acp_controller
 			$flags,
 			!$this->request->variable('disable_bbcode', false),
 			!$this->request->variable('disable_magic_url', false),
-			!$this->request->variable('disable_smilies', false)
+			!$this->request->variable('disable_smilies', false),
+			true,
+			true,
+			true,
+			true,
+			'phpbb_board_announcements'
 		);
 
 		$this->template->assign_vars([
@@ -669,6 +679,7 @@ class acp_controller
 				'creation_time' => $this->request->variable('creation_time', 0),
 				'form_token' => $this->request->variable('form_token', ''),
 			]));
+			$this->list_announcements();
 			return;
 		}
 		foreach ($ids as $id)
@@ -882,8 +893,8 @@ class acp_controller
 		}
 		unset($forum);
 
-		// Add the index page to the list
-		$forum_list[ext::INDEX_ONLY] = [
+		// Prepend the index page while preserving forum tree order.
+		$index_page = [
 			'padding'    => '',
 			'depth'      => 0,
 			'selected'   => in_array(ext::INDEX_ONLY, $selected),
@@ -891,9 +902,7 @@ class acp_controller
 			'forum_name' => $this->language->lang('BOARD_ANNOUNCEMENTS_INDEX_PAGE')
 		];
 
-		ksort($forum_list);
-
-		return $forum_list;
+		return [ext::INDEX_ONLY => $index_page] + $forum_list;
 	}
 
 	/**

@@ -310,12 +310,10 @@ class listener_test extends \phpbb_database_test_case
 			->with('board_announcements', self::callback(static function ($data) {
 				return (int) $data['BOARD_ANNOUNCEMENT_ID'] === 1;
 			}));
-		$this->request->expects(self::exactly(2))
+		$this->request->expects(self::once())
 			->method('variable')
-			->willReturnMap([
-				['f', 0, false, \phpbb\request\request_interface::REQUEST, 2],
-				['_ba_1', 0, false, \phpbb\request\request_interface::COOKIE, 0],
-			]);
+			->with('f', 0)
+			->willReturn(2);
 
 		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.page_header_after', [$this->listener, 'display_board_announcements']);

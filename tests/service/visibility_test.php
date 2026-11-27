@@ -125,6 +125,7 @@ class visibility_test extends \phpbb_test_case
 
 	public function test_cookie_reset_generation()
 	{
+		$this->user->data['is_registered'] = false;
 		$row = $this->announcement();
 		$this->request->expects(self::exactly(2))
 			->method('variable')
@@ -136,6 +137,7 @@ class visibility_test extends \phpbb_test_case
 
 	public function test_dismissal_cookie_only_hides_dismissable_announcements()
 	{
+		$this->user->data['is_registered'] = false;
 		$row = $this->announcement();
 		$this->request->expects(self::once())
 			->method('variable')
@@ -146,6 +148,12 @@ class visibility_test extends \phpbb_test_case
 
 		$row['announcement_dismissable'] = 0;
 		self::assertTrue($this->visibility->is_visible($row, 0));
+	}
+
+	public function test_member_visibility_ignores_dismissal_cookie()
+	{
+		$this->request->expects(self::never())->method('variable');
+		self::assertTrue($this->visibility->is_visible($this->announcement(), 0));
 	}
 
 	protected function announcement()

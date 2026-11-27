@@ -645,20 +645,20 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		self::$forum_options = [
 			1 => ['padding' => '', 'selected' => false, 'forum_id' => 1, 'forum_name' => 'Parent'],
-			2 => ['padding' => '&nbsp; &nbsp;', 'selected' => true, 'forum_id' => 2, 'forum_name' => 'Child'],
+			9 => ['padding' => '&nbsp; &nbsp;', 'selected' => true, 'forum_id' => 9, 'forum_name' => 'Child'],
+			2 => ['padding' => '', 'selected' => false, 'forum_id' => 2, 'forum_name' => 'Other category'],
 		];
-		$this->manager->method('decode_json')->with('[2]')->willReturn([2]);
+		$this->manager->method('decode_json')->with('[-1,9]')->willReturn([ext::INDEX_ONLY, 9]);
 		$controller = $this->get_controller();
 		$method = new \ReflectionMethod($controller, 'get_location_options');
 		$method->setAccessible(true);
 
-		$options = $method->invoke($controller, '[2]');
+		$options = $method->invoke($controller, '[-1,9]');
 
-		self::assertSame(0, $options[1]['depth']);
-		self::assertSame(1, $options[2]['depth']);
-		self::assertTrue($options[2]['selected']);
-		self::assertSame(ext::INDEX_ONLY, $options[-1]['forum_id']);
-		self::$forum_options = [];
+		self::assertSame([ext::INDEX_ONLY, 1, 9, 2], array_keys($options));
+		self::assertSame([ext::INDEX_ONLY, 1, 9, 2], array_column($options, 'forum_id'));
+		self::assertSame([0, 0, 1, 0], array_column($options, 'depth'));
+		self::assertSame([true, false, true, false], array_column($options, 'selected'));
 	}
 
 	/**
@@ -1512,15 +1512,29 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function test_bulk_delete_waits_for_confirmation()
+	public function test_bulk_delete_restores_list_when_confirmation_returns()
 	{
 		self::$valid_form = true;
 		self::$confirm = false;
+		$this->config->method('offsetGet')->with('board_announcements_enable')->willReturn('1');
 		$controller = $this->get_controller();
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
 			return ['action' => 'bulk', 'announcement_ids' => [3], 'bulk_action' => 'delete'][$name] ?? $default;
 		});
 		$this->manager->expects(self::never())->method('delete_announcement');
+		$this->log->expects(self::never())->method('add');
+		$this->manager->expects(self::once())->method('get_announcements')->willReturn([
+			['announcement_id' => 3, 'announcement_description' => 'Retained announcement'],
+		]);
+		$this->template->expects(self::once())->method('assign_block_vars')
+			->with('announcements', self::callback(static function ($row) {
+				return $row['ID'] === 3 && $row['DESCRIPTION'] === 'Retained announcement';
+			}));
+		$this->template->expects(self::once())->method('assign_vars')
+			->with(self::callback(function ($vars) {
+				return $vars['BOARD_ANNOUNCEMENTS_ENABLED_ALL'] === '1'
+					&& $vars['U_ACTION_ADD'] === $this->u_action . '&amp;action=add';
+			}));
 
 		$controller->mode_manage();
 	}
