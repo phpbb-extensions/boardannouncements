@@ -639,20 +639,20 @@ class acp_controller_test extends \phpbb_test_case
 	{
 		self::$forum_options = [
 			1 => ['padding' => '', 'selected' => false, 'forum_id' => 1, 'forum_name' => 'Parent'],
-			2 => ['padding' => '&nbsp; &nbsp;', 'selected' => true, 'forum_id' => 2, 'forum_name' => 'Child'],
+			9 => ['padding' => '&nbsp; &nbsp;', 'selected' => true, 'forum_id' => 9, 'forum_name' => 'Child'],
+			2 => ['padding' => '', 'selected' => false, 'forum_id' => 2, 'forum_name' => 'Other category'],
 		];
-		$this->manager->method('decode_json')->with('[2]')->willReturn([2]);
+		$this->manager->method('decode_json')->with('[-1,9]')->willReturn([ext::INDEX_ONLY, 9]);
 		$controller = $this->get_controller();
 		$method = new \ReflectionMethod($controller, 'get_location_options');
 		$method->setAccessible(true);
 
-		$options = $method->invoke($controller, '[2]');
+		$options = $method->invoke($controller, '[-1,9]');
 
-		self::assertSame(0, $options[1]['depth']);
-		self::assertSame(1, $options[2]['depth']);
-		self::assertTrue($options[2]['selected']);
-		self::assertSame(ext::INDEX_ONLY, $options[-1]['forum_id']);
-		self::$forum_options = [];
+		self::assertSame([ext::INDEX_ONLY, 1, 9, 2], array_keys($options));
+		self::assertSame([ext::INDEX_ONLY, 1, 9, 2], array_column($options, 'forum_id'));
+		self::assertSame([0, 0, 1, 0], array_column($options, 'depth'));
+		self::assertSame([true, false, true, false], array_column($options, 'selected'));
 	}
 
 	/**
