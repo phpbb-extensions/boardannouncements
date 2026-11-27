@@ -1472,15 +1472,29 @@ class acp_controller_test extends \phpbb_test_case
 		$controller->mode_manage();
 	}
 
-	public function test_bulk_delete_waits_for_confirmation()
+	public function test_bulk_delete_restores_list_when_confirmation_returns()
 	{
 		self::$valid_form = true;
 		self::$confirm = false;
+		$this->config->method('offsetGet')->with('board_announcements_enable')->willReturn('1');
 		$controller = $this->get_controller();
 		$this->request->method('variable')->willReturnCallback(static function ($name, $default = null) {
 			return ['action' => 'bulk', 'announcement_ids' => [3], 'bulk_action' => 'delete'][$name] ?? $default;
 		});
 		$this->manager->expects(self::never())->method('delete_announcement');
+		$this->log->expects(self::never())->method('add');
+		$this->manager->expects(self::once())->method('get_announcements')->willReturn([
+			['announcement_id' => 3, 'announcement_description' => 'Retained announcement'],
+		]);
+		$this->template->expects(self::once())->method('assign_block_vars')
+			->with('announcements', self::callback(static function ($row) {
+				return $row['ID'] === 3 && $row['DESCRIPTION'] === 'Retained announcement';
+			}));
+		$this->template->expects(self::once())->method('assign_vars')
+			->with(self::callback(function ($vars) {
+				return $vars['BOARD_ANNOUNCEMENTS_ENABLED_ALL'] === '1'
+					&& $vars['U_ACTION_ADD'] === $this->u_action . '&amp;action=add';
+			}));
 
 		$controller->mode_manage();
 	}

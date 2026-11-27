@@ -679,6 +679,7 @@ class acp_controller
 				'creation_time' => $this->request->variable('creation_time', 0),
 				'form_token' => $this->request->variable('form_token', ''),
 			]));
+			$this->list_announcements();
 			return;
 		}
 		foreach ($ids as $id)
