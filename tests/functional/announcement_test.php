@@ -283,18 +283,18 @@ class announcement_test extends \phpbb_functional_test_case
 			parse_url(self::$root_url . 'index.php', PHP_URL_PATH),
 			parse_url(self::$client->getResponse()->getHeader('Location'), PHP_URL_PATH)
 		);
+		self::$client->followRedirects(true);
 
-		$cookie_expired = false;
+		$dismissal_cookie = null;
 		foreach (self::$cookieJar->all() as $cookie)
 		{
 			if (substr($cookie->getName(), -5) === '_ba_1')
 			{
-				self::$cookieJar->expire($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
-				$cookie_expired = true;
+				$dismissal_cookie = $cookie;
 				break;
 			}
 		}
-		self::assertTrue($cookie_expired);
+		self::assertNotNull($dismissal_cookie);
 
 		$this->get_db();
 		$result = $this->db->sql_query('SELECT COUNT(*) AS total
@@ -308,6 +308,18 @@ class announcement_test extends \phpbb_functional_test_case
 		{
 			$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 			self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+
+			$this->logout();
+			$crawler = self::request('GET', 'index.php');
+			self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+
+			$this->create_user('dismissal_member');
+			$this->login('dismissal_member');
+			self::assertEquals($dismissal_cookie, self::$cookieJar->get(
+				$dismissal_cookie->getName(), $dismissal_cookie->getPath(), $dismissal_cookie->getDomain()
+			));
+			$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+			self::assertCount(1, $crawler->filter('#phpbb_announcement_1'));
 		}
 		finally
 		{
