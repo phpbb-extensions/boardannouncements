@@ -40,10 +40,11 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 	{
 		global $cache, $config, $db, $phpbb_dispatcher, $phpbb_root_path, $phpEx;
 
-		$config = new \phpbb\config\config([]);
 		$db = $this->db;
 		$phpbb_dispatcher = new \phpbb\event\dispatcher();
 		$cache_driver = new \phpbb\cache\driver\dummy();
+		$config = new \phpbb\config\db($this->db, $cache_driver, 'phpbb_config');
+		$config->set('board_announcements_cron_last_run', '123', false);
 		$cache = new \phpbb\cache\service($cache_driver, $config, $this->db, $phpbb_dispatcher, $phpbb_root_path, $phpEx);
 		$auth = new \phpbb\auth\auth();
 
@@ -61,7 +62,7 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 			$phpbb_root_path,
 			$phpEx,
 			'phpbb_',
-			[$permission],
+			[new \phpbb\db\migration\tool\config($config), $permission],
 			new \phpbb\db\migration\helper()
 		);
 		$migrator->create_migrations_table();
@@ -77,6 +78,7 @@ class legacy_upgrade_test extends \phpbb_database_test_case
 
 		self::assertTrue($this->db_tools->sql_column_exists('phpbb_board_announcements', 'announcement_state'));
 		self::assertTrue($this->db_tools->sql_table_exists('phpbb_board_announcement_groups'));
+		self::assertSame('0', $this->field("SELECT COUNT(*) AS total FROM phpbb_config WHERE config_name = 'board_announcements_cron_last_run'", 'total'));
 		self::assertEquals([
 			['announcement_id' => '1', 'announcement_enabled' => '1', 'announcement_state' => 'published', 'announcement_tone' => 'custom', 'announcement_updated_at' => '100'],
 			['announcement_id' => '2', 'announcement_enabled' => '0', 'announcement_state' => 'draft', 'announcement_tone' => 'info', 'announcement_updated_at' => '200'],

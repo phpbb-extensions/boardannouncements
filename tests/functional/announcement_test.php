@@ -276,20 +276,25 @@ class announcement_test extends \phpbb_functional_test_case
 		$form = $crawler->filter('#phpbb_announcement_1 .phpbb-announcement__dismiss-form')->form();
 		self::assertSame('POST', $form->getMethod());
 
-		$hash = $this->mock_link_hash('close_boardannouncement1');
-		self::request('POST', 'app.php/boardannouncements/close/1?hash=' . $hash . '&location=' . ext::INDEX_ONLY . '&sid=' . $this->sid);
+		self::$client->followRedirects(false);
+		self::submit($form, [], false);
+		self::assert_response_status_code(302);
+		self::assertSame(
+			parse_url(self::$root_url . 'index.php', PHP_URL_PATH),
+			parse_url(self::$client->getResponse()->getHeader('Location'), PHP_URL_PATH)
+		);
+		self::$client->followRedirects(true);
 
-		$cookie_expired = false;
+		$dismissal_cookie = null;
 		foreach (self::$cookieJar->all() as $cookie)
 		{
 			if (substr($cookie->getName(), -5) === '_ba_1')
 			{
-				self::$cookieJar->expire($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
-				$cookie_expired = true;
+				$dismissal_cookie = $cookie;
 				break;
 			}
 		}
-		self::assertTrue($cookie_expired);
+		self::assertNotNull($dismissal_cookie);
 
 		$this->get_db();
 		$result = $this->db->sql_query('SELECT COUNT(*) AS total
@@ -303,6 +308,18 @@ class announcement_test extends \phpbb_functional_test_case
 		{
 			$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
 			self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+
+			$this->logout();
+			$crawler = self::request('GET', 'index.php');
+			self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
+
+			$this->create_user('dismissal_member');
+			$this->login('dismissal_member');
+			self::assertEquals($dismissal_cookie, self::$cookieJar->get(
+				$dismissal_cookie->getName(), $dismissal_cookie->getPath(), $dismissal_cookie->getDomain()
+			));
+			$crawler = self::request('GET', 'index.php?sid=' . $this->sid);
+			self::assertCount(1, $crawler->filter('#phpbb_announcement_1'));
 		}
 		finally
 		{
@@ -320,6 +337,24 @@ class announcement_test extends \phpbb_functional_test_case
 		{
 			$this->db->sql_query('UPDATE phpbb_board_announcements SET announcement_dismissable = 1 WHERE announcement_id = 1');
 		}
+	}
+
+	public function test_close_announcement_with_empty_redirect_as_guest()
+	{
+		$crawler = self::request('GET', 'index.php?ba_redirect_test=1');
+		$form = $crawler->filter('#phpbb_announcement_1 .phpbb-announcement__dismiss-form')->form();
+
+		self::$client->followRedirects(false);
+		self::$client->request('POST', $form->getUri(), ['redirect' => '']);
+		self::assert_response_status_code(302);
+		$location = self::$client->getResponse()->getHeader('Location');
+		self::assertSame(parse_url(self::$root_url . 'index.php', PHP_URL_PATH), parse_url($location, PHP_URL_PATH));
+		parse_str(parse_url($location, PHP_URL_QUERY) ?? '', $query);
+		self::assertSame('1', $query['ba_redirect_test'] ?? null);
+
+		$crawler = self::$client->followRedirect();
+		self::assert_response_html();
+		self::assertCount(0, $crawler->filter('#phpbb_announcement_1'));
 	}
 
 	/**

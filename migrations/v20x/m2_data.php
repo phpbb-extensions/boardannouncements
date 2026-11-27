@@ -21,7 +21,8 @@ class m2_data extends \phpbb\db\migration\container_aware_migration
 	{
 		return [
 			['custom', [[$this, 'migrate_announcements']]],
-			['permission.add', ['a_boardannouncements', true]],
+			['config.remove', ['board_announcements_cron_last_run']],
+			['permission.add', ['a_boardannouncements', true, 'a_board']],
 			['if', [
 				['permission.role_exists', ['ROLE_ADMIN_FULL']],
 				['permission.permission_set', ['ROLE_ADMIN_FULL', 'a_boardannouncements']],

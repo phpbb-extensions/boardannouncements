@@ -136,13 +136,18 @@ class visibility
 	}
 
 	/**
-	 * Check whether current browser dismissed an announcement revision.
+	 * Check whether the current guest browser dismissed an announcement revision.
 	 *
 	 * @param array $announcement Announcement data
 	 * @return bool True when dismissed
 	 */
 	public function is_dismissed(array $announcement)
 	{
+		if (!empty($this->user->data['is_registered']))
+		{
+			return false;
+		}
+
 		$cookie_name = $this->config['cookie_name'] . '_ba_' . (int) $announcement['announcement_id'];
 		$revision = (int) ($announcement['announcement_revision'] ?? 1);
 		return (int) $this->request->variable($cookie_name, 0, false, request_interface::COOKIE) === $revision;

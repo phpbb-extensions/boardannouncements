@@ -94,7 +94,8 @@ class controller
 		}
 
 		// Redirect the user back to their last viewed page (non-AJAX requests)
-		$redirect = $this->request->variable('redirect', $this->user->data['session_page']);
+		$redirect = $this->request->variable('redirect', '');
+		$redirect = $redirect === '' ? $this->user->data['session_page'] : $redirect;
 		$redirect = $this->get_redirect($redirect);
 		$redirect = reapply_sid($redirect);
 		redirect($redirect);
