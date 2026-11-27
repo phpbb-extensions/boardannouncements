@@ -395,7 +395,12 @@ class acp_controller
 				$data['announcement_flags'],
 				!$this->request->variable('disable_bbcode', false),
 				!$this->request->variable('disable_magic_url', false),
-				!$this->request->variable('disable_smilies', false)
+				!$this->request->variable('disable_smilies', false),
+				true,
+				true,
+				true,
+				true,
+				'phpbb_board_announcements'
 			);
 
 			// Store the announcement text and settings if submitted with no errors
@@ -523,7 +528,12 @@ class acp_controller
 			$flags,
 			!$this->request->variable('disable_bbcode', false),
 			!$this->request->variable('disable_magic_url', false),
-			!$this->request->variable('disable_smilies', false)
+			!$this->request->variable('disable_smilies', false),
+			true,
+			true,
+			true,
+			true,
+			'phpbb_board_announcements'
 		);
 
 		$this->template->assign_vars([
